@@ -12,9 +12,9 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
     public class EmailsController : Controller
     {
         private readonly IEmailCSVParser emailCSVParser;
-        private readonly IViewModelBuilder<EmailUploadViewModel> emailUploadViewModelBuilder;
+        private readonly IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser> emailUploadViewModelBuilder;
 
-        public EmailsController(IEmailCSVParser emailCSVParser, IViewModelBuilder<EmailUploadViewModel> emailUploadViewModelBuilder)
+        public EmailsController(IEmailCSVParser emailCSVParser, IViewModelBuilderWithBuildParameters<EmailUploadViewModel,IEmailCSVParser> emailUploadViewModelBuilder)
         {
             this.emailCSVParser = emailCSVParser;
             this.emailUploadViewModelBuilder = emailUploadViewModelBuilder;
@@ -30,9 +30,9 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
 
         public ActionResult Upload()
         {
-            emailCSVParser.Parse();
-            emailUploadViewModelBuilder.Build();
-            return View();
+            emailCSVParser.ParseAndStore();
+            var viewModel = emailUploadViewModelBuilder.Build(emailCSVParser);
+            return View(viewModel);
         }
 
     }

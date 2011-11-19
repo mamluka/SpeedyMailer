@@ -37,5 +37,31 @@ namespace SpeedyMailer.Core.Tests.Emails
 
         }
 
+        [Test]
+        public void Store_ShouldStoreAListOfEmailsVerifyThatMethodCalled10Times()
+        {
+            //Arrange
+            var emails = new List<Email>();
+
+            emails.AddMany(() => Fixture.Build<Email>().Without(x => x.Id).CreateAnonymous(), 10);
+
+            var store = MockRepository.GenerateStub<IDocumentStore>();
+
+            var session = MockRepository.GenerateMock<IDocumentSession>();
+
+            store.Expect(x => x.OpenSession()).Return(session);
+
+            session.Expect(x => x.Store(Arg<List<Email>>.Is.Anything)).Repeat.Times(10);
+
+            //Act
+            var emailsRep = new EmailsRepository(store);
+            //Assert
+
+            emailsRep.Store(emails);
+
+            session.VerifyAllExpectations();
+
+        }
+
     }
 }

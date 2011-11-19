@@ -1,6 +1,7 @@
 using AutoMapper;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Core.Tests.Maps;
 
 namespace SpeedyMailer.Core.Tests
 {
@@ -13,6 +14,7 @@ namespace SpeedyMailer.Core.Tests
         public void Initialize()
         {
             Fixture = new Fixture();
+            AutoMapperMaps.CreateMaps();
             Mapper = AutoMapper.Mapper.Engine;
         }
     }

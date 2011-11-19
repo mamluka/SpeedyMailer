@@ -9,9 +9,9 @@ namespace SpeedyMailer.ControlRoom.Website.Tests
 {
     public static class Extentions
     {
-        public static void MockBuild<T>(this IViewModelBuilder<T> builder) where T : new()
+        public static void ExpectBuild<TViewModel, TParameter>(this IViewModelBuilderWithBuildParameters<TViewModel, TParameter> builder)
         {
-            builder.Expect(x => x.Build()).Repeat.Once();
+            builder.Expect(x => x.Build(Arg<TParameter>.Is.Anything)).Repeat.Once();
         }
     }
 }

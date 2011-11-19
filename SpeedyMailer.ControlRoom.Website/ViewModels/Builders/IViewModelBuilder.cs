@@ -4,4 +4,9 @@ namespace SpeedyMailer.ControlRoom.Website.ViewModels.Builders
     {
         T Build();
     }
+
+    public interface IViewModelBuilderWithBuildParameters<out TViewModel, in TParameter>
+    {
+        TViewModel Build(TParameter parameter);
+    }
 }

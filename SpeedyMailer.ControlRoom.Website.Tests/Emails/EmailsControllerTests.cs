@@ -22,7 +22,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
             var controllerBuilder = new EmailsControllerBuilder();
 
             var emailCSVParser = MockRepository.GenerateMock<IEmailCSVParser>();
-            emailCSVParser.Expect(x => x.Parse()).Repeat.Once();
+            emailCSVParser.Expect(x => x.ParseAndStore()).Repeat.Once();
 
             controllerBuilder.EmailCSVParser = emailCSVParser;
 
@@ -39,8 +39,8 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
         public void Upload_ShouldCallTheBuildMethodOnTheBuilder()
         {
             //Arrange
-            var builder = MockRepository.GenerateMock<IViewModelBuilder<EmailUploadViewModel>>();
-            builder.MockBuild();
+            var builder = MockRepository.GenerateMock<IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser>>();
+            builder.ExpectBuild();
 
             var controllerBuilder = new EmailsControllerBuilder();
             controllerBuilder.EmailUploadViewModelBuilder = builder;
@@ -52,17 +52,34 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
             builder.VerifyAllExpectations();
         }
 
+        [Test]
+        public void Upload_ShouldReturnTheRightViewModel()
+        {
+            //Arrange
+            var builder = MockRepository.GenerateStub<IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser>>();
+            builder.Stub(x => x.Build(Arg<IEmailCSVParser>.Is.Anything)).Return(new EmailUploadViewModel());
+
+            var controllerBuilder = new EmailsControllerBuilder();
+            controllerBuilder.EmailUploadViewModelBuilder = builder;
+
+            var controller = controllerBuilder.Build();
+            //Act
+            var viewModel = controller.Upload();
+            //Assert
+            viewModel.AssertViewRendered().WithViewData<EmailUploadViewModel>();
+        }
+
 
     }
 
     public class EmailsControllerBuilder:IControllerBuilder<EmailsController>
     {
-        public IViewModelBuilder<EmailUploadViewModel> EmailUploadViewModelBuilder { get; set; }
+        public IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser> EmailUploadViewModelBuilder { get; set; }
         public IEmailCSVParser EmailCSVParser { get; set; }
 
         public EmailsControllerBuilder()
         {
-            EmailUploadViewModelBuilder = MockRepository.GenerateStub<IViewModelBuilder<EmailUploadViewModel>>();
+            EmailUploadViewModelBuilder = MockRepository.GenerateStub<IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser>>();
             EmailCSVParser = MockRepository.GenerateStub<IEmailCSVParser>();
         }
 
@@ -71,10 +88,5 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
         {
             return new EmailsController(EmailCSVParser,EmailUploadViewModelBuilder);
         }
-    }
-
-    public  interface IControllerBuilder<out T>
-    {
-        T Build();
     }
 }
