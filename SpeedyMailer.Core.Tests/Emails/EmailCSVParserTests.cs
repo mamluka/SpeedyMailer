@@ -28,6 +28,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             httpRequest.Expect(x => x.Files).Repeat.Once().Return(httpContextBuilder.Files);
 
             httpContextBuilder.Replace(httpRequest);
+            httpContextBuilder.WithFileStream(GetDataStream());
 
             var parserBuilder = new EmailCSVParserBuilder(Mapper);
             parserBuilder.HttpContext = httpContextBuilder.Build();
@@ -59,6 +60,31 @@ namespace SpeedyMailer.Core.Tests.Emails
         }
 
         [Test]
+        [ExpectedException]
+        public void ParseAndSave_ShouldThrowAnExceptionIfTheFileIsEmpty()
+        {
+            //Arrange
+            var httpContextBuilder = new HttpContextBaseBuilderForFiles();
+            httpContextBuilder.WithFileCount(1).WithFileStream(EmptyFile());
+           
+
+            var parserBuilder = new EmailCSVParserBuilder(Mapper);
+            parserBuilder.HttpContext = httpContextBuilder.Build();
+
+            var parser = parserBuilder.Build();
+
+            //Act
+            parser.ParseAndStore();
+            //Assert
+        }
+
+        private static MemoryStream EmptyFile()
+        {
+            return new MemoryStream();
+        }
+
+
+        [Test]
         public void ParseAndSave_ShouldReadTheInputStreamFromTheFile()
         {
             //Arrange
@@ -66,7 +92,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             httpContextBuilder.WithFileCount(1);
 
             var file = MockRepository.GenerateMock<HttpPostedFileBase>();
-            file.Expect(x => x.InputStream).Repeat.Once().Return(GetDataStream());
+            file.Expect(x => x.InputStream).Return(GetDataStream());
 
             httpContextBuilder.Replace(file);
 

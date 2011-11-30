@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using Bootstrap;
+using Bootstrap.AutoMapper;
 
 namespace SpeedyMailer.ControlRoom.Website
 {
@@ -35,6 +37,8 @@ namespace SpeedyMailer.ControlRoom.Website
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+
+            Bootstrapper.With.AutoMapper().Start();
         }
     }
 }

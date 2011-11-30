@@ -1,3 +1,10 @@
+using AutoMapper;
+using Raven.Client;
+using SpeedyMailer.ControlRoom.Website.ViewModels.Builders;
+using SpeedyMailer.ControlRoom.Website.ViewModels.ViewModels;
+using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.NinjectProvider;
+
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SpeedyMailer.ControlRoom.Website.App_Start.NinjectMVC3), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SpeedyMailer.ControlRoom.Website.App_Start.NinjectMVC3), "Stop")]
 
@@ -47,6 +54,18 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            kernel
+                .Bind<IEmailCSVParser>().To<EmailCSVParser>();
+
+            kernel
+                .Bind<IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser>>()
+                .To<EmailUploadViewModelBuilder>();
+
+            kernel
+                .Bind<IEmailsRepository>()
+                .To<EmailsRepository>();
+            kernel.Bind<IDocumentStore>().ToProvider<RavenDocumentStoreProvider>();
+            kernel.Bind<IMappingEngine>().ToConstant(Mapper.Engine);
         }        
     }
 }

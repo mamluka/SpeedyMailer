@@ -27,8 +27,12 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
         {
             return View();
         }
-
         public ActionResult Upload()
+        {
+            return View(new EmptyViewModel());
+        }
+        [HttpPost]
+        public ActionResult UploadList()
         {
             emailCSVParser.ParseAndStore();
             var viewModel = emailUploadViewModelBuilder.Build(emailCSVParser);

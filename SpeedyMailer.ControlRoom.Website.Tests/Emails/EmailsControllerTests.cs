@@ -29,7 +29,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
             var controller = controllerBuilder.Build();
 
             //Act
-            controller.Upload();
+            controller.UploadList();
             //Assert
             emailCSVParser.VerifyAllExpectations();
 
@@ -47,7 +47,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
 
             var controller = controllerBuilder.Build();
             //Act
-            controller.Upload();
+            controller.UploadList();
             //Assert
             builder.VerifyAllExpectations();
         }
@@ -64,7 +64,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
 
             var controller = controllerBuilder.Build();
             //Act
-            var viewModel = controller.Upload();
+            var viewModel = controller.UploadList();
             //Assert
             viewModel.AssertViewRendered().WithViewData<EmailUploadViewModel>();
         }

@@ -1,0 +1,14 @@
+﻿@using Microsoft.Web.Helpers
+@model SpeedyMailer.ControlRoom.Website.ViewModels.ViewModels.EmptyViewModel
+
+@{
+    ViewBag.Title = "Upload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Upload</h2>
+
+@using (Html.BeginForm("UploadList", "Emails", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @FileUpload.GetHtml();
+}

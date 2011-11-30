@@ -43,7 +43,17 @@ namespace SpeedyMailer.Core.Emails
 
             foreach (var file in files)
             {
-                var csvHelper = new CsvHelper.CsvHelper(file.InputStream);
+                if (file.InputStream.Length == 0)
+                {
+                    throw new Exception("when asked to Parse the Uploaded CSV there was no data in filename:" + file.FileName);
+                }
+                var mStream = new MemoryStream();
+                file.InputStream.CopyTo(mStream);
+                mStream.Flush();
+                mStream.Position = 0;
+                
+                var csvHelper = new CsvHelper.CsvHelper(mStream);
+                
                  emails.AddRange(csvHelper.Reader.GetRecords<EmailFromCSVRow>());
             }
 
