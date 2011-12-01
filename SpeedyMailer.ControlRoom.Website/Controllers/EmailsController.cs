@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using SpeedyMailer.ControlRoom.Website.ViewModels.Builders;
-using SpeedyMailer.ControlRoom.Website.ViewModels.ViewModels;
+using SpeedyMailer.ControlRoom.Website.Core.ViewModels.Builders;
+using SpeedyMailer.ControlRoom.Website.Core.ViewModels.ViewModels;
 using SpeedyMailer.Core.Emails;
 
 namespace SpeedyMailer.ControlRoom.Website.Controllers
@@ -12,9 +12,9 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
     public class EmailsController : Controller
     {
         private readonly IEmailCSVParser emailCSVParser;
-        private readonly IViewModelBuilderWithBuildParameters<EmailUploadViewModel, IEmailCSVParser> emailUploadViewModelBuilder;
+        private readonly IViewModelBuilderWithBuildParameters<EmailUploadListViewModel, IEmailCSVParser> emailUploadViewModelBuilder;
 
-        public EmailsController(IEmailCSVParser emailCSVParser, IViewModelBuilderWithBuildParameters<EmailUploadViewModel,IEmailCSVParser> emailUploadViewModelBuilder)
+        public EmailsController(IEmailCSVParser emailCSVParser, IViewModelBuilderWithBuildParameters<EmailUploadListViewModel,IEmailCSVParser> emailUploadViewModelBuilder)
         {
             this.emailCSVParser = emailCSVParser;
             this.emailUploadViewModelBuilder = emailUploadViewModelBuilder;

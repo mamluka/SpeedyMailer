@@ -2,7 +2,7 @@ using SpeedyMailer.Core.Core;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public interface IEmailCSVParser:IReportResults<MailCSVParserResults>
+    public interface IEmailCSVParser:IReportResults<EmailCSVParserResults>
     {
         void ParseAndStore();
     }

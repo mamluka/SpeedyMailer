@@ -8,8 +8,6 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Core.Emails;
-using AutoMapper;
-
 
 namespace SpeedyMailer.Core.Tests.Emails
 {

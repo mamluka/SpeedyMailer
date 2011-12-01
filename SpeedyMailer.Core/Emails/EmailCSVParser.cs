@@ -14,7 +14,7 @@ namespace SpeedyMailer.Core.Emails
         private readonly HttpContextBase httpContextBase;
         private readonly IEmailsRepository emailsRepository;
         private readonly IMappingEngine mapper;
-        private MailCSVParserResults results;
+        private EmailCSVParserResults results;
 
         public EmailCSVParser(HttpContextBase httpContextBase, IEmailsRepository emailsRepository, IMappingEngine mapper)
         {
@@ -61,7 +61,7 @@ namespace SpeedyMailer.Core.Emails
 
             emailsRepository.Store(emailsDTO);
 
-            results = new MailCSVParserResults()
+            results = new EmailCSVParserResults()
                           {
                               NumberOfFilesProcessed = files.Count,
                               NumberOfEmailProcessed = emails.Count,
@@ -72,7 +72,7 @@ namespace SpeedyMailer.Core.Emails
 
         }
 
-        public MailCSVParserResults Results
+        public EmailCSVParserResults Results
         {
             get { return results; }
         }

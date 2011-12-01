@@ -14,6 +14,8 @@ namespace SpeedyMailer.Core.Automapper
         {
             Mapper.CreateMap<EmailFromCSVRow, Email>()
                 .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
+
+  
         }
     }
 }

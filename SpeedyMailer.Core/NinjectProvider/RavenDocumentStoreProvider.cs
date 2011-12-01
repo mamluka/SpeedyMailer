@@ -14,7 +14,7 @@ namespace SpeedyMailer.Core.NinjectProvider
 
         protected override IDocumentStore CreateInstance(IContext context)
         {
-            var store = new DocumentStore {Url = "http://localhost:8080"};
+            var store = new DocumentStore {Url = "http://localhost:8081"};
             
             
             store.Initialize();

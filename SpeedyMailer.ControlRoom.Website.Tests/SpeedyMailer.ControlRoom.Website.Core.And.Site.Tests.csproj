@@ -86,8 +86,10 @@
   <ItemGroup>
     <Compile Include="AutoMapperAndFixtureBase.cs" />
     <Compile Include="Emails\EmailsControllerTests.cs" />
+    <Compile Include="Emails\EmailUploadListViewModelBuilderTests.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="IControllerBuilder.cs" />
+    <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +113,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SpeedyMailer.ControlRoom.Website.Core\SpeedyMailer.ControlRoom.Website.Core.csproj">
+      <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
+      <Name>SpeedyMailer.ControlRoom.Website.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.ControlRoom.Website\SpeedyMailer.ControlRoom.Website.csproj">
       <Project>{F40597C3-C6F2-486A-A815-EFAC74344E0F}</Project>
       <Name>SpeedyMailer.ControlRoom.Website</Name>
