@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit;
+﻿using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using Rhino.Mocks;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels.Builders;
+using SpeedyMailer.ControlRoom.Website.Core.Builders;
+using SpeedyMailer.ControlRoom.Website.Tests.Maps;
 using SpeedyMailer.Core.Emails;
 using Ploeh.AutoFixture;
-using SpeedyMailer.Core.Tests;
+using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
 {
-    class EmailUploadListViewModelBuilderTests : AutoMapperAndFixtureBase
+    class UploadListResultsViewModelBuilderTests : AutoMapperAndFixtureBase<AutoMapperMaps>
     {
         [Test]
         public void Build_ShouldReadTheResultsFromTheCSVParser()
@@ -23,7 +20,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
 
             csvHelper.Expect(x => x.Results).Repeat.Once();
 
-            var builder = new EmailUploadListViewModelBuilder(Mapper);
+            var builder = new UploadListResultsViewModelBuilder(Mapper);
 
             //Act
             builder.Build(csvHelper);
@@ -44,7 +41,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
 
             csvHelper.Stub(x => x.Results).Return(csvParserResults);
 
-            var builder = new EmailUploadListViewModelBuilder(Mapper);
+            var builder = new UploadListResultsViewModelBuilder(Mapper);
 
             //Act
             var viewModel =  builder.Build(csvHelper);

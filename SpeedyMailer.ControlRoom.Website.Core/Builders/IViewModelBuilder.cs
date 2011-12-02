@@ -1,4 +1,4 @@
-namespace SpeedyMailer.ControlRoom.Website.Core.ViewModels.Builders
+namespace SpeedyMailer.ControlRoom.Website.Core.Builders
 {
     public interface IViewModelBuilder<T> where T : new()
     {

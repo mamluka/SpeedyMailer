@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels.Builders;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels.ViewModels;
+using SpeedyMailer.ControlRoom.Website.Core.Builders;
+using SpeedyMailer.ControlRoom.Website.Core.Models;
+using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Lists;
 
 namespace SpeedyMailer.ControlRoom.Website.Controllers
 {
     public class EmailsController : Controller
     {
         private readonly IEmailCSVParser emailCSVParser;
-        private readonly IViewModelBuilderWithBuildParameters<EmailUploadListViewModel, IEmailCSVParser> emailUploadViewModelBuilder;
+        private readonly IViewModelBuilderWithBuildParameters<UploadListViewModel, IEmailCSVParser> emailUploadViewModelBuilder;
+        private readonly IViewModelBuilder<UploadListViewModel> uploadListViewModelBuilder;
 
-        public EmailsController(IEmailCSVParser emailCSVParser, IViewModelBuilderWithBuildParameters<EmailUploadListViewModel,IEmailCSVParser> emailUploadViewModelBuilder)
+        public EmailsController(IEmailCSVParser emailCSVParser, IViewModelBuilderWithBuildParameters<UploadListViewModel, IEmailCSVParser> emailUploadViewModelBuilder, IViewModelBuilder<UploadListViewModel> uploadListViewModelBuilder)
         {
             this.emailCSVParser = emailCSVParser;
             this.emailUploadViewModelBuilder = emailUploadViewModelBuilder;
+            this.uploadListViewModelBuilder = uploadListViewModelBuilder;
         }
 
         //
@@ -29,10 +33,11 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
         }
         public ActionResult Upload()
         {
-            return View(new EmptyViewModel());
+            var viewModel = uploadListViewModelBuilder.Build();
+            return View(new UploadListViewModel());
         }
         [HttpPost]
-        public ActionResult UploadList()
+        public ActionResult Upload(UploadListModel model)
         {
             emailCSVParser.ParseAndStore();
             var viewModel = emailUploadViewModelBuilder.Build(emailCSVParser);

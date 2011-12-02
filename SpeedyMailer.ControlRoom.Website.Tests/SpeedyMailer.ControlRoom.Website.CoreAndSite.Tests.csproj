@@ -84,9 +84,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutoMapperAndFixtureBase.cs" />
     <Compile Include="Emails\EmailsControllerTests.cs" />
-    <Compile Include="Emails\EmailUploadListViewModelBuilderTests.cs" />
+    <Compile Include="Emails\UploadListResultsViewModelBuilderTests.cs" />
+    <Compile Include="Emails\UploadListViewModelBuilderTests.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="IControllerBuilder.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
@@ -124,6 +124,10 @@
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
+      <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
+      <Name>SpeedyMailer.Tests.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

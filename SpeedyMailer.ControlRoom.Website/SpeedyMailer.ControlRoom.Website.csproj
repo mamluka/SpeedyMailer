@@ -139,7 +139,6 @@
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Release Notes - Microsoft.Web.Helpers.txt" />
     <Content Include="Scripts\jquery-1.4.4-vsdoc.js" />
     <Content Include="Scripts\jquery-1.4.4.js" />
     <Content Include="Scripts\jquery-1.4.4.min.js" />

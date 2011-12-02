@@ -8,11 +8,13 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Tests.Maps;
+using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {
     [TestFixture]
-    public class EmailCSVParserTests:AutoMapperAndFixtureBase
+    public class EmailCSVParserTests:AutoMapperAndFixtureBase<AutoMapperMaps>
     {
         [Test]
         public void ParseAndSave_ShouldCallTheFilesPropertyInTheRequestObject()

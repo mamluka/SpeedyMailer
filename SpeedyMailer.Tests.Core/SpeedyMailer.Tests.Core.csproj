@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C04698CD-7517-496C-A5E1-66A3AC7E34C4}</ProjectGuid>
+    <ProjectGuid>{CECA9509-77E6-4618-9D15-27BE3A311D35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeedyMailer.Core.Tests</RootNamespace>
-    <AssemblyName>SpeedyMailer.Core.Tests</AssemblyName>
+    <RootNamespace>SpeedyMailer.Tests.Core</RootNamespace>
+    <AssemblyName>SpeedyMailer.Tests.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -56,9 +56,6 @@
     <Reference Include="AutoMapper">
       <HintPath>..\packages\AutoMapper.2.0.0\lib\net40-client\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions">
-      <HintPath>..\packages\FluentAssertions.1.6.0\Lib\net40\FluentAssertions.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -98,14 +95,12 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Lists\ListRepositoryTests.cs" />
-    <Compile Include="Maps\AutoMapperMaps.cs" />
-    <Compile Include="Emails\EmailCSVParserTests.cs" />
-    <Compile Include="Emails\EmailsRepositoryTests.cs" />
+    <Compile Include="AutoMapperAndFixtureBase.cs" />
+    <Compile Include="DB\DocumentStoreFactory.cs" />
+    <Compile Include="IAutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -127,16 +122,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
-      <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
-      <Name>SpeedyMailer.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
-      <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
-      <Name>SpeedyMailer.Tests.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

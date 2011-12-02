@@ -87,6 +87,9 @@
     <Compile Include="Emails\IEmailCSVParser.cs" />
     <Compile Include="Emails\IEmailsRepository.cs" />
     <Compile Include="Emails\EmailCSVParserResults.cs" />
+    <Compile Include="Lists\IListRepository.cs" />
+    <Compile Include="Lists\ListDescriptor.cs" />
+    <Compile Include="Lists\ListRepository.cs" />
     <Compile Include="NinjectProvider\RavenDocumentStoreProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

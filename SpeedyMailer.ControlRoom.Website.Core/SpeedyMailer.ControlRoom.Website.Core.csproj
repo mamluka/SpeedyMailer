@@ -50,11 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Automapper\Maps.cs" />
+    <Compile Include="Builders\UploadListResultsViewModelBuilder.cs" />
+    <Compile Include="Builders\IViewModelBuilder.cs" />
+    <Compile Include="Models\UploadListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\Builders\EmailUploadListViewModelBuilder.cs" />
-    <Compile Include="ViewModels\Builders\IViewModelBuilder.cs" />
-    <Compile Include="ViewModels\ViewModels\EmailUploadListViewModel.cs" />
-    <Compile Include="ViewModels\ViewModels\EmptyViewModel.cs" />
+    <Compile Include="ViewModels\EmptyViewModel.cs" />
+    <Compile Include="ViewModels\UploadListViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">

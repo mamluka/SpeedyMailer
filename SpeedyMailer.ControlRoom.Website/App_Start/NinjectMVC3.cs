@@ -1,7 +1,7 @@
 using AutoMapper;
 using Raven.Client;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels.Builders;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels.ViewModels;
+using SpeedyMailer.ControlRoom.Website.Core.Builders;
+using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.NinjectProvider;
 
@@ -58,8 +58,8 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
                 .Bind<IEmailCSVParser>().To<EmailCSVParser>();
 
             kernel
-                .Bind<IViewModelBuilderWithBuildParameters<EmailUploadListViewModel, IEmailCSVParser>>()
-                .To<EmailUploadListViewModelBuilder>();
+                .Bind<IViewModelBuilderWithBuildParameters<UploadListViewModel, IEmailCSVParser>>()
+                .To<UploadListResultsViewModelBuilder>();
 
             kernel
                 .Bind<IEmailsRepository>()

@@ -1,18 +1,19 @@
 ﻿using AutoMapper;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels.ViewModels;
+using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Tests.Core;
 
-namespace SpeedyMailer.Core.Tests.Maps
+namespace SpeedyMailer.ControlRoom.Website.Tests.Maps
 {
-    public static class AutoMapperMaps
+    public class AutoMapperMaps:IAutoMapperMaps
     {
-        public static void CreateMaps()
+        public void CreateMaps()
         {
             Mapper.CreateMap<EmailFromCSVRow, Email>()
                 .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
                 ;
 
-            Mapper.CreateMap<EmailCSVParserResults, EmailUploadListViewModel>();
+                Mapper.CreateMap<EmailCSVParserResults, UploadListViewModel>();
         }
     }
 }

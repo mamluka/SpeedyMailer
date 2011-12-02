@@ -1,11 +1,10 @@
 using AutoMapper;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
-using SpeedyMailer.Core.Tests.Maps;
 
-namespace SpeedyMailer.Core.Tests
+namespace SpeedyMailer.Tests.Core
 {
-    public class AutoMapperAndFixtureBase
+    public class AutoMapperAndFixtureBase<T> where T:IAutoMapperMaps, new()
     {
         protected Fixture Fixture;
         protected IMappingEngine Mapper;
@@ -14,8 +13,9 @@ namespace SpeedyMailer.Core.Tests
         public void Initialize()
         {
             Fixture = new Fixture();
-            AutoMapperMaps.CreateMaps();
-            Mapper = AutoMapper.Mapper.Engine;
+            var mapCreator = new T();
+            mapCreator.CreateMaps();
+            Mapper =  AutoMapper.Mapper.Engine;
         }
     }
 }

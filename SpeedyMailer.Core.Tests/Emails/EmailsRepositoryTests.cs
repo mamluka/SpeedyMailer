@@ -7,11 +7,14 @@ using Rhino.Mocks;
 using FluentAssertions;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Tests.Maps;
+using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.DB;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {
     [TestFixture]
-    public class EmailsRepositoryTests:AutoMapperAndFixtureBase
+    public class EmailsRepositoryTests:AutoMapperAndFixtureBase<AutoMapperMaps>
     {
 
         [Test]
@@ -23,7 +26,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Email>.Is.Equal(email))).Repeat.Once();
 
-            var store = CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
             //Act
             var emailsRep = new EmailsRepository(store);
@@ -44,7 +47,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Email>.Matches(m=> m.Id == email.Address))).Repeat.Once();
 
-            var store = CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
             //Act
             var emailsRep = new EmailsRepository(store);
@@ -66,7 +69,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<List<Email>>.Is.Anything)).Repeat.Times(10);
-            var store = CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
 
 
@@ -90,7 +93,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Email>.Matches(m=> m.Id == emails[0].Address))).Repeat.Once();
-            var store = CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
 
 
@@ -102,17 +105,6 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             session.VerifyAllExpectations();
 
-        }
-
-
-
-        private static IDocumentStore CreateDocumentStoreWithSession(IDocumentSession session)
-        {
-            var store = MockRepository.GenerateStub<IDocumentStore>();
-
-
-            store.Stub(x => x.OpenSession()).Return(session);
-            return store;
         }
     }
 }
