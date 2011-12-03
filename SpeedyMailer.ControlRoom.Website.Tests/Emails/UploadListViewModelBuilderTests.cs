@@ -6,7 +6,6 @@ using Rhino.Mocks;
 using FluentAssertions;
 using Ploeh.AutoFixture;
 using SpeedyMailer.ControlRoom.Website.Core.Builders;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.ControlRoom.Website.Tests.Maps;
 using SpeedyMailer.Core.Lists;
 using SpeedyMailer.Tests.Core;
@@ -39,9 +38,14 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
             var allLists = new List<ListDescriptor>();
             allLists.AddMany(() => Fixture.CreateAnonymous<ListDescriptor>(),10);
 
+            var listCollection = new ListCollection()
+                                     {
+                                         Lists = allLists
+                                     };
+
             var listRepository = MockRepository.GenerateStub<IListRepository>();
 
-            listRepository.Stub(x=> x.Lists()).Return(allLists);
+            listRepository.Stub(x=> x.Lists()).Return(listCollection);
 
             var builder = new UploadListViewModelBuilder(listRepository);
             //Act
@@ -49,25 +53,28 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Emails
             //Assert
             viewModel.Lists.Should().BeEquivalentTo(allLists);
         }
-    }
 
-    public class UploadListViewModelBuilder:IViewModelBuilder<UploadListViewModel>
-    {
-        private readonly IListRepository listRepository;
-
-        public UploadListViewModelBuilder(IListRepository listRepository)
+        [Test]
+        public void Build_ShouldIndicatedThatThereAreNoResults()
         {
-            this.listRepository = listRepository;
-        }
+            //Arrange
+            var allLists = new List<ListDescriptor>();
+            allLists.AddMany(() => Fixture.CreateAnonymous<ListDescriptor>(), 10);
 
-        public UploadListViewModel Build()
-        {
-            var allLists = listRepository.Lists();
+            var listCollection = new ListCollection()
+                                     {
+                                         Lists = allLists
+                                     };
 
-            return new UploadListViewModel()
-                       {
-                           Lists = allLists
-                       };
+            var listRepository = MockRepository.GenerateStub<IListRepository>();
+
+            listRepository.Stub(x => x.Lists()).Return(listCollection);
+
+            var builder = new UploadListViewModelBuilder(listRepository);
+            //Act
+            var viewModel = builder.Build();
+            //Assert
+            viewModel.HasResults.Should().BeFalse();
         }
     }
 }

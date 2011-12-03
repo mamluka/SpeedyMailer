@@ -11,10 +11,12 @@ namespace SpeedyMailer.Core.Emails
 {
     public class EmailCSVParser : IEmailCSVParser
     {
+        private InitialEmailBatchOptions initialEmailBatchOptions;
         private readonly HttpContextBase httpContextBase;
         private readonly IEmailsRepository emailsRepository;
         private readonly IMappingEngine mapper;
         private EmailCSVParserResults results;
+        private bool hasInitialEmailBatchOptions;
 
         public EmailCSVParser(HttpContextBase httpContextBase, IEmailsRepository emailsRepository, IMappingEngine mapper)
         {
@@ -59,6 +61,13 @@ namespace SpeedyMailer.Core.Emails
 
             var emailsDTO = mapper.Map<List<EmailFromCSVRow>, List<Email>>(emails);
 
+            if (hasInitialEmailBatchOptions)
+            {
+                 emailsDTO.ForEach(x => x.MemberOf.Add(initialEmailBatchOptions.ContainingListId));
+            }
+
+           
+
             emailsRepository.Store(emailsDTO);
 
             results = new EmailCSVParserResults()
@@ -75,6 +84,12 @@ namespace SpeedyMailer.Core.Emails
         public EmailCSVParserResults Results
         {
             get { return results; }
+        }
+
+        public void AddInitialEmailBatchOptions(InitialEmailBatchOptions model)
+        {
+            initialEmailBatchOptions = model;
+            hasInitialEmailBatchOptions = true;
         }
     }
 }

@@ -12,14 +12,14 @@ namespace SpeedyMailer.Core.Lists
             this.store = store;
         }
 
-        public List<ListDescriptor> Lists()
+        public ListCollection Lists()
         {
             using (var session = store.OpenSession())
             {
-                var list =  session.Load<List<ListDescriptor>>("system/lists");
+                var list =  session.Load<ListCollection>("system/lists");
                 if (list == null)
                 {
-                    return new List<ListDescriptor>();
+                    return new ListCollection();
                 }
                 return list;
             }
@@ -27,34 +27,44 @@ namespace SpeedyMailer.Core.Lists
 
         public void Add(ListDescriptor listDescriptor)
         {
-            var lists = Lists();
-            lists.Add(listDescriptor);
+            var listCollection = Lists();
+            listCollection.Lists.Add(listDescriptor);
             using (var session = store.OpenSession())
             {
-                session.Store(lists,"system/lists");
+                session.Store(listCollection,"system/lists");
             }
 
         }
 
         public void Remove(string id)
         {
-            var lists = Lists();
-            lists.RemoveAll(x => x.Id == id);
+            var listCollection = Lists();
+            listCollection.Lists.RemoveAll(x => x.Id == id);
             using (var session = store.OpenSession())
             {
-                session.Store(lists, "system/lists");
+                session.Store(listCollection, "system/lists");
             }
         }
 
         public void Update(ListDescriptor listDescriptor)
         {
-            var lists = Lists();
-            lists.RemoveAll(x => x.Id == listDescriptor.Id);
-            lists.Add(listDescriptor);
+            var listCollection = Lists();
+            listCollection.Lists.RemoveAll(x => x.Id == listDescriptor.Id);
+            listCollection.Lists.Add(listDescriptor);
             using (var session = store.OpenSession())
             {
-                session.Store(lists, "system/lists");
+                session.Store(listCollection, "system/lists");
             }
+        }
+    }
+
+    public class ListCollection
+    {
+        public List<ListDescriptor> Lists { get; set; }
+
+        public ListCollection()
+        {
+            Lists = new List<ListDescriptor>();
         }
     }
 }

@@ -46,6 +46,9 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.1.1.0\lib\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="NConfig">
+      <HintPath>..\packages\NConfig.1.0.8\lib\Net40\NConfig.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -69,6 +72,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -87,6 +91,7 @@
     <Compile Include="Emails\IEmailCSVParser.cs" />
     <Compile Include="Emails\IEmailsRepository.cs" />
     <Compile Include="Emails\EmailCSVParserResults.cs" />
+    <Compile Include="Emails\InitialEmailBatchOptions.cs" />
     <Compile Include="Lists\IListRepository.cs" />
     <Compile Include="Lists\ListDescriptor.cs" />
     <Compile Include="Lists\ListRepository.cs" />

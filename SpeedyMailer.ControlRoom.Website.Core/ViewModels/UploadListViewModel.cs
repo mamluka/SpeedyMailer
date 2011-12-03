@@ -4,7 +4,7 @@ using SpeedyMailer.Core.Lists;
 
 namespace SpeedyMailer.ControlRoom.Website.Core.ViewModels
 {
-    public class UploadListViewModel : UploadListModel
+    public class UploadListViewModel
     {
         public string NumberOfEmailProcessed { get; set; }
 
@@ -13,5 +13,9 @@ namespace SpeedyMailer.ControlRoom.Website.Core.ViewModels
         public List<string> Filenames { get; set; }
 
         public List<ListDescriptor> Lists { get; set; }
+
+        public bool HasResults { get; set; }
+
+        public string List { get; set; }
     }
 }

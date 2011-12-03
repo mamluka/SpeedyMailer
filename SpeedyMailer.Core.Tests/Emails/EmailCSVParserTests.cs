@@ -10,6 +10,7 @@ using FluentAssertions;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tests.Maps;
 using SpeedyMailer.Tests.Core;
+using System.Linq;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {
@@ -104,6 +105,36 @@ namespace SpeedyMailer.Core.Tests.Emails
             parser.ParseAndStore();
             //Assert
             file.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void ParseAndSave_ShouldAddTheChoosenListFromTheModelToTheEmail()
+        {
+            //Arrange
+
+            var model = new InitialEmailBatchOptions
+            {
+                ContainingListId = "mycategpryid"
+            };
+
+
+            var emailsRepository = MockRepository.GenerateMock<IEmailsRepository>();
+            emailsRepository.Expect(x => x.Store(Arg<List<Email>>.Matches(m=> m.All(p=> p.MemberOf.Contains(model.ContainingListId))))).Repeat.Once();
+
+            var parserBuilder = new EmailCSVParserBuilder(Mapper);
+            parserBuilder.EmailRepsitory = emailsRepository;
+
+
+            
+            var parser = parserBuilder.Build();
+            parser.AddInitialEmailBatchOptions(model);
+            //Act
+            parser.ParseAndStore();
+
+
+            //Assert
+            emailsRepository.VerifyAllExpectations();
+
         }
 
         [Test]
@@ -212,10 +243,11 @@ namespace SpeedyMailer.Core.Tests.Emails
             var httpContextBuilder = new HttpContextBaseBuilderForFiles();
             httpContextBuilder.WithFileStream(EmailCSVParserTests.GetDataStream());
 
-            HttpContext = httpContextBuilder.Build();
+            httpContext = httpContextBuilder.Build();
 
-            EmailRepsitory = MockRepository.GenerateStub<IEmailsRepository>();
+            emailRepsitory = MockRepository.GenerateStub<IEmailsRepository>();
             this.mapper = mapper;
+
         }
 
         public HttpContextBase HttpContext

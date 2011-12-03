@@ -23,7 +23,7 @@ namespace SpeedyMailer.Core.Tests.Lists
         {
             //Arrange
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Load <List<ListDescriptor>>("system/lists")).Repeat.Once();
+            session.Expect(x => x.Load <ListCollection>("system/lists")).Repeat.Once();
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Core.Tests.Lists
         {
             //Arrange
             var session = MockRepository.GenerateStub<IDocumentSession>();
-            session.Stub(x => x.Load<List<ListDescriptor>>("system/lists")).Return(null);
+            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(null);
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
@@ -48,17 +48,17 @@ namespace SpeedyMailer.Core.Tests.Lists
             //Act
             var list = listRepository.Lists();
             //Assert
-            list.Should().HaveCount(0);
+            list.Lists.Should().HaveCount(0);
 
         }
 
         [Test]
-        public void Add_ShouldLoadTheCurrentListBeforeAdding()
+        public void Add_ShouldLoadTheCurrentListCollectionBeforeAdding()
         {
             var newList = Fixture.Build<ListDescriptor>().Without(x=> x.Id).CreateAnonymous();
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Load<List<ListDescriptor>>("system/lists")).Repeat.Once();
+            session.Expect(x => x.Load<ListCollection>("system/lists")).Repeat.Once();
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
@@ -75,11 +75,14 @@ namespace SpeedyMailer.Core.Tests.Lists
         {
             var newList = Fixture.Build<ListDescriptor>().Without(x => x.Id).CreateAnonymous();
 
-            var allLists = new List<ListDescriptor>();
+            var listCollection = new ListCollection()
+                                     {
+                                         Lists = new List<ListDescriptor>()
+                                     };
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Stub(x => x.Load<List<ListDescriptor>>("system/lists")).Return(allLists);
-            session.Expect(x => x.Store(Arg<List<ListDescriptor>>.Matches(m => m.Last() == newList),Arg<string>.Is.Equal("system/lists"))).Repeat.Once();
+            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(listCollection);
+            session.Expect(x => x.Store(Arg<ListCollection>.Matches(m => m.Lists.Last() == newList),Arg<string>.Is.Equal("system/lists"))).Repeat.Once();
 
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
@@ -96,12 +99,17 @@ namespace SpeedyMailer.Core.Tests.Lists
         public void Remove_ShouldRemoveTheListFromTheStore()
         {
             var listToBeDeleted = Fixture.Build<ListDescriptor>().CreateAnonymous();
-            var allLists = new List<ListDescriptor>() {listToBeDeleted};
+            var listCollection = new ListCollection()
+                               {
 
-            var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Stub(x => x.Load<List<ListDescriptor>>("system/lists")).Return(allLists);
+                                   Lists = new List<ListDescriptor>() {listToBeDeleted}
+                               };
+            
 
-            session.Expect(x => x.Store(Arg<List<ListDescriptor>>.Matches(m => m.Where(p=> p.Id == listToBeDeleted.Id).Count() == 0),Arg<string>.Is.Equal("system/lists")))
+        var session = MockRepository.GenerateMock<IDocumentSession>();
+            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(listCollection);
+
+            session.Expect(x => x.Store(Arg<ListCollection>.Matches(m => m.Lists.Where(p=> p.Id == listToBeDeleted.Id).Count() == 0),Arg<string>.Is.Equal("system/lists")))
                 .Repeat
                 .Once();
 
@@ -125,12 +133,16 @@ namespace SpeedyMailer.Core.Tests.Lists
             var listToBeUpdated = originalList;
             listToBeUpdated.Name = "new Name";
 
-            var allLists = new List<ListDescriptor>() { originalList };
+            var listCollection = new ListCollection()
+            {
+
+                Lists = new List<ListDescriptor>() { originalList }
+            };
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Stub(x => x.Load<List<ListDescriptor>>("system/lists")).Return(allLists);
+            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(listCollection);
 
-            session.Expect(x => x.Store(Arg<List<ListDescriptor>>.Matches(m => m.Contains(listToBeUpdated)), Arg<string>.Is.Equal("system/lists")))
+            session.Expect(x => x.Store(Arg<ListCollection>.Matches(m => m.Lists.Contains(listToBeUpdated)), Arg<string>.Is.Equal("system/lists")))
                 .Repeat
                 .Once();
 

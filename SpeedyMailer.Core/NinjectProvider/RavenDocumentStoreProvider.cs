@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using Ninject.Activation;
@@ -14,9 +15,8 @@ namespace SpeedyMailer.Core.NinjectProvider
 
         protected override IDocumentStore CreateInstance(IContext context)
         {
-            var store = new DocumentStore {Url = "http://localhost:8081"};
-            
-            
+
+            var store = new DocumentStore { ConnectionStringName = "RavenDB"};
             store.Initialize();
             return store;
         }

@@ -3,6 +3,7 @@ using Raven.Client;
 using SpeedyMailer.ControlRoom.Website.Core.Builders;
 using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Lists;
 using SpeedyMailer.Core.NinjectProvider;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SpeedyMailer.ControlRoom.Website.App_Start.NinjectMVC3), "Start")]
@@ -60,6 +61,14 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
             kernel
                 .Bind<IViewModelBuilderWithBuildParameters<UploadListViewModel, IEmailCSVParser>>()
                 .To<UploadListResultsViewModelBuilder>();
+
+            kernel
+                .Bind<IViewModelBuilder<UploadListViewModel>>()
+                .To<UploadListViewModelBuilder>();
+
+            kernel
+                .Bind<IListRepository>()
+                .To<ListRepository>();
 
             kernel
                 .Bind<IEmailsRepository>()

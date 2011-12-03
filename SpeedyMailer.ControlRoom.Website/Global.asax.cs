@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Bootstrap;
 using Bootstrap.AutoMapper;
+using NConfig;
 
 namespace SpeedyMailer.ControlRoom.Website
 {
@@ -39,6 +40,8 @@ namespace SpeedyMailer.ControlRoom.Website
             RegisterRoutes(RouteTable.Routes);
 
             Bootstrapper.With.AutoMapper().Start();
+
+         
         }
     }
 }
