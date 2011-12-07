@@ -135,6 +135,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="CoffeeScript1.js">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CoffeeScript1.coffee</DependentUpon>
+    </Content>
     <Content Include="Content\blocks.css" />
     <Content Include="Content\main.css" />
     <Content Include="Content\themes\base\jquery.ui.accordion.css" />
@@ -205,6 +210,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Emails\Upload.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Compose\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="CoffeeScript1.coffee">
+      <Generator>CoffeeScriptGenerator</Generator>
+      <LastGenOutput>CoffeeScript1.js</LastGenOutput>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

@@ -57,8 +57,10 @@
     <Compile Include="Builders\UploadListResultsViewModelBuilder.cs" />
     <Compile Include="Builders\IViewModelBuilder.cs" />
     <Compile Include="Builders\UploadListViewModelBuilder.cs" />
+    <Compile Include="ComponentViewModel\ListDescriptorViewModel.cs" />
     <Compile Include="Models\UploadListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\ComposeViewModel.cs" />
     <Compile Include="ViewModels\EmptyViewModel.cs" />
     <Compile Include="ViewModels\UploadListViewModel.cs" />
   </ItemGroup>
@@ -71,6 +73,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

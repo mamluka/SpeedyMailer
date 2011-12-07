@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compose\ComposeControllerTests.cs" />
     <Compile Include="Emails\EmailsControllerTests.cs" />
     <Compile Include="Emails\UploadListResultsViewModelBuilderTests.cs" />
     <Compile Include="Emails\UploadListViewModelBuilderTests.cs" />
