@@ -85,9 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compose\ComposeControllerTests.cs" />
-    <Compile Include="Emails\EmailsControllerTests.cs" />
-    <Compile Include="Emails\UploadListResultsViewModelBuilderTests.cs" />
-    <Compile Include="Emails\UploadListViewModelBuilderTests.cs" />
+    <Compile Include="Compose\ComposeResultsViewModelBuilder.cs" />
+    <Compile Include="Compose\ComposeViewModelBuilderTests.cs" />
+    <Compile Include="Contacts\ContactsControllerTests.cs" />
+    <Compile Include="Contacts\UploadListResultsViewModelBuilderTests.cs" />
+    <Compile Include="Contacts\UploadListViewModelBuilderTests.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="IMockedComponentBuilder.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />

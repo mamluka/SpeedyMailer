@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Bootstrap.AutoMapper;
+using SpeedyMailer.ControlRoom.Website.Core.ComponentViewModel;
 using SpeedyMailer.ControlRoom.Website.Core.Models;
 using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
-using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.Lists;
 
 namespace SpeedyMailer.ControlRoom.Website.Core.Automapper
 {
@@ -10,14 +12,16 @@ namespace SpeedyMailer.ControlRoom.Website.Core.Automapper
     {
         public void CreateMap(IProfileExpression mapper)
         {
-            Mapper.CreateMap<EmailCSVParserResults, UploadListViewModel>()
+            Mapper.CreateMap<ContactCSVParserResults, UploadListViewModel>()
                 ;
 
-            Mapper.CreateMap<UploadListModel, InitialEmailBatchOptions>()
+            Mapper.CreateMap<UploadListModel, InitialContactsBatchOptions>()
                 .ForMember(x=> x.ContainingListId,opt=> opt.MapFrom(x=> x.List))
                 ;
 
+            Mapper.CreateMap<ListDescriptor, ListDescriptorViewModel>()
 
+                ;
         }
     }
 }

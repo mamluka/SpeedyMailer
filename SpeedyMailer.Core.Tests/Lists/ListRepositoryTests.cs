@@ -23,7 +23,7 @@ namespace SpeedyMailer.Core.Tests.Lists
         {
             //Arrange
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Load <ListCollection>("system/lists")).Repeat.Once();
+            session.Expect(x => x.Load <ListsStore>("system/lists")).Repeat.Once();
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Core.Tests.Lists
         {
             //Arrange
             var session = MockRepository.GenerateStub<IDocumentSession>();
-            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(null);
+            session.Stub(x => x.Load<ListsStore>("system/lists")).Return(null);
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
@@ -58,7 +58,7 @@ namespace SpeedyMailer.Core.Tests.Lists
             var newList = Fixture.Build<ListDescriptor>().Without(x=> x.Id).CreateAnonymous();
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Load<ListCollection>("system/lists")).Repeat.Once();
+            session.Expect(x => x.Load<ListsStore>("system/lists")).Repeat.Once();
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
@@ -75,14 +75,14 @@ namespace SpeedyMailer.Core.Tests.Lists
         {
             var newList = Fixture.Build<ListDescriptor>().Without(x => x.Id).CreateAnonymous();
 
-            var listCollection = new ListCollection()
+            var listCollection = new ListsStore()
                                      {
                                          Lists = new List<ListDescriptor>()
                                      };
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(listCollection);
-            session.Expect(x => x.Store(Arg<ListCollection>.Matches(m => m.Lists.Last() == newList),Arg<string>.Is.Equal("system/lists"))).Repeat.Once();
+            session.Stub(x => x.Load<ListsStore>("system/lists")).Return(listCollection);
+            session.Expect(x => x.Store(Arg<ListsStore>.Matches(m => m.Lists.Last() == newList),Arg<string>.Is.Equal("system/lists"))).Repeat.Once();
 
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
@@ -99,7 +99,7 @@ namespace SpeedyMailer.Core.Tests.Lists
         public void Remove_ShouldRemoveTheListFromTheStore()
         {
             var listToBeDeleted = Fixture.Build<ListDescriptor>().CreateAnonymous();
-            var listCollection = new ListCollection()
+            var listCollection = new ListsStore()
                                {
 
                                    Lists = new List<ListDescriptor>() {listToBeDeleted}
@@ -107,9 +107,9 @@ namespace SpeedyMailer.Core.Tests.Lists
             
 
         var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(listCollection);
+            session.Stub(x => x.Load<ListsStore>("system/lists")).Return(listCollection);
 
-            session.Expect(x => x.Store(Arg<ListCollection>.Matches(m => m.Lists.Where(p=> p.Id == listToBeDeleted.Id).Count() == 0),Arg<string>.Is.Equal("system/lists")))
+            session.Expect(x => x.Store(Arg<ListsStore>.Matches(m => m.Lists.Where(p=> p.Id == listToBeDeleted.Id).Count() == 0),Arg<string>.Is.Equal("system/lists")))
                 .Repeat
                 .Once();
 
@@ -133,16 +133,16 @@ namespace SpeedyMailer.Core.Tests.Lists
             var listToBeUpdated = originalList;
             listToBeUpdated.Name = "new Name";
 
-            var listCollection = new ListCollection()
+            var listCollection = new ListsStore()
             {
 
                 Lists = new List<ListDescriptor>() { originalList }
             };
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Stub(x => x.Load<ListCollection>("system/lists")).Return(listCollection);
+            session.Stub(x => x.Load<ListsStore>("system/lists")).Return(listCollection);
 
-            session.Expect(x => x.Store(Arg<ListCollection>.Matches(m => m.Lists.Contains(listToBeUpdated)), Arg<string>.Is.Equal("system/lists")))
+            session.Expect(x => x.Store(Arg<ListsStore>.Matches(m => m.Lists.Contains(listToBeUpdated)), Arg<string>.Is.Equal("system/lists")))
                 .Repeat
                 .Once();
 

@@ -102,10 +102,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Emails\EmailPoolTests.cs" />
     <Compile Include="Lists\ListRepositoryTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
-    <Compile Include="Emails\EmailCSVParserTests.cs" />
-    <Compile Include="Emails\EmailsRepositoryTests.cs" />
+    <Compile Include="Contacts\ContactCSVParserTests.cs" />
+    <Compile Include="Contacts\ContactsRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

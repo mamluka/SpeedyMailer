@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Core.Tests.Maps
@@ -8,7 +8,7 @@ namespace SpeedyMailer.Core.Tests.Maps
     {
         public void CreateMaps()
         {
-            Mapper.CreateMap<EmailFromCSVRow, Email>()
+            Mapper.CreateMap<ContactFromCSVRow, Contact>()
                 .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
             ;
         }

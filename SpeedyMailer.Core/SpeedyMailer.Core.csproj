@@ -84,14 +84,17 @@
   <ItemGroup>
     <Compile Include="Automapper\Maps.cs" />
     <Compile Include="Core\IReportResults.cs" />
+    <Compile Include="Contacts\Contact.cs" />
+    <Compile Include="Contacts\ContactsCSVParser.cs" />
+    <Compile Include="Contacts\ContactFromCSVRow.cs" />
+    <Compile Include="Contacts\ContactsRepository.cs" />
+    <Compile Include="Contacts\IContactsCSVParser.cs" />
+    <Compile Include="Contacts\IContactsRepository.cs" />
+    <Compile Include="Contacts\ContactCSVParserResults.cs" />
+    <Compile Include="Contacts\InitialContactsBatchOptions.cs" />
+    <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\Email.cs" />
-    <Compile Include="Emails\EmailCSVParser.cs" />
-    <Compile Include="Emails\EmailFromCSVRow.cs" />
-    <Compile Include="Emails\EmailsRepository.cs" />
-    <Compile Include="Emails\IEmailCSVParser.cs" />
-    <Compile Include="Emails\IEmailsRepository.cs" />
-    <Compile Include="Emails\EmailCSVParserResults.cs" />
-    <Compile Include="Emails\InitialEmailBatchOptions.cs" />
+    <Compile Include="Emails\IEmailPool.cs" />
     <Compile Include="Lists\IListRepository.cs" />
     <Compile Include="Lists\ListDescriptor.cs" />
     <Compile Include="Lists\ListRepository.cs" />

@@ -12,14 +12,14 @@ namespace SpeedyMailer.Core.Lists
             this.store = store;
         }
 
-        public ListCollection Lists()
+        public ListsStore Lists()
         {
             using (var session = store.OpenSession())
             {
-                var list =  session.Load<ListCollection>("system/lists");
+                var list =  session.Load<ListsStore>("system/lists");
                 if (list == null)
                 {
-                    return new ListCollection();
+                    return new ListsStore();
                 }
                 return list;
             }
@@ -58,11 +58,11 @@ namespace SpeedyMailer.Core.Lists
         }
     }
 
-    public class ListCollection
+    public class ListsStore
     {
         public List<ListDescriptor> Lists { get; set; }
 
-        public ListCollection()
+        public ListsStore()
         {
             Lists = new List<ListDescriptor>();
         }

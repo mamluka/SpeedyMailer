@@ -2,7 +2,7 @@ using AutoMapper;
 using Raven.Client;
 using SpeedyMailer.ControlRoom.Website.Core.Builders;
 using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
-using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Lists;
 using SpeedyMailer.Core.NinjectProvider;
 
@@ -56,10 +56,10 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
         private static void RegisterServices(IKernel kernel)
         {
             kernel
-                .Bind<IEmailCSVParser>().To<EmailCSVParser>();
+                .Bind<IContactsCSVParser>().To<ContactsCSVParser>();
 
             kernel
-                .Bind<IViewModelBuilderWithBuildParameters<UploadListViewModel, IEmailCSVParser>>()
+                .Bind<IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>>()
                 .To<UploadListResultsViewModelBuilder>();
 
             kernel
@@ -67,12 +67,17 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
                 .To<UploadListViewModelBuilder>();
 
             kernel
+               .Bind<IViewModelBuilder<ComposeViewModel>>()
+               .To<ComposeViewModelBuilder>();
+
+            kernel
                 .Bind<IListRepository>()
                 .To<ListRepository>();
 
             kernel
-                .Bind<IEmailsRepository>()
-                .To<EmailsRepository>();
+                .Bind<IContactsRepository>()
+                .To<ContactsRepository>();
+
             kernel.Bind<IDocumentStore>().ToProvider<RavenDocumentStoreProvider>();
             kernel.Bind<IMappingEngine>().ToConstant(Mapper.Engine);
         }        

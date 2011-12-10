@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using AutoMapper;
 using Bootstrap.AutoMapper;
-using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Contacts;
 
 namespace SpeedyMailer.Core.Automapper
 {
@@ -12,7 +12,7 @@ namespace SpeedyMailer.Core.Automapper
     {
         public void CreateMap(IProfileExpression mapper)
         {
-            Mapper.CreateMap<EmailFromCSVRow, Email>()
+            Mapper.CreateMap<ContactFromCSVRow, Contact>()
                 .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
 
   
