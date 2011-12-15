@@ -48,7 +48,7 @@ namespace SpeedyMailer.Core.Contacts
         {
             using (var session = store.OpenSession())
             {
-
+                return null;
             }
         }
     }

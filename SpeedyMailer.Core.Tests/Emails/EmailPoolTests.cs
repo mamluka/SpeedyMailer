@@ -59,7 +59,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         {
             using (var session = store.OpenSession())
             {
-                return null;
+               
             }
         }
     }
