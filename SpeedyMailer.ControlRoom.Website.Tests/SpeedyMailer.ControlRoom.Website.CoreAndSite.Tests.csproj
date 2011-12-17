@@ -91,7 +91,6 @@
     <Compile Include="Contacts\UploadListResultsViewModelBuilderTests.cs" />
     <Compile Include="Contacts\UploadListViewModelBuilderTests.cs" />
     <Compile Include="Extentions.cs" />
-    <Compile Include="IMockedComponentBuilder.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

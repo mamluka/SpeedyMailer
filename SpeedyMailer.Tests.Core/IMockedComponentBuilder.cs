@@ -1,4 +1,4 @@
-namespace SpeedyMailer.ControlRoom.Website.Tests
+namespace SpeedyMailer.Tests.Core
 {
     public  interface IMockedComponentBuilder<out T>
     {

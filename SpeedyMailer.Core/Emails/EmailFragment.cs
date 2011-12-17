@@ -2,12 +2,13 @@ using System.Collections.Generic;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public class Email
+    public class EmailFragment
     {
-        public string Id { get; set; }
         public string Body { get; set; }
-        public List<string> ToLists { get; set; }
+        public List<string> Recipients { get; set; }
         public string Subject { get; set; }
-        public List<string> Deals { get; set; }
+        public string Id { get; set; }
+
+        public bool Locked { get; set; }
     }
 }

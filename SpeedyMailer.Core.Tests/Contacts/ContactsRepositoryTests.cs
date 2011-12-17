@@ -80,24 +80,7 @@ namespace SpeedyMailer.Core.Tests.Contacts
 
         }
 
-        [Test]
-        public void GetContactsByListID_ShouldRetrieveTheContactFromTheStoreUsingAnIndex()
-        {
-            //Arrange
-            var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Store(Arg<List<Contact>>.Is.Anything)).Repeat.Times(10);
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
-
-            var contactsRep = new ContactsRepository(store);
-            var whichPage = 1;
-            var howManyPerPage = 100;
-            //Act
-            var contactsList = contactsRep.GetContactsByListID("listid", whichPage, howManyPerPage);
-            //Assert
-            
-
-        }
-
+       
       
     }
 }

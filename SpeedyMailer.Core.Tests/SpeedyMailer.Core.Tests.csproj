@@ -104,6 +104,7 @@
   <ItemGroup>
     <Compile Include="Emails\EmailPoolTests.cs" />
     <Compile Include="Emails\EmailRepositoryTests.cs" />
+    <Compile Include="Emails\EmailSourceParserTests.cs" />
     <Compile Include="Lists\ListRepositoryTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Contacts\ContactCSVParserTests.cs" />

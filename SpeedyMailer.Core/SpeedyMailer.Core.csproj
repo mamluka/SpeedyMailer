@@ -46,6 +46,9 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.1.1.0\lib\CsvHelper.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack">
+      <HintPath>..\libs\HTMLAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="NConfig">
       <HintPath>..\packages\NConfig.1.0.8\lib\Net40\NConfig.dll</HintPath>
     </Reference>
@@ -94,7 +97,12 @@
     <Compile Include="Contacts\InitialContactsBatchOptions.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\Email.cs" />
+    <Compile Include="Emails\EmailFragment.cs" />
+    <Compile Include="Emails\EmailPool.cs" />
+    <Compile Include="Emails\EmailRepository.cs" />
+    <Compile Include="Emails\EmailSourceParser.cs" />
     <Compile Include="Emails\IEmailPool.cs" />
+    <Compile Include="Emails\IEmailSourceParser.cs" />
     <Compile Include="Lists\IListRepository.cs" />
     <Compile Include="Lists\ListDescriptor.cs" />
     <Compile Include="Lists\ListRepository.cs" />

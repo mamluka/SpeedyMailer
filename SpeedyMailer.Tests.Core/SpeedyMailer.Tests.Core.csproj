@@ -100,7 +100,9 @@
   <ItemGroup>
     <Compile Include="AutoMapperAndFixtureBase.cs" />
     <Compile Include="DB\DocumentStoreFactory.cs" />
+    <Compile Include="Emails\EmailSourceFactory.cs" />
     <Compile Include="IAutoMapperMaps.cs" />
+    <Compile Include="IMockedComponentBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -32,6 +32,7 @@ namespace SpeedyMailer.Core.Lists
             using (var session = store.OpenSession())
             {
                 session.Store(listCollection,"system/lists");
+                session.SaveChanges();
             }
 
         }
@@ -43,6 +44,7 @@ namespace SpeedyMailer.Core.Lists
             using (var session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
+                session.SaveChanges();
             }
         }
 
@@ -54,6 +56,7 @@ namespace SpeedyMailer.Core.Lists
             using (var session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
+                session.SaveChanges();
             }
         }
     }

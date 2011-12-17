@@ -12,6 +12,7 @@ using SpeedyMailer.Core.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Tests.Core.Emails;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {
@@ -29,7 +30,10 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
-            var emailRepository = new EmailRepository(store);
+            var componentBuilder = new EmailRepositoryBuilder();
+            componentBuilder.DocumentStore = store;
+
+            var emailRepository = componentBuilder.Build();
             //Act
             emailRepository.Store(email);
             //Assert
@@ -48,31 +52,66 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
-            var emailRepository = new EmailRepository(store);
+            var componentBuilder = new EmailRepositoryBuilder();
+            componentBuilder.DocumentStore = store;
+
+            var emailRepository = componentBuilder.Build();
             //Act
             emailRepository.Store(email);
             //Assert
             session.VerifyAllExpectations();
         }
+
+        [Test]
+        public void Store_ShouldParseTheDealsInTheEmailBody()
+        {
+            //Arrange
+            var emailBody = EmailSourceFactory.StandardEmail();
+
+            var email = Fixture.Build<Email>().With(x=> x.Body,emailBody).CreateAnonymous();
+
+            var session = MockRepository.GenerateMock<IDocumentSession>();
+            session.Expect(
+                x => x.Store(Arg<Email>.Matches(m => m.Deals.Any(p => p == "http://www.usocreports.com/switch/aladdin")
+                                 ))).Repeat.Once();
+
+            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+
+            var parser = MockRepository.GenerateStub<IEmailSourceParser>();
+            parser.Stub(x => x.Deals(Arg<string>.Is.Anything)).Return(new List<string>
+                                                                          {"http://www.usocreports.com/switch/aladdin"});
+
+            var componentBuilder = new EmailRepositoryBuilder();
+            componentBuilder.DocumentStore = store;
+            componentBuilder.Parser = parser;
+
+            var emailRepository = componentBuilder.Build();
+            //Act
+            emailRepository.Store(email);
+            //Assert
+            session.VerifyAllExpectations();
+
+        }
     }
 
-    public class EmailRepository
+    class EmailRepositoryBuilder:IMockedComponentBuilder<EmailRepository>
     {
-        private readonly IDocumentStore store;
+        public IDocumentStore DocumentStore;
+        public IEmailSourceParser Parser;
 
-        public EmailRepository(IDocumentStore store)
+        public EmailRepositoryBuilder()
         {
-            this.store = store;
-            
+            var session = MockRepository.GenerateStub<IDocumentSession>();
+            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+
+            DocumentStore = store;
+
+            Parser = MockRepository.GenerateStub<IEmailSourceParser>();
         }
 
-        public void Store(Email email)
+        public EmailRepository Build()
         {
-            using (var session = store.OpenSession())
-            {
-                email.Id = String.Empty;
-                session.Store(email);
-            }
+            return new EmailRepository(DocumentStore,Parser);
         }
     }
 }
