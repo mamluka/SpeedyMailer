@@ -103,6 +103,7 @@
     <Compile Include="Emails\EmailSourceParser.cs" />
     <Compile Include="Emails\IEmailPool.cs" />
     <Compile Include="Emails\IEmailSourceParser.cs" />
+    <Compile Include="Helpers\IUrlCreator.cs" />
     <Compile Include="Lists\IListRepository.cs" />
     <Compile Include="Lists\ListDescriptor.cs" />
     <Compile Include="Lists\ListRepository.cs" />

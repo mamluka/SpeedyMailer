@@ -56,9 +56,11 @@
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.1.6.0\Lib\net40\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="MvcContrib.TestHelper">
       <HintPath>..\packages\MvcContrib.Mvc3.TestHelper-ci.3.0.90.0\lib\MvcContrib.TestHelper.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.2.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.2.5.10.11092\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -91,6 +93,7 @@
     <Compile Include="Contacts\UploadListResultsViewModelBuilderTests.cs" />
     <Compile Include="Contacts\UploadListViewModelBuilderTests.cs" />
     <Compile Include="Extentions.cs" />
+    <Compile Include="Helpers\UrlCreatorTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -123,6 +126,10 @@
       <Project>{F40597C3-C6F2-486A-A815-EFAC74344E0F}</Project>
       <Name>SpeedyMailer.ControlRoom.Website</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Core.Tests\SpeedyMailer.Core.Tests.csproj">
+      <Project>{C04698CD-7517-496C-A5E1-66A3AC7E34C4}</Project>
+      <Name>SpeedyMailer.Core.Tests</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
@@ -132,9 +139,7 @@
       <Name>SpeedyMailer.Tests.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Core\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

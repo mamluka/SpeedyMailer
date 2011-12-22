@@ -99,12 +99,14 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Emails\EmailPoolTests.cs" />
     <Compile Include="Emails\EmailRepositoryTests.cs" />
     <Compile Include="Emails\EmailSourceParserTests.cs" />
+    <Compile Include="Emails\EmailSourceWeaverTests.cs" />
     <Compile Include="Lists\ListRepositoryTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Contacts\ContactCSVParserTests.cs" />
