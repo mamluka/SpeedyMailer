@@ -96,11 +96,13 @@
     <Compile Include="Contacts\ContactCSVParserResults.cs" />
     <Compile Include="Contacts\InitialContactsBatchOptions.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
+    <Compile Include="Emails\DealURLJsonObject.cs" />
     <Compile Include="Emails\Email.cs" />
     <Compile Include="Emails\EmailFragment.cs" />
     <Compile Include="Emails\EmailPool.cs" />
     <Compile Include="Emails\EmailRepository.cs" />
     <Compile Include="Emails\EmailSourceParser.cs" />
+    <Compile Include="Emails\EmailSourceWeaver.cs" />
     <Compile Include="Emails\IEmailPool.cs" />
     <Compile Include="Emails\IEmailSourceParser.cs" />
     <Compile Include="Helpers\IUrlCreator.cs" />

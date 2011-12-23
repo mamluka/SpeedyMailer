@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Rhino.Mocks;
 using FluentAssertions;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Tests.Maps;
 using SpeedyMailer.Tests.Core;
@@ -66,6 +67,35 @@ namespace SpeedyMailer.Core.Tests.Emails
 
         }
 
+        [Test]
+        public void WeaveDeals_ShouldReplaceLinksWithDealLinks()
+        {
+            //Arrange
+
+            var dealObject = Fixture.CreateAnonymous<DealURLJsonObject>();
+
+            var bodySource = EmailSourceFactory.StandardEmail();
+            var urlCreator = MockRepository.GenerateStub<IUrlCreator>();
+            urlCreator.Stub(
+                x => x.UrlByRouteWithParameters(Arg<string>.Is.Anything, Arg<RouteValueDictionary>.Is.Anything)).Return(
+                    "replaced");
+
+            var weaver = new EmailSourceWeaver(urlCreator);
+            //Act
+            var newBody = weaver.WeaveDeals(bodySource, dealObject);
+            var dealList = FindAllDealLinksInAnEmailBody(newBody);
+            //Assert
+            dealList.Should().OnlyContain(x => x == "replaced");
+
+        }
+
+        private List<string> FindAllDealLinksInAnEmailBody(string body)
+        {
+            var parser = new EmailSourceParser();
+            //Act
+            return parser.Deals(body);
+        }
+
         private string SerializeToBase64(DealURLJsonObject dealObject)
         {
             var jsonObject = JsonConvert.SerializeObject(dealObject);
@@ -94,31 +124,5 @@ namespace SpeedyMailer.Core.Tests.Emails
     public class Configurations
     {
         public string SystemBaseDomainUrl { get; set; }
-    }
-
-    public class DealURLJsonObject
-    {
-        public string Email { get; set; }
-        public string Contact { get; set; }
-    }
-
-    public class EmailSourceWeaver
-    {
-        private readonly IUrlCreator urlCreator;
-
-        public EmailSourceWeaver(IUrlCreator urlCreator)
-        {
-            this.urlCreator = urlCreator;
-        }
-
-        public string WeaveDeals(string bodySource, DealURLJsonObject dealObject)
-        {
-            var jsonBase64String = urlCreator.SerializeToBase64(dealObject);
-            var url = urlCreator.UrlByRouteWithParameters("Deals", new RouteValueDictionary()
-                                                                       {
-                                                                           {"JsonObject",jsonBase64String}
-                                                                       });
-            return bodySource;
-        }
     }
 }
