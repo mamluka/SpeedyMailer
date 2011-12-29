@@ -26,7 +26,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         public void WeaveDeals_ShouldCallTheUrlCreatorWithTheTheDealsRoute()
         {
             //Arrange
-            var dealObject = Fixture.CreateAnonymous<DealURLJsonObject>();
+            var dealObject = Fixture.CreateAnonymous<LeadIdentity>();
             var bodySource = EmailSourceFactory.StandardEmail();
 
             var urlCreator = MockRepository.GenerateMock<IUrlCreator>();
@@ -46,15 +46,14 @@ namespace SpeedyMailer.Core.Tests.Emails
         public void WeaveDeals_ShouldCallTheUrlCreatorWithTheJsobObjectInBase64()
         {
             //Arrange
-            var dealObject = Fixture.CreateAnonymous<DealURLJsonObject>();
+            var dealObject = Fixture.CreateAnonymous<LeadIdentity>();
 
-            var jsonBase64String = SerializeToBase64(dealObject);
+            var jsonBase64String = UrlCreator.SerializeToBase64(dealObject);
 
 
             var bodySource = EmailSourceFactory.StandardEmail();
 
             var urlCreator = MockRepository.GenerateMock<IUrlCreator>();
-            urlCreator.Stub(x => x.SerializeToBase64(Arg<string>.Is.Anything)).Return(jsonBase64String);
             urlCreator.Expect(
                 x => x.UrlByRouteWithParameters(Arg<string>.Is.Anything, Arg<RouteValueDictionary>.Matches(m => (string) m["JsonObject"] == jsonBase64String))).
                 Repeat.Once().Return("http://www.domain.com/Deals/Object");
@@ -72,7 +71,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         {
             //Arrange
 
-            var dealObject = Fixture.CreateAnonymous<DealURLJsonObject>();
+            var dealObject = Fixture.CreateAnonymous<LeadIdentity>();
 
             var bodySource = EmailSourceFactory.StandardEmail();
             var urlCreator = MockRepository.GenerateStub<IUrlCreator>();
@@ -96,12 +95,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             return parser.Deals(body);
         }
 
-        private string SerializeToBase64(DealURLJsonObject dealObject)
-        {
-            var jsonObject = JsonConvert.SerializeObject(dealObject);
-
-            return EncodeTo64(jsonObject);
-        }
+       
 
         static public string EncodeTo64(string toEncode)
         {
@@ -114,15 +108,5 @@ namespace SpeedyMailer.Core.Tests.Emails
 
 
         }
-    }
-
-    public interface IConfigurationManager
-    {
-        Configurations Configurations { get; }
-    }
-
-    public class Configurations
-    {
-        public string SystemBaseDomainUrl { get; set; }
     }
 }

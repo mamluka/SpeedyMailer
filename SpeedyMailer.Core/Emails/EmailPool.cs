@@ -3,6 +3,7 @@ using System.Linq;
 using AutoMapper;
 using Raven.Client;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.Helpers;
 
 namespace SpeedyMailer.Core.Emails
 {
@@ -10,12 +11,14 @@ namespace SpeedyMailer.Core.Emails
     {
         private readonly IDocumentStore store;
         private readonly IContactsRepository contactsRepository;
+        private readonly IUrlCreator urlCreator;
         private readonly IMappingEngine mapper;
 
-        public EmailPool(IDocumentStore store, IContactsRepository contactsRepository, IMappingEngine mapper)
+        public EmailPool(IDocumentStore store, IContactsRepository contactsRepository, IUrlCreator urlCreator, IMappingEngine mapper)
         {
             this.store = store;
             this.contactsRepository = contactsRepository;
+            this.urlCreator = urlCreator;
             this.mapper = mapper;
         }
 
@@ -28,20 +31,44 @@ namespace SpeedyMailer.Core.Emails
                 var totalContacts = 0;
                 var totalFragments = 0;
 
+                var unsubscribeTemplate = session.Load<EmailBodyElements>("system/templates");
+
                 foreach (var list in email.ToLists)
                 {
                     var pageNumber = 1;
                     
                     while (true)
                     {
-                        var listFragment = contactsRepository.GetContactsByListID(list, pageNumber, 1000);
+                        var listFragment = contactsRepository.GetContactsByListId(list, pageNumber, 1000);
                         var currentListFragmentCount = listFragment.Count();
                         if ( currentListFragmentCount== 0)
                         {
                             break;
                         }
 
-                        emailFragment.Recipients = (List<string>)listFragment;
+
+                        emailFragment.UnsubscribeTemplate = unsubscribeTemplate.Unsubscribe ?? "";
+
+                        emailFragment.ExtendedRecipients = listFragment.Select(x =>
+                                                                               new ExtendedRecipient()
+                                                                                   {
+                                                                                       Address = x.Address,
+                                                                                       Name = x.Name,
+                                                                                       DealUrl = urlCreator.UrlByRouteWithJsonObject("Deals",new LeadIdentity()
+                                                                                                                                                 {
+                                                                                                                                                     Address = x.Address,
+                                                                                                                                                     EmailId = email.Id
+                                                                                                                                                 }),
+                                                                                       UnsubscribeUrl = urlCreator.UrlByRouteWithJsonObject("Unsubscribe", new LeadIdentity()
+                                                                                       {
+                                                                                           Address = x.Address,
+                                                                                           EmailId = email.Id
+                                                                                       })
+
+                                                                                       
+                                                                                   }
+                            ).ToList();
+
 
                         session.Store(emailFragment);
 

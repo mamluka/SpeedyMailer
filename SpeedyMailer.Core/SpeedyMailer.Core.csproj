@@ -78,6 +78,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -96,7 +97,8 @@
     <Compile Include="Contacts\ContactCSVParserResults.cs" />
     <Compile Include="Contacts\InitialContactsBatchOptions.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
-    <Compile Include="Emails\DealURLJsonObject.cs" />
+    <Compile Include="Emails\EmailBodyElements.cs" />
+    <Compile Include="Emails\LeadIdentity.cs" />
     <Compile Include="Emails\Email.cs" />
     <Compile Include="Emails\EmailFragment.cs" />
     <Compile Include="Emails\EmailPool.cs" />
@@ -105,7 +107,10 @@
     <Compile Include="Emails\EmailSourceWeaver.cs" />
     <Compile Include="Emails\IEmailPool.cs" />
     <Compile Include="Emails\IEmailSourceParser.cs" />
+    <Compile Include="Helpers\Configurations.cs" />
+    <Compile Include="Helpers\IConfigurationManager.cs" />
     <Compile Include="Helpers\IUrlCreator.cs" />
+    <Compile Include="Helpers\UrlCreator.cs" />
     <Compile Include="Lists\IListRepository.cs" />
     <Compile Include="Lists\ListDescriptor.cs" />
     <Compile Include="Lists\ListRepository.cs" />

@@ -6,6 +6,6 @@ namespace SpeedyMailer.Core.Contacts
     {
         void Store(Contact contact);
         void Store(List<Contact> emails);
-        IEnumerable<string> GetContactsByListID(string listid, int whichPage, int howManyPerPage);
+        IEnumerable<Contact> GetContactsByListId(string listid, int whichPage, int howManyPerPage);
     }
 }

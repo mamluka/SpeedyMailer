@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
-using SpeedyMailer.Core.Contacts;
-using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.Tests.Emails;
 using SpeedyMailer.Tests.Core;
 
-namespace SpeedyMailer.Core.Tests.Maps
+namespace SpeedyMailer.EmailPoolMaster.Tests.Maps
 {
     public class AutoMapperMaps:IAutoMapperMaps
     {

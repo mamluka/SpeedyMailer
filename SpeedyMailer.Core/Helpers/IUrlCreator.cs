@@ -6,6 +6,6 @@ namespace SpeedyMailer.Core.Helpers
     {
         string UrlByRoute(string routeName);
         string UrlByRouteWithParameters(string routeName,RouteValueDictionary dictionary);
-        string SerializeToBase64(dynamic whatToEncode);
+        string UrlByRouteWithJsonObject(string routeName, dynamic jsonObject);
     }
 }

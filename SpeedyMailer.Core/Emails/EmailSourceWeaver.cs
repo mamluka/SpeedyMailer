@@ -15,9 +15,9 @@ namespace SpeedyMailer.Core.Emails
             this.urlCreator = urlCreator;
         }
 
-        public string WeaveDeals(string bodySource, DealURLJsonObject dealObject)
+        public string WeaveDeals(string bodySource, LeadIdentity dealObject)
         {
-            var jsonBase64String = urlCreator.SerializeToBase64(dealObject);
+            var jsonBase64String = UrlCreator.SerializeToBase64(dealObject);
             var url = urlCreator.UrlByRouteWithParameters("Deals", new RouteValueDictionary()
                                                                        {
                                                                            {"JsonObject", jsonBase64String}

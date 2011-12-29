@@ -44,13 +44,14 @@ namespace SpeedyMailer.Core.Contacts
             }
         }
 
-        public IEnumerable<string> GetContactsByListID(string listid, int whichPage, int howManyPerPage)
+        public IEnumerable<Contact> GetContactsByListId(string listid, int whichPage, int howManyPerPage)
         {
             using (var session = store.OpenSession())
             {
                 return session.Query<Contact>().Where(x => x.MemberOf.Any(m => m == listid)).Skip((whichPage - 1)*
-                                                                                           howManyPerPage).Take(
-                                                                                               howManyPerPage).ToList().Select(p=> p.Address);
+                                                                                                  howManyPerPage).Take(
+                                                                                                      howManyPerPage).
+                    ToList();
             }
         }
     }

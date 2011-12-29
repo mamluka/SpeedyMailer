@@ -17,5 +17,12 @@ namespace SpeedyMailer.Tests.Core.DB
             store.Stub(x => x.OpenSession()).Return(session);
             return store;
         }
+
+        public static IDocumentStore CreateDocumentStoreWithStubSession()
+        {
+            var session = MockRepository.GenerateStub<IDocumentSession>();
+
+           return CreateDocumentStoreWithSession(session);
+        }
     }
 }
