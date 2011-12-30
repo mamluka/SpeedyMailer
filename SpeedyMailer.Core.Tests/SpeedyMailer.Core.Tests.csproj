@@ -108,6 +108,7 @@
     <Compile Include="Emails\EmailSourceParserTests.cs" />
     <Compile Include="Emails\EmailSourceWeaverTests.cs" />
     <Compile Include="Lists\ListRepositoryTests.cs" />
+    <Compile Include="MailDrones\MailDroneRepositoryTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Contacts\ContactCSVParserTests.cs" />
     <Compile Include="Contacts\ContactsRepositoryTests.cs" />
@@ -137,6 +138,10 @@
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.EmailPoolMaster.Tests\SpeedyMailer.EmailPoolMaster.Tests.csproj">
+      <Project>{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}</Project>
+      <Name>SpeedyMailer.EmailPoolMaster.Tests</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>

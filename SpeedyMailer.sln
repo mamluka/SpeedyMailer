@@ -16,11 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.EmailPoolMaster", "SpeedyMailer.EmailPoolMaster\SpeedyMailer.EmailPoolMaster.csproj", "{88070415-7AA8-4C82-BC2D-983BB8116FF7}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0E13C64B-1179-4BFE-8E0F-B738680C52D5}"
-	ProjectSection(SolutionItems) = preProject
-		Local.testsettings = Local.testsettings
-		SpeedyMailer.vsmdi = SpeedyMailer.vsmdi
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.EmailPoolMaster.Tests", "SpeedyMailer.EmailPoolMaster.Tests\SpeedyMailer.EmailPoolMaster.Tests.csproj", "{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}"
 EndProject
