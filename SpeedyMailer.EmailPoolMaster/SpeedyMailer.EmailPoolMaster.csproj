@@ -63,6 +63,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper\MyNinjectBootstrapper.cs" />
+    <Compile Include="MailDrones\FragmenRequest.cs" />
+    <Compile Include="MailDrones\FragmentOporation.cs" />
+    <Compile Include="MailDrones\FragmentOpotationType.cs" />
+    <Compile Include="MailDrones\IEMailOporations.cs" />
     <Compile Include="MailDrones\IMailDroneService.cs" />
     <Compile Include="Pool\PoolModule.cs" />
     <Compile Include="Program.cs" />

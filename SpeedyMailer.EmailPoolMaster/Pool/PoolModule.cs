@@ -5,6 +5,7 @@ using System.Text;
 using Nancy;
 using Nancy.Responses;
 using RestSharp;
+using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using SpeedyMailer.EmailPoolMaster.MailDrones;
 using Nancy.ModelBinding;
@@ -15,7 +16,7 @@ namespace SpeedyMailer.EmailPoolMaster.Pool
     {
 
 
-        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService) : base("/pool")
+        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IEMailOporations eMailOporations,IEmailPool emailPool) : base("/pool")
         {
             Post["/update"] = x =>
                                  {
@@ -34,27 +35,15 @@ namespace SpeedyMailer.EmailPoolMaster.Pool
             Get["/retrievefragment"] = x =>
                                           {
                                               var model =  this.Bind<FragmenRequest>();
+                                              if (model.FragmentOporation != null)
+                                              {
+                                                 eMailOporations.Preform(model.FragmentOporation);
+                                              }
+                                              var email = emailPool.PopEmail();
                                               return Response.AsJson(model);
                                           };
         }
 
         
-    }
-
-    public class FragmenRequest
-    {
-        public MailDrone MailDrone { get; set; }
-        public FragmentOporation FragmentOporation { get; set; }
-    }
-
-    public class FragmentOporation
-    {
-        public string FragmentId { get; set; }
-        public FragmentOpotationType FragmentOpotationType { get; set; }
-    }
-
-    public enum FragmentOpotationType
-    {
-        SetAsCompleted
     }
 }

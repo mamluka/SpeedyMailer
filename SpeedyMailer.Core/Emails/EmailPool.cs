@@ -90,5 +90,10 @@ namespace SpeedyMailer.Core.Emails
                            };
             }
         }
+
+        public Email PopEmail()
+        {
+            return null;
+        }
     }
 }
