@@ -33,7 +33,7 @@ namespace SpeedyMailer.EmailPoolMaster.Pool
 
             Get["/retrievefragment"] = x =>
                                           {
-                                              var model =  this.Bind<FragmenPoolRequest>();
+                                              var model =  this.Bind<FragmenRequest>();
                                               return Response.AsJson(model);
                                           };
         }
@@ -41,9 +41,20 @@ namespace SpeedyMailer.EmailPoolMaster.Pool
         
     }
 
-    public class FragmenPoolRequest
+    public class FragmenRequest
     {
         public MailDrone MailDrone { get; set; }
-        public bool CompletedFragmentId { get; set; }
+        public FragmentOporation FragmentOporation { get; set; }
+    }
+
+    public class FragmentOporation
+    {
+        public string FragmentId { get; set; }
+        public FragmentOpotationType FragmentOpotationType { get; set; }
+    }
+
+    public enum FragmentOpotationType
+    {
+        SetAsCompleted
     }
 }

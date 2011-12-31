@@ -117,7 +117,7 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
         {
             //Arrange
 
-            var fragment = Fixture.CreateAnonymous<FragmenPoolRequest>();
+            var fragment = Fixture.CreateAnonymous<FragmenRequest>();
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
             
