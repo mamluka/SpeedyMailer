@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tests.Emails;
@@ -16,6 +17,7 @@ namespace SpeedyMailer.Core.Tests.Maps
             Mapper.CreateMap<Email, EmailFragment>()
                 .ForMember(x=> x.ExtendedRecipients,opt=>opt.Ignore())
                 .ForMember(x=> x.Locked,opt=>opt.UseValue(false))
+                .ForMember(x => x.CreateDate, opt => opt.UseValue(DateTime.Now.Ticks))
                 ;
         }
     }

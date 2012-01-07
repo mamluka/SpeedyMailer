@@ -95,6 +95,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Emails\EmailOporationsTests.cs" />
     <Compile Include="MailDrones\MailDroneServiceTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Pool\PoolNancyModuleTests.cs" />

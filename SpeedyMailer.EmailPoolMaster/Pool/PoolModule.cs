@@ -16,11 +16,11 @@ namespace SpeedyMailer.EmailPoolMaster.Pool
     {
 
 
-        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IEMailOporations eMailOporations,IEmailPool emailPool) : base("/pool")
+        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IEMailOporations emailOporations,IEmailPool emailPool) : base("/pool")
         {
             Post["/update"] = x =>
                                  {
-                                     var drones = mailDroneRepository.SleepingDrones();
+                                     var drones = mailDroneRepository.CurrentlySleepingDrones();
                                      foreach (var mailDrone in drones)
                                      {
                                          var status = mailDroneService.WakeUp(mailDrone);
@@ -33,15 +33,31 @@ namespace SpeedyMailer.EmailPoolMaster.Pool
 
 
             Get["/retrievefragment"] = x =>
-                                          {
-                                              var model =  this.Bind<FragmenRequest>();
-                                              if (model.FragmentOporation != null)
-                                              {
-                                                 eMailOporations.Preform(model.FragmentOporation);
-                                              }
-                                              var email = emailPool.PopEmail();
-                                              return Response.AsJson(model);
-                                          };
+                                           {
+                                               var model = this.Bind<FragmenRequest>();
+                                               if (model.PoolSideOporation != null)
+                                               {
+                                                   emailOporations.Preform(model.PoolSideOporation);
+                                               }
+                                               var emailFragment = emailPool.PopEmail();
+
+                                               var fragmentResponse = new FragmentResponse
+                                                                          {EmailFragment = emailFragment};
+
+                                               if (emailFragment == null)
+                                               {
+                                                   var mailDrone = model.MailDrone;
+                                                   mailDrone.Status = DroneStatus.Asleep;
+                                                   mailDroneRepository.Update(mailDrone);
+
+                                                   fragmentResponse.DroneSideOporations =
+                                                       new List<DroneSideOporationBase>() {new PutDroneToSleep()};
+
+
+                                               }
+
+                                               return Response.AsJson(fragmentResponse);
+                                           };
         }
 
         

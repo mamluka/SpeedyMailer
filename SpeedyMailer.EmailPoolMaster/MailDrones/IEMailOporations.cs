@@ -2,6 +2,6 @@ namespace SpeedyMailer.EmailPoolMaster.MailDrones
 {
     public interface IEMailOporations
     {
-        void Preform(FragmentOporation fragmentOporation);
+        void Preform(PoolSideOporationBase poolSideOporation);
     }
 }

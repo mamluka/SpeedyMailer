@@ -40,7 +40,7 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
             sleepingDrones.AddMany(() => Fixture.CreateAnonymous<MailDrone>(),3);
 
             var mailDroneRep = MockRepository.GenerateMock<IMailDroneRepository>();
-            mailDroneRep.Expect(x => x.SleepingDrones()).Repeat.Once().Return(sleepingDrones);
+            mailDroneRep.Expect(x => x.CurrentlySleepingDrones()).Repeat.Once().Return(sleepingDrones);
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
             bootstrapper.MailDroneRepository = mailDroneRep;
@@ -63,7 +63,7 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
             sleepingDrones.AddMany(() => Fixture.CreateAnonymous<MailDrone>(), 3);
 
             var mailDroneRep = MockRepository.GenerateStub<IMailDroneRepository>();
-            mailDroneRep.Stub(x => x.SleepingDrones()).Repeat.Once().Return(sleepingDrones);
+            mailDroneRep.Stub(x => x.CurrentlySleepingDrones()).Repeat.Once().Return(sleepingDrones);
 
             var droneService = MockRepository.GenerateMock<IMailDroneService>();
             droneService.Expect(x => x.WakeUp(Arg<MailDrone>.Matches(m =>
@@ -92,7 +92,7 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
 
             var mailDroneRep = MockRepository.GenerateMock<IMailDroneRepository>();
 
-            mailDroneRep.Stub(x => x.SleepingDrones()).Repeat.Once().Return(sleepingDrones);
+            mailDroneRep.Stub(x => x.CurrentlySleepingDrones()).Repeat.Once().Return(sleepingDrones);
 
             mailDroneRep.Expect(x => x.Update(Arg<MailDrone>.Is.Anything))
                 .Repeat
@@ -120,7 +120,7 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
 
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
             var emailOporations = MockRepository.GenerateMock<IEMailOporations>();
-            emailOporations.Expect(x => x.Preform(Arg<FragmentOporation>.Matches(m=> m.FragmentId == fragment.FragmentOporation.FragmentId))).Repeat.Once();
+            emailOporations.Expect(x => x.Preform(Arg<PoolSideOporationBase>.Matches(m => m.FragmentId == fragment.PoolSideOporation.FragmentId))).Repeat.Once();
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
             bootstrapper.EMailOporations = emailOporations;
@@ -140,7 +140,7 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
 
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
             var emailPool = MockRepository.GenerateMock<IEmailPool>();
-            emailPool.Expect(x => x.PopEmail()).Repeat.Once().Return(new Email());
+            emailPool.Expect(x => x.PopEmail()).Repeat.Once().Return(new EmailFragment());
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
             bootstrapper.EmailPool = emailPool;
@@ -152,6 +152,70 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
             //Assert
             emailPool.VerifyAllExpectations();
         }
+
+        [Test]
+        public void RetrieveFragment_ShouldUpdateTheDroneRepWithTheCurrentDroneAsAsleepIfWeDontHaveAnyEmailFragments()
+        {
+            //Arrange
+            var fragment = Fixture.CreateAnonymous<FragmenRequest>();
+
+            var emailPool = MockRepository.GenerateStub<IEmailPool>();
+            emailPool.Stub(x => x.PopEmail()).Repeat.Once().Return(null);
+
+            var mailDroneRep = MockRepository.GenerateMock<IMailDroneRepository>();
+            mailDroneRep.Expect(x => x.Update(Arg<MailDrone>.Matches(m => 
+                                                                    m.Status == DroneStatus.Asleep
+                                                  ))).Repeat.Once();
+
+            var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
+            bootstrapper.EmailPool = emailPool;
+            bootstrapper.MailDroneRepository = mailDroneRep;
+
+            var browser = new Browser(bootstrapper);
+
+            //Act
+            browser.Get("/pool/retrievefragment", with => with.JsonBody(fragment));
+            //Assert
+            mailDroneRep.VerifyAllExpectations();
+        }
+
+        [Test]
+        public void RetrieveFragment_ShouldSetTheCurrentFragmentToTheResponseObject()
+        {
+            //Arrange
+            var fragment = Fixture.CreateAnonymous<FragmenRequest>();
+            var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
+
+            var browser = new Browser(bootstrapper);
+            //Act
+            var result = browser.Get("/pool/retrievefragment", with => with.JsonBody(fragment));
+            //Assert
+            result.Body.DeserializeJson<FragmentResponse>().EmailFragment.Should().NotBeNull();
+        }
+
+        [Test]
+        public void RetrieveFragment_ShouldAddASleepOporationIfTheAreNoFragment()
+        {
+            //Arrange
+            var fragment = Fixture.CreateAnonymous<FragmenRequest>();
+
+            var emailPool = MockRepository.GenerateStub<IEmailPool>();
+            emailPool.Stub(x => x.PopEmail()).Return(null);
+                
+
+            var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
+            bootstrapper.EmailPool = emailPool;
+
+            var browser = new Browser(bootstrapper);
+            //Act
+            var result = browser.Get("/pool/retrievefragment", with => with.JsonBody(fragment));
+            //Assert
+            result.Body.DeserializeJson<FragmentResponse>().DroneSideOporations.Should().Contain(
+                x => x.DroneSideOporationType == DroneSideOporationType.PutAsleep);
+        }
+
+
+
     }
 
     public class MyNinjectBootstrapperWithMockedObjects : NinjectNancyBootstrapper
@@ -167,6 +231,8 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
             MailDroneRepository = MockRepository.GenerateStub<IMailDroneRepository>();
             EMailOporations = MockRepository.GenerateStub<IEMailOporations>();
             EmailPool = MockRepository.GenerateStub<IEmailPool>();
+
+            EmailPool.Stub(x => x.PopEmail()).Return(new EmailFragment());
         }
 
         protected override void ConfigureApplicationContainer(IKernel existingContainer)

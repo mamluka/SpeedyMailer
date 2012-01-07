@@ -196,5 +196,10 @@ namespace SpeedyMailer.EmailPoolMaster.Tests.MailDrones
             
             return result.Data;
         }
+
+        public DroneStatus PutAsleep(MailDrone mailDrone)
+        {
+            return DroneStatus.Asleep;
+        }
     }
 }

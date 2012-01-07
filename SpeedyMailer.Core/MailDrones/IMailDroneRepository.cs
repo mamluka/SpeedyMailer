@@ -4,7 +4,7 @@ namespace SpeedyMailer.Core.MailDrones
 {
     public interface IMailDroneRepository
     {
-        List<MailDrone> SleepingDrones();
+        List<MailDrone> CurrentlySleepingDrones();
         void Update(MailDrone mailDrone);
     }
 }

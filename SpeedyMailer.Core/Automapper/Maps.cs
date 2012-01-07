@@ -13,7 +13,11 @@ namespace SpeedyMailer.Core.Automapper
         public void CreateMap(IProfileExpression mapper)
         {
             Mapper.CreateMap<ContactFromCSVRow, Contact>()
-                .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
+                .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email))
+                ;
+
+
+
 
   
         }

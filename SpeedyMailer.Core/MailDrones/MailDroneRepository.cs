@@ -13,7 +13,7 @@ namespace SpeedyMailer.Core.MailDrones
             this.store = store;
         }
 
-        public List<MailDrone> SleepingDrones()
+        public List<MailDrone> CurrentlySleepingDrones()
         {
             using (var session = store.OpenSession())
             {

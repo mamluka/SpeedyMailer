@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
+using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Helpers;
@@ -91,9 +93,38 @@ namespace SpeedyMailer.Core.Emails
             }
         }
 
-        public Email PopEmail()
+        public EmailFragment PopEmail()
         {
-            return null;
+            using (var session = store.OpenSession())
+            {
+                session.Advanced.UseOptimisticConcurrency = true;
+
+                var emailFragment = session.Query<EmailFragment>()
+                    .Customize(x => x.WaitForNonStaleResults())
+                    .Where(x => x.Locked == false)
+                    .OrderByDescending(x => x.CreateDate)
+                    .Take(1)
+                    .SingleOrDefault();
+
+                if (emailFragment != null)
+                {
+                    try
+                    {
+                    emailFragment.Locked = true;
+                    
+                        session.SaveChanges();
+                        return emailFragment;
+                    }
+                    catch (ConcurrencyException)
+                    {
+                        return PopEmail();
+                    }
+
+
+                }
+                    return null;
+                
+            }
         }
     }
 }

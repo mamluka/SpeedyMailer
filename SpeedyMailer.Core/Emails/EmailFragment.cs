@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SpeedyMailer.Core.MailDrones;
 
 namespace SpeedyMailer.Core.Emails
 {
@@ -10,7 +11,19 @@ namespace SpeedyMailer.Core.Emails
         public string Id { get; set; }
 
         public string UnsubscribeTemplate { get; set; }
+        public int CreateDate { get; set; }
         public bool Locked { get; set; }
+
+        public FragmentStatus Status { get; set; }
+        public MailDrone CompletedBy { get; set; }
+
+
+    }
+
+    public enum FragmentStatus
+    {
+        Pending,
+        Completed
     }
 
     public class ExtendedRecipient
