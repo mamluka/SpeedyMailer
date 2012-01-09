@@ -64,13 +64,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Fragments\FragmentSlideTests.cs" />
+    <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Fragments\" />
+    <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
+      <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
+      <Name>SpeedyMailer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
+      <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
+      <Name>SpeedyMailer.Tests.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
