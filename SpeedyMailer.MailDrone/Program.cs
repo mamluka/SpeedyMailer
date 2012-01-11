@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Nancy.Hosting.Self;
 
-namespace SpeedyMailer.MailDrone
+namespace SpeedyMailer.EmailPool.MailDrone
 {
     class Program
     {

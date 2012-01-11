@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using RestSharp;
 using SpeedyMailer.Core.MailDrones;
-using SpeedyMailer.EmailPoolMaster.MailDrones;
-using SpeedyMailer.EmailPoolMaster.Tests.Maps;
+using SpeedyMailer.EmailPool.Master.MailDrones;
+using SpeedyMailer.EmailPool.Master.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 using FluentAssertions;
 
-namespace SpeedyMailer.EmailPoolMaster.Tests.MailDrones
+namespace SpeedyMailer.EmailPool.Master.Tests.MailDrones
 {
     [TestFixture]
     public class MailDroneServiceTests : AutoMapperAndFixtureBase<AutoMapperMaps>

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Nancy;
-using Nancy.Responses;
-using RestSharp;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
-using SpeedyMailer.EmailPoolMaster.MailDrones;
 using Nancy.ModelBinding;
+using SpeedyMailer.EmailPool.Master.MailDrones;
 
-namespace SpeedyMailer.EmailPoolMaster.Pool
+namespace SpeedyMailer.EmailPool.Master.Pool
 {
     public class PoolModule : NancyModule
     {

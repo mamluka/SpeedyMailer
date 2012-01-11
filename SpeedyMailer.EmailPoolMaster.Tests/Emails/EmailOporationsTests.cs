@@ -2,15 +2,15 @@ using NUnit.Framework;
 using Raven.Client;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
-using SpeedyMailer.EmailPoolMaster.Emails;
-using SpeedyMailer.EmailPoolMaster.MailDrones;
-using SpeedyMailer.EmailPoolMaster.Tests.Maps;
+using SpeedyMailer.EmailPool.Master.Emails;
+using SpeedyMailer.EmailPool.Master.MailDrones;
+using SpeedyMailer.EmailPool.Master.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Tests.Core.DB;
 using Rhino.Mocks;
 
-namespace SpeedyMailer.EmailPoolMaster.Tests.Emails
+namespace SpeedyMailer.EmailPool.Master.Tests.Emails
 {
     [TestFixture]
     public class EmailOporationsTests : AutoMapperAndFixtureBase<AutoMapperMaps>

@@ -1,24 +1,21 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using NUnit.Framework;
 using Nancy.Bootstrappers.Ninject;
 using Nancy.Testing;
 using Ninject;
 using Ploeh.AutoFixture;
-using Raven.Client;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
-using SpeedyMailer.EmailPoolMaster.MailDrones;
-using SpeedyMailer.EmailPoolMaster.Pool;
-using SpeedyMailer.EmailPoolMaster.Tests.Maps;
+using SpeedyMailer.EmailPool.Master.MailDrones;
+using SpeedyMailer.EmailPool.Master.Pool;
+using SpeedyMailer.EmailPool.Master.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 using FluentAssertions;
 
-namespace SpeedyMailer.EmailPoolMaster.Tests.Pool
+namespace SpeedyMailer.EmailPool.Master.Tests.Pool
 {
     [TestFixture]
     public class PoolNancyModuleTests : AutoMapperAndFixtureBase<AutoMapperMaps>

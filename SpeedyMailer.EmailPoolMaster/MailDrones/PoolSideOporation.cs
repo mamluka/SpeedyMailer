@@ -1,4 +1,4 @@
-namespace SpeedyMailer.EmailPoolMaster.MailDrones
+namespace SpeedyMailer.EmailPool.Master.MailDrones
 {
     public class PoolSideOporationBase
     {

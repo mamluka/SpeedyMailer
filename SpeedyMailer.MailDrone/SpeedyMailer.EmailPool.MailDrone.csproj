@@ -8,8 +8,8 @@
     <ProjectGuid>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeedyMailer.MailDrone</RootNamespace>
-    <AssemblyName>SpeedyMailer.MailDrone</AssemblyName>
+    <RootNamespace>SpeedyMailer.EmailPool.MailDrone</RootNamespace>
+    <AssemblyName>SpeedyMailer.EmailPool.MailDrone</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>

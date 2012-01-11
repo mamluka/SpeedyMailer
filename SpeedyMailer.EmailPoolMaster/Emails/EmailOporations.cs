@@ -1,9 +1,9 @@
 using System;
 using Raven.Client;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.EmailPoolMaster.MailDrones;
+using SpeedyMailer.EmailPool.Master.MailDrones;
 
-namespace SpeedyMailer.EmailPoolMaster.Emails
+namespace SpeedyMailer.EmailPool.Master.Emails
 {
     public class EmailOporations:IEMailOporations
     {
