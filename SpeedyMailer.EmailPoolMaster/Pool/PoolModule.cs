@@ -3,6 +3,7 @@ using Nancy;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using Nancy.ModelBinding;
+using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 
 namespace SpeedyMailer.EmailPool.Master.Pool
@@ -11,7 +12,7 @@ namespace SpeedyMailer.EmailPool.Master.Pool
     {
 
 
-        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IEMailOporations emailOporations,IEmailPool emailPool) : base("/pool")
+        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IEMailOporations emailOporations,IEmailPoolService emailPoolService) : base("/pool")
         {
             Post["/update"] = x =>
                                  {
@@ -34,7 +35,7 @@ namespace SpeedyMailer.EmailPool.Master.Pool
                                                {
                                                    emailOporations.Preform(model.PoolSideOporation);
                                                }
-                                               var emailFragment = emailPool.PopEmail();
+                                               var emailFragment = emailPoolService.PopEmail();
 
                                                var fragmentResponse = new FragmentResponse
                                                                           {EmailFragment = emailFragment};

@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using RestSharp;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Master.Pool;
 using SpeedyMailer.MailDrone.Tests.Maps;
 using SpeedyMailer.Tests.Core;
@@ -23,16 +24,15 @@ namespace SpeedyMailer.MailDrone.Tests.Fragments
             //Arrange
             var baseUrl = Fixture.CreateAnonymous<string>();
 
-            var configurationManager = MockRepository.GenerateStub<IConfigurationManager>();
-            configurationManager.BasePoolUrl = baseUrl;
-
             var restClient = MockRepository.GenerateMock<IRestClient>();
             restClient.Expect(x => x.BaseUrl).SetPropertyWithArgument(baseUrl);
-            
-            
+
             
 
-            var fragmentSlide = new FragmentStack(restClient, configurationManager);
+            var builder = new MockedFragmentStackBuilder(Fixture);
+            builder.RestClient = restClient;
+
+            var fragmentSlide = builder.WithBasePoolUrl(baseUrl).AddResponseMockedObject().Build();
             //Act
             fragmentSlide.Pop();
             //Assert
@@ -41,26 +41,100 @@ namespace SpeedyMailer.MailDrone.Tests.Fragments
         }
 
         [Test]
-        public void Pop_ShouldLoadThePopFragmentUrlIntoTheRequest()
+        public void Pop_ShouldLoadThePopFragmentUrlIntoTheRequestAndExecuteTheRequest()
         {
             //Arrange
             var fragmentUrl = Fixture.CreateAnonymous<string>();
 
-            var configurationManager = MockRepository.GenerateStub<IConfigurationManager>();
-            configurationManager.PoolOporationsUrls.PopFragmentUrl = fragmentUrl;
+            var fragmentResponse = Fixture.CreateAnonymous<FragmentResponse>();
+            var restResponse = MockRepository.GenerateStub<RestResponse<FragmentResponse>>();
+            restResponse.Data = fragmentResponse;
 
             var restClient = MockRepository.GenerateMock<IRestClient>();
-            restClient.Expect(x => x.Execute<FragmentResponse>()
+            restClient.Expect(x => x.Execute<FragmentResponse>(Arg<RestRequest>.Matches(m =>
+                                                                                        m.Resource == fragmentUrl)))
+                .Repeat.Once().Return(restResponse);
 
+            var builder = new MockedFragmentStackBuilder(Fixture);
+            builder.RestClient = restClient;
 
-
-
-            var fragmentSlide = new FragmentStack(restClient, configurationManager);
+            var fragmentSlide = builder.WithPopFragmentUrl(fragmentUrl).Build();
             //Act
             fragmentSlide.Pop();
             //Assert
             restClient.VerifyAllExpectations();
 
+        }
+
+        [Test]
+        public void Pop_ShouldDeserializeTheResponseAndReturnTheFragment()
+        {
+            //Arrange
+            var fragmentResponse = Fixture.CreateAnonymous<FragmentResponse>();
+            var restResponse = MockRepository.GenerateStub<RestResponse<FragmentResponse>>();
+
+            restResponse.Data = fragmentResponse;
+
+            var restClient = MockRepository.GenerateStub<IRestClient>();
+            restClient.Stub(x => x.Execute<FragmentResponse>(Arg<RestRequest>.Is.Anything)).Return(restResponse);
+
+            var builder = new MockedFragmentStackBuilder(Fixture);
+            builder.RestClient = restClient;
+            //Act
+            var fragmentSlide = builder.Build();
+            //Assert
+            var fragment = fragmentSlide.Pop();
+
+            fragment.Should().BeSameAs(fragmentResponse.EmailFragment);
+        }
+
+
+
+    }
+
+    public class MockedFragmentStackBuilder : IMockedComponentBuilder<FragmentStack>
+    {
+        private readonly IFixture fixture;
+        public IRestClient RestClient { get; set; }
+        public IConfigurationManager ConfigurationManager { get; set; }
+
+        public MockedFragmentStackBuilder(IFixture fixture)
+        {
+
+            this.fixture = fixture;
+
+           ConfigurationManager = MockRepository.GenerateStub<IConfigurationManager>();
+            ConfigurationManager.BasePoolUrl = "baseurl";
+            ConfigurationManager.PoolOporationsUrls =
+                fixture.Build<PoolOporationsUrls>().With(x => x.PopFragmentUrl, "fragmenturl").CreateAnonymous();
+        }
+
+        public MockedFragmentStackBuilder WithBasePoolUrl(string url)
+        {
+            ConfigurationManager.BasePoolUrl = url;
+            return this;
+        }
+
+        public MockedFragmentStackBuilder WithPopFragmentUrl(string url)
+        {
+            ConfigurationManager.PoolOporationsUrls =
+                fixture.Build<PoolOporationsUrls>().With(x => x.PopFragmentUrl, url).CreateAnonymous();
+            return this;
+        }
+
+        public MockedFragmentStackBuilder AddResponseMockedObject()
+        {
+            var fragmentResponse = fixture.CreateAnonymous<FragmentResponse>();
+            var restResponse = MockRepository.GenerateStub<RestResponse<FragmentResponse>>();
+            restResponse.Data = fragmentResponse;
+
+            RestClient.Stub(x => x.Execute<FragmentResponse>(Arg<RestRequest>.Is.Anything)).Return(restResponse);
+            return this;
+        }
+
+        public FragmentStack Build()
+        {
+            return new FragmentStack(RestClient,ConfigurationManager);
         }
     }
 
@@ -78,7 +152,15 @@ namespace SpeedyMailer.MailDrone.Tests.Fragments
         public EmailFragment Pop()
         {
             restClient.BaseUrl = configurationManager.BasePoolUrl;
-            return  new EmailFragment();
+
+            var request = new RestRequest()
+                              {
+                                  Resource = configurationManager.PoolOporationsUrls.PopFragmentUrl
+                              };
+
+            var response = restClient.Execute<FragmentResponse>(request);
+
+            return response.Data.EmailFragment;
         }
     }
 

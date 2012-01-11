@@ -14,15 +14,15 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
     public class ComposeController : Controller
     {
         private readonly IViewModelBuilder<ComposeViewModel> indexViewModelBuilder;
-        private readonly IEmailPool emailPool;
+        private readonly IEmailPoolService emailPoolService;
         private readonly IMappingEngine mapper;
         //
         // GET: /Compose/
 
-        public ComposeController(IViewModelBuilder<ComposeViewModel> indexViewModelBuilder, IEmailPool emailPool, IMappingEngine mapper)
+        public ComposeController(IViewModelBuilder<ComposeViewModel> indexViewModelBuilder, IEmailPoolService emailPoolService, IMappingEngine mapper)
         {
             this.indexViewModelBuilder = indexViewModelBuilder;
-            this.emailPool = emailPool;
+            this.emailPoolService = emailPoolService;
             this.mapper = mapper;
         }
 
@@ -35,7 +35,7 @@ namespace SpeedyMailer.ControlRoom.Website.Controllers
         public ActionResult Index(ComposeModel composeModel)
         {
             var email = mapper.Map<ComposeModel, Email>(composeModel);
-            emailPool.AddEmail(email);
+            emailPoolService.AddEmail(email);
             return null;
         }
 

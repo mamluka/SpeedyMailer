@@ -58,10 +58,10 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
             var model = Fixture.CreateAnonymous<ComposeModel>();
 
             var controllerBuilder = new ComposeControllerBuilder(Mapper);
-            var emailPool = MockRepository.GenerateMock<IEmailPool>();
+            var emailPool = MockRepository.GenerateMock<IEmailPoolService>();
             emailPool.Expect(x => x.AddEmail(Arg<Email>.Is.Anything)).Repeat.Once();
 
-            controllerBuilder.EmailPool = emailPool;
+            controllerBuilder.EmailPoolService = emailPool;
 
             var controller = controllerBuilder.Build();
             //Act
@@ -77,13 +77,13 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
             var model = Fixture.CreateAnonymous<ComposeModel>();
 
             var controllerBuilder = new ComposeControllerBuilder(Mapper);
-            var emailPool = MockRepository.GenerateMock<IEmailPool>();
+            var emailPool = MockRepository.GenerateMock<IEmailPoolService>();
             emailPool.Expect(x => x.AddEmail(Arg<Email>.Matches(
                 m => m.Body == model.Body &&
                      CompareTwoStringLists(model, m)
                                                  ))).Repeat.Once();
 
-            controllerBuilder.EmailPool = emailPool;
+            controllerBuilder.EmailPoolService = emailPool;
 
             var controller = controllerBuilder.Build();
             //Act
@@ -109,7 +109,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
     public class ComposeControllerBuilder:IMockedComponentBuilder<ComposeController>
     {
         public IViewModelBuilder<ComposeViewModel> IndexViewModelBuilder { get; set; }
-        public IEmailPool EmailPool { get; set; }
+        public IEmailPoolService EmailPoolService { get; set; }
         public IMappingEngine Mapper { get; set; }
 
         public ComposeControllerBuilder(IMappingEngine mapper)
@@ -118,13 +118,13 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
 
             IndexViewModelBuilder.Stub(x => x.Build()).Return(new ComposeViewModel());
 
-            EmailPool = MockRepository.GenerateStub<IEmailPool>();
+            EmailPoolService = MockRepository.GenerateStub<IEmailPoolService>();
 
             Mapper = mapper;
         }
         public ComposeController Build()
         {
-            return new ComposeController(IndexViewModelBuilder,EmailPool,Mapper);
+            return new ComposeController(IndexViewModelBuilder,EmailPoolService,Mapper);
         }
     }
 }

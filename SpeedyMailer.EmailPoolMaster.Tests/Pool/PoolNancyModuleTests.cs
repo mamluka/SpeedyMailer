@@ -8,6 +8,7 @@ using Ninject;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
+using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 using SpeedyMailer.EmailPool.Master.Pool;
 using SpeedyMailer.EmailPool.Master.Tests.Maps;
@@ -136,11 +137,11 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
 
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
-            var emailPool = MockRepository.GenerateMock<IEmailPool>();
+            var emailPool = MockRepository.GenerateMock<IEmailPoolService>();
             emailPool.Expect(x => x.PopEmail()).Repeat.Once().Return(new EmailFragment());
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EmailPool = emailPool;
+            bootstrapper.EmailPoolService = emailPool;
 
             var browser = new Browser(bootstrapper);
 
@@ -156,7 +157,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
 
-            var emailPool = MockRepository.GenerateStub<IEmailPool>();
+            var emailPool = MockRepository.GenerateStub<IEmailPoolService>();
             emailPool.Stub(x => x.PopEmail()).Repeat.Once().Return(null);
 
             var mailDroneRep = MockRepository.GenerateMock<IMailDroneRepository>();
@@ -165,7 +166,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
                                                   ))).Repeat.Once();
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EmailPool = emailPool;
+            bootstrapper.EmailPoolService = emailPool;
             bootstrapper.MailDroneRepository = mailDroneRep;
 
             var browser = new Browser(bootstrapper);
@@ -196,12 +197,12 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
 
-            var emailPool = MockRepository.GenerateStub<IEmailPool>();
+            var emailPool = MockRepository.GenerateStub<IEmailPoolService>();
             emailPool.Stub(x => x.PopEmail()).Return(null);
                 
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EmailPool = emailPool;
+            bootstrapper.EmailPoolService = emailPool;
 
             var browser = new Browser(bootstrapper);
             //Act
@@ -220,16 +221,16 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
         public IMailDroneRepository MailDroneRepository { get; set; }
         public IMailDroneService MailDroneService { get; set; }
         public IEMailOporations EMailOporations { get; set; }
-        public IEmailPool EmailPool { get; set; }
+        public IEmailPoolService EmailPoolService { get; set; }
 
         public MyNinjectBootstrapperWithMockedObjects()
         {
             MailDroneService = MockRepository.GenerateStub<IMailDroneService>();
             MailDroneRepository = MockRepository.GenerateStub<IMailDroneRepository>();
             EMailOporations = MockRepository.GenerateStub<IEMailOporations>();
-            EmailPool = MockRepository.GenerateStub<IEmailPool>();
+            EmailPoolService = MockRepository.GenerateStub<IEmailPoolService>();
 
-            EmailPool.Stub(x => x.PopEmail()).Return(new EmailFragment());
+            EmailPoolService.Stub(x => x.PopEmail()).Return(new EmailFragment());
         }
 
         protected override void ConfigureApplicationContainer(IKernel existingContainer)
@@ -237,7 +238,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             existingContainer.Bind<IMailDroneRepository>().ToConstant(MailDroneRepository);
             existingContainer.Bind<IMailDroneService>().ToConstant(MailDroneService);
             existingContainer.Bind<IEMailOporations>().ToConstant(EMailOporations);
-            existingContainer.Bind<IEmailPool>().ToConstant(EmailPool);
+            existingContainer.Bind<IEmailPoolService>().ToConstant(EmailPoolService);
         }
     }
 }

@@ -87,17 +87,9 @@
   <ItemGroup>
     <Compile Include="Bootstrapper\MyNinjectBootstrapper.cs" />
     <Compile Include="Emails\EmailOporations.cs" />
-    <Compile Include="MailDrones\FragmenRequest.cs" />
-    <Compile Include="MailDrones\FragmentComplete.cs" />
-    <Compile Include="MailDrones\PoolSideOporation.cs" />
-    <Compile Include="MailDrones\FragmentOpotationType.cs" />
     <Compile Include="MailDrones\IEMailOporations.cs" />
     <Compile Include="MailDrones\IMailDroneService.cs" />
-    <Compile Include="Pool\DroneSideOporationBase.cs" />
-    <Compile Include="Pool\DroneSideOporationType.cs" />
-    <Compile Include="Pool\FragmentResponse.cs" />
     <Compile Include="Pool\PoolModule.cs" />
-    <Compile Include="Pool\PutDroneToSleep.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

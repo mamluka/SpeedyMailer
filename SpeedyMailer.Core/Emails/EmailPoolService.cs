@@ -9,14 +9,14 @@ using SpeedyMailer.Core.Helpers;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public class EmailPool:IEmailPool
+    public class EmailPoolService:IEmailPoolService
     {
         private readonly IDocumentStore store;
         private readonly IContactsRepository contactsRepository;
         private readonly IUrlCreator urlCreator;
         private readonly IMappingEngine mapper;
 
-        public EmailPool(IDocumentStore store, IContactsRepository contactsRepository, IUrlCreator urlCreator, IMappingEngine mapper)
+        public EmailPoolService(IDocumentStore store, IContactsRepository contactsRepository, IUrlCreator urlCreator, IMappingEngine mapper)
         {
             this.store = store;
             this.contactsRepository = contactsRepository;

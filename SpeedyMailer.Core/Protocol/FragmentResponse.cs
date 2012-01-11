@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using SpeedyMailer.Core.Emails;
 
-namespace SpeedyMailer.EmailPool.Master.Pool
+namespace SpeedyMailer.Core.Protocol
 {
     public class FragmentResponse
     {

@@ -1,4 +1,4 @@
-namespace SpeedyMailer.EmailPool.Master.MailDrones
+namespace SpeedyMailer.Core.Protocol
 {
     public enum FragmentOpotationType
     {

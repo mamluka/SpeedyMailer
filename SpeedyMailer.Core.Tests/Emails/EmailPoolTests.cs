@@ -349,7 +349,7 @@ namespace SpeedyMailer.Core.Tests.Emails
        
     }
 
-    public class EmailPoolMockedComponentBuilder:IMockedComponentBuilder<EmailPool>
+    public class EmailPoolMockedComponentBuilder:IMockedComponentBuilder<EmailPoolService>
     {
         public IDocumentStore Store { get; set; }
         public IContactsRepository ContactsRepository { get; set; }
@@ -390,9 +390,9 @@ namespace SpeedyMailer.Core.Tests.Emails
 
 
 
-        public EmailPool Build()
+        public EmailPoolService Build()
         {
-            return new EmailPool(Store,ContactsRepository,UrlCreator,Mapper);
+            return new EmailPoolService(Store, ContactsRepository, UrlCreator, Mapper);
         }
     }
 }

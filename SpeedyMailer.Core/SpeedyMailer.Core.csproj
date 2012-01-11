@@ -105,11 +105,11 @@
     <Compile Include="Emails\LeadIdentity.cs" />
     <Compile Include="Emails\Email.cs" />
     <Compile Include="Emails\EmailFragment.cs" />
-    <Compile Include="Emails\EmailPool.cs" />
+    <Compile Include="Emails\EmailPoolService.cs" />
     <Compile Include="Emails\EmailRepository.cs" />
     <Compile Include="Emails\EmailSourceParser.cs" />
     <Compile Include="Emails\EmailSourceWeaver.cs" />
-    <Compile Include="Emails\IEmailPool.cs" />
+    <Compile Include="Emails\IEmailPoolService.cs" />
     <Compile Include="Emails\IEmailSourceParser.cs" />
     <Compile Include="Helpers\Configurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
@@ -124,6 +124,14 @@
     <Compile Include="MailDrones\MailDroneRepository.cs" />
     <Compile Include="NinjectProvider\RavenDocumentStoreProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Protocol\DroneSideOporationBase.cs" />
+    <Compile Include="Protocol\DroneSideOporationType.cs" />
+    <Compile Include="Protocol\FragmenRequest.cs" />
+    <Compile Include="Protocol\FragmentComplete.cs" />
+    <Compile Include="Protocol\FragmentOpotationType.cs" />
+    <Compile Include="Protocol\FragmentResponse.cs" />
+    <Compile Include="Protocol\PoolSideOporation.cs" />
+    <Compile Include="Protocol\PutDroneToSleep.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

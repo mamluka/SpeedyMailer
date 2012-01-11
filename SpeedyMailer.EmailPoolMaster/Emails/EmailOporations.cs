@@ -1,6 +1,7 @@
 using System;
 using Raven.Client;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 
 namespace SpeedyMailer.EmailPool.Master.Emails

@@ -1,6 +1,6 @@
 namespace SpeedyMailer.Core.Emails
 {
-    public interface IEmailPool
+    public interface IEmailPoolService
     {
         AddEmailToPoolResults AddEmail(Email email);
         EmailFragment PopEmail();

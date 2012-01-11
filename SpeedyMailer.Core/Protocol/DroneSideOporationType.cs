@@ -1,4 +1,4 @@
-namespace SpeedyMailer.EmailPool.Master.Pool
+namespace SpeedyMailer.Core.Protocol
 {
     public enum DroneSideOporationType
     {

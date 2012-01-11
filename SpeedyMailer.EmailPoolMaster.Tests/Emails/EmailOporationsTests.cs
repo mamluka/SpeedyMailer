@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Raven.Client;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
+using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Master.Emails;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 using SpeedyMailer.EmailPool.Master.Tests.Maps;
