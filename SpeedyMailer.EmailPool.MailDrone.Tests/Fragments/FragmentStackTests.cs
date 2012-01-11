@@ -86,7 +86,7 @@ namespace SpeedyMailer.MailDrone.Tests.Fragments
             var fragment = fragmentSlide.Pop();
 
             fragment.Should().BeSameAs(fragmentResponse.EmailFragment);
-        }
+        } 
 
 
 

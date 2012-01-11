@@ -109,7 +109,7 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.EmailPoolMaster\SpeedyMailer.EmailPool.Master.csproj">
+    <ProjectReference Include="..\SpeedyMailer.EmailPool.Master\SpeedyMailer.EmailPool.Master.csproj">
       <Project>{88070415-7AA8-4C82-BC2D-983BB8116FF7}</Project>
       <Name>SpeedyMailer.EmailPool.Master</Name>
     </ProjectReference>
