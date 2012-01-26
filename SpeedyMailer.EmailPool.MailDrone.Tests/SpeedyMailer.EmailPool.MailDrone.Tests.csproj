@@ -55,6 +55,9 @@
     <Reference Include="pnunit.framework, Version=1.0.4109.34242, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\libs\Quartz.net\Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.102.5\lib\net35\RestSharp.dll</HintPath>
     </Reference>
@@ -70,7 +73,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Fragments\FragmentStackTests.cs" />
+    <Compile Include="Communication\DroneCommunicationServiceTests.cs" />
+    <Compile Include="Drone\DroneTests.cs" />
+    <Compile Include="Mail\MailingProcessTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -83,7 +88,11 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.EmailPoolMaster\SpeedyMailer.EmailPool.Master.csproj">
+    <ProjectReference Include="..\SpeedyMailer.EmailPool.MailDrone\SpeedyMailer.EmailPool.MailDrone.csproj">
+      <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
+      <Name>SpeedyMailer.EmailPool.MailDrone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.EmailPool.Master\SpeedyMailer.EmailPool.Master.csproj">
       <Project>{88070415-7AA8-4C82-BC2D-983BB8116FF7}</Project>
       <Name>SpeedyMailer.EmailPool.Master</Name>
     </ProjectReference>

@@ -11,7 +11,8 @@
     <RootNamespace>SpeedyMailer.EmailPool.MailDrone</RootNamespace>
     <AssemblyName>SpeedyMailer.EmailPool.MailDrone</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -52,6 +53,11 @@
     <Reference Include="Ninject.Extensions.ChildKernel">
       <HintPath>..\packages\Ninject.Extensions.ChildKernel.3.0.0-rc2\lib\net40-Full\Ninject.Extensions.ChildKernel.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <Reference Include="nunit.mocks, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
+    <Reference Include="Quartz">
+      <HintPath>..\libs\Quartz.net\Quartz.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.102.5\lib\net35-client\RestSharp.dll</HintPath>
     </Reference>
@@ -64,15 +70,28 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Bootstrappers\NinjectBootstrapper.cs" />
+    <Compile Include="Communication\DroneCommunicationService.cs" />
+    <Compile Include="Configurations\IDroneConfigurationManager.cs" />
+    <Compile Include="Configurations\PoolOporationsUrls.cs" />
+    <Compile Include="MailDrone.cs" />
+    <Compile Include="Mail\MailingProcess.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Configurations\" />
+    <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
+      <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
+      <Name>SpeedyMailer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
+      <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
+      <Name>SpeedyMailer.Tests.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
