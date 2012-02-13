@@ -88,6 +88,44 @@ namespace SpeedyMailer.Core.Tests.Emails
 
         }
 
+        [Test]
+        public void WeaveDeals_ShouldShouldReplaceTheLinksWithDealLinksWithStrings()
+        {
+            //Arrange
+            var bodySource = EmailSourceFactory.StandardEmail();
+            var link = "link";
+            var builder = new MockedEmailSourceWeaverBuilder();
+            var weaver = builder.Build();
+            //Act
+
+            var newBody = weaver.WeaveDeals(bodySource, link);
+            var dealList = FindAllDealLinksInAnEmailBody(newBody);
+            //Assert
+
+            //Assert
+            dealList.Should().OnlyContain(x => x == "link");
+        }
+
+        [Test]
+        public void WeaveUnsubscribeTemplate_ShouldAddTheTemplateToTheEndOfTheEmail()
+        {
+            //Arrange
+            var bodySource = EmailSourceFactory.StandardEmail();
+            var template = "This template is used in the test and here is the link {0}";
+            var unsubscribeLink = "link";
+
+            var combined = String.Format(template, unsubscribeLink);
+
+            var builder = new MockedEmailSourceWeaverBuilder();
+            var weaver = builder.Build();
+            //Act
+            var newBody = weaver.WeaveUnsubscribeTemplate(bodySource, template, unsubscribeLink);
+            //Assert
+            newBody.Should().EndWithEquivalent(combined);
+
+
+        }
+
         private List<string> FindAllDealLinksInAnEmailBody(string body)
         {
             var parser = new EmailSourceParser();
@@ -107,6 +145,21 @@ namespace SpeedyMailer.Core.Tests.Emails
             return returnValue;
 
 
+        }
+    }
+
+    public class MockedEmailSourceWeaverBuilder:IMockedComponentBuilder<EmailSourceWeaver>
+    {
+
+        public IUrlCreator UrlCreator { get; set; }
+
+        public MockedEmailSourceWeaverBuilder()
+        {
+            UrlCreator = MockRepository.GenerateStub<IUrlCreator>();
+        }
+        public EmailSourceWeaver Build()
+        {
+            return new EmailSourceWeaver(UrlCreator);
         }
     }
 }

@@ -6,7 +6,7 @@ using SpeedyMailer.Core.Helpers;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public class EmailSourceWeaver
+    public class EmailSourceWeaver : IEmailSourceWeaver
     {
         private readonly IUrlCreator urlCreator;
 
@@ -23,15 +23,28 @@ namespace SpeedyMailer.Core.Emails
                                                                            {"JsonObject", jsonBase64String}
                                                                        });
 
+            return WeaveDeals(bodySource, url);
 
-            var doc = new HtmlDocument();
+
+
+        }
+
+
+        public string WeaveUnsubscribeTemplate(string bodySource, string template, string unsubscribeLink)
+        {
+            return bodySource + string.Format(template,unsubscribeLink);
+        }
+
+        public string WeaveDeals(string bodySource, string dealLink)
+        {
+             var doc = new HtmlDocument();
             doc.LoadHtml(bodySource);
             var dealList =
                 doc.DocumentNode.SelectNodes("//a[@href]").ToList();
 
             foreach (var deal in dealList)
             {
-                deal.Attributes["href"].Value = url;
+                deal.Attributes["href"].Value = dealLink;
             }
 
             return doc.DocumentNode.InnerHtml;

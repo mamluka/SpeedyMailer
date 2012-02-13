@@ -9,6 +9,7 @@ using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.EmailPool.Core.Emails;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 using SpeedyMailer.EmailPool.Master.Pool;
 using SpeedyMailer.EmailPool.Master.Tests.Maps;
@@ -117,11 +118,11 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
 
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
-            var emailOporations = MockRepository.GenerateMock<IEMailOporations>();
+            var emailOporations = MockRepository.GenerateMock<IMailOporations>();
             emailOporations.Expect(x => x.Preform(Arg<PoolSideOporationBase>.Matches(m => m.FragmentId == fragment.PoolSideOporation.FragmentId))).Repeat.Once();
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EMailOporations = emailOporations;
+            bootstrapper.MailOporations = emailOporations;
 
             var browser = new Browser(bootstrapper);
 
@@ -220,14 +221,14 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
     {
         public IMailDroneRepository MailDroneRepository { get; set; }
         public IMailDroneService MailDroneService { get; set; }
-        public IEMailOporations EMailOporations { get; set; }
+        public IMailOporations MailOporations { get; set; }
         public IEmailPoolService EmailPoolService { get; set; }
 
         public MyNinjectBootstrapperWithMockedObjects()
         {
             MailDroneService = MockRepository.GenerateStub<IMailDroneService>();
             MailDroneRepository = MockRepository.GenerateStub<IMailDroneRepository>();
-            EMailOporations = MockRepository.GenerateStub<IEMailOporations>();
+            MailOporations = MockRepository.GenerateStub<IMailOporations>();
             EmailPoolService = MockRepository.GenerateStub<IEmailPoolService>();
 
             EmailPoolService.Stub(x => x.PopEmail()).Return(new EmailFragment());
@@ -237,7 +238,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
         {
             existingContainer.Bind<IMailDroneRepository>().ToConstant(MailDroneRepository);
             existingContainer.Bind<IMailDroneService>().ToConstant(MailDroneService);
-            existingContainer.Bind<IEMailOporations>().ToConstant(EMailOporations);
+            existingContainer.Bind<IMailOporations>().ToConstant(MailOporations);
             existingContainer.Bind<IEmailPoolService>().ToConstant(EmailPoolService);
         }
     }

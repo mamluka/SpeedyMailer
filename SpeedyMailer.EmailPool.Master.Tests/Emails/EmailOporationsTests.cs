@@ -3,7 +3,7 @@ using Raven.Client;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using SpeedyMailer.Core.Protocol;
-using SpeedyMailer.EmailPool.Master.Emails;
+using SpeedyMailer.EmailPool.Core.Emails;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 using SpeedyMailer.EmailPool.Master.Tests.Maps;
 using SpeedyMailer.Tests.Core;
@@ -35,7 +35,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Emails
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
-            var emailOps = new EmailOporations(store);
+            var emailOps = new MailOporations(store);
             //Act
             emailOps.Preform(oporation);
             //Assert
@@ -65,7 +65,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Emails
 
             var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
 
-            var emailOps = new EmailOporations(store);
+            var emailOps = new MailOporations(store);
             //Act
             emailOps.Preform(oporation);
             //Assert

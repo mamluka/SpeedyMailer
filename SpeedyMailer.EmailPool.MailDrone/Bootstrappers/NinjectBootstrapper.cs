@@ -11,13 +11,12 @@ namespace SpeedyMailer.EmailPool.MailDrone.Bootstrappers
     {
         public static IKernel Kernel { get; private set; }
 
-        public static void Bootstrap()
+        static NinjectBootstrapper()
         {
-            if (Kernel != null)
-            {
+           
                 Kernel = new StandardKernel();
                 Kernel.Load<MailDroneStandardModule>();
-            }
+           
 
         }
     }

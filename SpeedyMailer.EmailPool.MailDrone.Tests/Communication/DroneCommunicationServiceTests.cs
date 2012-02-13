@@ -100,7 +100,7 @@ namespace SpeedyMailer.MailDrone.Tests.Communication
 
             this.fixture = fixture;
 
-           DroneConfigurationManager = MockRepository.GenerateStub<IDroneConfigurationManager>();
+            DroneConfigurationManager = MockRepository.GenerateStub<IDroneConfigurationManager>();
             DroneConfigurationManager.BasePoolUrl = "baseurl";
             DroneConfigurationManager.PoolOporationsUrls =
                 fixture.Build<PoolOporationsUrls>().With(x => x.PopFragmentUrl, "fragmenturl").CreateAnonymous();

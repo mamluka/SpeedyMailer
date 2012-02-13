@@ -33,7 +33,7 @@ namespace SpeedyMailer.Core.Emails
                 var totalContacts = 0;
                 var totalFragments = 0;
 
-                var unsubscribeTemplate = session.Load<EmailBodyElements>("system/templates");
+                var systemTemplates = session.Load<EmailBodyElements>("system/templates");
 
                 foreach (var list in email.ToLists)
                 {
@@ -49,7 +49,7 @@ namespace SpeedyMailer.Core.Emails
                         }
 
 
-                        emailFragment.UnsubscribeTemplate = unsubscribeTemplate.Unsubscribe ?? "";
+                        emailFragment.UnsubscribeTemplate = systemTemplates.Unsubscribe ?? "";
 
                         emailFragment.ExtendedRecipients = listFragment.Select(x =>
                                                                                new ExtendedRecipient()

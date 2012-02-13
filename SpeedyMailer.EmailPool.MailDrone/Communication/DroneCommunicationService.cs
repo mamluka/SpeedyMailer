@@ -4,7 +4,7 @@ using SpeedyMailer.EmailPool.MailDrone.Configurations;
 
 namespace SpeedyMailer.EmailPool.MailDrone.Communication
 {
-    public class DroneCommunicationService
+    public class DroneCommunicationService : IDroneCommunicationService
     {
         private readonly IRestClient restClient;
         private readonly IDroneConfigurationManager configurationManager;

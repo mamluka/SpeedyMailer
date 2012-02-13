@@ -102,10 +102,6 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
 
     }
 
-    public interface IEmailRepository
-    {
-    }
-
     public class ComposeControllerBuilder:IMockedComponentBuilder<ComposeController>
     {
         public IViewModelBuilder<ComposeViewModel> IndexViewModelBuilder { get; set; }

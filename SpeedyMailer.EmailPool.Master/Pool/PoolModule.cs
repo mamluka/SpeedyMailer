@@ -4,6 +4,7 @@ using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using Nancy.ModelBinding;
 using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.EmailPool.Core.Emails;
 using SpeedyMailer.EmailPool.Master.MailDrones;
 
 namespace SpeedyMailer.EmailPool.Master.Pool
@@ -12,7 +13,7 @@ namespace SpeedyMailer.EmailPool.Master.Pool
     {
 
 
-        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IEMailOporations emailOporations,IEmailPoolService emailPoolService) : base("/pool")
+        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IMailOporations emailOporations,IEmailPoolService emailPoolService) : base("/pool")
         {
             Post["/update"] = x =>
                                  {

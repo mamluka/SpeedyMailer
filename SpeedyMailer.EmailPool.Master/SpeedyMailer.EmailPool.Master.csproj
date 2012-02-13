@@ -86,8 +86,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper\MyNinjectBootstrapper.cs" />
-    <Compile Include="Emails\EmailOporations.cs" />
-    <Compile Include="MailDrones\IEMailOporations.cs" />
     <Compile Include="MailDrones\IMailDroneService.cs" />
     <Compile Include="Pool\PoolModule.cs" />
     <Compile Include="Program.cs" />
@@ -101,6 +99,10 @@
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.EmailPool.Core\SpeedyMailer.EmailPool.Core.csproj">
+      <Project>{51B62C73-4516-4D3E-8FC2-9D1150C5C91B}</Project>
+      <Name>SpeedyMailer.EmailPool.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
