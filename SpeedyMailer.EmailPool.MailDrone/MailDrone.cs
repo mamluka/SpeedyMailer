@@ -14,7 +14,7 @@ namespace SpeedyMailer.EmailPool.MailDrone
             nancyHost.Start();
 
             var jobManager = new DroneJobManager();
-            jobManager.Start();
+            jobManager.StartRetrieveJob();
 
             Console.WriteLine("Mail drone now active - navigating to http://localhost:45678/. Press enter to stop");
             Console.ReadKey();

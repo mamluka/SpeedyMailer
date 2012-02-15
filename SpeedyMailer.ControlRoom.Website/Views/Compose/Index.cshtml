@@ -6,17 +6,19 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@foreach (var list in Model.AvalibaleLists)
+@using (Html.BeginForm())
 {
-    @this.CheckBox(list.Name).LabelAfter(list.Name)
+foreach (var list in Model.AvailableLists)
+{
+    @this.CheckBox(x => x.ToLists[0]).LabelAfter(list.Name).Value(list.Id)
 }
-<br/>
-<br/>
-<textarea class="composer"></textarea>
-<br/>
-<br/>
-@this.SubmitButton("Send Email")
-
+    <br/>
+    <br/>
+    <textarea class="composer"></textarea>
+    <br/>
+    <br/>
+    @this.SubmitButton("Send Email")
+}
 <script type="text/javascript">
 		$(document).ready(function() {
 		    $('textarea.composer').tinymce({

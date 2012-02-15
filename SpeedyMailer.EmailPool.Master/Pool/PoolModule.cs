@@ -13,7 +13,7 @@ namespace SpeedyMailer.EmailPool.Master.Pool
     {
 
 
-        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IMailOporations emailOporations,IEmailPoolService emailPoolService) : base("/pool")
+        public PoolModule(IMailDroneRepository mailDroneRepository,IMailDroneService mailDroneService,IPoolMailOporations emailOporations,IFragmentRepository fragmentRepository) : base("/pool")
         {
             Post["/update"] = x =>
                                  {
@@ -36,7 +36,7 @@ namespace SpeedyMailer.EmailPool.Master.Pool
                                                {
                                                    emailOporations.Preform(model.PoolSideOporation);
                                                }
-                                               var emailFragment = emailPoolService.PopEmail();
+                                               var emailFragment = fragmentRepository.PopFragment();
 
                                                var fragmentResponse = new FragmentResponse
                                                                           {EmailFragment = emailFragment};

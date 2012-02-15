@@ -6,7 +6,7 @@ namespace SpeedyMailer.ControlRoom.Website.Core.ViewModels
 {
     public class ComposeViewModel:ComposeModel
     {
-        public List<ListDescriptorViewModel> AvalibaleLists { get; set; }
+        public List<ListDescriptorViewModel> AvailableLists { get; set; }
         public ComposeResultsViewModel Results { get; set; }
     }
 }

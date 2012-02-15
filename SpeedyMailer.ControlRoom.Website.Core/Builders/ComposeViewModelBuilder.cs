@@ -22,7 +22,7 @@ namespace SpeedyMailer.ControlRoom.Website.Core.Builders
             var viewModel = new ComposeViewModel();
             var listCollection = mapper.Map<List<ListDescriptor>, List<ListDescriptorViewModel>>(listRepository.Lists().Lists);
 
-            viewModel.AvalibaleLists = listCollection;
+            viewModel.AvailableLists = listCollection;
 
             return viewModel;
         }

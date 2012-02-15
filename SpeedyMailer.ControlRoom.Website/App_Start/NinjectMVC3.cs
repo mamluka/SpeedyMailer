@@ -3,6 +3,8 @@ using Raven.Client;
 using SpeedyMailer.ControlRoom.Website.Core.Builders;
 using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Lists;
 using SpeedyMailer.Core.NinjectProvider;
 
@@ -80,6 +82,9 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
 
             kernel.Bind<IDocumentStore>().ToProvider<RavenDocumentStoreProvider>();
             kernel.Bind<IMappingEngine>().ToConstant(Mapper.Engine);
+            kernel.Bind<IEmailPoolService>().To<EmailPoolService>();
+            kernel.Bind<IUrlCreator>().To<UrlCreator>();
+            kernel.Bind<IConfigurationManager>().To<ControlRoomConfigurationManager>().InSingletonScope();
         }        
     }
 }

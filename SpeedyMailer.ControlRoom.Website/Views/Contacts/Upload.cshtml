@@ -26,11 +26,11 @@
 @if (Model.HasResults)
 {
     <div>
-        Number of email processed :  @Model.NumberOfEmailProcessed <br/>
-        Number of files processed :  @Model.NumberOfFilesProcessed <br/>
+        Number of email processed :  @Model.Results.NumberOfEmailProcessed <br/>
+        Number of files processed :  @Model.Results.NumberOfFilesProcessed <br/>
 
         Files:
-        @foreach (var file in Model.Filenames)
+        @foreach (var file in Model.Results.Filenames)
         {
             @file
             <br />

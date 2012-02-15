@@ -36,7 +36,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
             //Act
             var viewModel = builder.Build();
             //Assert
-            viewModel.AvalibaleLists.ForEach(x=> listDescriptors.First(m=> m.Id == x.Id).Should().NotBeNull());
+            viewModel.AvailableLists.ForEach(x=> listDescriptors.First(m=> m.Id == x.Id).Should().NotBeNull());
 
         }
 

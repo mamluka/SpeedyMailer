@@ -58,8 +58,9 @@
     <Reference Include="Quartz">
       <HintPath>..\libs\Quartz.net\Quartz.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=102.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.102.5\lib\net35\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RestSharp.102.7\lib\net35\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6\lib\Rhino.Mocks.dll</HintPath>
@@ -76,6 +77,7 @@
     <Compile Include="Communication\DroneCommunicationServiceTests.cs" />
     <Compile Include="Drone\DroneTests.cs" />
     <Compile Include="Mail\DroneJobManagerTests.cs" />
+    <Compile Include="Mail\DroneMailOporationsTests.cs" />
     <Compile Include="Mail\MailParserTests.cs" />
     <Compile Include="Mail\MailSenderTests.cs" />
     <Compile Include="Mail\RetrieveFragmentJobTests.cs" />

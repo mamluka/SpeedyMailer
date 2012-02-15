@@ -25,10 +25,24 @@ namespace SpeedyMailer.ControlRoom.Website
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+               "Deals", // Route name
+               "Deals/{JsonObject}", // URL with parameters
+               new { controller = "Deals", action = "RedirectToDeal", JsonObject = "{}" } // Parameter defaults
+           );
+
+            routes.MapRoute(
+               "Unsubscribe", // Route name
+               "Unsubscribe/{JsonObject}", // URL with parameters
+               new { controller = "Contacts", action = "Unsubscribe", JsonObject = "{}" } // Parameter defaults
+           );
+
+            routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
+
+            
 
         }
 

@@ -60,8 +60,9 @@
     <Reference Include="Quartz">
       <HintPath>..\libs\Quartz.net\Quartz.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=102.5.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.102.5\lib\net35\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RestSharp.102.7\lib\net35\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,6 +82,7 @@
     <Compile Include="Mail\DroneJobManager.cs" />
     <Compile Include="Mail\IMailParser.cs" />
     <Compile Include="Mail\IMailSender.cs" />
+    <Compile Include="Mail\MailParser.cs" />
     <Compile Include="Mail\MailParserInitializer.cs" />
     <Compile Include="Mail\MailSender.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

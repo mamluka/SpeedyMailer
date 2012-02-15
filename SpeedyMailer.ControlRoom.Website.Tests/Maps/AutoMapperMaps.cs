@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SpeedyMailer.ControlRoom.Website.Core.Automapper;
 using SpeedyMailer.ControlRoom.Website.Core.ComponentViewModel;
 using SpeedyMailer.ControlRoom.Website.Core.Models;
 using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
@@ -31,20 +32,6 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Maps
             Mapper.CreateMap<ComposeModel, Email>()
                 ;
 
-        }
-    }
-
-    public class FromUploadResultsToViewModel : ValueResolver<ContactCSVParserResults, ContactsCSVParserResultsViewModel>
-    {
-        protected override ContactsCSVParserResultsViewModel ResolveCore(ContactCSVParserResults source)
-        {
-            return new ContactsCSVParserResultsViewModel
-                       {
-                           Filenames = source.Filenames,
-                           NumberOfEmailProcessed = source.NumberOfContactsProcessed.ToString(),
-                           NumberOfFilesProcessed = source.NumberOfFilesProcessed.ToString()
-
-                       };
         }
     }
 }

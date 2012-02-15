@@ -6,4 +6,10 @@ namespace SpeedyMailer.EmailPool.MailDrone.Configurations
         PoolOporationsUrls PoolOporationsUrls { get; set; }
 
     }
+
+    class DroneConfigurationManager : IDroneConfigurationManager
+    {
+        public string BasePoolUrl { get; set; }
+        public PoolOporationsUrls PoolOporationsUrls { get; set; }
+    }
 }

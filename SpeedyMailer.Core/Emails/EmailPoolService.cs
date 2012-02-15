@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Configuration;
 using AutoMapper;
 using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Helpers;
+using System.Configuration;
 
 namespace SpeedyMailer.Core.Emails
 {
@@ -28,7 +30,7 @@ namespace SpeedyMailer.Core.Emails
         {
             using (var session = store.OpenSession())
             {
-                var emailFragment = mapper.Map<Email, EmailFragment>(email);
+                
 
                 var totalContacts = 0;
                 var totalFragments = 0;
@@ -48,8 +50,13 @@ namespace SpeedyMailer.Core.Emails
                             break;
                         }
 
+                        var a = WebConfigurationManager.AppSettings["DomainUrl"];
+
+                        var emailFragment = mapper.Map<Email, EmailFragment>(email);
 
                         emailFragment.UnsubscribeTemplate = systemTemplates.Unsubscribe ?? "";
+
+                        emailFragment.MailId = email.Id;
 
                         emailFragment.ExtendedRecipients = listFragment.Select(x =>
                                                                                new ExtendedRecipient()
@@ -66,6 +73,7 @@ namespace SpeedyMailer.Core.Emails
                                                                                            Address = x.Address,
                                                                                            EmailId = email.Id
                                                                                        })
+                                                                                       
 
                                                                                        
                                                                                    }
@@ -74,7 +82,7 @@ namespace SpeedyMailer.Core.Emails
 
                         session.Store(emailFragment);
 
-                        session.SaveChanges();
+                        
 
                         totalContacts = totalContacts + currentListFragmentCount;
 
@@ -83,6 +91,8 @@ namespace SpeedyMailer.Core.Emails
                         pageNumber++;
                     }
                 }
+
+                session.SaveChanges();
 
 
                 return new AddEmailToPoolResults()
@@ -93,38 +103,6 @@ namespace SpeedyMailer.Core.Emails
             }
         }
 
-        public EmailFragment PopEmail()
-        {
-            using (var session = store.OpenSession())
-            {
-                session.Advanced.UseOptimisticConcurrency = true;
-
-                var emailFragment = session.Query<EmailFragment>()
-                    .Customize(x => x.WaitForNonStaleResults())
-                    .Where(x => x.Locked == false)
-                    .OrderByDescending(x => x.CreateDate)
-                    .Take(1)
-                    .SingleOrDefault();
-
-                if (emailFragment != null)
-                {
-                    try
-                    {
-                    emailFragment.Locked = true;
-                    
-                        session.SaveChanges();
-                        return emailFragment;
-                    }
-                    catch (ConcurrencyException)
-                    {
-                        return PopEmail();
-                    }
-
-
-                }
-                    return null;
-                
-            }
-        }
+      
     }
 }

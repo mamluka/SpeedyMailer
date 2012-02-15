@@ -4,7 +4,7 @@ namespace SpeedyMailer.Core.Protocol
     {
         public PutDroneToSleep()
         {
-            DroneSideOporationType = DroneSideOporationType.PutAsleep;
+            DroneSideOporationType = DroneSideOporationType.GoToSleep;
         }
     }
 }

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Core.Emails;
 using SpeedyMailer.EmailPool.MailDrone.Bootstrappers;
 using Ninject;
@@ -24,7 +26,7 @@ namespace SpeedyMailer.EmailPool.MailDrone.Mail
            scheduler.JobFactory = IoCjobFactory;
         }
 
-        public void Start()
+        public void StartRetrieveJob()
         {
             var trigger = TriggerBuilder.Create()
                .WithIdentity("MailTrigger")
@@ -59,10 +61,10 @@ namespace SpeedyMailer.EmailPool.MailDrone.Mail
     public class RetrieveFragmentJob:IJob
     {
         private readonly IDroneCommunicationService droneCommunicationService;
-        private readonly IMailOporations mailOporations;
+        private readonly IDroneMailOporations mailOporations;
         private readonly IMailSender mailSender;
 
-        public RetrieveFragmentJob(IDroneCommunicationService droneCommunicationService, IMailOporations mailOporations, IMailSender mailSender)
+        public RetrieveFragmentJob(IDroneCommunicationService droneCommunicationService, IDroneMailOporations mailOporations, IMailSender mailSender)
         {
             this.droneCommunicationService = droneCommunicationService;
             this.mailOporations = mailOporations;
@@ -71,8 +73,11 @@ namespace SpeedyMailer.EmailPool.MailDrone.Mail
 
         public void Execute(IJobExecutionContext context)
         {
+            var stopJob = false;
 
             var fragment = droneCommunicationService.RetrieveFragment();
+
+            mailOporations.StopCurrentJob = () => stopJob = true;
 
             foreach (var droneSideOporation in fragment.DroneSideOporations)
             {
@@ -80,7 +85,18 @@ namespace SpeedyMailer.EmailPool.MailDrone.Mail
             }
 
             mailSender.ProcessFragment(fragment.EmailFragment);
+            
+            if (!stopJob)
+            {
+                var trigger = TriggerBuilder.Create()
+                    .WithIdentity("MailTrigger")
+                    .StartNow()
+                    .Build();
 
+                context.Scheduler.RescheduleJob(new TriggerKey("MailTrigger"), trigger);
+            }
+
+           
         }
     }
 }

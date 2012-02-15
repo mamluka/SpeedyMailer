@@ -6,6 +6,8 @@ using Nancy.Bootstrappers.Ninject;
 using Nancy.Testing;
 using Ninject;
 using Ploeh.AutoFixture;
+using Raven.Client;
+using Raven.Client.Document;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using SpeedyMailer.Core.Protocol;
@@ -28,7 +30,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
         public void InitNancy()
         {
 
-            Assembly.Load("SpeedyMailer.EmailPoolMaster");
+            Assembly.Load("SpeedyMailer.EmailPool.Master");
         }
 
         [Test]
@@ -118,7 +120,7 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
 
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
-            var emailOporations = MockRepository.GenerateMock<IMailOporations>();
+            var emailOporations = MockRepository.GenerateMock<IPoolMailOporations>();
             emailOporations.Expect(x => x.Preform(Arg<PoolSideOporationBase>.Matches(m => m.FragmentId == fragment.PoolSideOporation.FragmentId))).Repeat.Once();
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
@@ -138,18 +140,18 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
 
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
-            var emailPool = MockRepository.GenerateMock<IEmailPoolService>();
-            emailPool.Expect(x => x.PopEmail()).Repeat.Once().Return(new EmailFragment());
+            var fragmentRepository = MockRepository.GenerateMock<IFragmentRepository>();
+            fragmentRepository.Expect(x => x.PopFragment()).Repeat.Once().Return(new EmailFragment());
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EmailPoolService = emailPool;
+            bootstrapper.FragmentRepository = fragmentRepository;
 
             var browser = new Browser(bootstrapper);
 
             //Act
             browser.Get("/pool/retrievefragment", with => with.JsonBody(fragment));
             //Assert
-            emailPool.VerifyAllExpectations();
+            fragmentRepository.VerifyAllExpectations();
         }
 
         [Test]
@@ -158,8 +160,6 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
 
-            var emailPool = MockRepository.GenerateStub<IEmailPoolService>();
-            emailPool.Stub(x => x.PopEmail()).Repeat.Once().Return(null);
 
             var mailDroneRep = MockRepository.GenerateMock<IMailDroneRepository>();
             mailDroneRep.Expect(x => x.Update(Arg<MailDrone>.Matches(m => 
@@ -167,7 +167,6 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
                                                   ))).Repeat.Once();
 
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EmailPoolService = emailPool;
             bootstrapper.MailDroneRepository = mailDroneRep;
 
             var browser = new Browser(bootstrapper);
@@ -198,19 +197,16 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
             //Arrange
             var fragment = Fixture.CreateAnonymous<FragmenRequest>();
 
-            var emailPool = MockRepository.GenerateStub<IEmailPoolService>();
-            emailPool.Stub(x => x.PopEmail()).Return(null);
-                
-
+               
             var bootstrapper = new MyNinjectBootstrapperWithMockedObjects();
-            bootstrapper.EmailPoolService = emailPool;
+
 
             var browser = new Browser(bootstrapper);
             //Act
             var result = browser.Get("/pool/retrievefragment", with => with.JsonBody(fragment));
             //Assert
             result.Body.DeserializeJson<FragmentResponse>().DroneSideOporations.Should().Contain(
-                x => x.DroneSideOporationType == DroneSideOporationType.PutAsleep);
+                x => x.DroneSideOporationType == DroneSideOporationType.GoToSleep);
         }
 
 
@@ -221,25 +217,25 @@ namespace SpeedyMailer.EmailPool.Master.Tests.Pool
     {
         public IMailDroneRepository MailDroneRepository { get; set; }
         public IMailDroneService MailDroneService { get; set; }
-        public IMailOporations MailOporations { get; set; }
-        public IEmailPoolService EmailPoolService { get; set; }
+        public IPoolMailOporations MailOporations { get; set; }
+        public IFragmentRepository FragmentRepository { get; set; }
 
         public MyNinjectBootstrapperWithMockedObjects()
         {
             MailDroneService = MockRepository.GenerateStub<IMailDroneService>();
             MailDroneRepository = MockRepository.GenerateStub<IMailDroneRepository>();
-            MailOporations = MockRepository.GenerateStub<IMailOporations>();
-            EmailPoolService = MockRepository.GenerateStub<IEmailPoolService>();
+            MailOporations = MockRepository.GenerateStub<IPoolMailOporations>();
+            FragmentRepository = MockRepository.GenerateStub<IFragmentRepository>();
 
-            EmailPoolService.Stub(x => x.PopEmail()).Return(new EmailFragment());
+            FragmentRepository.Stub(x => x.PopFragment()).Return(new EmailFragment());
         }
 
         protected override void ConfigureApplicationContainer(IKernel existingContainer)
         {
             existingContainer.Bind<IMailDroneRepository>().ToConstant(MailDroneRepository);
             existingContainer.Bind<IMailDroneService>().ToConstant(MailDroneService);
-            existingContainer.Bind<IMailOporations>().ToConstant(MailOporations);
-            existingContainer.Bind<IEmailPoolService>().ToConstant(EmailPoolService);
+            existingContainer.Bind<IPoolMailOporations>().ToConstant(MailOporations);
+            existingContainer.Bind<IFragmentRepository>().ToConstant(FragmentRepository);
         }
     }
 }

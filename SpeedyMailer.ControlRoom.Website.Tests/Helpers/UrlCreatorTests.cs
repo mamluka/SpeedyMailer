@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Routing;
 using System.Web.Mvc;
 using MvcContrib.TestHelper;
@@ -10,10 +12,11 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using SpeedyMailer.ControlRoom.Website.Controllers;
 using SpeedyMailer.ControlRoom.Website.Tests.Maps;
+using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Tests.Emails;
 using SpeedyMailer.Tests.Core;
-
+using Ploeh.AutoFixture;
 
 namespace SpeedyMailer.ControlRoom.Website.Tests.Helpers
 {
@@ -34,8 +37,8 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Helpers
             //Arrange
             var urlHelper = CreateFakeUrlHelper();
             var configurationManager = MockRepository.GenerateStub<IConfigurationManager>();
-            configurationManager.Stub(x => x.Configurations).Return(new Configurations()
-                                                                        {SystemBaseDomainUrl = "http://www.domain.com"});
+            configurationManager.Stub(x => x.ControlRoomConfigurations).Return(new ControlRoomConfigurations()
+                                                                        {DomainUrl = "http://www.domain.com"});
 
 
             var urlCreator = new UrlCreator(urlHelper, configurationManager);
@@ -55,13 +58,13 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Helpers
         {
             //Arrange
 
-            var jsonObject = new {inside = "sample"};
+            var jsonObject = Fixture.CreateAnonymous<LeadIdentity>();
 
-            var jsonString = UrlCreator.SerializeToBase64(jsonObject);
+            var jsonString = EmulateDynamicEncoding(jsonObject);
 
             var urlHelper = CreateFakeUrlHelper();
             var configurationManager = MockRepository.GenerateStub<IConfigurationManager>();
-            configurationManager.Stub(x => x.Configurations).Return(new Configurations() { SystemBaseDomainUrl = "http://www.domain.com" });
+            configurationManager.Stub(x => x.ControlRoomConfigurations).Return(new ControlRoomConfigurations() { DomainUrl = "http://www.domain.com" });
 
 
             var urlCreator = new UrlCreator(urlHelper, configurationManager);
@@ -69,8 +72,14 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Helpers
             var url = urlCreator.UrlByRouteWithJsonObject("Deals", jsonObject);
 
             //Assert
-            url.Should().Contain("http://www.domain.com/Deals/" + jsonString);
 
+            url.Should().Be("http://www.domain.com/Deals/" + HttpUtility.UrlEncode(jsonString));
+
+        }
+
+        private string EmulateDynamicEncoding(dynamic jsonObject)
+        {
+            return UrlCreator.SerializeToBase64(jsonObject);
         }
 
         private UrlHelper CreateFakeUrlHelper()

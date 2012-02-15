@@ -158,44 +158,4 @@ namespace SpeedyMailer.EmailPool.Master.Tests.MailDrones
             return new MailDroneService(RestClient);    
         }
     }
-
-    public class MailDroneService:IMailDroneService
-    {
-        private readonly IRestClient restClient;
-
-        public MailDroneService(IRestClient restClient)
-        {
-            this.restClient = restClient;
-        }
-
-        public DroneStatus WakeUp(MailDrone mailDrone)
-        {
-            restClient.BaseUrl = mailDrone.BaseUri;
-
-            var request = new RestRequest
-                              {
-                                  Method = Method.POST, 
-                                  Resource = mailDrone.WakeUpUri
-                              };
-
-            var result = restClient.Execute<DroneStatus>(request);
-            
-            if (result.ResponseStatus == ResponseStatus.Error)
-            {
-               return DroneStatus.ErrorOccured;
-            }
-
-            if (result.ResponseStatus == ResponseStatus.TimedOut)
-            {
-                return DroneStatus.NoCommunication;
-            }
-            
-            return result.Data;
-        }
-
-        public DroneStatus PutAsleep(MailDrone mailDrone)
-        {
-            return DroneStatus.Asleep;
-        }
-    }
 }

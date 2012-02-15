@@ -9,8 +9,6 @@ namespace SpeedyMailer.EmailPool.Master
         {
             var nancyHost = new NancyHost(new Uri("http://localhost:12345/"));
             nancyHost.Start();
-
-            
             
             Console.WriteLine("Nancy now listening - navigating to http://localhost:8888/nancy/. Press enter to stop");
             Console.ReadKey();
