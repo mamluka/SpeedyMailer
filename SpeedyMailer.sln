@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.EmailPool.Mast
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.EmailPool.Master.Tests", "SpeedyMailer.EmailPool.Master.Tests\SpeedyMailer.EmailPool.Master.Tests.csproj", "{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.DbHandler", "SpeedyMailer.DbHandler\SpeedyMailer.DbHandler.csproj", "{A2A59022-987B-4053-B6A1-A218203A5A9A}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = SpeedyMailer.vsmdi
@@ -148,6 +150,16 @@ Global
 		{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}.Release|x86.ActiveCfg = Release|Any CPU
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Debug|x86.ActiveCfg = Debug|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Debug|x86.Build.0 = Debug|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Release|Any CPU.ActiveCfg = Release|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Release|Mixed Platforms.Build.0 = Release|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Release|x86.ActiveCfg = Release|x86
+		{A2A59022-987B-4053-B6A1-A218203A5A9A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

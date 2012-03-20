@@ -1,3 +1,5 @@
+using Nancy.Json;
+using Newtonsoft.Json;
 using RestSharp;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.MailDrone.Configurations;
@@ -24,9 +26,16 @@ namespace SpeedyMailer.EmailPool.MailDrone.Communication
                                   Resource = configurationManager.PoolOporationsUrls.PopFragmentUrl
                               };
 
+            JsonSettings.MaxJsonLength = 1000000;
+            request.RequestFormat = DataFormat.Json;
+
+
             var response = restClient.Execute<FragmentResponse>(request);
 
-            return response.Data;
+            var fragment = JsonConvert.DeserializeObject<FragmentResponse>(response.Content);
+
+
+            return fragment;
         }
     }
 }

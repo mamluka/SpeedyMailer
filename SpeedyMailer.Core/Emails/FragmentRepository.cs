@@ -30,9 +30,8 @@ namespace SpeedyMailer.Core.Emails
                 var emailFragment = session.Query<EmailFragment>()
                     .Customize(x => x.WaitForNonStaleResults())
                     .Where(x => x.Locked == false)
-                    .OrderByDescending(x => x.CreateDate)
-                    .Take(1)
-                    .SingleOrDefault();
+                    .OrderByDescending(x => x.CreateDate).Take(1).FirstOrDefault();
+                   
 
                 if (emailFragment != null)
                 {
@@ -47,8 +46,6 @@ namespace SpeedyMailer.Core.Emails
                     {
                         return PopFragment();
                     }
-
-
                 }
                 return null;
 

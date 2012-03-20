@@ -80,6 +80,10 @@ namespace SpeedyMailer.ControlRoom.Website.App_Start
                 .Bind<IContactsRepository>()
                 .To<ContactsRepository>();
 
+            kernel.Bind<IEmailSourceParser>().To<EmailSourceParser>();
+
+            kernel.Bind<IEmailRepository>().To<EmailRepository>();
+
             kernel.Bind<IDocumentStore>().ToProvider<RavenDocumentStoreProvider>();
             kernel.Bind<IMappingEngine>().ToConstant(Mapper.Engine);
             kernel.Bind<IEmailPoolService>().To<EmailPoolService>();

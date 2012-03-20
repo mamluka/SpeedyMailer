@@ -79,9 +79,12 @@ namespace SpeedyMailer.EmailPool.MailDrone.Mail
 
             mailOporations.StopCurrentJob = () => stopJob = true;
 
-            foreach (var droneSideOporation in fragment.DroneSideOporations)
+            if (fragment.DroneSideOporations != null)
             {
-                mailOporations.Preform(droneSideOporation);
+                foreach (var droneSideOporation in fragment.DroneSideOporations)
+                {
+                    mailOporations.Preform(droneSideOporation);
+                }
             }
 
             mailSender.ProcessFragment(fragment.EmailFragment);

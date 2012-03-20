@@ -8,29 +8,7 @@ namespace SpeedyMailer.Core.Emails
 {
     public class EmailSourceWeaver : IEmailSourceWeaver
     {
-        private readonly IUrlCreator urlCreator;
-
-        public EmailSourceWeaver(IUrlCreator urlCreator)
-        {
-            this.urlCreator = urlCreator;
-        }
-
-        public string WeaveDeals(string bodySource, LeadIdentity dealObject)
-        {
-            var jsonBase64String = UrlCreator.SerializeToBase64(dealObject);
-            var url = urlCreator.UrlByRouteWithParameters("Deals", new RouteValueDictionary()
-                                                                       {
-                                                                           {"JsonObject", jsonBase64String}
-                                                                       });
-
-            return WeaveDeals(bodySource, url);
-
-
-
-        }
-
-
-        public string WeaveUnsubscribeTemplate(string bodySource, string template, string unsubscribeLink)
+            public string WeaveUnsubscribeTemplate(string bodySource, string template, string unsubscribeLink)
         {
             return bodySource + string.Format(template,unsubscribeLink);
         }

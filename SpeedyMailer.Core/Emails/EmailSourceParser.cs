@@ -10,8 +10,13 @@ namespace SpeedyMailer.Core.Emails
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(emailSource);
-            var dealList = doc.DocumentNode.SelectNodes("//a[@href]").Select(link => link.GetAttributeValue("href", "")).ToList();
-            return dealList.Distinct().ToList();
+            var extractedDealList = doc.DocumentNode.SelectNodes("//a[@href]");
+            if (extractedDealList != null)
+            {
+                return extractedDealList.Select(link => link.GetAttributeValue("href", "")).Distinct().ToList();
+
+            }
+            return new List<string>();
         }
     }
 }

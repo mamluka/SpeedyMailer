@@ -23,72 +23,6 @@ namespace SpeedyMailer.Core.Tests.Emails
     public class EmailSourceWeaverTests : AutoMapperAndFixtureBase<AutoMapperMaps>
     {
         [Test]
-        public void WeaveDeals_ShouldCallTheUrlCreatorWithTheTheDealsRoute()
-        {
-            //Arrange
-            var dealObject = Fixture.CreateAnonymous<LeadIdentity>();
-            var bodySource = EmailSourceFactory.StandardEmail();
-
-            var urlCreator = MockRepository.GenerateMock<IUrlCreator>();
-            urlCreator.Expect(
-                x => x.UrlByRouteWithParameters(Arg<string>.Is.Equal("Deals"), Arg<RouteValueDictionary>.Is.Anything)).
-                Repeat.Once().Return("http://www.domain.com/Deals/Object");
-
-            var weaver = new EmailSourceWeaver(urlCreator);
-            //Act
-            weaver.WeaveDeals(bodySource, dealObject);
-            //Assert
-            urlCreator.VerifyAllExpectations();
-            
-        }
-
-        [Test]
-        public void WeaveDeals_ShouldCallTheUrlCreatorWithTheJsobObjectInBase64()
-        {
-            //Arrange
-            var dealObject = Fixture.CreateAnonymous<LeadIdentity>();
-
-            var jsonBase64String = UrlCreator.SerializeToBase64(dealObject);
-
-
-            var bodySource = EmailSourceFactory.StandardEmail();
-
-            var urlCreator = MockRepository.GenerateMock<IUrlCreator>();
-            urlCreator.Expect(
-                x => x.UrlByRouteWithParameters(Arg<string>.Is.Anything, Arg<RouteValueDictionary>.Matches(m => (string) m["JsonObject"] == jsonBase64String))).
-                Repeat.Once().Return("http://www.domain.com/Deals/Object");
-
-            var weaver = new EmailSourceWeaver(urlCreator);
-            //Act
-            weaver.WeaveDeals(bodySource, dealObject);
-            //Assert
-            urlCreator.VerifyAllExpectations();
-
-        }
-
-        [Test]
-        public void WeaveDeals_ShouldReplaceLinksWithDealLinks()
-        {
-            //Arrange
-
-            var dealObject = Fixture.CreateAnonymous<LeadIdentity>();
-
-            var bodySource = EmailSourceFactory.StandardEmail();
-            var urlCreator = MockRepository.GenerateStub<IUrlCreator>();
-            urlCreator.Stub(
-                x => x.UrlByRouteWithParameters(Arg<string>.Is.Anything, Arg<RouteValueDictionary>.Is.Anything)).Return(
-                    "replaced");
-
-            var weaver = new EmailSourceWeaver(urlCreator);
-            //Act
-            var newBody = weaver.WeaveDeals(bodySource, dealObject);
-            var dealList = FindAllDealLinksInAnEmailBody(newBody);
-            //Assert
-            dealList.Should().OnlyContain(x => x == "replaced");
-
-        }
-
-        [Test]
         public void WeaveDeals_ShouldShouldReplaceTheLinksWithDealLinksWithStrings()
         {
             //Arrange
@@ -151,15 +85,11 @@ namespace SpeedyMailer.Core.Tests.Emails
     public class MockedEmailSourceWeaverBuilder:IMockedComponentBuilder<EmailSourceWeaver>
     {
 
-        public IUrlCreator UrlCreator { get; set; }
 
-        public MockedEmailSourceWeaverBuilder()
-        {
-            UrlCreator = MockRepository.GenerateStub<IUrlCreator>();
-        }
+        
         public EmailSourceWeaver Build()
         {
-            return new EmailSourceWeaver(UrlCreator);
+            return new EmailSourceWeaver();
         }
     }
 }

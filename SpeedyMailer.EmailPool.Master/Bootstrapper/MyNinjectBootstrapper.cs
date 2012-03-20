@@ -32,7 +32,7 @@ namespace SpeedyMailer.EmailPool.Master.Bootstrapper
             existingContainer.Bind<IEmailSourceWeaver>().To<EmailSourceWeaver>();
             existingContainer.Bind<IUrlCreator>().To<UrlCreator>();
             existingContainer.Bind<IContactsRepository>().To<ContactsRepository>();
-
+            existingContainer.Bind<IFragmentRepository>().To<FragmentRepository>();
 
 
 

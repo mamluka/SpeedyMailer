@@ -71,6 +71,26 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
         }
 
         [Test]
+        public void PostIndex_ShouldAddEmailToTheEmailRepository()
+        {
+            //Arrange
+            var model = Fixture.CreateAnonymous<ComposeModel>();
+            var email = Mapper.Map<ComposeModel, Email>(model);
+
+            var controllerBuilder = new ComposeControllerBuilder(Mapper);
+            var emailRepository = MockRepository.GenerateMock<IEmailRepository>();
+            emailRepository.Expect(x => x.Store(Arg<Email>.Matches(m=> m.Id == email.Id))).Repeat.Once();
+
+            controllerBuilder.EmailRepository = emailRepository;
+
+            var controller = controllerBuilder.Build();
+            //Act
+            controller.Index(model);
+            //Assert
+            emailRepository.VerifyAllExpectations();
+        }
+
+        [Test]
         public void PostIndex_ShouldPassTheEmailParameters()
         {
             //Arrange
@@ -107,6 +127,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
         public IViewModelBuilder<ComposeViewModel> IndexViewModelBuilder { get; set; }
         public IEmailPoolService EmailPoolService { get; set; }
         public IMappingEngine Mapper { get; set; }
+        public IEmailRepository EmailRepository { get; set; }
 
         public ComposeControllerBuilder(IMappingEngine mapper)
         {
@@ -116,11 +137,13 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Compose
 
             EmailPoolService = MockRepository.GenerateStub<IEmailPoolService>();
 
+            EmailRepository = MockRepository.GenerateStub<IEmailRepository>();
+
             Mapper = mapper;
         }
         public ComposeController Build()
         {
-            return new ComposeController(IndexViewModelBuilder,EmailPoolService,Mapper);
+            return new ComposeController(IndexViewModelBuilder,EmailRepository,EmailPoolService,Mapper);
         }
     }
 }

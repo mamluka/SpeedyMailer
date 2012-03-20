@@ -50,13 +50,13 @@ namespace SpeedyMailer.Core.Emails
                             break;
                         }
 
-                        var a = WebConfigurationManager.AppSettings["DomainUrl"];
-
                         var emailFragment = mapper.Map<Email, EmailFragment>(email);
 
                         emailFragment.UnsubscribeTemplate = systemTemplates.Unsubscribe ?? "";
 
                         emailFragment.MailId = email.Id;
+
+                        emailFragment.Locked = false;
 
                         emailFragment.ExtendedRecipients = listFragment.Select(x =>
                                                                                new ExtendedRecipient()

@@ -3,7 +3,7 @@ using Raven.Client;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public class EmailRepository
+    public class EmailRepository : IEmailRepository
     {
         private readonly IDocumentStore store;
         private readonly IEmailSourceParser parser;
@@ -18,7 +18,6 @@ namespace SpeedyMailer.Core.Emails
         {
             using (var session = store.OpenSession())
             {
-                email.Id = String.Empty;
                 email.Deals = parser.Deals(email.Body);
 
                 session.Store(email);

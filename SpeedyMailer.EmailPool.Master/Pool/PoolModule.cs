@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Nancy;
+using Nancy.Json;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.MailDrones;
 using Nancy.ModelBinding;
@@ -31,6 +32,8 @@ namespace SpeedyMailer.EmailPool.Master.Pool
 
             Get["/retrievefragment"] = x =>
                                            {
+                                               JsonSettings.MaxJsonLength = 1000000000;
+
                                                var model = this.Bind<FragmenRequest>();
                                                if (model.PoolSideOporation != null)
                                                {

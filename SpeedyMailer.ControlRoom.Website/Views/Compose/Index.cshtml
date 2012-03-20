@@ -6,7 +6,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@using (Html.BeginForm())
+@using (Html.BeginForm("Index","Compose",FormMethod.Post))
 {
 foreach (var list in Model.AvailableLists)
 {
@@ -14,7 +14,7 @@ foreach (var list in Model.AvailableLists)
 }
     <br/>
     <br/>
-    <textarea class="composer"></textarea>
+    @this.TextArea(x=> x.Body).Class("composer")
     <br/>
     <br/>
     @this.SubmitButton("Send Email")

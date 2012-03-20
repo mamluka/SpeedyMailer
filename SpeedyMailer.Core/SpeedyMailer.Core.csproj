@@ -99,6 +99,7 @@
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />
     <Compile Include="Emails\FragmentRepository.cs" />
+    <Compile Include="Emails\IEmailRepository.cs" />
     <Compile Include="Emails\IEmailSourceWeaver.cs" />
     <Compile Include="Emails\IFragmentRepository.cs" />
     <Compile Include="Emails\LeadIdentity.cs" />

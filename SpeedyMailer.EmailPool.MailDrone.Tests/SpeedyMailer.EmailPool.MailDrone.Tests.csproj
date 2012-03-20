@@ -76,7 +76,6 @@
   <ItemGroup>
     <Compile Include="Communication\DroneCommunicationServiceTests.cs" />
     <Compile Include="Drone\DroneTests.cs" />
-    <Compile Include="Mail\DroneJobManagerTests.cs" />
     <Compile Include="Mail\DroneMailOporationsTests.cs" />
     <Compile Include="Mail\MailParserTests.cs" />
     <Compile Include="Mail\MailSenderTests.cs" />

@@ -1,3 +1,5 @@
+using System.Configuration;
+
 namespace SpeedyMailer.EmailPool.MailDrone.Configurations
 {
     public interface IDroneConfigurationManager
@@ -11,5 +13,20 @@ namespace SpeedyMailer.EmailPool.MailDrone.Configurations
     {
         public string BasePoolUrl { get; set; }
         public PoolOporationsUrls PoolOporationsUrls { get; set; }
+
+        public DroneConfigurationManager()
+        {
+            BasePoolUrl = GetValueFromConfiguration("BasePoolUrl");
+
+            PoolOporationsUrls = new PoolOporationsUrls()
+                                     {
+                                         PopFragmentUrl = GetValueFromConfiguration("PopFragmentUrl")
+                                     };
+        }
+
+        private string GetValueFromConfiguration(string key)
+        {
+            return ConfigurationManager.AppSettings[key];
+        }
     }
 }

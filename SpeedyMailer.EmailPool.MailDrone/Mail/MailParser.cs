@@ -14,11 +14,7 @@ namespace SpeedyMailer.EmailPool.MailDrone.Mail
 
         public string Parse(ExtendedRecipient recipient)
         {
-            var body = weaver.WeaveDeals(mailParserInitializer.Body, new LeadIdentity()
-                                                                         {
-                                                                             Address = recipient.Address,
-                                                                             EmailId = mailParserInitializer.MailId
-                                                                         });
+            var body = weaver.WeaveDeals(mailParserInitializer.Body, recipient.DealUrl);
 
             return body;
         }

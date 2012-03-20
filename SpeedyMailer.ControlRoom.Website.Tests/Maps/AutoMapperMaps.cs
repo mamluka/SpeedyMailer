@@ -19,7 +19,7 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Maps
             ;
 
             Mapper.CreateMap<ContactCSVParserResults, UploadListViewModel>()
-                .ForMember(dto=> dto.Results,opt=> opt.ResolveUsing<FromUploadResultsToViewModel>())
+                .ForMember(dto => dto.Results, opt => opt.ResolveUsing<FromUploadResultsToViewModel>())
                 ;
 
             Mapper.CreateMap<UploadListModel, InitialContactsBatchOptions>()
@@ -30,6 +30,9 @@ namespace SpeedyMailer.ControlRoom.Website.Tests.Maps
                 ;
 
             Mapper.CreateMap<ComposeModel, Email>()
+                ;
+            Mapper.CreateMap<Email, EmailFragment>()
+                .ForMember(x => x.Id, opt => opt.Ignore())
                 ;
 
         }

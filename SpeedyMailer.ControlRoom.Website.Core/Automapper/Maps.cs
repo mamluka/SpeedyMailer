@@ -30,8 +30,9 @@ namespace SpeedyMailer.ControlRoom.Website.Core.Automapper
 
             Mapper.CreateMap<ComposeModel, Email>()
                 ;
-
-                ;
+            Mapper.CreateMap<Email, EmailFragment>()
+               .ForMember(x => x.Id, opt => opt.Ignore())
+               ;
         }
     }
 }
