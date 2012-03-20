@@ -109,7 +109,7 @@ namespace SpeedyMailer.Core.Tests.Lists
         var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Stub(x => x.Load<ListsStore>("system/lists")).Return(listCollection);
 
-            session.Expect(x => x.Store(Arg<ListsStore>.Matches(m => m.Lists.Where(p=> p.Id == listToBeDeleted.Id).Count() == 0),Arg<string>.Is.Equal("system/lists")))
+            session.Expect(x => x.Store(Arg<ListsStore>.Matches(m => m.Lists.All(p => p.Id != listToBeDeleted.Id)),Arg<string>.Is.Equal("system/lists")))
                 .Repeat
                 .Once();
 

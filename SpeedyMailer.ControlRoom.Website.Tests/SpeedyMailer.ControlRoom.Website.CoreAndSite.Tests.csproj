@@ -119,7 +119,6 @@
     <Compile Include="Extentions.cs" />
     <Compile Include="Helpers\UrlCreatorTests.cs" />
     <Compile Include="Maps\AutoMapperMaps.cs" />
-    <Compile Include="NUnitTestClass1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
