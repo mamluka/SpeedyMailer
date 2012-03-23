@@ -6,21 +6,32 @@ using SpeedyMailer.EmailPool.MailDrone.Mail;
 
 namespace SpeedyMailer.EmailPool.MailDrone
 {
-    class MailDrone
+    public class MailDrone
     {
-        static void Main(string[] args)
-        {
-            var nancyHost = new NancyHost(new Uri("http://localhost:45678/"));
-            nancyHost.Start();
+        private static NancyHost nancyHost;
 
+        public static void Main(string[] args)
+        {
+            StartServer();
+            StartJobManager();
+            StopServer();
+        }
+
+        private static void StopServer()
+        {
+            nancyHost.Stop();
+        }
+
+        private static void StartJobManager()
+        {
             var jobManager = new DroneJobManager();
             jobManager.StartRetrieveJob();
+        }
 
-            Console.WriteLine("Mail drone now active - navigating to http://localhost:45678/. Press enter to stop");
-            Console.ReadKey();
-
-            nancyHost.Stop();
-            Console.WriteLine("Stopped. Good bye!");
+        private static void StartServer()
+        {
+            nancyHost = new NancyHost(new Uri("http://localhost:45678/"));
+            nancyHost.Start();
         }
     }
 }
