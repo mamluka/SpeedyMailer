@@ -10,6 +10,7 @@ using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.Core.Emails;
 using SpeedyMailer.EmailPool.MailDrone.Communication;
+using SpeedyMailer.EmailPool.MailDrone.Jobs;
 using SpeedyMailer.EmailPool.MailDrone.Mail;
 using SpeedyMailer.MailDrone.Tests.Maps;
 using SpeedyMailer.Tests.Core;

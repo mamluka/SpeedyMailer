@@ -95,8 +95,10 @@
     <Compile Include="Communication\IDroneCommunicationService.cs" />
     <Compile Include="Configurations\IDroneConfigurationManager.cs" />
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
-    <Compile Include="MailDrone.cs" />
-    <Compile Include="Mail\DroneJobManager.cs" />
+    <Compile Include="Jobs\DroneJobManager.cs" />
+    <Compile Include="Jobs\IoCJobFactory.cs" />
+    <Compile Include="Jobs\RetrieveFragmentJob.cs" />
+    <Compile Include="MailDroneHost.cs" />
     <Compile Include="Mail\IMailParser.cs" />
     <Compile Include="Mail\IMailSender.cs" />
     <Compile Include="Mail\MailParser.cs" />
