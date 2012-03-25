@@ -34,30 +34,30 @@ namespace SpeedyMailer.Tests.Acceptance.Drones
             smptClient.Send(email);
 
 
-            SimpleSmtpServer.ReceivedEmailCount.Should().Be(1);
+            SmtpServer.ReceivedEmailCount.Should().Be(1);
 
         }
     }
 
     public class DronesAcceptanceTestsBase:AcceptanceTestsBase
     {
-        private SimpleSmtpServer _simpleSmtpServer;
+        private SimpleSmtpServer _smtpServer;
 
-        public SimpleSmtpServer SimpleSmtpServer
+        public SimpleSmtpServer SmtpServer
         {
-            get { return _simpleSmtpServer; }
+            get { return _smtpServer; }
         }
 
         [TestFixtureSetUp]
         public void DroneFixtureSetup()
         {
-            _simpleSmtpServer = SimpleSmtpServer.Start();
+            _smtpServer = SimpleSmtpServer.Start();
         }
 
         [TestFixtureTearDown]
         public void DroneFixtureTearDown()
         {
-            SimpleSmtpServer.Stop();
+            SmtpServer.Stop();
         }
     }
 }
