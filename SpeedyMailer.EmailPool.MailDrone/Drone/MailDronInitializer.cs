@@ -9,7 +9,7 @@ namespace SpeedyMailer.EmailPool.MailDrone.Drone
 {
     public class MailDronInitializer
     {
-        public MailDronInitializer(INancyEngine nancyEngine)
+        public MailDronInitializer()
         {
             var nancyHost = new NancyHost(new Uri("http://localhost:45678/"));
         }
