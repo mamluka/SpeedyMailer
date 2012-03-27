@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SpeedyMailer.Core.Contacts
+namespace SpeedyMailer.Domain.Model.Contact
 {
     public class Contact
     {

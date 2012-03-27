@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Core.Emails
+namespace SpeedyMailer.Domain.Model.Email
 {
     public class LeadIdentity
     {

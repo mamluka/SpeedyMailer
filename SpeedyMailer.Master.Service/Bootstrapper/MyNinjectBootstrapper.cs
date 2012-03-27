@@ -2,12 +2,14 @@ using Nancy.Bootstrappers.Ninject;
 using Ninject;
 using Raven.Client;
 using RestSharp;
+using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Core.MailDrones;
 using SpeedyMailer.Core.NinjectProvider;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Domain.DataAccess.Contact;
+using SpeedyMailer.Domain.DataAccess.Drone;
+using SpeedyMailer.Domain.DataAccess.Fragment;
 using SpeedyMailer.EmailPool.Core.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 

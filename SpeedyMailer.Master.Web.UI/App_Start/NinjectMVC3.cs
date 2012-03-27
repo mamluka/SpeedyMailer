@@ -5,11 +5,13 @@ using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Core.Lists;
 using SpeedyMailer.Core.NinjectProvider;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Mvc;
+using SpeedyMailer.Domain.DataAccess.Contact;
+using SpeedyMailer.Domain.DataAccess.Email;
+using SpeedyMailer.Domain.DataAccess.List;
 using SpeedyMailer.Master.Web.UI.App_Start;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(NinjectMVC3), "Start")]

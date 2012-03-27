@@ -4,6 +4,8 @@ using SpeedyMailer.ControlRoom.Website.Core.Builders;
 using SpeedyMailer.ControlRoom.Website.Core.Models;
 using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Domain.DataAccess.Email;
+using SpeedyMailer.Domain.Model.Email;
 
 namespace SpeedyMailer.Master.Web.UI.Controllers
 {

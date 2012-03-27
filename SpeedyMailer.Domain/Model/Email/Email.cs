@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace SpeedyMailer.Core.Emails
+namespace SpeedyMailer.Domain.Model.Email
 {
     public class Email
     {

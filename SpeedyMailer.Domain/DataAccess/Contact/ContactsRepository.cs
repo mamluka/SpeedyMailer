@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Raven.Client;
 using System.Linq;
 
-namespace SpeedyMailer.Core.Contacts
+namespace SpeedyMailer.Domain.DataAccess.Contact
 {
     public class ContactsRepository : IContactsRepository
     {

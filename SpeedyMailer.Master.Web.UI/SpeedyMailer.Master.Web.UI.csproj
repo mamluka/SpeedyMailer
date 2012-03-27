@@ -451,6 +451,14 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
+      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
+      <Name>SpeedyMailer.Bridge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Domain\SpeedyMailer.Domain.csproj">
+      <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
+      <Name>SpeedyMailer.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
       <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
       <Name>SpeedyMailer.Master.Web.Core</Name>
