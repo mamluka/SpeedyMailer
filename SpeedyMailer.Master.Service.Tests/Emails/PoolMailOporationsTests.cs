@@ -3,7 +3,6 @@ using Raven.Client;
 using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Bridge.Model.Drones;
 using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.Tests.Maps;
 using SpeedyMailer.Tests.Core;
@@ -49,8 +48,8 @@ namespace SpeedyMailer.Master.Service.Tests.Emails
 
             var mailDrone = Fixture.CreateAnonymous<MailDrone>();
 
-            var oporation = new FragmentCompleteOporation()
-            {
+            var oporation = new FragmentCompleteOporation
+                                {
                 FragmentOporationType = PoolFragmentOporationType.SetAsCompleted,
                 FragmentId = Fixture.CreateAnonymous<string>(),
                 CompletedBy = mailDrone
