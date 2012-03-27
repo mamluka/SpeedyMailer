@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Ninject;
+using Ninject.Activation;
 using Ninject.Modules;
 using RestSharp;
 using SpeedyMailer.Core.Emails;
@@ -26,33 +27,9 @@ namespace SpeedyMailer.EmailPool.MailDrone.Bootstrappers
                                 {
                                     x.FromAssembliesMatching("SpeedyMailer.*");
                                     x.BindWith<DefaultBindingGenerator>();
-                                    
                                 });
-                //Kernel.Load<MailDroneStandardModule>();
-           
-
         }
     }
 
-    class MailDroneStandardModule : NinjectModule 
-    {
-        public override void Load()
-        {
-            Kernel.Bind<IDroneCommunicationService>().To<DroneCommunicationService>();
-            Kernel.Bind<IDroneMailOporations>().To<DroneMailOporations>();
-            Kernel.Bind<IMailSender>().To<MailSender>();
-            Kernel.Bind<IRestClient>().To<RestClient>();
-            Kernel.Bind<IDroneConfigurationManager>().To<DroneConfigurationManager>();
-            Kernel.Bind<IMailParser>().To<MailParser>();
-            Kernel.Bind<IEmailSourceWeaver>().To<EmailSourceWeaver>();
-            Kernel.Bind<IUrlCreator>().To<UrlCreator>();
-   
 
-
-
-
-
-
-        }
-    }
 }
