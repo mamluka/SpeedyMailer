@@ -29,7 +29,7 @@ namespace SpeedyMailer.Master.Service.Tests.Pool
         public void InitNancy()
         {
 
-            Assembly.Load("SpeedyMailer.EmailPool.Master");
+            Assembly.Load("SpeedyMailer.Master.Service");
         }
 
         [Test]
