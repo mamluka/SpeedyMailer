@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
+using SpeedyMailer.Domain.Model.Emails;
 using SpeedyMailer.Master.Web.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Ploeh.AutoFixture;

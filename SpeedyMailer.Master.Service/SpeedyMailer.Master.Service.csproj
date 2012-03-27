@@ -90,7 +90,7 @@
     <Compile Include="Bootstrapper\MyNinjectBootstrapper.cs" />
     <Compile Include="MailDrones\IMailDroneService.cs" />
     <Compile Include="MailDrones\MailDroneService.cs" />
-    <Compile Include="Pool\PoolModule.cs" />
+    <Compile Include="Api\ServiceApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

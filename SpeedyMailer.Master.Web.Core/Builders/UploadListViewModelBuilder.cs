@@ -1,4 +1,4 @@
-using SpeedyMailer.Core.Lists;
+using SpeedyMailer.Domain.DataAccess.Lists;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 
 namespace SpeedyMailer.Master.Web.Core.Builders

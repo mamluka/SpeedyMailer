@@ -1,7 +1,9 @@
+using FluentAssertions;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using RestSharp;
-using SpeedyMailer.Core.MailDrones;
+using SpeedyMailer.Bridge.Model.Drones;
+using SpeedyMailer.Master.Service.MailDrones;
 using SpeedyMailer.Master.Service.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;

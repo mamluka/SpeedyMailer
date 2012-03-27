@@ -1,9 +1,16 @@
 ﻿using System;
 using AutoMapper;
+using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Domain.DataAccess.Emails;
+using SpeedyMailer.Domain.Model.Emails;
+using SpeedyMailer.Master.Web.Core.Builders;
+using SpeedyMailer.Master.Web.Core.Models;
+using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.Tests.Maps;
+using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
 using Ploeh.AutoFixture;
 

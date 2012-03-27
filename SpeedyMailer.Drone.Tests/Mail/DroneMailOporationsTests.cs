@@ -1,5 +1,5 @@
 using NUnit.Framework;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Drone.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using FluentAssertions;

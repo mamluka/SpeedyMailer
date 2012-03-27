@@ -1,7 +1,5 @@
 using AutoMapper;
 using Raven.Client;
-using SpeedyMailer.ControlRoom.Website.Core.Builders;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
@@ -9,9 +7,11 @@ using SpeedyMailer.Core.NinjectProvider;
 using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 using Ninject;
 using Ninject.Web.Mvc;
-using SpeedyMailer.Domain.DataAccess.Contact;
-using SpeedyMailer.Domain.DataAccess.Email;
-using SpeedyMailer.Domain.DataAccess.List;
+using SpeedyMailer.Domain.DataAccess.Contacts;
+using SpeedyMailer.Domain.DataAccess.Emails;
+using SpeedyMailer.Domain.DataAccess.Lists;
+using SpeedyMailer.Master.Web.Core.Builders;
+using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.UI.App_Start;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(NinjectMVC3), "Start")]

@@ -88,13 +88,21 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
+      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
+      <Name>SpeedyMailer.Bridge</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Master.Service.Core\SpeedyMailer.Master.Service.Core.csproj">
-      <Project>{51B62C73-4516-4D3E-8FC2-9D1150C5C91B}</Project>
-      <Name>SpeedyMailer.Master.Service.Core</Name>
+    <ProjectReference Include="..\SpeedyMailer.Domain\SpeedyMailer.Domain.csproj">
+      <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
+      <Name>SpeedyMailer.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Drone\SpeedyMailer.Drone.csproj">
+      <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
+      <Name>SpeedyMailer.Drone</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>

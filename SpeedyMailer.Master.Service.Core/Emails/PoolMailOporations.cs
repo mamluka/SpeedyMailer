@@ -1,7 +1,8 @@
 using System;
 using Raven.Client;
+using SpeedyMailer.Bridge.Communication;
+using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.Protocol;
 
 namespace SpeedyMailer.Master.Service.Core.Emails
 {

@@ -1,11 +1,11 @@
 ﻿using System.Web.Mvc;
 using AutoMapper;
-using SpeedyMailer.ControlRoom.Website.Core.Builders;
-using SpeedyMailer.ControlRoom.Website.Core.Models;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Domain.DataAccess.Email;
-using SpeedyMailer.Domain.Model.Email;
+using SpeedyMailer.Domain.DataAccess.Emails;
+using SpeedyMailer.Domain.Model.Emails;
+using SpeedyMailer.Master.Web.Core.Builders;
+using SpeedyMailer.Master.Web.Core.Models;
+using SpeedyMailer.Master.Web.Core.ViewModels;
 
 namespace SpeedyMailer.Master.Web.UI.Controllers
 {

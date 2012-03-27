@@ -2,9 +2,12 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Quartz;
-using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Bridge.Communication;
+using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Drone.Tests.Maps;
+using SpeedyMailer.Master.Web.UI.Communication;
+using SpeedyMailer.Master.Web.UI.Jobs;
+using SpeedyMailer.Master.Web.UI.Mail;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 

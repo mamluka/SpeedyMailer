@@ -1,4 +1,4 @@
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Bridge.Communication;
 
 namespace SpeedyMailer.Master.Web.UI.Communication
 {

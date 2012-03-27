@@ -4,8 +4,11 @@ using System.Linq;
 using System.Text;
 using AutoMapper;
 using Bootstrap.AutoMapper;
+using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Domain.Model.Contacts;
+using SpeedyMailer.Domain.Model.Emails;
 
 namespace SpeedyMailer.Core.Automapper
 {

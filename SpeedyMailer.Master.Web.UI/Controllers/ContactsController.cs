@@ -1,9 +1,9 @@
 ﻿using System.Web.Mvc;
 using AutoMapper;
-using SpeedyMailer.ControlRoom.Website.Core.Builders;
-using SpeedyMailer.ControlRoom.Website.Core.Models;
-using SpeedyMailer.ControlRoom.Website.Core.ViewModels;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Master.Web.Core.Builders;
+using SpeedyMailer.Master.Web.Core.Models;
+using SpeedyMailer.Master.Web.Core.ViewModels;
 
 namespace SpeedyMailer.Master.Web.UI.Controllers
 {

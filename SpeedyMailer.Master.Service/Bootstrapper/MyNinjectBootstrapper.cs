@@ -3,14 +3,13 @@ using Ninject;
 using Raven.Client;
 using RestSharp;
 using SpeedyMailer.Bridge.Communication;
-using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.NinjectProvider;
-using SpeedyMailer.Domain.DataAccess.Contact;
+using SpeedyMailer.Domain.DataAccess.Contacts;
 using SpeedyMailer.Domain.DataAccess.Drone;
-using SpeedyMailer.Domain.DataAccess.Fragment;
-using SpeedyMailer.EmailPool.Core.Emails;
+using SpeedyMailer.Domain.DataAccess.Fragments;
+using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 
 namespace SpeedyMailer.Master.Service.Bootstrapper

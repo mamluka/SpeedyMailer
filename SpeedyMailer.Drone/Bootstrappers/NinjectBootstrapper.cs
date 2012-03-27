@@ -1,10 +1,10 @@
 ﻿using Ninject;
 using Ninject.Modules;
 using RestSharp;
+using Ninject.Extensions.Conventions;
+using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Core.Protocol;
-using Ninject.Extensions.Conventions;
 using SpeedyMailer.Master.Web.UI.Communication;
 using SpeedyMailer.Master.Web.UI.Configurations;
 using SpeedyMailer.Master.Web.UI.Mail;

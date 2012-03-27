@@ -1,8 +1,11 @@
+using FluentAssertions;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using RestSharp;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Drone.Tests.Maps;
+using SpeedyMailer.Master.Web.UI.Communication;
+using SpeedyMailer.Master.Web.UI.Configurations;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 

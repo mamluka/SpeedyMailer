@@ -40,10 +40,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\DroneMailOporations.cs" />
+    <Compile Include="Communication\DroneSideOporationBase.cs" />
+    <Compile Include="Communication\DroneSideOporationType.cs" />
+    <Compile Include="Communication\FragmenRequest.cs" />
+    <Compile Include="Communication\FragmentCompleteOporation.cs" />
+    <Compile Include="Communication\FragmentResponse.cs" />
+    <Compile Include="Communication\IDroneMailOporations.cs" />
+    <Compile Include="Communication\PoolFragmentOporationType.cs" />
+    <Compile Include="Communication\PoolSideOporation.cs" />
+    <Compile Include="Communication\PutDroneToSleep.cs" />
+    <Compile Include="Model\Drones\DroneStatus.cs" />
+    <Compile Include="Model\Drones\MailDrone.cs" />
+    <Compile Include="Model\Fragments\EmailFragment.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
+    <Folder Include="Model\Drone\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

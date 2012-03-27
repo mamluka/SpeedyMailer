@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SpeedyMailer.Core.Lists;
+using SpeedyMailer.Domain.Model.Lists;
 using SpeedyMailer.Master.Web.Core.Models;
 
 namespace SpeedyMailer.Master.Web.Core.ViewModels

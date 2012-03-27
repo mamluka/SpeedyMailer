@@ -6,8 +6,5 @@ namespace SpeedyMailer.Master.Web.Core.Models
     {
         public List<string> ToLists { get; set; }
         public string Body { get; set; }
-
-        
-
     }
 }

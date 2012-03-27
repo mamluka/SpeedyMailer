@@ -1,7 +1,7 @@
 using Nancy.Json;
 using Newtonsoft.Json;
 using RestSharp;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Master.Web.UI.Configurations;
 
 namespace SpeedyMailer.Master.Web.UI.Communication

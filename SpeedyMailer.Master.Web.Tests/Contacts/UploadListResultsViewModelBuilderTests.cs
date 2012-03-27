@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using AutoMapper;
+using FluentAssertions;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Contacts;
-using SpeedyMailer.Core.Lists;
+using SpeedyMailer.Domain.DataAccess.Lists;
+using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 

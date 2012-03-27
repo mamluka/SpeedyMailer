@@ -1,5 +1,5 @@
 using Quartz;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Master.Web.UI.Communication;
 using SpeedyMailer.Master.Web.UI.Mail;
 

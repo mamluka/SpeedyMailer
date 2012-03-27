@@ -1,8 +1,10 @@
 using NUnit.Framework;
 using Raven.Client;
+using SpeedyMailer.Bridge.Communication;
+using SpeedyMailer.Bridge.Model.Drones;
+using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.MailDrones;
-using SpeedyMailer.Core.Protocol;
+using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Ploeh.AutoFixture;

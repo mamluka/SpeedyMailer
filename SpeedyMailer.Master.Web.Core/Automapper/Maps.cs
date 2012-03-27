@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Bootstrap.AutoMapper;
+using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Contacts;
-using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.Lists;
+using SpeedyMailer.Domain.Model.Contacts;
+using SpeedyMailer.Domain.Model.Emails;
+using SpeedyMailer.Domain.Model.Lists;
 using SpeedyMailer.Master.Web.Core.ComponentViewModel;
 using SpeedyMailer.Master.Web.Core.Models;
 using SpeedyMailer.Master.Web.Core.ViewModels;

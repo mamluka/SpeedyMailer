@@ -1,5 +1,5 @@
 using RestSharp;
-using SpeedyMailer.Core.MailDrones;
+using SpeedyMailer.Bridge.Model.Drones;
 
 namespace SpeedyMailer.Master.Service.MailDrones
 {

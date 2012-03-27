@@ -1,8 +1,9 @@
 using System.Linq;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
-using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Drone.Tests.Maps;
+using SpeedyMailer.Master.Web.UI.Mail;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 

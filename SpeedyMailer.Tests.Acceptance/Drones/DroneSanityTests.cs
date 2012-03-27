@@ -1,12 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Mail;
-using System.Text;
-using System.Threading;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Master.Web.UI;
 using SpeedyMailer.Tests.Acceptance.Framework;

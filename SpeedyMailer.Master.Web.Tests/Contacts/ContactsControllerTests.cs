@@ -1,10 +1,15 @@
 using AutoMapper;
+using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Rhino.Mocks;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Contacts;
-using SpeedyMailer.Core.Lists;
+using SpeedyMailer.Domain.DataAccess.Lists;
+using SpeedyMailer.Master.Web.Core.Builders;
+using SpeedyMailer.Master.Web.Core.Models;
+using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.Tests.Maps;
+using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Master.Web.Tests.Contacts
