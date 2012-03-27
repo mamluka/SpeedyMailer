@@ -11,7 +11,7 @@ using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.EmailPool.MailDrone.Communication;
 using SpeedyMailer.EmailPool.MailDrone.Configurations;
 using SpeedyMailer.EmailPool.MailDrone.Mail;
-
+using Ninject.Extensions.Conventions;
 namespace SpeedyMailer.EmailPool.MailDrone.Bootstrappers
 {
     public static class NinjectBootstrapper
@@ -22,7 +22,13 @@ namespace SpeedyMailer.EmailPool.MailDrone.Bootstrappers
         {
            
                 Kernel = new StandardKernel();
-                Kernel.Load<MailDroneStandardModule>();
+                Kernel.Scan(x=>
+                                {
+                                    x.FromAssembliesMatching("SpeedyMailer.*");
+                                    x.BindWith<DefaultBindingGenerator>();
+                                    
+                                });
+                //Kernel.Load<MailDroneStandardModule>();
            
 
         }

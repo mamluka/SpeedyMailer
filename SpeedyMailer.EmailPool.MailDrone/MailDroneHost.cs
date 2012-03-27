@@ -2,16 +2,20 @@
 using Nancy.Hosting.Self;
 using Ninject;
 using SpeedyMailer.EmailPool.MailDrone.Bootstrappers;
+using SpeedyMailer.EmailPool.MailDrone.Drone;
+using SpeedyMailer.EmailPool.MailDrone.Jobs;
 using SpeedyMailer.EmailPool.MailDrone.Mail;
 
 namespace SpeedyMailer.EmailPool.MailDrone
 {
-    public class MailDrone
+    public class MailDroneHost
     {
         private static NancyHost nancyHost;
 
         public static void Main(string[] args)
         {
+//            var drone = new MailDronInitializer();
+//            drone.Initialize();
             StartServer();
             StartJobManager();
             StopServer();
