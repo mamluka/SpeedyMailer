@@ -15,7 +15,7 @@ namespace SpeedyMailer.Master.Web.UI.Bootstrappers
         	Kernel.Bind(x =>
         	            x.FromAssembliesMatching("SpeedyMailer.*")
         	            	.SelectAllClasses()
-        	            	.BindAllInterfaces()
+							.BindDefaultInterface()
         		);
         }
     }
