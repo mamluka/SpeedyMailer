@@ -7,6 +7,8 @@ using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.Tests.Maps;
+using SpeedyMailer.Domain.DataAccess.Contacts;
+using SpeedyMailer.Domain.Model.Contacts;
 using SpeedyMailer.Tests.Core;
 using System.Linq;
 

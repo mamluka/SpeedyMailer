@@ -129,9 +129,9 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.EmailPool.MailDrone\SpeedyMailer.EmailPool.MailDrone.csproj">
+    <ProjectReference Include="..\SpeedyMailer.Drone\SpeedyMailer.Drone.csproj">
       <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
-      <Name>SpeedyMailer.EmailPool.MailDrone</Name>
+      <Name>SpeedyMailer.Drone</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

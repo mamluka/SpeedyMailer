@@ -4,7 +4,6 @@ using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Raven.Client;
-using SpeedyMailer.Core.MailDrones;
 using SpeedyMailer.Core.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;

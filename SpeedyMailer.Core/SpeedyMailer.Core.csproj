@@ -88,58 +88,39 @@
   <ItemGroup>
     <Compile Include="Automapper\Maps.cs" />
     <Compile Include="Core\IReportResults.cs" />
-    <Compile Include="Contacts\Contact.cs" />
     <Compile Include="Contacts\ContactsCSVParser.cs" />
     <Compile Include="Contacts\ContactFromCSVRow.cs" />
-    <Compile Include="Contacts\ContactsRepository.cs" />
     <Compile Include="Contacts\IContactsCSVParser.cs" />
-    <Compile Include="Contacts\IContactsRepository.cs" />
     <Compile Include="Contacts\ContactCSVParserResults.cs" />
     <Compile Include="Contacts\InitialContactsBatchOptions.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />
-    <Compile Include="Emails\FragmentRepository.cs" />
-    <Compile Include="Emails\IEmailRepository.cs" />
     <Compile Include="Emails\IEmailSourceWeaver.cs" />
-    <Compile Include="Emails\IFragmentRepository.cs" />
-    <Compile Include="Emails\LeadIdentity.cs" />
-    <Compile Include="Emails\Email.cs" />
-    <Compile Include="Emails\EmailFragment.cs" />
     <Compile Include="Emails\EmailPoolService.cs" />
-    <Compile Include="Emails\EmailRepository.cs" />
-    <Compile Include="Emails\EmailSourceParser.cs" />
     <Compile Include="Emails\EmailSourceWeaver.cs" />
     <Compile Include="Emails\IEmailPoolService.cs" />
-    <Compile Include="Emails\IEmailSourceParser.cs" />
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
     <Compile Include="Helpers\IUrlCreator.cs" />
     <Compile Include="Helpers\UrlCreator.cs" />
-    <Compile Include="Lists\IListRepository.cs" />
-    <Compile Include="Lists\ListDescriptor.cs" />
-    <Compile Include="Lists\ListRepository.cs" />
-    <Compile Include="MailDrones\DroneStatus.cs" />
-    <Compile Include="MailDrones\IMailDroneRepository.cs" />
-    <Compile Include="MailDrones\MailDrone.cs" />
-    <Compile Include="MailDrones\MailDroneRepository.cs" />
     <Compile Include="NinjectProvider\RavenDocumentStoreProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\DroneMailOporations.cs" />
-    <Compile Include="Protocol\DroneSideOporationBase.cs" />
-    <Compile Include="Protocol\DroneSideOporationType.cs" />
-    <Compile Include="Protocol\FragmenRequest.cs" />
-    <Compile Include="Protocol\FragmentCompleteOporation.cs" />
-    <Compile Include="Protocol\IDroneMailOporations.cs" />
-    <Compile Include="Protocol\PoolFragmentOporationType.cs" />
-    <Compile Include="Protocol\FragmentResponse.cs" />
-    <Compile Include="Protocol\PoolSideOporation.cs" />
-    <Compile Include="Protocol\PutDroneToSleep.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
+      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
+      <Name>SpeedyMailer.Bridge</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Domain\SpeedyMailer.Domain.csproj">
+      <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
+      <Name>SpeedyMailer.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

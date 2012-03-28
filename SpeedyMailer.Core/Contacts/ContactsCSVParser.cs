@@ -4,6 +4,8 @@ using System.IO;
 using System.Web;
 using System.Linq;
 using AutoMapper;
+using SpeedyMailer.Domain.DataAccess.Contacts;
+using SpeedyMailer.Domain.Model.Contacts;
 
 namespace SpeedyMailer.Core.Contacts
 {

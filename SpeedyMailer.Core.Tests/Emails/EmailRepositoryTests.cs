@@ -9,6 +9,8 @@ using Raven.Client;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tests.Maps;
+using SpeedyMailer.Domain.DataAccess.Emails;
+using SpeedyMailer.Domain.Model.Emails;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
 using Ploeh.AutoFixture;
