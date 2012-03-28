@@ -19,6 +19,7 @@ namespace SpeedyMailer.Domain.DataAccess.Emails
             using (var session = store.OpenSession())
             {
                 email.Deals = parser.Deals(email.Body);
+                email.Id = string.Empty;
 
                 session.Store(email);
                 session.SaveChanges();
