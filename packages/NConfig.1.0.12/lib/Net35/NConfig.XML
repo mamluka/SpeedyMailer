@@ -1,0 +1,446 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NConfig</name>
+    </assembly>
+    <members>
+        <member name="T:NConfig.NWebSystemConfigurator">
+            <summary>
+            Encapsulates forbidden magic that allows to smoothly use NConfig and System.Web.Configuration
+            </summary>
+        </member>
+        <member name="T:NConfig.NSystemConfigurator">
+            <summary>
+            Encapsulates forbidden magic that allows to smoothly use NConfig and System.Configuration
+            </summary>
+        </member>
+        <member name="T:NConfig.NConfigRecordReplacement">
+            <summary>
+            NConfig IInternalConfigRecord decorator, that adds custom configurations to web system default configuration.
+            </summary>
+        </member>
+        <member name="T:NConfig.DefaultMerger">
+            <summary>
+            Default Configuration section merger, that just returns first section among provided.
+            </summary>
+        </member>
+        <member name="T:NConfig.NSectionMerger">
+            <summary>
+            Provides functionality to merge configuration sections from different configuration files.
+            </summary>
+        </member>
+        <member name="M:NConfig.NSectionMerger.Merge(System.Collections.Generic.IEnumerable{System.Configuration.ConfigurationSection})">
+            <summary>
+            Merges the specified configuration sections.
+            </summary>
+            <param name="sections">The sections to merge in order from the most important to lower.</param>
+            <returns>The merge result section.</returns>
+        </member>
+        <member name="M:NConfig.DefaultMerger.Merge(System.Collections.Generic.IEnumerable{System.Configuration.ConfigurationSection})">
+            <summary>
+            Merges the specified configuration sections.
+            </summary>
+            <param name="sections">The sections to merge in order from most important to lower.</param>
+            <returns>The merge result section.</returns>
+        </member>
+        <member name="E:NConfig.NConfigRootReplacement.ConfigChanged">
+            <summary>
+            We do not provide correct event decoration, when we must take all the subscribers and 
+            resubscribe on our event instances, thus we provide corect instance in event args.
+            Currently all noticed subscribers in FCL do not use args or sender, so we just notify them that something changed.
+            </summary>
+        </member>
+        <member name="T:NConfig.PropertyMerger`1">
+            <summary>
+            Sections merger which performs configuration property-by-property merge.
+            </summary>
+            <typeparam name="TSection">Configuration section type.</typeparam>
+        </member>
+        <member name="T:NConfig.NSectionMerger`1">
+            <summary>
+            Provides typed functionality to merge configuration sections from different configuration files.
+            </summary>
+            <typeparam name="T">The ConfigurationSection type.</typeparam>
+        </member>
+        <member name="M:NConfig.NSectionMerger`1.Merge(System.Collections.Generic.IEnumerable{System.Configuration.ConfigurationSection})">
+            <summary>
+            Merges the specified configuration sections.
+            </summary>
+            <param name="sections">The sections to merge in order from the most important to lower.</param>
+            <returns>The merge resulting section.</returns>
+        </member>
+        <member name="M:NConfig.NSectionMerger`1.Merge(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Merges the specified typed configuration sections.
+            </summary>
+            <param name="sections">The sections to merge in order from the most important to lower.</param>
+            <returns>The merge resulting section.</returns>
+        </member>
+        <member name="M:NConfig.PropertyMerger`1.Merge(System.Collections.Generic.IEnumerable{`0})">
+            <summary>
+            Merges the specified typed configuration sections.
+            </summary>
+            <param name="sections">The sections to merge in order from the most important to lower.</param>
+            <returns>The merge resulting section.</returns>
+        </member>
+        <member name="T:NConfig.INConfiguration">
+            <summary>
+              Provides access to configuration files for client applications.
+            </summary>
+        </member>
+        <member name="M:NConfig.INConfiguration.GetSection(System.String)">
+            <summary>
+                Retrieves a specified configuration section for the 
+                current configuration file set.
+            </summary>
+            <param name="sectionName">The configuration section path and name.</param>
+            <returns>
+                The specified System.Configuration.ConfigurationSection object, 
+                or null if the section does not exist.
+            </returns>
+        </member>
+        <member name="M:NConfig.INConfiguration.GetSectionUntyped(System.String)">
+            <summary>
+                Retrieves an untyped specified configuration section for the 
+                current configuration file set.
+            </summary>
+            <param name="sectionName">Name of the section.</param>
+            <returns>
+                The specified configuration section object, 
+                or null if the section does not exist.
+            </returns>
+        </member>
+        <member name="M:NConfig.INConfiguration.GetSectionGroup(System.String)">
+            <summary>
+                Gets the specified <see cref="T:System.Configuration.ConfigurationSectionGroup"/> object.
+            </summary>
+            <param name="groupName"> The path name of the <see cref="T:System.Configuration.ConfigurationSectionGroup"/> to return.</param>
+            <returns>The <see cref="T:System.Configuration.ConfigurationSectionGroup"/> specified.</returns>
+        </member>
+        <member name="P:NConfig.INConfiguration.ConnectionStrings">
+            <summary>
+                Gets the System.Configuration.ConnectionStringsSection data for the
+                current configuration file set.
+            </summary>
+            <value>
+                A System.Configuration.ConnectionStringSettingsCollection object
+                that contains the contents of the System.Configuration.ConnectionStringsSection
+                object for the current configuration file set.
+            </value>
+        </member>
+        <member name="P:NConfig.INConfiguration.AppSettings">
+            <summary>
+                Gets the System.Configuration.AppSettingsSection data for the 
+                current configuration file set.
+            </summary>
+            <value>
+                A System.Collections.Specialized.NameValueCollection object that
+                contains the contents of the System.Configuration.AppSettingsSection object
+                for the current configuration file set.
+            </value>
+        </member>
+        <member name="P:NConfig.INConfiguration.FileNames">
+            <summary>
+                Gets the list of configuration file names assigned to current configuration.
+            </summary>
+            <value>The configuration file names.</value>
+        </member>
+        <member name="T:NConfig.INConfigurationExtensions">
+            <summary>
+            Add default and typed extensions to IConfiguration interface.
+            </summary>
+        </member>
+        <member name="M:NConfig.INConfigurationExtensions.GetSection``1(NConfig.INConfiguration)">
+            <summary>
+            Retrieves configuration section with a name that corresponds to <typeparamref name="T"/> short type name.
+            </summary>
+            <typeparam name="T">Configuration section Type that inherits <see cref="T:System.Configuration.ConfigurationSection"/>.</typeparam>
+            <returns>
+            The specified ConfigurationSection object of type <typeparamref name="T"/>,
+            or null if the section does not exist.
+            </returns>
+        </member>
+        <member name="M:NConfig.INConfigurationExtensions.GetSection``1(NConfig.INConfiguration,System.String)">
+            <summary>
+            Retrieves a specified configuration section of type <typeparamref name="T"/> for the
+            current configuration file set.
+            </summary>
+            <typeparam name="T">Configuration section Type that inherits <see cref="T:System.Configuration.ConfigurationSection"/>.</typeparam>
+            <param name="configuration"></param>
+            <param name="sectionName">The configuration section path and name.</param>
+            <returns>
+            The specified ConfigurationSection object of type <typeparamref name="T"/>,
+            or null if the section does not exist.
+            </returns>
+        </member>
+        <member name="M:NConfig.INConfigurationExtensions.GetSectionGroup``1(NConfig.INConfiguration,System.String)">
+            <summary>
+            Gets the specified Configuration Section Group object of type <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">Configuration section group Type that inherits <see cref="T:System.Configuration.ConfigurationSectionGroup"/>.</typeparam>
+            <param name="configuration"></param>
+            <param name="groupName">The path name of the <see cref="T:System.Configuration.ConfigurationSectionGroup"/> to return.</param>
+            <returns>The section group specified.</returns>
+        </member>
+        <member name="M:NConfig.INConfigurationExtensions.SetAsDefault(NConfig.INConfiguration)">
+            <summary>
+            Sets this configuration as the NConfigurator default configuration.
+            </summary>
+        </member>
+        <member name="M:NConfig.INConfigurationExtensions.SetAsSystemDefault(NConfig.INConfiguration)">
+            <summary>
+            Sets this configuration as the NConfigurator default and System wide default configuration.
+            Thus you can use <see cref="T:System.Configuration.ConfigurationManager"/> to access this configuration.
+            </summary>
+        </member>
+        <member name="M:NConfig.IConfigurationRepository.GetFileConfiguration(System.String)">
+            <summary>
+            Returns the Configuration object that corresponds to passed configuration file.
+            </summary>
+            <param name="fileName">Name of the configuration file.</param>
+            <returns>The Configuration instance that provides access to configuration.</returns>
+        </member>
+        <member name="T:NConfig.ConfigurationExtension">
+            <summary>
+            Provides extensions to <see cref="T:System.Configuration.Configuration"/> type.
+            </summary>
+        </member>
+        <member name="M:NConfig.ConfigurationExtension.GetSection``1(System.Configuration.Configuration)">
+            <summary>
+            Retrieves configuration section with a name that corresponds to <typeparamref name="T"/> short type name.
+            </summary>
+            <typeparam name="T">Configuration section Type that inherits <see cref="T:System.Configuration.ConfigurationSection"/>.</typeparam>
+            <param name="config"></param>
+            <returns>
+            The specified ConfigurationSection object of type <typeparamref name="T"/>,
+            or null if the section does not exist.
+            </returns>
+        </member>
+        <member name="M:NConfig.ConfigurationExtension.GetSection``1(System.Configuration.Configuration,System.String)">
+            <summary>
+            Retrieves a specified configuration section of type <typeparamref name="T"/>.
+            </summary>
+            <typeparam name="T">Configuration section Type that inherits <see cref="T:System.Configuration.ConfigurationSection"/>.</typeparam>
+            <param name="config"></param>
+            <param name="sectionName">The configuration section path and name.</param>
+            <returns>
+            The specified ConfigurationSection object of type <typeparamref name="T"/>,
+            or null if the section does not exist.
+            </returns>
+        </member>
+        <member name="T:NConfig.HostMappingConfigurationCollection">
+            <summary>
+            Host names to Aliases mapping collection.
+            </summary>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NConfig.HostMappingConfigurationCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.ContainsHost(System.String)">
+            <summary>
+            Determines whether host mapping contains specified host.
+            </summary>
+            <param name="host">The host name to check.</param>
+            <returns>
+            	<c>true</c> if the specified host regitered; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.Add(NConfig.HostMappingConfigurationElement)">
+            <summary>
+            Adds the specified host mapping.
+            </summary>
+            <param name="hostMapping">The host mapping.</param>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.Add(System.String,System.String)">
+            <summary>
+            Adds the specified host name and alias pair.
+            </summary>
+            <param name="host">The host name.</param>
+            <param name="alias">The alias that corresponds to this host.</param>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.Clear">
+            <summary>
+             Removes all registrations from the mapping.
+            </summary>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.Remove(System.String)">
+            <summary>
+            Removes the specified host registration from the mapping.
+            </summary>
+            <param name="host">The host name.</param>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.CreateNewElement">
+            <summary>
+            When overridden in a derived class, creates a new <see cref="T:System.Configuration.ConfigurationElement"/>.
+            </summary>
+            <returns>
+            A new <see cref="T:System.Configuration.ConfigurationElement"/>.
+            </returns>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationCollection.GetElementKey(System.Configuration.ConfigurationElement)">
+            <summary>
+            Gets the element key for a specified configuration element when overridden in a derived class.
+            </summary>
+            <param name="element">The <see cref="T:System.Configuration.ConfigurationElement"/> to return the key for.</param>
+            <returns>
+            An <see cref="T:System.Object"/> that acts as the key for the specified <see cref="T:System.Configuration.ConfigurationElement"/>.
+            </returns>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationCollection.AllHosts">
+            <summary>
+            Gets all registered host names.
+            </summary>
+            <value>The array of registered host names.</value>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationCollection.Item(System.String)">
+            <summary>
+            Gets the <see cref="T:NConfig.HostMappingConfigurationElement"/> with the specified host name.
+            </summary>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationCollection.Properties">
+            <summary>
+            Gets the collection of properties.
+            </summary>
+            <returns>The <see cref="T:System.Configuration.ConfigurationPropertyCollection"/> of properties for the element.</returns>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationCollection.ThrowOnDuplicate">
+            <summary>
+            Gets a value indicating whether an attempt to add a duplicate <see cref="T:System.Configuration.ConfigurationElement"/> to the <see cref="T:System.Configuration.ConfigurationElementCollection"/> will cause an exception to be thrown.
+            </summary>
+            <returns>true if an attempt to add a duplicate <see cref="T:System.Configuration.ConfigurationElement"/> to this <see cref="T:System.Configuration.ConfigurationElementCollection"/> will cause an exception to be thrown; otherwise, false. </returns>
+        </member>
+        <member name="T:NConfig.ConfigurationRepositoryWeb">
+            <summary>
+            Provides web specific configuration file location.
+            </summary>
+        </member>
+        <member name="T:NConfig.NConfigurator">
+            <summary>
+              Provides access to configuration files for client applications.
+            </summary>
+        </member>
+        <member name="M:NConfig.NConfigurator.UsingFile(System.String)">
+            <summary>
+                Provides access to configuration stored in the specified client configuration file.
+            </summary>
+            <param name="fileName">The path of the configuration file.</param>
+        </member>
+        <member name="M:NConfig.NConfigurator.UsingFiles(System.String[])">
+            <summary>
+                Provides access to configuration stored in the specified client configuration files.
+            </summary>
+            <param name="fileNames">The array of path of the configuration files.</param>
+        </member>
+        <member name="M:NConfig.NConfigurator.RestoreSystemDefaults">
+            <summary>
+            Restores the system default configuration.
+            </summary>
+        </member>
+        <member name="M:NConfig.NConfigurator.RegisterSectionMerger(System.Type,NConfig.NSectionMerger)">
+            <summary>
+            Registers the section merger for specified section type.
+            </summary>
+            <param name="sectionType">Type of the section.</param>
+            <param name="merger">The section merger instance.</param>
+        </member>
+        <member name="M:NConfig.NConfigurator.RegisterSectionMerger``1(NConfig.NSectionMerger{``0})">
+            <summary>
+            Registers the section merger for specified section type.
+            </summary>
+            <typeparam name="TSectionType">The type of the section.</typeparam>
+            <param name="merger">The section merger instance.</param>
+        </member>
+        <member name="M:NConfig.NConfigurator.RegisterSectionMerger``1(NConfig.NSectionMerger)">
+            <summary>
+            Registers the section merger for specified section type.
+            </summary>
+            <typeparam name="TSectionType">The type of the section.</typeparam>
+            <param name="merger">The section merger instance.</param>
+        </member>
+        <member name="P:NConfig.NConfigurator.Default">
+            <summary>
+            Gets the current application's default configuration.
+            </summary>
+            <value>The current application's default configuration.</value>
+        </member>
+        <member name="M:NConfig.NConfigSettings.DetectHostAlias">
+            <summary>
+            Detects the alias for the current host.
+            First it reads HostMap.Config file then searches inside App.Config, if not sucessful
+            returns current host name.
+            </summary>
+        </member>
+        <member name="M:NConfig.NConfigSettings.DetectIsWeb">
+            <summary>
+            Detects if the current application is web based.
+            Detection method is not natural (HostingEnvironment.IsHosted) but allows no to upload System.Web assembly.
+            </summary>
+        </member>
+        <member name="P:NConfig.NConfigSettings.HostAlias">
+            <summary>
+            Gets the alias assigned for current Host.
+            This alias used to find out Host specific configurations.
+            </summary>
+            <value>The host's alias.</value>
+        </member>
+        <member name="P:NConfig.NConfigSettings.IsWeb">
+            <summary>
+            Gets a value indicating whether current application is web based.
+            </summary>
+            <value><c>true</c> if current application is web bases; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="T:NConfig.HostMapSection">
+            <summary>
+            Provides Host names to Aliases mapping.
+            </summary>
+        </member>
+        <member name="P:NConfig.HostMapSection.Mappings">
+            <summary>
+            Gets the Host Names to Aliases mappings.
+            </summary>
+        </member>
+        <member name="T:NConfig.HostMappingConfigurationElement">
+            <summary>
+            Represents Host to HostAlias mapping.
+            </summary>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationElement.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:NConfig.HostMappingConfigurationElement"/> class.
+            </summary>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationElement.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NConfig.HostMappingConfigurationElement"/> class.
+            </summary>
+            <param name="host">The Host name.</param>
+            <param name="alias">The Alias to map Host to.</param>
+        </member>
+        <member name="M:NConfig.HostMappingConfigurationElement.Init">
+            <summary>
+            Sets the <see cref="T:System.Configuration.ConfigurationElement"/> object to its initial state.
+            </summary>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationElement.Host">
+            <summary>
+            Gets the Host Name.
+            </summary>
+            <value>The Host Name.</value>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationElement.Alias">
+            <summary>
+            Gets or sets the Alias.
+            </summary>
+            <value>The Alias.</value>
+            <remarks>This property is writable to allow mapping merging acros different configs.</remarks>
+        </member>
+        <member name="P:NConfig.HostMappingConfigurationElement.Properties">
+            <summary>
+            Gets the collection of properties.
+            </summary>
+            <returns>The <see cref="T:System.Configuration.ConfigurationPropertyCollection"/> of properties for the element.</returns>
+        </member>
+    </members>
+</doc>
