@@ -4,8 +4,8 @@ using Nancy.Json;
 using SpeedyMailer.Bridge.Communication;
 using Nancy.ModelBinding;
 using SpeedyMailer.Bridge.Model.Drones;
-using SpeedyMailer.Domain.DataAccess.Drone;
-using SpeedyMailer.Domain.DataAccess.Fragments;
+using SpeedyMailer.Core.DataAccess.Drone;
+using SpeedyMailer.Core.DataAccess.Fragments;
 using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 

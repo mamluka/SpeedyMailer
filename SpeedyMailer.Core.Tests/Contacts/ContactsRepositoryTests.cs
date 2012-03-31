@@ -4,8 +4,8 @@ using Raven.Client;
 using Rhino.Mocks;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.DataAccess.Contacts;
 using SpeedyMailer.Domain.Model.Contacts;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
@@ -25,7 +25,7 @@ namespace SpeedyMailer.Core.Tests.Contacts
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Contact>.Is.Equal(contact))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             //Act
             var contactsRep = new ContactsRepository(store);
@@ -46,7 +46,7 @@ namespace SpeedyMailer.Core.Tests.Contacts
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Contact>.Matches(m=> m.Id == contact.Address))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             //Act
             var contactsRep = new ContactsRepository(store);
@@ -68,7 +68,7 @@ namespace SpeedyMailer.Core.Tests.Contacts
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<List<Contact>>.Is.Anything)).Repeat.Times(10);
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var contactsRep = new ContactsRepository(store);
 

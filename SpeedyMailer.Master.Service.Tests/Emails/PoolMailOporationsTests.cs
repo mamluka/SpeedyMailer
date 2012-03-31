@@ -32,7 +32,7 @@ namespace SpeedyMailer.Master.Service.Tests.Emails
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Load<EmailFragment>(Arg<string>.Is.Equal(oporation.FragmentId))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var emailOps = new PoolMailOporations(store);
             //Act
@@ -62,7 +62,7 @@ namespace SpeedyMailer.Master.Service.Tests.Emails
 
             session.Stub(x => x.Load<EmailFragment>(Arg<string>.Is.Anything)).Return(new EmailFragment());
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var emailOps = new PoolMailOporations(store);
             //Act

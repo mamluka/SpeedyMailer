@@ -9,10 +9,10 @@ using FluentAssertions;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.DataAccess.Contacts;
 using SpeedyMailer.Domain.Model.Contacts;
 using SpeedyMailer.Domain.Model.Emails;
 using SpeedyMailer.Tests.Core;
@@ -44,7 +44,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             AddEmailBodyTemplateToSession(session);
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var componentBuilder = new EmailPoolMockedComponentBuilder(Mapper);
             componentBuilder.Store = store;
@@ -77,7 +77,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             AddEmailBodyTemplateToSession(session);
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var componentBuilder = new EmailPoolMockedComponentBuilder(Mapper);
             componentBuilder.Store = store;
@@ -110,7 +110,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             AddEmailBodyTemplateToSession(session);
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
 
             var componentBuilder = new EmailPoolMockedComponentBuilder(Mapper);
@@ -143,7 +143,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             AddEmailBodyTemplateToSession(session);
            
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var componentBuilder = new EmailPoolMockedComponentBuilder(Mapper);
             componentBuilder.Store = store;
@@ -277,7 +277,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             AddEmailBodyTemplateToSession(session);
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
 
 
@@ -319,7 +319,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             session.Expect(x => x.Load<EmailBodyElements>("system/templates")).Repeat.Once().Return(template);
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var componentBuilder = new EmailPoolMockedComponentBuilder(Mapper);
             componentBuilder.Store = store;
@@ -367,7 +367,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             session.Stub(x => x.Load<EmailBodyElements>(Arg<string>.Is.Anything)).Repeat.Once().Return(
                 new EmailBodyElements());
 
-            Store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            Store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             ContactsRepository = MockRepository.GenerateMock<IContactsRepository>();
             UrlCreator = MockRepository.GenerateStub<IUrlCreator>();

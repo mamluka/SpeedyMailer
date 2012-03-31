@@ -7,9 +7,9 @@ using Ploeh.AutoFixture;
 using Raven.Client;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.DataAccess.Fragments;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.DataAccess.Fragments;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 using FluentAssertions;
@@ -29,7 +29,7 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             session.Expect(x => x.Store(Arg<EmailFragment>.Is.Equal(fragment))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var fragmentRepository = new FragmentRepository(store);
             //Act

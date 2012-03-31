@@ -9,7 +9,7 @@ namespace SpeedyMailer.Tests.Core.DB
 {
     public static class DocumentStoreFactory
     {
-        public static IDocumentStore CreateDocumentStoreWithSession(IDocumentSession session)
+        public static IDocumentStore StubDocumentStoreWithSession(IDocumentSession session)
         {
             var store = MockRepository.GenerateStub<IDocumentStore>();
 
@@ -18,11 +18,11 @@ namespace SpeedyMailer.Tests.Core.DB
             return store;
         }
 
-        public static IDocumentStore CreateDocumentStoreWithStubSession()
+        public static IDocumentStore StubDocumentStoreWithStubSession()
         {
             var session = MockRepository.GenerateStub<IDocumentSession>();
 
-           return CreateDocumentStoreWithSession(session);
+           return StubDocumentStoreWithSession(session);
         }
     }
 }

@@ -25,7 +25,7 @@ namespace SpeedyMailer.Tests.Acceptance.Framework
         public void FixtureSetup()
         {
             _ravenDbDocumentStore = new EmbeddableDocumentStore();
-            GetRavenDbDocumentStore().Initialize();
+            _ravenDbDocumentStore.Initialize();
         }
     }
 }

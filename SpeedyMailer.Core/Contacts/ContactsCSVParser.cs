@@ -4,7 +4,8 @@ using System.IO;
 using System.Web;
 using System.Linq;
 using AutoMapper;
-using SpeedyMailer.Domain.DataAccess.Contacts;
+using CsvHelper;
+using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Domain.Model.Contacts;
 
 namespace SpeedyMailer.Core.Contacts
@@ -53,10 +54,12 @@ namespace SpeedyMailer.Core.Contacts
                 file.InputStream.CopyTo(mStream);
                 mStream.Flush();
                 mStream.Position = 0;
+
+
+                var csvParser = new CsvParser(new StreamReader(mStream));
+                var csvReader = new CsvReader(csvParser);
                 
-                var csvHelper = new CsvHelper.CsvHelper(mStream);
-                
-                 emails.AddRange(csvHelper.Reader.GetRecords<ContactFromCSVRow>());
+                 emails.AddRange(csvReader.GetRecords<ContactFromCSVRow>());
             }
 
             var emailsDTO = mapper.Map<List<ContactFromCSVRow>, List<Contact>>(emails);

@@ -1,7 +1,7 @@
 ﻿using System.Web.Mvc;
 using AutoMapper;
+using SpeedyMailer.Core.DataAccess.Emails;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Domain.DataAccess.Emails;
 using SpeedyMailer.Domain.Model.Emails;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.Models;

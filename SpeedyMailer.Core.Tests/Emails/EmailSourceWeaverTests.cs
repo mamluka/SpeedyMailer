@@ -10,10 +10,10 @@ using Newtonsoft.Json;
 using Rhino.Mocks;
 using FluentAssertions;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Core.DataAccess.Emails;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.DataAccess.Emails;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Emails;
 

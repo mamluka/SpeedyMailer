@@ -65,29 +65,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataAccess\Contacts\ContactsRepository.cs" />
-    <Compile Include="DataAccess\Contacts\IContactsRepository.cs" />
-    <Compile Include="DataAccess\Drone\IMailDroneRepository.cs" />
-    <Compile Include="DataAccess\Drone\MailDroneRepository.cs" />
-    <Compile Include="DataAccess\Emails\EmailRepository.cs" />
-    <Compile Include="DataAccess\Emails\EmailSourceParser.cs" />
-    <Compile Include="DataAccess\Emails\IEmailRepository.cs" />
-    <Compile Include="DataAccess\Emails\IEmailSourceParser.cs" />
-    <Compile Include="DataAccess\Fragments\FragmentRepository.cs" />
-    <Compile Include="DataAccess\Fragments\IFragmentRepository.cs" />
-    <Compile Include="DataAccess\Lists\IListRepository.cs" />
-    <Compile Include="DataAccess\Lists\ListRepository.cs" />
-    <Compile Include="Maps\Maps.cs" />
     <Compile Include="Model\Contacts\Contact.cs" />
     <Compile Include="Model\Emails\Email.cs" />
     <Compile Include="Model\Emails\LeadIdentity.cs" />
     <Compile Include="Model\Lists\ListDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Maps\Format\" />
-    <Folder Include="Maps\Resolve\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>

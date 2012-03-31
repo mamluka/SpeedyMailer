@@ -6,8 +6,8 @@ using Raven.Client;
 using Rhino.Mocks;
 using FluentAssertions;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Core.DataAccess.Lists;
 using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.DataAccess.Lists;
 using SpeedyMailer.Domain.Model.Lists;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
@@ -26,7 +26,7 @@ namespace SpeedyMailer.Core.Tests.Lists
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Load <ListsStore>("system/lists")).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var listRepository = new ListRepository(store);
             //Act
@@ -43,7 +43,7 @@ namespace SpeedyMailer.Core.Tests.Lists
             var session = MockRepository.GenerateStub<IDocumentSession>();
             session.Stub(x => x.Load<ListsStore>("system/lists")).Return(null);
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var listRepository = new ListRepository(store);
             //Act
@@ -61,7 +61,7 @@ namespace SpeedyMailer.Core.Tests.Lists
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Load<ListsStore>("system/lists")).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var listRepository = new ListRepository(store);
             //Act
@@ -86,7 +86,7 @@ namespace SpeedyMailer.Core.Tests.Lists
             session.Expect(x => x.Store(Arg<ListsStore>.Matches(m => m.Lists.Last() == newList),Arg<string>.Is.Equal("system/lists"))).Repeat.Once();
 
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var listRepository = new ListRepository(store);
             //Act
@@ -116,7 +116,7 @@ namespace SpeedyMailer.Core.Tests.Lists
 
            
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var listRepository = new ListRepository(store);
             //Act
@@ -147,7 +147,7 @@ namespace SpeedyMailer.Core.Tests.Lists
                 .Repeat
                 .Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var listRepository = new ListRepository(store);
             //Act

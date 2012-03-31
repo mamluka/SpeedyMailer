@@ -7,9 +7,9 @@ using FluentAssertions;
 using NUnit.Framework;
 using Raven.Client;
 using Rhino.Mocks;
+using SpeedyMailer.Core.DataAccess.Emails;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.DataAccess.Emails;
 using SpeedyMailer.Domain.Model.Emails;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
@@ -30,7 +30,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Email>.Is.Equal(email))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var componentBuilder = new EmailRepositoryBuilder();
             componentBuilder.DocumentStore = store;
@@ -52,7 +52,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<Email>.Matches(m=> m.Id == String.Empty))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var componentBuilder = new EmailRepositoryBuilder();
             componentBuilder.DocumentStore = store;
@@ -77,7 +77,7 @@ namespace SpeedyMailer.Core.Tests.Emails
                 x => x.Store(Arg<Email>.Matches(m => m.Deals.Any(p => p == "http://www.usocreports.com/switch/aladdin")
                                  ))).Repeat.Once();
 
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var parser = MockRepository.GenerateStub<IEmailSourceParser>();
             parser.Stub(x => x.Deals(Arg<string>.Is.Anything)).Return(new List<string>
@@ -104,7 +104,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         public EmailRepositoryBuilder()
         {
             var session = MockRepository.GenerateStub<IDocumentSession>();
-            var store = DocumentStoreFactory.CreateDocumentStoreWithSession(session);
+            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             DocumentStore = store;
 

@@ -7,9 +7,9 @@ using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Contacts;
+using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Helpers;
 using System.Configuration;
-using SpeedyMailer.Domain.DataAccess.Contacts;
 using SpeedyMailer.Domain.Model.Emails;
 
 namespace SpeedyMailer.Core.Emails
