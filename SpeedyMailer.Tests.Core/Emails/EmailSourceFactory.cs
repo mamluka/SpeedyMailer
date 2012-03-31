@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace SpeedyMailer.Tests.Core.Emails
+﻿namespace SpeedyMailer.Tests.Core.Emails
 {
     public static class EmailSourceFactory
     {

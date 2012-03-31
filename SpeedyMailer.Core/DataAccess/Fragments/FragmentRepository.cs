@@ -15,9 +15,11 @@ namespace SpeedyMailer.Core.DataAccess.Fragments
             this.store = store;
         }
 
+        #region IFragmentRepository Members
+
         public void Add(EmailFragment fragment)
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 session.Store(fragment);
             }
@@ -25,15 +27,15 @@ namespace SpeedyMailer.Core.DataAccess.Fragments
 
         public EmailFragment PopFragment()
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 session.Advanced.UseOptimisticConcurrency = true;
 
-                var emailFragment = session.Query<EmailFragment>()
+                EmailFragment emailFragment = session.Query<EmailFragment>()
                     .Customize(x => x.WaitForNonStaleResults())
                     .Where(x => x.Locked == false)
                     .OrderByDescending(x => x.CreateDate).Take(1).FirstOrDefault();
-                   
+
 
                 if (emailFragment != null)
                 {
@@ -50,8 +52,9 @@ namespace SpeedyMailer.Core.DataAccess.Fragments
                     }
                 }
                 return null;
-
             }
         }
+
+        #endregion
     }
 }

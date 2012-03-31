@@ -18,27 +18,35 @@ namespace SpeedyMailer.Core.Container
             _store = store;
         }
 
+        #region IBindingGenerator Members
+
         public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
         {
             var proxyGenerator = new ProxyGenerator();
-            object settings= null;
+            object settings = null;
 
-            var settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
-            var settingsId = string.Format("settings/{0}", settingsName);
+            string settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
+            string settingsId = string.Format("settings/{0}", settingsName);
             try
             {
-                using (var session = _store.OpenSession())
+                using (IDocumentSession session = _store.OpenSession())
                 {
                     settings = session.Load<object>(settingsId);
                 }
             }
-            catch{}
+            catch
+            {
+            }
 
             IInterceptor settingsInterceptor = new SettingsInterceptor(settings as DynamicJsonObject, type);
-            var proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
+            object proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
 
             return new[] {bindingRoot.Bind(type).ToConstant(proxy)};
         }
+
+        #endregion
+
+        #region Nested type: SettingsInterceptor
 
         public class SettingsInterceptor : IInterceptor
         {
@@ -51,13 +59,16 @@ namespace SpeedyMailer.Core.Container
                 _settingsInterface = settingsInterface;
             }
 
+            #region IInterceptor Members
+
             public void Intercept(IInvocation invocation)
             {
-
-                var defaultAttr = Attribute.GetCustomAttribute(_settingsInterface.GetProperty(ToAutoPropertyName(invocation)), typeof (DefaultAttribute)) as DefaultAttribute;
+                var defaultAttr =
+                    Attribute.GetCustomAttribute(_settingsInterface.GetProperty(ToAutoPropertyName(invocation)),
+                                                 typeof (DefaultAttribute)) as DefaultAttribute;
                 dynamic persistantSetting = PersistantSetting(invocation);
 
-                if (_settings != null )
+                if (_settings != null)
                 {
                     if (persistantSetting != null)
                     {
@@ -77,6 +88,8 @@ namespace SpeedyMailer.Core.Container
                 }
             }
 
+            #endregion
+
             private static string ToAutoPropertyName(IInvocation invocation)
             {
                 return invocation.Method.Name.Substring(4);
@@ -84,9 +97,11 @@ namespace SpeedyMailer.Core.Container
 
             private dynamic PersistantSetting(IInvocation invocation)
             {
-                var name = ToAutoPropertyName(invocation);
+                string name = ToAutoPropertyName(invocation);
                 return _settings != null ? _settings.GetValue(name) : null;
             }
         }
+
+        #endregion
     }
 }

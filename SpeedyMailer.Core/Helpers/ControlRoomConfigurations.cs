@@ -1,5 +1,3 @@
-using System.Configuration;
-
 namespace SpeedyMailer.Core.Helpers
 {
     public class ControlRoomConfigurations

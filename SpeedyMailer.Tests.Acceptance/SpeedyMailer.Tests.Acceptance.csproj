@@ -35,9 +35,6 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.2.1.265\lib\net40\AutoMapper.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -116,6 +113,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Drones\DronesAcceptanceTestsBase.cs" />
     <Compile Include="Drones\DroneSanityTests.cs" />
     <Compile Include="Framework\AcceptanceTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

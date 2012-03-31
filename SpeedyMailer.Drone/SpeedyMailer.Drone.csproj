@@ -59,8 +59,9 @@
     <Reference Include="Nancy.Hosting.Self">
       <HintPath>..\packages\Nancy.Hosting.Self.0.10.0\lib\net40\Nancy.Hosting.Self.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.5.1\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.3.0.0.15\lib\net40\Ninject.dll</HintPath>
@@ -94,6 +95,7 @@
     <Compile Include="Bootstrappers\NinjectBootstrapper.cs" />
     <Compile Include="Communication\DroneCommunicationService.cs" />
     <Compile Include="Communication\IDroneCommunicationService.cs" />
+    <Compile Include="Configurations\DroneConfigurationManager.cs" />
     <Compile Include="Configurations\IDroneConfigurationManager.cs" />
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="Drone\MailDronInitializer.cs" />

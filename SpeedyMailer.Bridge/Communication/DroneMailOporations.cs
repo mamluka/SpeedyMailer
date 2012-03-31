@@ -4,6 +4,7 @@ namespace SpeedyMailer.Bridge.Communication
 {
     public class DroneMailOporations : IDroneMailOporations
     {
+        #region IDroneMailOporations Members
 
         public Action StopCurrentJob { get; set; }
 
@@ -18,6 +19,8 @@ namespace SpeedyMailer.Bridge.Communication
                     throw new ArgumentOutOfRangeException();
             }
         }
+
+        #endregion
 
         private void GoToSleep(GoToSleepOporation goToSleepOporation)
         {

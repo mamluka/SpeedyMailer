@@ -3,7 +3,7 @@ using SpeedyMailer.Core.Emails;
 
 namespace SpeedyMailer.Master.Web.UI.Mail
 {
-    public class MailParser:IMailParser
+    public class MailParser : IMailParser
     {
         private readonly IEmailSourceWeaver weaver;
         private MailParserInitializer mailParserInitializer;
@@ -13,9 +13,11 @@ namespace SpeedyMailer.Master.Web.UI.Mail
             this.weaver = weaver;
         }
 
+        #region IMailParser Members
+
         public string Parse(ExtendedRecipient recipient)
         {
-            var body = weaver.WeaveDeals(mailParserInitializer.Body, recipient.DealUrl);
+            string body = weaver.WeaveDeals(mailParserInitializer.Body, recipient.DealUrl);
 
             return body;
         }
@@ -24,5 +26,7 @@ namespace SpeedyMailer.Master.Web.UI.Mail
         {
             this.mailParserInitializer = mailParserInitializer;
         }
+
+        #endregion
     }
 }

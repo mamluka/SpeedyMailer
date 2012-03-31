@@ -17,22 +17,19 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
 
         public void StartRetrieveJob()
         {
-            var trigger = TriggerBuilder.Create()
+            ITrigger trigger = TriggerBuilder.Create()
                 .WithIdentity("MailTrigger")
                 .StartNow()
                 .Build();
 
-            var job = JobBuilder.Create<RetrieveFragmentJob>()
+            IJobDetail job = JobBuilder.Create<RetrieveFragmentJob>()
                 .WithIdentity("RetrieveJob")
                 .Build();
 
-            
+
             scheduler.ScheduleJob(job, trigger);
 
             scheduler.Start();
-
         }
-
-
     }
 }

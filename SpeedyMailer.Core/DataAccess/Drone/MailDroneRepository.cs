@@ -6,7 +6,7 @@ using SpeedyMailer.Bridge.Model.Drones;
 
 namespace SpeedyMailer.Core.DataAccess.Drone
 {
-    public class MailDroneRepository:IMailDroneRepository
+    public class MailDroneRepository : IMailDroneRepository
     {
         private readonly IDocumentStore store;
 
@@ -15,11 +15,13 @@ namespace SpeedyMailer.Core.DataAccess.Drone
             this.store = store;
         }
 
+        #region IMailDroneRepository Members
+
         public List<MailDrone> CurrentlySleepingDrones()
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
-                var drones = session.Query<MailDrone>()
+                List<MailDrone> drones = session.Query<MailDrone>()
                     .Where(x => x.Status == DroneStatus.Asleep)
                     .Customize(x => x.WaitForNonStaleResults()).ToList();
 
@@ -29,11 +31,13 @@ namespace SpeedyMailer.Core.DataAccess.Drone
 
         public void Update(MailDrone mailDrone)
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 session.Store(mailDrone);
                 session.SaveChanges();
             }
         }
+
+        #endregion
     }
 }

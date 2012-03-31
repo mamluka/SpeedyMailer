@@ -9,9 +9,9 @@ namespace SpeedyMailer.Master.Web.UI.Drone
         {
             var nancyHost = new NancyHost(new Uri("http://localhost:45678/"));
         }
+
         public void Initialize()
         {
-            
         }
     }
 }

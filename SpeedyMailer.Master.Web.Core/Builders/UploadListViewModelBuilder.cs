@@ -3,7 +3,7 @@ using SpeedyMailer.Master.Web.Core.ViewModels;
 
 namespace SpeedyMailer.Master.Web.Core.Builders
 {
-    public class UploadListViewModelBuilder:IViewModelBuilder<UploadListViewModel>
+    public class UploadListViewModelBuilder : IViewModelBuilder<UploadListViewModel>
     {
         private readonly IListRepository listRepository;
 
@@ -12,14 +12,18 @@ namespace SpeedyMailer.Master.Web.Core.Builders
             this.listRepository = listRepository;
         }
 
+        #region IViewModelBuilder<UploadListViewModel> Members
+
         public UploadListViewModel Build()
         {
-            var listCollection = listRepository.Lists();
+            ListsStore listCollection = listRepository.Lists();
 
-            return new UploadListViewModel()
+            return new UploadListViewModel
                        {
                            Lists = listCollection.Lists
                        };
         }
+
+        #endregion
     }
 }

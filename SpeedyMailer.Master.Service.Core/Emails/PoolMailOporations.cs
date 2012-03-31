@@ -2,11 +2,10 @@ using System;
 using Raven.Client;
 using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Core.Emails;
 
 namespace SpeedyMailer.Master.Service.Core.Emails
 {
-    public class PoolMailOporations:IPoolMailOporations
+    public class PoolMailOporations : IPoolMailOporations
     {
         private readonly IDocumentStore store;
 
@@ -15,9 +14,10 @@ namespace SpeedyMailer.Master.Service.Core.Emails
             this.store = store;
         }
 
+        #region IPoolMailOporations Members
+
         public void Preform(PoolSideOporationBase poolSideOporation)
         {
-
             switch (poolSideOporation.FragmentOporationType)
             {
                 case PoolFragmentOporationType.SetAsCompleted:
@@ -26,13 +26,13 @@ namespace SpeedyMailer.Master.Service.Core.Emails
                 default:
                     throw new ArgumentOutOfRangeException();
             }
-
-            
         }
+
+        #endregion
 
         private void SetAsComplete(FragmentCompleteOporation fragmentCompleteOporation)
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 var fragment = session.Load<EmailFragment>(fragmentCompleteOporation.FragmentId);
                 fragment.Status = FragmentStatus.Completed;

@@ -5,10 +5,11 @@ using SpeedyMailer.Master.Web.Core.ViewModels;
 
 namespace SpeedyMailer.Master.Web.Core.Builders
 {
-    public class UploadListResultsViewModelBuilder : IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>
+    public class UploadListResultsViewModelBuilder :
+        IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>
     {
-        private readonly IMappingEngine mapper;
         private readonly IListRepository listRepository;
+        private readonly IMappingEngine mapper;
 
         public UploadListResultsViewModelBuilder(IMappingEngine mapper, IListRepository listRepository)
         {
@@ -16,17 +17,21 @@ namespace SpeedyMailer.Master.Web.Core.Builders
             this.listRepository = listRepository;
         }
 
+        #region IViewModelBuilderWithBuildParameters<UploadListViewModel,IContactsCSVParser> Members
+
         public UploadListViewModel Build(IContactsCSVParser parameter)
         {
-            var results = parameter.Results;
-            var viewModel =  mapper.Map<ContactCSVParserResults, UploadListViewModel>(results);
+            ContactCSVParserResults results = parameter.Results;
+            UploadListViewModel viewModel = mapper.Map<ContactCSVParserResults, UploadListViewModel>(results);
             viewModel.HasResults = true;
 
-            var listCollection = listRepository.Lists();
+            ListsStore listCollection = listRepository.Lists();
 
             viewModel.Lists = listCollection.Lists;
 
             return viewModel;
         }
+
+        #endregion
     }
 }

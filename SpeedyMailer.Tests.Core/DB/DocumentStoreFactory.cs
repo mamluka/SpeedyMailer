@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Raven.Client;
+﻿using Raven.Client;
 using Rhino.Mocks;
 
 namespace SpeedyMailer.Tests.Core.DB
@@ -22,7 +18,7 @@ namespace SpeedyMailer.Tests.Core.DB
         {
             var session = MockRepository.GenerateStub<IDocumentSession>();
 
-           return StubDocumentStoreWithSession(session);
+            return StubDocumentStoreWithSession(session);
         }
     }
 }

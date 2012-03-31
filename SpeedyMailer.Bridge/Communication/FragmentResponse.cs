@@ -7,7 +7,5 @@ namespace SpeedyMailer.Bridge.Communication
     {
         public EmailFragment EmailFragment { get; set; }
         public List<DroneSideOporationBase> DroneSideOporations { get; set; }
-
-      
     }
 }

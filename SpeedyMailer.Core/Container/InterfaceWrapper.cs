@@ -10,9 +10,9 @@ namespace SpeedyMailer.Core.Container
     {
         #region Private Fields
 
-        private static IDictionary<string, ModuleBuilder> _builders = new Dictionary<string, ModuleBuilder>();
-        private static IDictionary<Type, Type> _types = new Dictionary<Type, Type>();
-        private static object _lockObject = new object();
+        private static readonly IDictionary<string, ModuleBuilder> _builders = new Dictionary<string, ModuleBuilder>();
+        private static readonly IDictionary<Type, Type> _types = new Dictionary<Type, Type>();
+        private static readonly object _lockObject = new object();
 
         #endregion
 
@@ -23,21 +23,23 @@ namespace SpeedyMailer.Core.Container
         /// </summary>
         public static T CreateInterface<T>(Func<T> getter, Type wrapperType)
         {
-            return (T)CreateInterfaceInstance<T>(getter, wrapperType);
+            return CreateInterfaceInstance(getter, wrapperType);
         }
 
         // Note that calling this method will cause any further
         // attempts to generate an interface to fail
         public static void Save()
         {
-            foreach (var builder in _builders.Select(b => b.Value))
+            foreach (ModuleBuilder builder in _builders.Select(b => b.Value))
             {
-                var ass = (AssemblyBuilder)builder.Assembly;
+                var ass = (AssemblyBuilder) builder.Assembly;
                 try
                 {
                     ass.Save(ass.GetName().Name + ".dll");
                 }
-                catch { }
+                catch
+                {
+                }
             }
         }
 
@@ -47,16 +49,16 @@ namespace SpeedyMailer.Core.Container
 
         private static T CreateInterfaceInstance<T>(Func<T> getter, Type wrapperType)
         {
-            var destType = GenerateInterfaceType(getter, wrapperType);
+            Type destType = GenerateInterfaceType(getter, wrapperType);
 
-            return (T)Activator.CreateInstance(destType);
+            return (T) Activator.CreateInstance(destType);
         }
 
         private static Type GenerateInterfaceType<T>(Func<T> getter, Type wrapperType)
         {
             #region Cache Fetch
 
-            var sourceType = typeof(T);
+            Type sourceType = typeof (T);
 
             Type newType;
             if (_types.TryGetValue(sourceType, out newType))
@@ -68,21 +70,22 @@ namespace SpeedyMailer.Core.Container
                 if (_types.TryGetValue(sourceType, out newType))
                     return newType;
 
-            #endregion
+                #endregion
 
                 #region Validation
 
                 if (!sourceType.IsInterface)
                     throw new ArgumentException("Type T is not an interface", "T");
 
-                if (!wrapperType.GetInterfaces().Contains(typeof(IDisposable)))
+                if (!wrapperType.GetInterfaces().Contains(typeof (IDisposable)))
                     throw new ArgumentException("Type must implement IDisposable.", "wrapperType");
 
-                var wrapperTypeConstructor = wrapperType.GetConstructor(new[] { typeof(object) });
+                ConstructorInfo wrapperTypeConstructor = wrapperType.GetConstructor(new[] {typeof (object)});
                 if (wrapperTypeConstructor == null)
-                    throw new ArgumentException("Type must have a single constructor that takes a single object parameter.", "wrapperType");
+                    throw new ArgumentException(
+                        "Type must have a single constructor that takes a single object parameter.", "wrapperType");
 
-                var getterMethod = getter.Method;
+                MethodInfo getterMethod = getter.Method;
                 if ((getterMethod.Attributes & MethodAttributes.Public) != MethodAttributes.Public)
                     throw new ArgumentException("Method must be public.", "getter");
 
@@ -90,16 +93,16 @@ namespace SpeedyMailer.Core.Container
 
                 #region Module and Assembly Creation
 
-                var orginalAssemblyName = sourceType.Assembly.GetName().Name;
+                string orginalAssemblyName = sourceType.Assembly.GetName().Name;
 
                 ModuleBuilder moduleBuilder;
                 if (!_builders.TryGetValue(orginalAssemblyName, out moduleBuilder))
                 {
                     var newAssemblyName = new AssemblyName(Guid.NewGuid() + "." + orginalAssemblyName);
 
-                    var dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
+                    AssemblyBuilder dynamicAssembly = AppDomain.CurrentDomain.DefineDynamicAssembly(
                         newAssemblyName,
-                        System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave);
+                        AssemblyBuilderAccess.RunAndSave);
 
                     moduleBuilder = dynamicAssembly.DefineDynamicModule(
                         newAssemblyName.Name,
@@ -108,17 +111,17 @@ namespace SpeedyMailer.Core.Container
                     _builders.Add(orginalAssemblyName, moduleBuilder);
                 }
 
-                var assemblyName = moduleBuilder.Assembly.GetName();
+                AssemblyName assemblyName = moduleBuilder.Assembly.GetName();
 
                 #endregion
 
                 #region Create the TypeBuilder
 
-                var typeBuilder = moduleBuilder.DefineType(
+                TypeBuilder typeBuilder = moduleBuilder.DefineType(
                     sourceType.FullName,
                     TypeAttributes.Public | TypeAttributes.Class,
-                    typeof(object),
-                    new[] { sourceType });
+                    typeof (object),
+                    new[] {sourceType});
 
                 #endregion
 
@@ -127,7 +130,7 @@ namespace SpeedyMailer.Core.Container
                 var interfaces = new List<Type>();
                 IEnumerable<Type> subList;
 
-                subList = new[] { sourceType };
+                subList = new[] {sourceType};
 
                 while (subList.Count() != 0)
                 {
@@ -141,10 +144,10 @@ namespace SpeedyMailer.Core.Container
 
                 #region Create the methods
 
-                foreach (var method in interfaces.SelectMany(i => i.GetMethods()))
+                foreach (MethodInfo method in interfaces.SelectMany(i => i.GetMethods()))
                 {
                     // Define the method based on the interfaces definition
-                    var newMethod = typeBuilder.DefineMethod(
+                    MethodBuilder newMethod = typeBuilder.DefineMethod(
                         method.Name,
                         method.Attributes ^ MethodAttributes.Abstract,
                         method.CallingConvention,
@@ -157,9 +160,9 @@ namespace SpeedyMailer.Core.Container
                         );
 
                     // Check to see if we have a return type
-                    bool hasReturnValue = method.ReturnType != typeof(void);
+                    bool hasReturnValue = method.ReturnType != typeof (void);
 
-                    var methodBody = newMethod.GetILGenerator();
+                    ILGenerator methodBody = newMethod.GetILGenerator();
 
                     // sourceType var0;
                     // wrapperType var1;
@@ -199,7 +202,7 @@ namespace SpeedyMailer.Core.Container
                     methodBody.BeginFinallyBlock();
 
                     methodBody.Emit(OpCodes.Ldloc_1);
-                    methodBody.Emit(OpCodes.Callvirt, typeof(IDisposable).GetMethod("Dispose"));
+                    methodBody.Emit(OpCodes.Callvirt, typeof (IDisposable).GetMethod("Dispose"));
 
                     methodBody.EndExceptionBlock();
 
@@ -220,12 +223,11 @@ namespace SpeedyMailer.Core.Container
                 _types.Add(sourceType, newType);
 
                 return newType;
-
             }
-                #endregion
+
+            #endregion
         }
 
         #endregion
     }
-
 }

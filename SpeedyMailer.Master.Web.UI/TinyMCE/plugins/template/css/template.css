@@ -1,23 +1,17 @@
 #frmbody {
-	padding: 10px;
-	background-color: #FFF;
-	border: 1px solid #CCC;
+    background-color: #FFF;
+    border: 1px solid #CCC;
+    padding: 10px;
 }
 
-.frmRow {
-	margin-bottom: 10px;
-}
+.frmRow { margin-bottom: 10px; }
 
 #templatesrc {
-	border: none;
-	width: 320px;
-	height: 240px;
+    border: none;
+    height: 240px;
+    width: 320px;
 }
 
-.title {
-	padding-bottom: 5px;
-}
+.title { padding-bottom: 5px; }
 
-.mceActionPanel {
-	padding-top: 5px;
-}
+.mceActionPanel { padding-top: 5px; }

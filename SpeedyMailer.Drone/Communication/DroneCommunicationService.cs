@@ -8,8 +8,8 @@ namespace SpeedyMailer.Master.Web.UI.Communication
 {
     public class DroneCommunicationService : IDroneCommunicationService
     {
-        private readonly IRestClient restClient;
         private readonly IDroneConfigurationManager configurationManager;
+        private readonly IRestClient restClient;
 
         public DroneCommunicationService(IRestClient restClient, IDroneConfigurationManager configurationManager)
         {
@@ -17,11 +17,13 @@ namespace SpeedyMailer.Master.Web.UI.Communication
             this.configurationManager = configurationManager;
         }
 
+        #region IDroneCommunicationService Members
+
         public FragmentResponse RetrieveFragment()
         {
             restClient.BaseUrl = configurationManager.BasePoolUrl;
 
-            var request = new RestRequest()
+            var request = new RestRequest
                               {
                                   Resource = configurationManager.PoolOporationsUrls.PopFragmentUrl
                               };
@@ -30,12 +32,14 @@ namespace SpeedyMailer.Master.Web.UI.Communication
             request.RequestFormat = DataFormat.Json;
 
 
-            var response = restClient.Execute<FragmentResponse>(request);
+            RestResponse<FragmentResponse> response = restClient.Execute<FragmentResponse>(request);
 
             var fragment = JsonConvert.DeserializeObject<FragmentResponse>(response.Content);
 
 
             return fragment;
         }
+
+        #endregion
     }
 }

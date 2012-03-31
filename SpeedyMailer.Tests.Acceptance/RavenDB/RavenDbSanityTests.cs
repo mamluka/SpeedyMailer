@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Rhino.Mocks;
 using FluentAssertions;
+using NUnit.Framework;
+using Raven.Client;
 using SpeedyMailer.Tests.Acceptance.Framework;
 
 namespace SpeedyMailer.Tests.Acceptance.RavenDB
@@ -13,33 +8,32 @@ namespace SpeedyMailer.Tests.Acceptance.RavenDB
     [TestFixture]
     public class RavenDbSanityTests : AcceptanceTestsBase
     {
+        private class ClassToStore
+        {
+            public string TestingText { get; set; }
+        }
+
         [Test]
         public void Sanity_ShouldReadAndWrite()
         {
             const string testingTheEmbeddedDb = "testing the embedded db";
             const string entityId = "entity1";
 
-            using (var session = GetRavenDbDocumentStore().OpenSession())
+            using (IDocumentSession session = GetRavenDbDocumentStore().OpenSession())
             {
-                session.Store(new ClassToStore()
+                session.Store(new ClassToStore
                                   {
                                       TestingText = testingTheEmbeddedDb
-                                  },entityId);
+                                  }, entityId);
                 session.SaveChanges();
             }
 
-            using (var session = GetRavenDbDocumentStore().OpenSession())
+            using (IDocumentSession session = GetRavenDbDocumentStore().OpenSession())
             {
                 var result = session.Load<ClassToStore>(entityId);
 
                 result.TestingText.Should().Be(testingTheEmbeddedDb);
-
             }
-        }
-
-        private class ClassToStore
-        {
-            public string TestingText { get; set; }
         }
     }
 }

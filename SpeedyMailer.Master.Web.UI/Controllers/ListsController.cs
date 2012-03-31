@@ -11,6 +11,5 @@ namespace SpeedyMailer.Master.Web.UI.Controllers
         {
             return View();
         }
-
     }
 }

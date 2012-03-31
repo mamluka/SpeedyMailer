@@ -1,24 +1,23 @@
 ﻿@using MvcContrib.FluentHtml
-@inherits ModelWebViewPage<SpeedyMailer.Master.Web.Core.ViewModels.UploadListViewModel>
+@inherits MvcContrib.FluentHtml.ModelWebViewPage<SpeedyMailer.Master.Web.Core.ViewModels.UploadListViewModel>
 
 @{
     ViewBag.Title = "Upload";
     Layout = "~/Views/Shared/_Layout.cshtml";
-   
+
 }
 
 
 
 <h2>Upload</h2>
 
-@using (Html.BeginForm("Upload", "Contacts", FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm("Upload", "Contacts", FormMethod.Post, new {enctype = "multipart/form-data"}))
 {
     @this.FileUpload("CSVFile")
     <br />
-    @this.Select(x=> x.List).Options(Model.Lists,"Id","Name").FirstOption("0","-- Select List Name -- ")
+    @this.Select(x => x.List).Options(Model.Lists, "Id", "Name").FirstOption("0", "-- Select List Name -- ")
     <br />
     @this.SubmitButton("Upload File")
-
 }
 
 @if (Model.HasResults)
@@ -28,7 +27,7 @@
         Number of files processed :  @Model.Results.NumberOfFilesProcessed <br/>
 
         Files:
-        @foreach (var file in Model.Results.Filenames)
+        @foreach (string file in Model.Results.Filenames)
         {
             @file
             <br />

@@ -3,7 +3,7 @@ using SpeedyMailer.Bridge.Model.Drones;
 
 namespace SpeedyMailer.Master.Service.MailDrones
 {
-    public class MailDroneService:IMailDroneService
+    public class MailDroneService : IMailDroneService
     {
         private readonly IRestClient restClient;
 
@@ -12,18 +12,20 @@ namespace SpeedyMailer.Master.Service.MailDrones
             this.restClient = restClient;
         }
 
+        #region IMailDroneService Members
+
         public DroneStatus WakeUp(MailDrone mailDrone)
         {
             restClient.BaseUrl = mailDrone.BaseUri;
 
             var request = new RestRequest
                               {
-                                  Method = Method.POST, 
+                                  Method = Method.POST,
                                   Resource = mailDrone.WakeUpUri
                               };
 
-            var result = restClient.Execute<DroneStatus>(request);
-            
+            RestResponse<DroneStatus> result = restClient.Execute<DroneStatus>(request);
+
             if (result.ResponseStatus == ResponseStatus.Error)
             {
                 return DroneStatus.ErrorOccured;
@@ -33,10 +35,10 @@ namespace SpeedyMailer.Master.Service.MailDrones
             {
                 return DroneStatus.NoCommunication;
             }
-            
+
             return result.Data;
         }
 
-      
+        #endregion
     }
 }
