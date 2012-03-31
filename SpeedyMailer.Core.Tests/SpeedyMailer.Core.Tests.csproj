@@ -53,8 +53,9 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Client.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.2.1.265\lib\net40\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.2.1.266\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.1.7.1.1\Lib\net40\FluentAssertions.dll</HintPath>
@@ -99,14 +100,18 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contacts\ContactsCSVParserBuilder.cs" />
+    <Compile Include="Contacts\HttpContextBaseBuilderForFiles.cs" />
+    <Compile Include="Emails\EmailPoolMockedComponentBuilder.cs" />
     <Compile Include="Emails\EmailPoolServicesTests.cs" />
+    <Compile Include="Emails\EmailRepositoryBuilder.cs" />
     <Compile Include="Emails\EmailRepositoryTests.cs" />
     <Compile Include="Emails\EmailSourceParserTests.cs" />
     <Compile Include="Emails\EmailSourceWeaverTests.cs" />
     <Compile Include="Emails\FragmentRepositoryTests.cs" />
+    <Compile Include="Emails\MockedEmailSourceWeaverBuilder.cs" />
     <Compile Include="Lists\ListRepositoryTests.cs" />
     <Compile Include="MailDrones\MailDroneRepositoryTests.cs" />
-    <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Contacts\ContactCSVParserTests.cs" />
     <Compile Include="Contacts\ContactsRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,6 +1,5 @@
-using System.Collections.Generic;
 using Raven.Client;
-using SpeedyMailer.Domain.Model.Lists;
+using SpeedyMailer.Domain.Lists;
 
 namespace SpeedyMailer.Core.DataAccess.Lists
 {
@@ -13,11 +12,13 @@ namespace SpeedyMailer.Core.DataAccess.Lists
             this.store = store;
         }
 
+        #region IListRepository Members
+
         public ListsStore Lists()
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
-                var list =  session.Load<ListsStore>("system/lists");
+                var list = session.Load<ListsStore>("system/lists");
                 if (list == null)
                 {
                     return new ListsStore();
@@ -28,21 +29,20 @@ namespace SpeedyMailer.Core.DataAccess.Lists
 
         public void Add(ListDescriptor listDescriptor)
         {
-            var listCollection = Lists();
+            ListsStore listCollection = Lists();
             listCollection.Lists.Add(listDescriptor);
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
-                session.Store(listCollection,"system/lists");
+                session.Store(listCollection, "system/lists");
                 session.SaveChanges();
             }
-
         }
 
         public void Remove(string id)
         {
-            var listCollection = Lists();
+            ListsStore listCollection = Lists();
             listCollection.Lists.RemoveAll(x => x.Id == id);
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
                 session.SaveChanges();
@@ -51,24 +51,16 @@ namespace SpeedyMailer.Core.DataAccess.Lists
 
         public void Update(ListDescriptor listDescriptor)
         {
-            var listCollection = Lists();
+            ListsStore listCollection = Lists();
             listCollection.Lists.RemoveAll(x => x.Id == listDescriptor.Id);
             listCollection.Lists.Add(listDescriptor);
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
                 session.SaveChanges();
             }
         }
-    }
 
-    public class ListsStore
-    {
-        public List<ListDescriptor> Lists { get; set; }
-
-        public ListsStore()
-        {
-            Lists = new List<ListDescriptor>();
-        }
+        #endregion
     }
 }

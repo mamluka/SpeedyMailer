@@ -65,10 +65,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Model\Contacts\Contact.cs" />
-    <Compile Include="Model\Emails\Email.cs" />
-    <Compile Include="Model\Emails\LeadIdentity.cs" />
-    <Compile Include="Model\Lists\ListDescriptor.cs" />
+    <Compile Include="Contacts\Contact.cs" />
+    <Compile Include="Emails\Email.cs" />
+    <Compile Include="Emails\LeadIdentity.cs" />
+    <Compile Include="Lists\ListDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

@@ -1,59 +1,20 @@
-using AutoMapper;
+using System.Web.Mvc;
 using MvcContrib.TestHelper;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Ploeh.AutoFixture;
+using Rhino.Mocks;
 using SpeedyMailer.Core.Contacts;
-using SpeedyMailer.Core.DataAccess.Lists;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.Models;
 using SpeedyMailer.Master.Web.Core.ViewModels;
-using SpeedyMailer.Master.Web.Tests.Maps;
 using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Master.Web.Tests.Contacts
 {
     [TestFixture]
-    public class ContactsControllerTests:AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class ContactsControllerTests : AutoMapperAndFixtureBase
     {
-
-        [Test]
-        public void UploadList_ShouldCallTheBuildMethodOnTheBuilder()
-        {
-            //Arrange
-            var builder = MockRepository.GenerateMock<IViewModelBuilder<UploadListViewModel>>();
-            builder.ExpectBuild();
-
-            var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
-            controllerBuilder.UploadListViewModelBuilder = builder;
-
-            var controller = controllerBuilder.Build();
-            //Act
-            controller.Upload();
-            //Assert
-            builder.VerifyAllExpectations();
-
-        }
-
-        [Test]
-        public void UploadList_ShouldReturnTheRightViewModel()
-        {
-            //Arrange
-            var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
-            var builder = MockRepository.GenerateStub<IViewModelBuilder<UploadListViewModel>>();
-            builder.Stub(x => x.Build()).Return(new UploadListViewModel());
-
-            controllerBuilder.UploadListViewModelBuilder = builder;
-
-            var controller = controllerBuilder.Build();
-            //Act
-            var viewModel = controller.Upload();
-            //Assert
-            viewModel.AssertViewRendered().WithViewData<UploadListViewModel>();
-
-        }
-
         [Test]
         public void UploadListPost_ShouldAddTheInitialParametersToTheCSVBuilderContainingTheCategoryIDFromTheModel()
         {
@@ -71,15 +32,35 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
 
             controllerBuilder.ContactsCSVParser = emailCSVParser;
 
-            var controller = controllerBuilder.Build();
+            ContactsController controller = controllerBuilder.Build();
 
             //Act
             controller.Upload(model);
             //Assert
             emailCSVParser.VerifyAllExpectations();
-
         }
 
+
+        [Test]
+        public void UploadListPost_ShouldCallTheBuildMethodOnTheBuilder()
+        {
+            //Arrange
+            var model = Fixture.CreateAnonymous<UploadListModel>();
+
+            var builder =
+                MockRepository.GenerateMock
+                    <IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>>();
+            builder.ExpectBuild();
+
+            var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
+            controllerBuilder.UploadListResultsViewModelBuilder = builder;
+
+            ContactsController controller = controllerBuilder.Build();
+            //Act
+            controller.Upload(model);
+            //Assert
+            builder.VerifyAllExpectations();
+        }
 
         [Test]
         public void UploadListPost_ShouldCallTheParseMethodOnTheEmailParser()
@@ -95,32 +76,12 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
 
             controllerBuilder.ContactsCSVParser = emailCSVParser;
 
-            var controller = controllerBuilder.Build();
+            ContactsController controller = controllerBuilder.Build();
 
             //Act
             controller.Upload(model);
             //Assert
             emailCSVParser.VerifyAllExpectations();
-
-        }
-
-        [Test]
-        public void UploadListPost_ShouldCallTheBuildMethodOnTheBuilder()
-        {
-            //Arrange
-            var model = Fixture.CreateAnonymous<UploadListModel>();
-
-            var builder = MockRepository.GenerateMock<IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>>();
-            builder.ExpectBuild();
-
-            var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
-            controllerBuilder.UploadListResultsViewModelBuilder = builder;
-
-            var controller = controllerBuilder.Build();
-            //Act
-            controller.Upload(model);
-            //Assert
-            builder.VerifyAllExpectations();
         }
 
         [Test]
@@ -129,41 +90,53 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
             //Arrange
             var model = Fixture.CreateAnonymous<UploadListModel>();
 
-            var builder = MockRepository.GenerateStub<IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>>();
+            var builder =
+                MockRepository.GenerateStub
+                    <IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>>();
             builder.Stub(x => x.Build(Arg<IContactsCSVParser>.Is.Anything)).Return(new UploadListViewModel());
 
             var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
             controllerBuilder.UploadListResultsViewModelBuilder = builder;
 
-            var controller = controllerBuilder.Build();
+            ContactsController controller = controllerBuilder.Build();
             //Act
-            var viewModel = controller.Upload(model);
+            ActionResult viewModel = controller.Upload(model);
             //Assert
             viewModel.AssertViewRendered().WithViewData<UploadListViewModel>();
         }
-    }
 
-    public class ContactsMockedComponentBuilder:IMockedComponentBuilder<ContactsController>
-    {
-        public IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser> UploadListResultsViewModelBuilder { get; set; }
-        public IViewModelBuilder<UploadListViewModel> UploadListViewModelBuilder { get; set; }
-        public IContactsCSVParser ContactsCSVParser { get; set; }
-        public IListRepository ListRepository { get; set; }
-        public IMappingEngine Mapper { get; set; }
-
-        public ContactsMockedComponentBuilder(IMappingEngine mapper)
+        [Test]
+        public void UploadList_ShouldCallTheBuildMethodOnTheBuilder()
         {
-            UploadListResultsViewModelBuilder = MockRepository.GenerateStub<IViewModelBuilderWithBuildParameters<UploadListViewModel, IContactsCSVParser>>();
-            ContactsCSVParser = MockRepository.GenerateStub<IContactsCSVParser>();
-            ListRepository = MockRepository.GenerateStub<IListRepository>();
-            UploadListViewModelBuilder = MockRepository.GenerateStub<IViewModelBuilder<UploadListViewModel>>();
-            Mapper = mapper;
+            //Arrange
+            var builder = MockRepository.GenerateMock<IViewModelBuilder<UploadListViewModel>>();
+            builder.ExpectBuild();
+
+            var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
+            controllerBuilder.UploadListViewModelBuilder = builder;
+
+            ContactsController controller = controllerBuilder.Build();
+            //Act
+            controller.Upload();
+            //Assert
+            builder.VerifyAllExpectations();
         }
 
-
-        public ContactsController Build()
+        [Test]
+        public void UploadList_ShouldReturnTheRightViewModel()
         {
-            return new ContactsController(ContactsCSVParser, UploadListResultsViewModelBuilder,UploadListViewModelBuilder, Mapper);
+            //Arrange
+            var controllerBuilder = new ContactsMockedComponentBuilder(Mapper);
+            var builder = MockRepository.GenerateStub<IViewModelBuilder<UploadListViewModel>>();
+            builder.Stub(x => x.Build()).Return(new UploadListViewModel());
+
+            controllerBuilder.UploadListViewModelBuilder = builder;
+
+            ContactsController controller = controllerBuilder.Build();
+            //Act
+            ActionResult viewModel = controller.Upload();
+            //Assert
+            viewModel.AssertViewRendered().WithViewData<UploadListViewModel>();
         }
     }
 }

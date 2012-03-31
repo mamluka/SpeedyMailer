@@ -4,9 +4,4 @@ namespace SpeedyMailer.Master.Web.Core.Builders
     {
         T Build();
     }
-
-    public interface IViewModelBuilderWithBuildParameters<out TViewModel, in TParameter>
-    {
-        TViewModel Build(TParameter parameter);
-    }
 }

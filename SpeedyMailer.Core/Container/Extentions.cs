@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Dynamic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Extensions.Conventions;
@@ -15,28 +9,26 @@ namespace SpeedyMailer.Core.Container
 {
     public static class Extentions
     {
-        public static IKernel BindStoreTo<T>(this IKernel kernel) where T:IProvider
+        public static IKernel BindStoreTo<T>(this IKernel kernel) where T : IProvider
         {
             kernel.Bind<IDocumentStore>().ToProvider<T>();
             return kernel;
         }
 
-        public static IKernel BindSettingsFor(this IKernel kernel, Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromAssemblies)
+        public static IKernel BindSettingsFor(this IKernel kernel,
+                                              Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromAssemblies)
         {
-            kernel.Bind(x => fromAssemblies(x).SelectAllInterfaces().BindWith(kernel.Get<SettingsBinder>()));
+            kernel.Bind(
+                x =>
+                fromAssemblies(x).Select(type => type.Name.EndsWith("Settings")).BindWith(kernel.Get<SettingsBinder>()));
             return kernel;
         }
-    }
 
-    
-
-    public class DefaultAttribute : Attribute
-    {
-        public string Text { get; set; }
-
-        public DefaultAttribute(string david)
+        public static IKernel BindInterfaces(this IKernel kernel,
+                                             Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromAssemblies)
         {
-            Text = david;
+            kernel.Bind(x => fromAssemblies(x).Select(type => !type.Name.EndsWith("Settings")).BindDefaultInterface());
+            return kernel;
         }
     }
 }

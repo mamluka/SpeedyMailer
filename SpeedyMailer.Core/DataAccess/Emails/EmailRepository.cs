@@ -1,12 +1,12 @@
 using Raven.Client;
-using SpeedyMailer.Domain.Model.Emails;
+using SpeedyMailer.Domain.Emails;
 
 namespace SpeedyMailer.Core.DataAccess.Emails
 {
     public class EmailRepository : IEmailRepository
     {
-        private readonly IDocumentStore store;
         private readonly IEmailSourceParser parser;
+        private readonly IDocumentStore store;
 
         public EmailRepository(IDocumentStore store, IEmailSourceParser parser)
         {
@@ -14,9 +14,11 @@ namespace SpeedyMailer.Core.DataAccess.Emails
             this.parser = parser;
         }
 
+        #region IEmailRepository Members
+
         public void Store(Email email)
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
                 email.Deals = parser.Deals(email.Body);
                 email.Id = string.Empty;
@@ -25,5 +27,7 @@ namespace SpeedyMailer.Core.DataAccess.Emails
                 session.SaveChanges();
             }
         }
+
+        #endregion
     }
 }

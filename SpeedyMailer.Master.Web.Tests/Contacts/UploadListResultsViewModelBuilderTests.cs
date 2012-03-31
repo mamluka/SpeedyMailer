@@ -2,17 +2,17 @@
 using AutoMapper;
 using FluentAssertions;
 using NUnit.Framework;
-using Rhino.Mocks;
 using Ploeh.AutoFixture;
+using Rhino.Mocks;
 using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.DataAccess.Lists;
 using SpeedyMailer.Master.Web.Core.Builders;
-using SpeedyMailer.Master.Web.Tests.Maps;
+using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Master.Web.Tests.Contacts
 {
-    class UploadListResultsViewModelBuilderTests : AutoMapperAndFixtureBase<AutoMapperMaps>
+    internal class UploadListResultsViewModelBuilderTests : AutoMapperAndFixtureBase
     {
         [Test]
         public void Build_ShouldReadTheResultsFromTheCSVParser()
@@ -23,7 +23,7 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
             csvHelper.Expect(x => x.Results).Repeat.Once();
 
             var componentBuilder = new UploadListResultsViewModelBuilderMockedComponentBuilder(Mapper);
-            var builder = componentBuilder.Build();
+            UploadListResultsViewModelBuilder builder = componentBuilder.Build();
 
             //Act
             builder.Build(csvHelper);
@@ -40,16 +40,16 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
 
             var fileList = new List<string> {"csv1.txt,csv2.txt"};
 
-            var csvParserResults =
+            ContactCSVParserResults csvParserResults =
                 Fixture.Build<ContactCSVParserResults>().With(x => x.Filenames, fileList).CreateAnonymous();
 
             csvHelper.Stub(x => x.Results).Return(csvParserResults);
 
             var componentBuilder = new UploadListResultsViewModelBuilderMockedComponentBuilder(Mapper);
-            var builder = componentBuilder.Build();
+            UploadListResultsViewModelBuilder builder = componentBuilder.Build();
 
             //Act
-            var viewModel = builder.Build(csvHelper);
+            UploadListViewModel viewModel = builder.Build(csvHelper);
             //Assert
 
             viewModel.Results.NumberOfEmailProcessed.Should().Be(csvParserResults.NumberOfContactsProcessed.ToString());
@@ -66,14 +66,13 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
             csvHelper.Expect(x => x.Results).Repeat.Once();
 
             var componentBuilder = new UploadListResultsViewModelBuilderMockedComponentBuilder(Mapper);
-            var builder = componentBuilder.Build();
+            UploadListResultsViewModelBuilder builder = componentBuilder.Build();
 
             //Act
-            var viewModel = builder.Build(csvHelper);
+            UploadListViewModel viewModel = builder.Build(csvHelper);
             //Assert
 
             viewModel.HasResults.Should().BeTrue();
-
         }
 
         [Test]
@@ -94,30 +93,34 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
             //Assert
 
             listRepository.VerifyAllExpectations();
-
         }
 
-        public class UploadListResultsViewModelBuilderMockedComponentBuilder : IMockedComponentBuilder<UploadListResultsViewModelBuilder>
-        {
-            public IMappingEngine Mapper { get; set; }
-            public IListRepository ListRepository { get; set; }
+        #region Nested type: UploadListResultsViewModelBuilderMockedComponentBuilder
 
+        public class UploadListResultsViewModelBuilderMockedComponentBuilder :
+            IMockedComponentBuilder<UploadListResultsViewModelBuilder>
+        {
             public UploadListResultsViewModelBuilderMockedComponentBuilder(IMappingEngine mapper)
             {
                 Mapper = mapper;
                 ListRepository = MockRepository.GenerateStub<IListRepository>();
 
                 ListRepository.Stub(x => x.Lists());
-
             }
+
+            public IMappingEngine Mapper { get; set; }
+            public IListRepository ListRepository { get; set; }
+
+            #region IMockedComponentBuilder<UploadListResultsViewModelBuilder> Members
 
             public UploadListResultsViewModelBuilder Build()
             {
-                return new UploadListResultsViewModelBuilder(Mapper,ListRepository);
+                return new UploadListResultsViewModelBuilder(Mapper, ListRepository);
             }
+
+            #endregion
         }
 
+        #endregion
     }
-
-
 }

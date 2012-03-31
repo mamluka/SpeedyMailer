@@ -37,8 +37,8 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Client.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.2.1.265\lib\net40\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.2.1.266\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Bootstrapper">
       <HintPath>..\packages\Bootstrapper.2.0.2.0\lib\Bootstrapper.dll</HintPath>
@@ -464,6 +464,10 @@
     <ProjectReference Include="..\SpeedyMailer.Domain\SpeedyMailer.Domain.csproj">
       <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
       <Name>SpeedyMailer.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Mapping\SpeedyMailer.Mapping.csproj">
+      <Project>{639F640B-BE3D-4E53-87B8-80D652889851}</Project>
+      <Name>SpeedyMailer.Mapping</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
       <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>

@@ -1,10 +1,13 @@
 using AutoMapper;
+using Bootstrap;
+using Bootstrap.AutoMapper;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Mapping;
 
 namespace SpeedyMailer.Tests.Core
 {
-    public class AutoMapperAndFixtureBase<T> where T:IAutoMapperMaps, new()
+    public class AutoMapperAndFixtureBase
     {
         protected Fixture Fixture;
         protected IMappingEngine Mapper;
@@ -13,9 +16,8 @@ namespace SpeedyMailer.Tests.Core
         public void Initialize()
         {
             Fixture = new Fixture();
-            var mapCreator = new T();
-            mapCreator.CreateMaps();
-            Mapper =  AutoMapper.Mapper.Engine;
+            Bootstrapper.IncludingOnly.Assembly(typeof (DomainMaps).Assembly).With.AutoMapper();
+            Mapper = AutoMapper.Mapper.Engine;
         }
     }
 }

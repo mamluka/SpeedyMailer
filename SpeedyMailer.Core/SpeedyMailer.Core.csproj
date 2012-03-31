@@ -34,9 +34,9 @@
     <Reference Include="AsyncCtpLibrary, Version=1.0.4107.18181, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB-Client.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper, Version=2.1.265.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+    <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoMapper.2.1.265\lib\net40\AutoMapper.dll</HintPath>
+      <HintPath>..\packages\AutoMapper.2.1.266\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="Bootstrapper">
       <HintPath>..\packages\Bootstrapper.2.0.2.0\lib\Bootstrapper.dll</HintPath>
@@ -100,9 +100,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Automapper\Maps.cs" />
+    <Compile Include="Container\DefaultAttribute.cs" />
     <Compile Include="Container\Extentions.cs" />
     <Compile Include="Container\InterfaceWrapper.cs" />
+    <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\SettingsBinder.cs" />
     <Compile Include="Core\IReportResults.cs" />
     <Compile Include="Contacts\ContactsCSVParser.cs" />
@@ -122,6 +123,7 @@
     <Compile Include="DataAccess\Fragments\IFragmentRepository.cs" />
     <Compile Include="DataAccess\Lists\IListRepository.cs" />
     <Compile Include="DataAccess\Lists\ListRepository.cs" />
+    <Compile Include="DataAccess\Lists\ListsStore.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />
     <Compile Include="Emails\IEmailSourceWeaver.cs" />
@@ -133,8 +135,6 @@
     <Compile Include="Helpers\IConfigurationManager.cs" />
     <Compile Include="Helpers\IUrlCreator.cs" />
     <Compile Include="Helpers\UrlCreator.cs" />
-    <Compile Include="Maps\Maps.cs" />
-    <Compile Include="NinjectProvider\RavenDocumentStoreProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -153,6 +153,7 @@
   <ItemGroup>
     <Folder Include="Maps\Format\" />
     <Folder Include="Maps\Resolve\" />
+    <Folder Include="NinjectProvider\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

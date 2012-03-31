@@ -2,91 +2,27 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Quartz;
+using Rhino.Mocks;
 using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Drone.Tests.Maps;
 using SpeedyMailer.Master.Web.UI.Communication;
 using SpeedyMailer.Master.Web.UI.Jobs;
 using SpeedyMailer.Master.Web.UI.Mail;
 using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
 
 namespace SpeedyMailer.Drone.Tests.Mail
 {
     [TestFixture]
-    public class RetrieveFragmentJobTests : AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class RetrieveFragmentJobTests : AutoMapperAndFixtureBase
     {
-        [Test]
-        public void Execute_ShouldGetTheMailFragmentUsingTheDroneCommunication()
+        private IJobExecutionContext FakeContext()
         {
-            //Arrange
-            var fakeJobContext = FakeContext();
+            var fakeScheduler = MockRepository.GenerateStub<IScheduler>();
 
-            var fragmentReponse = Fixture.CreateAnonymous<FragmentResponse>();
+            var fakeJobContext = MockRepository.GenerateStub<IJobExecutionContext>();
+            fakeJobContext.Stub(x => x.Scheduler).Return(fakeScheduler);
 
-            var droneCom = MockRepository.GenerateMock<IDroneCommunicationService>();
-            droneCom.Expect(x => x.RetrieveFragment()).Repeat.Once().Return(fragmentReponse);
-
-            var builder = new MockedRetrieveFragmentJobBuilder();
-            builder.DroneCommunicationService = droneCom;
-            var job = builder.Build();
-            //Act
-            job.Execute(fakeJobContext);
-            //Assert
-            droneCom.VerifyAllExpectations();
-
-        }
-
-        [Test]
-        public void Execute_ShouldExecuteTheFragmentOporations()
-        {
-            //Arrange
-            var fakeJobContext = FakeContext();
-
-            var fragmentReponse = Fixture.CreateAnonymous<FragmentResponse>();
-            fragmentReponse.DroneSideOporations = new List<DroneSideOporationBase>()
-                                                      {
-                                                          new DroneSideOporationBase(),
-                                                          new DroneSideOporationBase(),
-                                                          new DroneSideOporationBase()
-                                                      };
-            fragmentReponse.EmailFragment = new EmailFragment();
-
-            var mailOporation = MockRepository.GenerateMock<IDroneMailOporations>();
-            mailOporation.Expect(x => x.Preform(Arg<DroneSideOporationBase>.Is.Anything)).Repeat.Times(3);
-
-            var builder = new MockedRetrieveFragmentJobBuilder();
-            builder.MailOporations = mailOporation;
-
-            var job = builder.WithFragmentResponse(fragmentReponse).Build();
-            //Act
-            job.Execute(fakeJobContext);
-            //Assert
-            mailOporation.VerifyAllExpectations();
-
-        }
-
-        [Test]
-        public void Execute_ShouldSendTheEmailFragment()
-        {
-            //Arrange
-            var fakeJobContext = FakeContext();
-
-            var fragmentReponse = Fixture.CreateAnonymous<FragmentResponse>();
-
-            var mailSender = MockRepository.GenerateMock<IMailSender>();
-            mailSender.Expect(x => x.ProcessFragment(Arg<EmailFragment>.Is.Equal(fragmentReponse.EmailFragment))).Repeat.Once();
-
-
-            var builder = new MockedRetrieveFragmentJobBuilder();
-            builder.MailSender = mailSender;
-
-            var job = builder.WithFragmentResponse(fragmentReponse).Build();
-            //Act
-            job.Execute(fakeJobContext);
-            //Assert
-            mailSender.VerifyAllExpectations();
-
+            return fakeJobContext;
         }
 
         [Test]
@@ -103,64 +39,83 @@ namespace SpeedyMailer.Drone.Tests.Mail
             fakeJobContext.Stub(x => x.Scheduler).Return(fakeScheduler);
 
 
-
             var builder = new MockedRetrieveFragmentJobBuilder();
-            var job = builder.WithFragmentResponse().Build();
+            RetrieveFragmentJob job = builder.WithFragmentResponse().Build();
             //Act
             job.Execute(fakeJobContext);
             //Assert
             fakeScheduler.VerifyAllExpectations();
         }
 
-        private IJobExecutionContext FakeContext()
+        [Test]
+        public void Execute_ShouldExecuteTheFragmentOporations()
         {
-            var fakeScheduler = MockRepository.GenerateStub<IScheduler>();
+            //Arrange
+            IJobExecutionContext fakeJobContext = FakeContext();
 
-            var fakeJobContext = MockRepository.GenerateStub<IJobExecutionContext>();
-            fakeJobContext.Stub(x => x.Scheduler).Return(fakeScheduler);
+            var fragmentReponse = Fixture.CreateAnonymous<FragmentResponse>();
+            fragmentReponse.DroneSideOporations = new List<DroneSideOporationBase>
+                                                      {
+                                                          new DroneSideOporationBase(),
+                                                          new DroneSideOporationBase(),
+                                                          new DroneSideOporationBase()
+                                                      };
+            fragmentReponse.EmailFragment = new EmailFragment();
 
-            return fakeJobContext;
+            var mailOporation = MockRepository.GenerateMock<IDroneMailOporations>();
+            mailOporation.Expect(x => x.Preform(Arg<DroneSideOporationBase>.Is.Anything)).Repeat.Times(3);
+
+            var builder = new MockedRetrieveFragmentJobBuilder();
+            builder.MailOporations = mailOporation;
+
+            RetrieveFragmentJob job = builder.WithFragmentResponse(fragmentReponse).Build();
+            //Act
+            job.Execute(fakeJobContext);
+            //Assert
+            mailOporation.VerifyAllExpectations();
         }
 
-
-    }
-
-    class MockedRetrieveFragmentJobBuilder:IMockedComponentBuilder<RetrieveFragmentJob>
-    {
-        public IDroneCommunicationService DroneCommunicationService { get; set; }
-        public IDroneMailOporations MailOporations { get; set; }
-        public IMailSender MailSender { get; set; }
-        public MockedRetrieveFragmentJobBuilder()
+        [Test]
+        public void Execute_ShouldGetTheMailFragmentUsingTheDroneCommunication()
         {
-            DroneCommunicationService = MockRepository.GenerateStub<IDroneCommunicationService>();
-            
-            MailOporations = MockRepository.GenerateStub<IDroneMailOporations>();
+            //Arrange
+            IJobExecutionContext fakeJobContext = FakeContext();
 
-            MailSender = MockRepository.GenerateStub<IMailSender>();
+            var fragmentReponse = Fixture.CreateAnonymous<FragmentResponse>();
+
+            var droneCom = MockRepository.GenerateMock<IDroneCommunicationService>();
+            droneCom.Expect(x => x.RetrieveFragment()).Repeat.Once().Return(fragmentReponse);
+
+            var builder = new MockedRetrieveFragmentJobBuilder();
+            builder.DroneCommunicationService = droneCom;
+            RetrieveFragmentJob job = builder.Build();
+            //Act
+            job.Execute(fakeJobContext);
+            //Assert
+            droneCom.VerifyAllExpectations();
         }
 
-        public MockedRetrieveFragmentJobBuilder WithFragmentResponse(FragmentResponse fragmentResponse = null )
+        [Test]
+        public void Execute_ShouldSendTheEmailFragment()
         {
-            if (fragmentResponse == null)
-            {
-                fragmentResponse = new FragmentResponse()
-                                       {
-                                           DroneSideOporations = new List<DroneSideOporationBase>(),
-                                           EmailFragment = new EmailFragment()
-                                       };
+            //Arrange
+            IJobExecutionContext fakeJobContext = FakeContext();
 
-            }
+            var fragmentReponse = Fixture.CreateAnonymous<FragmentResponse>();
+
+            var mailSender = MockRepository.GenerateMock<IMailSender>();
+            mailSender.Expect(x => x.ProcessFragment(Arg<EmailFragment>.Is.Equal(fragmentReponse.EmailFragment))).Repeat
+                .Once();
 
 
-            DroneCommunicationService.Stub(x => x.RetrieveFragment()).Return(fragmentResponse);
+            var builder = new MockedRetrieveFragmentJobBuilder();
+            builder.MailSender = mailSender;
 
-            return this;
-
-        }
-
-        public RetrieveFragmentJob Build()
-        {
-            return new RetrieveFragmentJob(DroneCommunicationService,MailOporations,MailSender);
+            RetrieveFragmentJob job = builder.WithFragmentResponse(fragmentReponse).Build();
+            //Act
+            job.Execute(fakeJobContext);
+            //Assert
+            mailSender.VerifyAllExpectations();
         }
     }
 }

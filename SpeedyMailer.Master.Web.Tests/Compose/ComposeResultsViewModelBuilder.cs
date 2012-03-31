@@ -1,11 +1,10 @@
 using NUnit.Framework;
-using SpeedyMailer.Master.Web.Tests.Maps;
 using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Master.Web.Tests.Compose
 {
     [TestFixture]
-    public class ComposeResultsViewModelBuilder : AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class ComposeResultsViewModelBuilder : AutoMapperAndFixtureBase
     {
         [Test]
         public void Build_ShouldParseTheResults()
@@ -15,7 +14,6 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
             //Act
 
             //Assert
-
         }
     }
 }

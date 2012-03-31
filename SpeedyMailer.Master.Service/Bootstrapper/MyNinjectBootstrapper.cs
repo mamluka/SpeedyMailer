@@ -3,24 +3,21 @@ using Ninject;
 using Raven.Client;
 using RestSharp;
 using SpeedyMailer.Bridge.Communication;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.DataAccess.Drone;
 using SpeedyMailer.Core.DataAccess.Fragments;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Core.NinjectProvider;
 using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 
 namespace SpeedyMailer.Master.Service.Bootstrapper
 {
-    public class MyNinjectBootstrapper:NinjectNancyBootstrapper
+    public class MyNinjectBootstrapper : NinjectNancyBootstrapper
     {
-
         protected override void ConfigureApplicationContainer(IKernel existingContainer)
         {
-            
-        
             existingContainer.Bind<IMailDroneRepository>().To<MailDroneRepository>();
             existingContainer.Bind<IMailDroneService>().To<MailDroneService>();
             existingContainer.Bind<IPoolMailOporations>().To<PoolMailOporations>();
@@ -34,9 +31,6 @@ namespace SpeedyMailer.Master.Service.Bootstrapper
             existingContainer.Bind<IUrlCreator>().To<UrlCreator>();
             existingContainer.Bind<IContactsRepository>().To<ContactsRepository>();
             existingContainer.Bind<IFragmentRepository>().To<FragmentRepository>();
-
-
-
         }
     }
 }

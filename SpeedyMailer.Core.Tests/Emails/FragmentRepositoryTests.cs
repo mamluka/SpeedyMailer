@@ -1,24 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Raven.Client;
-using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Core.Contacts;
-using SpeedyMailer.Core.DataAccess.Fragments;
-using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
-using FluentAssertions;
+using SpeedyMailer.Bridge.Model.Fragments;
+using SpeedyMailer.Core.DataAccess.Fragments;
+using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {
     [TestFixture]
-    public class FragmentRepositoryTests : AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class FragmentRepositoryTests : AutoMapperAndFixtureBase
     {
         [Test]
         public void Add_ShouldAddTheFragementToTheStore()
@@ -29,14 +21,13 @@ namespace SpeedyMailer.Core.Tests.Emails
 
             session.Expect(x => x.Store(Arg<EmailFragment>.Is.Equal(fragment))).Repeat.Once();
 
-            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
+            IDocumentStore store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var fragmentRepository = new FragmentRepository(store);
             //Act
             fragmentRepository.Add(fragment);
             //Assert
             session.VerifyAllExpectations();
-            
         }
     }
 }

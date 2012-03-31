@@ -1,33 +1,28 @@
+using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Bridge.Communication;
-using SpeedyMailer.Drone.Tests.Maps;
 using SpeedyMailer.Tests.Core;
-using FluentAssertions;
 
 namespace SpeedyMailer.Drone.Tests.Mail
 {
     [TestFixture]
-    public class DroneMailOporationsTests : AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class DroneMailOporationsTests : AutoMapperAndFixtureBase
     {
         [Test]
         public void Preform_ShouldActiveTheStopCorrentJobActionWhenGettingASleepOporation()
         {
             //Arrange
-            var checkBool = false;
+            bool checkBool = false;
             var oporation = new GoToSleepOporation();
             //Act
             var mailOporations = new DroneMailOporations();
 
-            mailOporations.StopCurrentJob = () =>
-                                                {
-                                                    checkBool = true;
-                                                };
-            
-            
+            mailOporations.StopCurrentJob = () => { checkBool = true; };
+
+
             //Assert
             mailOporations.Preform(oporation);
             checkBool.Should().BeTrue();
-
         }
     }
 }

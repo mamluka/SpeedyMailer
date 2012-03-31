@@ -1,13 +1,12 @@
 using NUnit.Framework;
-using SpeedyMailer.Drone.Tests.Maps;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
 using Quartz;
+using Rhino.Mocks;
+using SpeedyMailer.Tests.Core;
 
 namespace SpeedyMailer.Drone.Tests.Drone
 {
     [TestFixture]
-    public class DroneTests : AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class DroneTests : AutoMapperAndFixtureBase
     {
         [Test]
         public void Start_ShouldStartTheDroneJob()
@@ -16,25 +15,10 @@ namespace SpeedyMailer.Drone.Tests.Drone
             var schedular = MockRepository.GenerateStub<IScheduler>();
 
             var builder = new MockedDroneBuilder();
-            var drone = builder.Build();
+            Drone drone = builder.Build();
             //Act
 
             //Assert
-
         }
-
-    }
-
-    public class MockedDroneBuilder:IMockedComponentBuilder<Drone>
-    {
-        public Drone Build()
-        {
-            return new Drone();
-        }
-    }
-
-    public class Drone
-    {
-         
     }
 }

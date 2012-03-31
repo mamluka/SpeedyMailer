@@ -1,0 +1,33 @@
+using Raven.Client;
+using Rhino.Mocks;
+using SpeedyMailer.Core.DataAccess.Emails;
+using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.DB;
+
+namespace SpeedyMailer.Core.Tests.Emails
+{
+    internal class EmailRepositoryBuilder : IMockedComponentBuilder<EmailRepository>
+    {
+        public IDocumentStore DocumentStore;
+        public IEmailSourceParser Parser;
+
+        public EmailRepositoryBuilder()
+        {
+            var session = MockRepository.GenerateStub<IDocumentSession>();
+            IDocumentStore store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
+
+            DocumentStore = store;
+
+            Parser = MockRepository.GenerateStub<IEmailSourceParser>();
+        }
+
+        #region IMockedComponentBuilder<EmailRepository> Members
+
+        public EmailRepository Build()
+        {
+            return new EmailRepository(DocumentStore, Parser);
+        }
+
+        #endregion
+    }
+}

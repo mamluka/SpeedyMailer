@@ -53,11 +53,9 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Client.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper">
-      <HintPath>..\packages\AutoMapper.2.1.265\lib\net40\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="FizzWare.NBuilder">
-      <HintPath>..\packages\NBuilder.3.0.1.1\lib\FizzWare.NBuilder.dll</HintPath>
+    <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.2.1.266\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="FluentAssertions">
       <HintPath>..\packages\FluentAssertions.1.7.1.1\Lib\net40\FluentAssertions.dll</HintPath>
@@ -106,15 +104,16 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Compose\ComposeControllerBuilder.cs" />
     <Compile Include="Compose\ComposeControllerTests.cs" />
     <Compile Include="Compose\ComposeResultsViewModelBuilder.cs" />
     <Compile Include="Compose\ComposeViewModelBuilderTests.cs" />
     <Compile Include="Contacts\ContactsControllerTests.cs" />
+    <Compile Include="Contacts\ContactsMockedComponentBuilder.cs" />
     <Compile Include="Contacts\UploadListResultsViewModelBuilderTests.cs" />
     <Compile Include="Contacts\UploadListViewModelBuilderTests.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="Helpers\UrlCreatorTests.cs" />
-    <Compile Include="Maps\AutoMapperMaps.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

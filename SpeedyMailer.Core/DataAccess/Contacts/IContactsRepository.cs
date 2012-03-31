@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SpeedyMailer.Domain.Model.Contacts;
+using SpeedyMailer.Domain.Contacts;
 
 namespace SpeedyMailer.Core.DataAccess.Contacts
 {

@@ -1,4 +1,4 @@
-using SpeedyMailer.Domain.Model.Lists;
+using SpeedyMailer.Domain.Lists;
 
 namespace SpeedyMailer.Core.DataAccess.Lists
 {
@@ -8,6 +8,5 @@ namespace SpeedyMailer.Core.DataAccess.Lists
         void Add(ListDescriptor listDescriptor);
         void Remove(string id);
         void Update(ListDescriptor listDescriptor);
-
     }
 }

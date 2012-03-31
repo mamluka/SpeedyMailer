@@ -1,30 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Web;
 using System.Linq;
+using System.Web;
 using AutoMapper;
 using CsvHelper;
 using SpeedyMailer.Core.DataAccess.Contacts;
-using SpeedyMailer.Domain.Model.Contacts;
+using SpeedyMailer.Domain.Contacts;
 
 namespace SpeedyMailer.Core.Contacts
 {
     public class ContactsCSVParser : IContactsCSVParser
     {
-        private InitialContactsBatchOptions initialContactsBatchOptions;
-        private readonly HttpContextBase httpContextBase;
         private readonly IContactsRepository contactsRepository;
+        private readonly HttpContextBase httpContextBase;
         private readonly IMappingEngine mapper;
-        private ContactCSVParserResults results;
         private bool hasInitialEmailBatchOptions;
+        private InitialContactsBatchOptions initialContactsBatchOptions;
+        private ContactCSVParserResults results;
 
-        public ContactsCSVParser(HttpContextBase httpContextBase, IContactsRepository contactsRepository, IMappingEngine mapper)
+        public ContactsCSVParser(HttpContextBase httpContextBase, IContactsRepository contactsRepository,
+                                 IMappingEngine mapper)
         {
             this.httpContextBase = httpContextBase;
             this.contactsRepository = contactsRepository;
             this.mapper = mapper;
         }
+
+        #region IContactsCSVParser Members
 
         public void ParseAndStore()
         {
@@ -34,8 +37,6 @@ namespace SpeedyMailer.Core.Contacts
             }
             var files = new List<HttpPostedFileBase>();
 
-          
-            
 
             for (int i = 0; i < httpContextBase.Request.Files.Count; i++)
             {
@@ -44,11 +45,12 @@ namespace SpeedyMailer.Core.Contacts
 
             var emails = new List<ContactFromCSVRow>();
 
-            foreach (var file in files)
+            foreach (HttpPostedFileBase file in files)
             {
                 if (file.InputStream.Length == 0)
                 {
-                    throw new Exception("when asked to Parse the Uploaded CSV there was no data in filename:" + file.FileName);
+                    throw new Exception("when asked to Parse the Uploaded CSV there was no data in filename:" +
+                                        file.FileName);
                 }
                 var mStream = new MemoryStream();
                 file.InputStream.CopyTo(mStream);
@@ -58,30 +60,26 @@ namespace SpeedyMailer.Core.Contacts
 
                 var csvParser = new CsvParser(new StreamReader(mStream));
                 var csvReader = new CsvReader(csvParser);
-                
-                 emails.AddRange(csvReader.GetRecords<ContactFromCSVRow>());
+
+                emails.AddRange(csvReader.GetRecords<ContactFromCSVRow>());
             }
 
-            var emailsDTO = mapper.Map<List<ContactFromCSVRow>, List<Contact>>(emails);
+            List<Contact> emailsDTO = mapper.Map<List<ContactFromCSVRow>, List<Contact>>(emails);
 
             if (hasInitialEmailBatchOptions)
             {
-                 emailsDTO.ForEach(x => x.MemberOf.Add(initialContactsBatchOptions.ContainingListId));
+                emailsDTO.ForEach(x => x.MemberOf.Add(initialContactsBatchOptions.ContainingListId));
             }
 
-           
 
             contactsRepository.Store(emailsDTO);
 
-            results = new ContactCSVParserResults()
+            results = new ContactCSVParserResults
                           {
                               NumberOfFilesProcessed = files.Count,
                               NumberOfContactsProcessed = emails.Count,
-                              Filenames = files.Select(x=> x.FileName).ToList()
-                              
-
+                              Filenames = files.Select(x => x.FileName).ToList()
                           };
-
         }
 
         public ContactCSVParserResults Results
@@ -94,5 +92,7 @@ namespace SpeedyMailer.Core.Contacts
             initialContactsBatchOptions = model;
             hasInitialEmailBatchOptions = true;
         }
+
+        #endregion
     }
 }

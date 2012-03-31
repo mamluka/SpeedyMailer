@@ -1,27 +1,24 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Configuration;
 using AutoMapper;
-using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Helpers;
-using System.Configuration;
-using SpeedyMailer.Domain.Model.Emails;
+using SpeedyMailer.Domain.Contacts;
+using SpeedyMailer.Domain.Emails;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public class EmailPoolService:IEmailPoolService
+    public class EmailPoolService : IEmailPoolService
     {
-        private readonly IDocumentStore store;
         private readonly IContactsRepository contactsRepository;
-        private readonly IUrlCreator urlCreator;
         private readonly IMappingEngine mapper;
+        private readonly IDocumentStore store;
+        private readonly IUrlCreator urlCreator;
 
-        public EmailPoolService(IDocumentStore store, IContactsRepository contactsRepository, IUrlCreator urlCreator, IMappingEngine mapper)
+        public EmailPoolService(IDocumentStore store, IContactsRepository contactsRepository, IUrlCreator urlCreator,
+                                IMappingEngine mapper)
         {
             this.store = store;
             this.contactsRepository = contactsRepository;
@@ -29,31 +26,32 @@ namespace SpeedyMailer.Core.Emails
             this.mapper = mapper;
         }
 
+        #region IEmailPoolService Members
+
         public AddEmailToPoolResults AddEmail(Email email)
         {
-            using (var session = store.OpenSession())
+            using (IDocumentSession session = store.OpenSession())
             {
-                
-
-                var totalContacts = 0;
-                var totalFragments = 0;
+                int totalContacts = 0;
+                int totalFragments = 0;
 
                 var systemTemplates = session.Load<EmailBodyElements>("system/templates");
 
-                foreach (var list in email.ToLists)
+                foreach (string list in email.ToLists)
                 {
-                    var pageNumber = 1;
-                    
+                    int pageNumber = 1;
+
                     while (true)
                     {
-                        var listFragment = contactsRepository.GetContactsByListId(list, pageNumber, 1000);
-                        var currentListFragmentCount = listFragment.Count();
-                        if ( currentListFragmentCount== 0)
+                        IEnumerable<Contact> listFragment = contactsRepository.GetContactsByListId(list, pageNumber,
+                                                                                                   1000);
+                        int currentListFragmentCount = listFragment.Count();
+                        if (currentListFragmentCount == 0)
                         {
                             break;
                         }
 
-                        var emailFragment = mapper.Map<Email, EmailFragment>(email);
+                        EmailFragment emailFragment = mapper.Map<Email, EmailFragment>(email);
 
                         emailFragment.UnsubscribeTemplate = systemTemplates.Unsubscribe ?? "";
 
@@ -62,30 +60,38 @@ namespace SpeedyMailer.Core.Emails
                         emailFragment.Locked = false;
 
                         emailFragment.ExtendedRecipients = listFragment.Select(x =>
-                                                                               new ExtendedRecipient()
+                                                                               new ExtendedRecipient
                                                                                    {
                                                                                        Address = x.Address,
                                                                                        Name = x.Name,
-                                                                                       DealUrl = urlCreator.UrlByRouteWithJsonObject("Deals",new LeadIdentity()
-                                                                                                                                                 {
-                                                                                                                                                     Address = x.Address,
-                                                                                                                                                     EmailId = email.Id
-                                                                                                                                                 }),
-                                                                                       UnsubscribeUrl = urlCreator.UrlByRouteWithJsonObject("Unsubscribe", new LeadIdentity()
-                                                                                       {
-                                                                                           Address = x.Address,
-                                                                                           EmailId = email.Id
-                                                                                       })
-                                                                                       
-
-                                                                                       
+                                                                                       DealUrl =
+                                                                                           urlCreator.
+                                                                                           UrlByRouteWithJsonObject(
+                                                                                               "Deals",
+                                                                                               new LeadIdentity
+                                                                                                   {
+                                                                                                       Address =
+                                                                                                           x.Address,
+                                                                                                       EmailId =
+                                                                                                           email.Id
+                                                                                                   }),
+                                                                                       UnsubscribeUrl =
+                                                                                           urlCreator.
+                                                                                           UrlByRouteWithJsonObject(
+                                                                                               "Unsubscribe",
+                                                                                               new LeadIdentity
+                                                                                                   {
+                                                                                                       Address =
+                                                                                                           x.Address,
+                                                                                                       EmailId =
+                                                                                                           email.Id
+                                                                                                   })
                                                                                    }
                             ).ToList();
 
 
                         session.Store(emailFragment);
 
-                        
 
                         totalContacts = totalContacts + currentListFragmentCount;
 
@@ -98,7 +104,7 @@ namespace SpeedyMailer.Core.Emails
                 session.SaveChanges();
 
 
-                return new AddEmailToPoolResults()
+                return new AddEmailToPoolResults
                            {
                                TotalNumberOfContacts = totalContacts,
                                TotalNumberOfEmailFragments = totalFragments
@@ -106,6 +112,6 @@ namespace SpeedyMailer.Core.Emails
             }
         }
 
-      
+        #endregion
     }
 }

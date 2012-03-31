@@ -1,52 +1,28 @@
 using System.Collections.Generic;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
 using Raven.Client;
 using Rhino.Mocks;
-using Ploeh.AutoFixture;
-using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.DataAccess.Contacts;
-using SpeedyMailer.Core.Tests.Maps;
-using SpeedyMailer.Domain.Model.Contacts;
+using SpeedyMailer.Domain.Contacts;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
 
 namespace SpeedyMailer.Core.Tests.Contacts
 {
     [TestFixture]
-    public class ContactsRepositoryTests:AutoMapperAndFixtureBase<AutoMapperMaps>
+    public class ContactsRepositoryTests : AutoMapperAndFixtureBase
     {
-
-        [Test]
-        public void Store_ShouldStoreTheContact()
-        {
-            //Arrange
-            var contact = Fixture.Build<Contact>().Without(x => x.Id).CreateAnonymous();
-
-            var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Store(Arg<Contact>.Is.Equal(contact))).Repeat.Once();
-
-            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
-
-            //Act
-            var contactsRep = new ContactsRepository(store);
-            //Assert
-
-            contactsRep.Store(contact);
-
-            session.VerifyAllExpectations();
-
-        }
-
         [Test]
         public void Store_ShouldGiveTheContactIDSameAsTheContactAddress()
         {
             //Arrange
-            var contact = Fixture.Build<Contact>().Without(x => x.Id).CreateAnonymous();
+            Contact contact = Fixture.Build<Contact>().Without(x => x.Id).CreateAnonymous();
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Store(Arg<Contact>.Matches(m=> m.Id == contact.Address))).Repeat.Once();
+            session.Expect(x => x.Store(Arg<Contact>.Matches(m => m.Id == contact.Address))).Repeat.Once();
 
-            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
+            IDocumentStore store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             //Act
             var contactsRep = new ContactsRepository(store);
@@ -55,7 +31,6 @@ namespace SpeedyMailer.Core.Tests.Contacts
             contactsRep.Store(contact);
 
             session.VerifyAllExpectations();
-
         }
 
         [Test]
@@ -68,21 +43,36 @@ namespace SpeedyMailer.Core.Tests.Contacts
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
             session.Expect(x => x.Store(Arg<List<Contact>>.Is.Anything)).Repeat.Times(10);
-            var store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
+            IDocumentStore store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 
             var contactsRep = new ContactsRepository(store);
 
             //Act
-             contactsRep.Store(contacts);   
+            contactsRep.Store(contacts);
             //Assert
 
-           
 
             session.VerifyAllExpectations();
-
         }
 
-       
-      
+        [Test]
+        public void Store_ShouldStoreTheContact()
+        {
+            //Arrange
+            Contact contact = Fixture.Build<Contact>().Without(x => x.Id).CreateAnonymous();
+
+            var session = MockRepository.GenerateMock<IDocumentSession>();
+            session.Expect(x => x.Store(Arg<Contact>.Is.Equal(contact))).Repeat.Once();
+
+            IDocumentStore store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
+
+            //Act
+            var contactsRep = new ContactsRepository(store);
+            //Assert
+
+            contactsRep.Store(contact);
+
+            session.VerifyAllExpectations();
+        }
     }
 }
