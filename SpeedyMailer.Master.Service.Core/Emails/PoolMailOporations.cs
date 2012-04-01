@@ -14,7 +14,6 @@ namespace SpeedyMailer.Master.Service.Core.Emails
             this.store = store;
         }
 
-        #region IPoolMailOporations Members
 
         public void Preform(PoolSideOporationBase poolSideOporation)
         {
@@ -28,7 +27,6 @@ namespace SpeedyMailer.Master.Service.Core.Emails
             }
         }
 
-        #endregion
 
         private void SetAsComplete(FragmentCompleteOporation fragmentCompleteOporation)
         {

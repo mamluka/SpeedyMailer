@@ -95,7 +95,6 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
             listRepository.VerifyAllExpectations();
         }
 
-        #region Nested type: UploadListResultsViewModelBuilderMockedComponentBuilder
 
         public class UploadListResultsViewModelBuilderMockedComponentBuilder :
             IMockedComponentBuilder<UploadListResultsViewModelBuilder>
@@ -111,16 +110,13 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
             public IMappingEngine Mapper { get; set; }
             public IListRepository ListRepository { get; set; }
 
-            #region IMockedComponentBuilder<UploadListResultsViewModelBuilder> Members
 
             public UploadListResultsViewModelBuilder Build()
             {
                 return new UploadListResultsViewModelBuilder(Mapper, ListRepository);
             }
 
-            #endregion
         }
 
-        #endregion
     }
 }

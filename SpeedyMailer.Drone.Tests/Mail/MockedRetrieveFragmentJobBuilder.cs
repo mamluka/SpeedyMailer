@@ -24,14 +24,12 @@ namespace SpeedyMailer.Drone.Tests.Mail
         public IDroneMailOporations MailOporations { get; set; }
         public IMailSender MailSender { get; set; }
 
-        #region IMockedComponentBuilder<RetrieveFragmentJob> Members
 
         public RetrieveFragmentJob Build()
         {
             return new RetrieveFragmentJob(DroneCommunicationService, MailOporations, MailSender);
         }
 
-        #endregion
 
         public MockedRetrieveFragmentJobBuilder WithFragmentResponse(FragmentResponse fragmentResponse = null)
         {

@@ -14,7 +14,6 @@ namespace SpeedyMailer.Core.DataAccess.Emails
             this.parser = parser;
         }
 
-        #region IEmailRepository Members
 
         public void Store(Email email)
         {
@@ -28,6 +27,5 @@ namespace SpeedyMailer.Core.DataAccess.Emails
             }
         }
 
-        #endregion
     }
 }

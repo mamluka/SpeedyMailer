@@ -20,7 +20,6 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
             this.mailSender = mailSender;
         }
 
-        #region IJob Members
 
         public void Execute(IJobExecutionContext context)
         {
@@ -51,6 +50,5 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
             }
         }
 
-        #endregion
     }
 }

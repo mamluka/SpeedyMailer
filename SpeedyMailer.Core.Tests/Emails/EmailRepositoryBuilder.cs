@@ -21,13 +21,11 @@ namespace SpeedyMailer.Core.Tests.Emails
             Parser = MockRepository.GenerateStub<IEmailSourceParser>();
         }
 
-        #region IMockedComponentBuilder<EmailRepository> Members
 
         public EmailRepository Build()
         {
             return new EmailRepository(DocumentStore, Parser);
         }
 
-        #endregion
     }
 }

@@ -27,7 +27,6 @@ namespace SpeedyMailer.Core.Contacts
             this.mapper = mapper;
         }
 
-        #region IContactsCSVParser Members
 
         public void ParseAndStore()
         {
@@ -93,6 +92,5 @@ namespace SpeedyMailer.Core.Contacts
             hasInitialEmailBatchOptions = true;
         }
 
-        #endregion
     }
 }

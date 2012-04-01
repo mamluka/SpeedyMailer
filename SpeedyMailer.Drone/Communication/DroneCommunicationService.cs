@@ -17,7 +17,6 @@ namespace SpeedyMailer.Master.Web.UI.Communication
             this.configurationManager = configurationManager;
         }
 
-        #region IDroneCommunicationService Members
 
         public FragmentResponse RetrieveFragment()
         {
@@ -40,6 +39,5 @@ namespace SpeedyMailer.Master.Web.UI.Communication
             return fragment;
         }
 
-        #endregion
     }
 }

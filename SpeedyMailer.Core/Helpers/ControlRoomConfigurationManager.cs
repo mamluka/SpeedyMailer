@@ -12,11 +12,9 @@ namespace SpeedyMailer.Core.Helpers
                                             };
         }
 
-        #region IConfigurationManager Members
 
         public ControlRoomConfigurations ControlRoomConfigurations { get; private set; }
 
-        #endregion
 
         private string ByKey(string key)
         {

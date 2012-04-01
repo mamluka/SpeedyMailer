@@ -11,7 +11,6 @@ namespace SpeedyMailer.Master.Web.UI.Mail
             this.mailParser = mailParser;
         }
 
-        #region IMailSender Members
 
         public void ProcessFragment(EmailFragment fragment)
         {
@@ -28,6 +27,5 @@ namespace SpeedyMailer.Master.Web.UI.Mail
             }
         }
 
-        #endregion
     }
 }

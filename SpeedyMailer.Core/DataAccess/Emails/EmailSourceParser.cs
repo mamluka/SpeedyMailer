@@ -6,7 +6,6 @@ namespace SpeedyMailer.Core.DataAccess.Emails
 {
     public class EmailSourceParser : IEmailSourceParser
     {
-        #region IEmailSourceParser Members
 
         public List<string> Deals(string emailSource)
         {
@@ -22,6 +21,5 @@ namespace SpeedyMailer.Core.DataAccess.Emails
             return new List<string>();
         }
 
-        #endregion
     }
 }

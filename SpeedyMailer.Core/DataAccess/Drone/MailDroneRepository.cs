@@ -15,7 +15,6 @@ namespace SpeedyMailer.Core.DataAccess.Drone
             this.store = store;
         }
 
-        #region IMailDroneRepository Members
 
         public List<MailDrone> CurrentlySleepingDrones()
         {
@@ -38,6 +37,5 @@ namespace SpeedyMailer.Core.DataAccess.Drone
             }
         }
 
-        #endregion
     }
 }

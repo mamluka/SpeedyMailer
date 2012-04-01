@@ -29,13 +29,11 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
         public IMappingEngine Mapper { get; set; }
         public IEmailRepository EmailRepository { get; set; }
 
-        #region IMockedComponentBuilder<ComposeController> Members
 
         public ComposeController Build()
         {
             return new ComposeController(IndexViewModelBuilder, EmailRepository, EmailPoolService, Mapper);
         }
 
-        #endregion
     }
 }

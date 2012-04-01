@@ -18,7 +18,6 @@ namespace SpeedyMailer.Master.Web.Core.Builders
             this.mapper = mapper;
         }
 
-        #region IViewModelBuilder<ComposeViewModel> Members
 
         public ComposeViewModel Build()
         {
@@ -31,6 +30,5 @@ namespace SpeedyMailer.Master.Web.Core.Builders
             return viewModel;
         }
 
-        #endregion
     }
 }

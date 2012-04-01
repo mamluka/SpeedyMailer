@@ -17,7 +17,6 @@ namespace SpeedyMailer.Core.Helpers
             this.configurationManager = configurationManager;
         }
 
-        #region IUrlCreator Members
 
         public string UrlByRoute(string routeName)
         {
@@ -39,7 +38,6 @@ namespace SpeedyMailer.Core.Helpers
                                                      });
         }
 
-        #endregion
 
         public static string SerializeToBase64(dynamic whatToEncode)
         {

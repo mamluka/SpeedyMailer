@@ -30,7 +30,6 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
         public IListRepository ListRepository { get; set; }
         public IMappingEngine Mapper { get; set; }
 
-        #region IMockedComponentBuilder<ContactsController> Members
 
         public ContactsController Build()
         {
@@ -38,6 +37,5 @@ namespace SpeedyMailer.Master.Web.Tests.Contacts
                                           UploadListViewModelBuilder, Mapper);
         }
 
-        #endregion
     }
 }

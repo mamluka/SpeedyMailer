@@ -25,14 +25,12 @@ namespace SpeedyMailer.Drone.Tests.Communication
         public IRestClient RestClient { get; set; }
         public IDroneConfigurationManager DroneConfigurationManager { get; set; }
 
-        #region IMockedComponentBuilder<DroneCommunicationService> Members
 
         public DroneCommunicationService Build()
         {
             return new DroneCommunicationService(RestClient, DroneConfigurationManager);
         }
 
-        #endregion
 
         public MockedDroneCommunicationServiceBuilder WithBasePoolUrl(string url)
         {

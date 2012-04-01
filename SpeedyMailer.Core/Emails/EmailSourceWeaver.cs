@@ -6,7 +6,6 @@ namespace SpeedyMailer.Core.Emails
 {
     public class EmailSourceWeaver : IEmailSourceWeaver
     {
-        #region IEmailSourceWeaver Members
 
         public string WeaveUnsubscribeTemplate(string bodySource, string template, string unsubscribeLink)
         {
@@ -28,6 +27,5 @@ namespace SpeedyMailer.Core.Emails
             return doc.DocumentNode.InnerHtml;
         }
 
-        #endregion
     }
 }

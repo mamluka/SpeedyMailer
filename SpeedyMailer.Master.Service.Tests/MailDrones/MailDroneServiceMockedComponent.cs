@@ -22,13 +22,11 @@ namespace SpeedyMailer.Master.Service.Tests.MailDrones
 
         public IRestClient RestClient { get; set; }
 
-        #region IMockedComponentBuilder<MailDroneService> Members
 
         public MailDroneService Build()
         {
             return new MailDroneService(RestClient);
         }
 
-        #endregion
     }
 }

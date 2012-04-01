@@ -31,14 +31,12 @@ namespace SpeedyMailer.Core.Tests.Emails
         public IMappingEngine Mapper { get; set; }
         public IUrlCreator UrlCreator { get; set; }
 
-        #region IMockedComponentBuilder<EmailPoolService> Members
 
         public EmailPoolService Build()
         {
             return new EmailPoolService(Store, ContactsRepository, UrlCreator, Mapper);
         }
 
-        #endregion
 
         public EmailPoolMockedComponentBuilder AddMockedContacts(List<Contact> contacts)
         {

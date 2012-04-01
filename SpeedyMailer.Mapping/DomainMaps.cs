@@ -10,7 +10,6 @@ namespace SpeedyMailer.Mapping
 {
     public class DomainMaps : IMapCreator
     {
-        #region IMapCreator Members
 
         public void CreateMap(IProfileExpression mapper)
         {
@@ -25,6 +24,5 @@ namespace SpeedyMailer.Mapping
                 ;
         }
 
-        #endregion
     }
 }

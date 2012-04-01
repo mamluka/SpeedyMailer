@@ -13,7 +13,6 @@ namespace SpeedyMailer.Master.Web.UI.Mail
             this.weaver = weaver;
         }
 
-        #region IMailParser Members
 
         public string Parse(ExtendedRecipient recipient)
         {
@@ -27,6 +26,5 @@ namespace SpeedyMailer.Master.Web.UI.Mail
             this.mailParserInitializer = mailParserInitializer;
         }
 
-        #endregion
     }
 }

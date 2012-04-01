@@ -8,7 +8,6 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
 {
     public class IoCJobFactory : IJobFactory
     {
-        #region IJobFactory Members
 
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
@@ -17,6 +16,5 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
             return kernel.Get(type) as IJob;
         }
 
-        #endregion
     }
 }

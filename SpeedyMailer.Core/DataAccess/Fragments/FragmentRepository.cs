@@ -15,7 +15,6 @@ namespace SpeedyMailer.Core.DataAccess.Fragments
             this.store = store;
         }
 
-        #region IFragmentRepository Members
 
         public void Add(EmailFragment fragment)
         {
@@ -55,6 +54,5 @@ namespace SpeedyMailer.Core.DataAccess.Fragments
             }
         }
 
-        #endregion
     }
 }

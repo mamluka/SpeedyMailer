@@ -7,13 +7,11 @@ namespace SpeedyMailer.Drone.Tests.Mail
     {
         public IMailParser MailParser { get; set; }
 
-        #region IMockedComponentBuilder<MailSender> Members
 
         public MailSender Build()
         {
             return new MailSender(MailParser);
         }
 
-        #endregion
     }
 }

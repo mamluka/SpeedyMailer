@@ -17,7 +17,6 @@ namespace SpeedyMailer.Master.Web.Core.Builders
             this.listRepository = listRepository;
         }
 
-        #region IViewModelBuilderWithBuildParameters<UploadListViewModel,IContactsCSVParser> Members
 
         public UploadListViewModel Build(IContactsCSVParser parameter)
         {
@@ -32,6 +31,5 @@ namespace SpeedyMailer.Master.Web.Core.Builders
             return viewModel;
         }
 
-        #endregion
     }
 }

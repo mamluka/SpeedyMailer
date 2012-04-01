@@ -14,7 +14,6 @@ namespace SpeedyMailer.Mapping
 {
     public class ViewModelMaps : IMapCreator
     {
-        #region IMapCreator Members
 
         public void CreateMap(IProfileExpression mapper)
         {
@@ -40,6 +39,5 @@ namespace SpeedyMailer.Mapping
                 ;
         }
 
-        #endregion
     }
 }

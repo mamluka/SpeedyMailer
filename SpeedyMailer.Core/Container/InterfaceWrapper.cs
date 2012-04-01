@@ -8,15 +8,12 @@ namespace SpeedyMailer.Core.Container
 {
     public static class InterfaceWrapper
     {
-        #region Private Fields
 
         private static readonly IDictionary<string, ModuleBuilder> _builders = new Dictionary<string, ModuleBuilder>();
         private static readonly IDictionary<Type, Type> _types = new Dictionary<Type, Type>();
         private static readonly object _lockObject = new object();
 
-        #endregion
 
-        #region Public Methods
 
         /// <summary>
         /// Creates an interface that matches the interface defined by <typeparamref name="T"/>
@@ -43,9 +40,7 @@ namespace SpeedyMailer.Core.Container
             }
         }
 
-        #endregion
 
-        #region Private Methods
 
         private static T CreateInterfaceInstance<T>(Func<T> getter, Type wrapperType)
         {
@@ -56,7 +51,6 @@ namespace SpeedyMailer.Core.Container
 
         private static Type GenerateInterfaceType<T>(Func<T> getter, Type wrapperType)
         {
-            #region Cache Fetch
 
             Type sourceType = typeof (T);
 
@@ -70,9 +64,7 @@ namespace SpeedyMailer.Core.Container
                 if (_types.TryGetValue(sourceType, out newType))
                     return newType;
 
-                #endregion
 
-                #region Validation
 
                 if (!sourceType.IsInterface)
                     throw new ArgumentException("Type T is not an interface", "T");
@@ -89,9 +81,7 @@ namespace SpeedyMailer.Core.Container
                 if ((getterMethod.Attributes & MethodAttributes.Public) != MethodAttributes.Public)
                     throw new ArgumentException("Method must be public.", "getter");
 
-                #endregion
 
-                #region Module and Assembly Creation
 
                 string orginalAssemblyName = sourceType.Assembly.GetName().Name;
 
@@ -113,9 +103,7 @@ namespace SpeedyMailer.Core.Container
 
                 AssemblyName assemblyName = moduleBuilder.Assembly.GetName();
 
-                #endregion
 
-                #region Create the TypeBuilder
 
                 TypeBuilder typeBuilder = moduleBuilder.DefineType(
                     sourceType.FullName,
@@ -123,9 +111,7 @@ namespace SpeedyMailer.Core.Container
                     typeof (object),
                     new[] {sourceType});
 
-                #endregion
 
-                #region Enumerate interface inheritance hierarchy
 
                 var interfaces = new List<Type>();
                 IEnumerable<Type> subList;
@@ -140,9 +126,7 @@ namespace SpeedyMailer.Core.Container
 
                 interfaces = interfaces.Distinct().ToList();
 
-                #endregion
 
-                #region Create the methods
 
                 foreach (MethodInfo method in interfaces.SelectMany(i => i.GetMethods()))
                 {
@@ -214,9 +198,7 @@ namespace SpeedyMailer.Core.Container
                     methodBody.Emit(OpCodes.Ret);
                 }
 
-                #endregion
 
-                #region Create and return the defined type
 
                 newType = typeBuilder.CreateType();
 
@@ -225,9 +207,7 @@ namespace SpeedyMailer.Core.Container
                 return newType;
             }
 
-            #endregion
         }
 
-        #endregion
     }
 }

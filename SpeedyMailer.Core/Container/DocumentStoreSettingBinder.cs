@@ -9,7 +9,38 @@ using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
 {
-    public class DocumentStoreSettingBinder : IBindingGenerator
+    public abstract class SettingBinderBase
+    {
+        public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
+        {
+
+            var settingsName = SettingsPresistanceName(type);
+
+            var settings = ReadPresistantSettings(settingsName);
+
+            var proxy = CreateProxy(type, settings);
+
+            return new[] {bindingRoot.Bind(type).ToConstant<object>(proxy)};
+        }
+
+        private static string SettingsPresistanceName(Type type)
+        {
+            var settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
+            return settingsName;
+        }
+
+        protected abstract object ReadPresistantSettings(string settingsName);
+
+        private static object CreateProxy(Type type, object settings)
+        {
+            var proxyGenerator = new ProxyGenerator();
+            IInterceptor settingsInterceptor = new DocumentStoreSettingBinder.SettingsInterceptor(settings as DynamicJsonObject, type);
+            var proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
+            return proxy;
+        }
+    }
+
+    public class DocumentStoreSettingBinder : SettingBinderBase, IBindingGenerator
     {
         private readonly IDocumentStore _store;
 
@@ -18,14 +49,10 @@ namespace SpeedyMailer.Core.Container
             _store = store;
         }
 
-        #region IBindingGenerator Members
 
-        public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
+        protected override object ReadPresistantSettings(string settingsName)
         {
-
             object settings = null;
-
-            var settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
             var settingsId = string.Format("settings/{0}", settingsName);
             try
             {
@@ -37,23 +64,10 @@ namespace SpeedyMailer.Core.Container
             catch
             {
             }
-
-            var proxy = CreateProxy(type, settings);
-
-            return new[] {bindingRoot.Bind(type).ToConstant(proxy)};
+            return settings;
         }
 
-        private static object CreateProxy(Type type, object settings)
-        {
-            var proxyGenerator = new ProxyGenerator();
-            IInterceptor settingsInterceptor = new SettingsInterceptor(settings as DynamicJsonObject, type);
-            var proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
-            return proxy;
-        }
 
-        #endregion
-
-        #region Nested type: SettingsInterceptor
 
         public class SettingsInterceptor : IInterceptor
         {
@@ -66,7 +80,6 @@ namespace SpeedyMailer.Core.Container
                 _settingsInterface = settingsInterface;
             }
 
-            #region IInterceptor Members
 
             public void Intercept(IInvocation invocation)
             {
@@ -95,7 +108,6 @@ namespace SpeedyMailer.Core.Container
                 }
             }
 
-            #endregion
 
             private static string ToAutoPropertyName(IInvocation invocation)
             {
@@ -109,6 +121,5 @@ namespace SpeedyMailer.Core.Container
             }
         }
 
-        #endregion
     }
 }

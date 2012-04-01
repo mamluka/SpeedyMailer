@@ -12,7 +12,6 @@ namespace SpeedyMailer.Core.DataAccess.Lists
             this.store = store;
         }
 
-        #region IListRepository Members
 
         public ListsStore Lists()
         {
@@ -61,6 +60,5 @@ namespace SpeedyMailer.Core.DataAccess.Lists
             }
         }
 
-        #endregion
     }
 }

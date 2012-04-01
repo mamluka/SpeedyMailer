@@ -14,7 +14,6 @@ namespace SpeedyMailer.Core.DataAccess.Contacts
             this.store = store;
         }
 
-        #region IContactsRepository Members
 
         public void Store(Contact contact)
         {
@@ -50,7 +49,6 @@ namespace SpeedyMailer.Core.DataAccess.Contacts
             }
         }
 
-        #endregion
 
         private Contact GiveIdToContact(Contact contact)
         {

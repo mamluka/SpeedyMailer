@@ -12,7 +12,6 @@ namespace SpeedyMailer.Master.Service.MailDrones
             this.restClient = restClient;
         }
 
-        #region IMailDroneService Members
 
         public DroneStatus WakeUp(MailDrone mailDrone)
         {
@@ -39,6 +38,5 @@ namespace SpeedyMailer.Master.Service.MailDrones
             return result.Data;
         }
 
-        #endregion
     }
 }

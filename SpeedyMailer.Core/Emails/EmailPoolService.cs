@@ -26,7 +26,6 @@ namespace SpeedyMailer.Core.Emails
             this.mapper = mapper;
         }
 
-        #region IEmailPoolService Members
 
         public AddEmailToPoolResults AddEmail(Email email)
         {
@@ -112,6 +111,5 @@ namespace SpeedyMailer.Core.Emails
             }
         }
 
-        #endregion
     }
 }
