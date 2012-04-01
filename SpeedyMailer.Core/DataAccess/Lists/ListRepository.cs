@@ -15,7 +15,7 @@ namespace SpeedyMailer.Core.DataAccess.Lists
 
         public ListsStore Lists()
         {
-            using (IDocumentSession session = store.OpenSession())
+            using (var session = store.OpenSession())
             {
                 var list = session.Load<ListsStore>("system/lists");
                 if (list == null)
@@ -28,9 +28,9 @@ namespace SpeedyMailer.Core.DataAccess.Lists
 
         public void Add(ListDescriptor listDescriptor)
         {
-            ListsStore listCollection = Lists();
+            var listCollection = Lists();
             listCollection.Lists.Add(listDescriptor);
-            using (IDocumentSession session = store.OpenSession())
+            using (var session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
                 session.SaveChanges();
@@ -39,9 +39,9 @@ namespace SpeedyMailer.Core.DataAccess.Lists
 
         public void Remove(string id)
         {
-            ListsStore listCollection = Lists();
+            var listCollection = Lists();
             listCollection.Lists.RemoveAll(x => x.Id == id);
-            using (IDocumentSession session = store.OpenSession())
+            using (var session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
                 session.SaveChanges();
@@ -50,10 +50,10 @@ namespace SpeedyMailer.Core.DataAccess.Lists
 
         public void Update(ListDescriptor listDescriptor)
         {
-            ListsStore listCollection = Lists();
+            var listCollection = Lists();
             listCollection.Lists.RemoveAll(x => x.Id == listDescriptor.Id);
             listCollection.Lists.Add(listDescriptor);
-            using (IDocumentSession session = store.OpenSession())
+            using (var session = store.OpenSession())
             {
                 session.Store(listCollection, "system/lists");
                 session.SaveChanges();

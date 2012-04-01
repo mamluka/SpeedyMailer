@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using Castle.DynamicProxy;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Extensions.Conventions;
@@ -42,36 +38,9 @@ namespace SpeedyMailer.Core.Container
         {
             kernel.Bind(
                 x =>
-                fromAssemblies(x).Select(type => type.Name.EndsWith("Settings")).BindWith(kernel.Get<JsonFileSettingBinder>()));
+                fromAssemblies(x).Select(type => type.Name.EndsWith("Settings")).BindWith(kernel.Get<JsonFileSettingsBinder>()));
             return kernel;
         }
 
-    }
-
-    public class JsonFileSettingBinder : SettingsBinderBase
-    {
-        protected override object ReadPresistantSettings(string settingsName)
-        {
-            var reader = new StreamReader(string.Format("settings/{0}.settings", settingsName));
-            return JsonConvert.DeserializeObject<object>(reader.ReadToEnd());
-        }
-
-        protected override IInterceptor SetInterceptor(Type type, object settings)
-        {
-            return new JsobInterceptor(settings,type);
-        }
-    }
-
-    public class JsobInterceptor:SettingsInterceptorBase
-    {
-        public JsobInterceptor(object settings, Type settingsInterface) : base(settings, settingsInterface)
-        {
-        }
-
-        protected override dynamic PersistantSetting(IInvocation invocation)
-        {
-            var name = ToAutoPropertyName(invocation);
-            return Settings != null ? (Settings as JObject)[name].ToObject<string>() : null;
-        }
     }
 }

@@ -106,7 +106,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         }
 
         [Test]
-        public void BindSettingsFor_ShouldLoadSettingFromJsonFileIfExists()
+        public void BindSettingsToJsonFilesFor_ShouldLoadSettingFromJsonFileIfExists()
         {
             _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
 

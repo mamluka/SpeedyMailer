@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Container
 
             var proxy = CreateProxy(type, settings);
 
-            return new[] {bindingRoot.Bind(type).ToConstant<object>(proxy)};
+            return new[] {bindingRoot.Bind(type).ToConstant(proxy)};
         }
 
         private string SettingsPresistanceName(Type type)

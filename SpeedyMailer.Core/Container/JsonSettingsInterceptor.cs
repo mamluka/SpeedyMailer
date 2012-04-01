@@ -4,9 +4,9 @@ using Newtonsoft.Json.Linq;
 
 namespace SpeedyMailer.Core.Container
 {
-    public class JsobInterceptor:SettingsInterceptorBase
+    public class JsonSettingsInterceptor:SettingsInterceptorBase
     {
-        public JsobInterceptor(object settings, Type settingsInterface) : base(settings, settingsInterface)
+        public JsonSettingsInterceptor(object settings, Type settingsInterface) : base(settings, settingsInterface)
         {
         }
 

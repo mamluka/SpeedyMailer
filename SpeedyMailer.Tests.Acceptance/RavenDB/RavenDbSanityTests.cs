@@ -19,7 +19,7 @@ namespace SpeedyMailer.Tests.Acceptance.RavenDB
             const string testingTheEmbeddedDb = "testing the embedded db";
             const string entityId = "entity1";
 
-            using (IDocumentSession session = GetRavenDbDocumentStore().OpenSession())
+            using (var session = GetRavenDbDocumentStore().OpenSession())
             {
                 session.Store(new ClassToStore
                                   {
@@ -28,7 +28,7 @@ namespace SpeedyMailer.Tests.Acceptance.RavenDB
                 session.SaveChanges();
             }
 
-            using (IDocumentSession session = GetRavenDbDocumentStore().OpenSession())
+            using (var session = GetRavenDbDocumentStore().OpenSession())
             {
                 var result = session.Load<ClassToStore>(entityId);
 
