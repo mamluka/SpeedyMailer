@@ -104,7 +104,7 @@
     <Compile Include="Container\Extentions.cs" />
     <Compile Include="Container\InterfaceWrapper.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
-    <Compile Include="Container\SettingsBinder.cs" />
+    <Compile Include="Container\DocumentStoreSettingBinder.cs" />
     <Compile Include="Core\IReportResults.cs" />
     <Compile Include="Contacts\ContactsCSVParser.cs" />
     <Compile Include="Contacts\ContactFromCSVRow.cs" />

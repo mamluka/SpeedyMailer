@@ -14,12 +14,8 @@ namespace SpeedyMailer.Master.Web.UI.Configurations
                                      };
         }
 
-        #region IDroneConfigurationManager Members
-
         public string BasePoolUrl { get; set; }
         public PoolOporationsUrls PoolOporationsUrls { get; set; }
-
-        #endregion
 
         private string GetValueFromConfiguration(string key)
         {

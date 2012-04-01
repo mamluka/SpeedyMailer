@@ -9,11 +9,11 @@ using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
 {
-    public class SettingsBinder : IBindingGenerator
+    public class DocumentStoreSettingBinder : IBindingGenerator
     {
         private readonly IDocumentStore _store;
 
-        public SettingsBinder(IDocumentStore store)
+        public DocumentStoreSettingBinder(IDocumentStore store)
         {
             _store = store;
         }
@@ -22,11 +22,11 @@ namespace SpeedyMailer.Core.Container
 
         public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
         {
-            var proxyGenerator = new ProxyGenerator();
+
             object settings = null;
 
-            string settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
-            string settingsId = string.Format("settings/{0}", settingsName);
+            var settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
+            var settingsId = string.Format("settings/{0}", settingsName);
             try
             {
                 using (IDocumentSession session = _store.OpenSession())
@@ -38,10 +38,17 @@ namespace SpeedyMailer.Core.Container
             {
             }
 
-            IInterceptor settingsInterceptor = new SettingsInterceptor(settings as DynamicJsonObject, type);
-            object proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
+            var proxy = CreateProxy(type, settings);
 
             return new[] {bindingRoot.Bind(type).ToConstant(proxy)};
+        }
+
+        private static object CreateProxy(Type type, object settings)
+        {
+            var proxyGenerator = new ProxyGenerator();
+            IInterceptor settingsInterceptor = new SettingsInterceptor(settings as DynamicJsonObject, type);
+            var proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
+            return proxy;
         }
 
         #endregion
@@ -53,7 +60,7 @@ namespace SpeedyMailer.Core.Container
             private readonly DynamicJsonObject _settings;
             private readonly Type _settingsInterface;
 
-            public SettingsInterceptor(dynamic settings, Type settingsInterface)
+            public SettingsInterceptor(DynamicJsonObject settings, Type settingsInterface)
             {
                 _settings = settings;
                 _settingsInterface = settingsInterface;

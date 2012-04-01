@@ -9,21 +9,17 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
     [TestFixture]
     public class ExtentionsTests : IntergrationTestsBase
     {
-        #region Setup/Teardown
-
         [SetUp]
         public void Setup()
         {
-            _targert = new StandardKernel();
+            _target = new StandardKernel();
         }
 
-        #endregion
-
-        private StandardKernel _targert;
+        private StandardKernel _target;
 
         private void BindStoreToContainer()
         {
-            _targert.Bind<IDocumentStore>().ToConstant(RavenDbDocumentStore);
+            _target.Bind<IDocumentStore>().ToConstant(RavenDbDocumentStore);
         }
 
         public interface ITestingSettings
@@ -34,11 +30,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
         private class TestingSettings : ITestingSettings
         {
-            #region ITestingSettings Members
-
             public string Name { get; set; }
-
-            #endregion
         }
 
         public interface IDefaultClass
@@ -52,8 +44,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         [Test]
         public void BindInterfaces_ShouldBindInterfaceToItsDefaultImplementation()
         {
-            _targert.BindInterfaces(x => x.FromThisAssembly());
-            var result = _targert.Get<IDefaultClass>();
+            _target.BindInterfaces(x => x.FromThisAssembly());
+            var result = _target.Get<IDefaultClass>();
 
             result.GetType().Name.Should().Be("DefaultClass");
         }
@@ -63,8 +55,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         {
             Assert.Throws<ActivationException>(() =>
                                                    {
-                                                       _targert.BindInterfaces(x => x.FromThisAssembly());
-                                                       _targert.Get<ITestingSettings>();
+                                                       _target.BindInterfaces(x => x.FromThisAssembly());
+                                                       _target.Get<ITestingSettings>();
                                                    });
         }
 
@@ -80,9 +72,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
             Store(entity);
             BindStoreToContainer();
 
-            _targert.BindSettingsFor(x => x.FromThisAssembly());
+            _target.BindSettingsToDocumentStoreFor(x => x.FromThisAssembly());
 
-            var result = _targert.Get<ITestingSettings>();
+            var result = _target.Get<ITestingSettings>();
             result.Name.Should().Be("Moshe");
         }
 
@@ -97,9 +89,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
             Store(entity);
             BindStoreToContainer();
 
-            _targert.BindSettingsFor(x => x.FromThisAssembly());
+            _target.BindSettingsToDocumentStoreFor(x => x.FromThisAssembly());
 
-            var result = _targert.Get<ITestingSettings>();
+            var result = _target.Get<ITestingSettings>();
             result.Name.Should().Be("David");
         }
 
@@ -107,9 +99,18 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         public void BindSettingsFor_ShouldReplaceWithDefaultWhenObjectIsMissing()
         {
             BindStoreToContainer();
-            _targert.BindSettingsFor(x => x.FromThisAssembly());
+            _target.BindSettingsToDocumentStoreFor(x => x.FromThisAssembly());
 
-            var result = _targert.Get<ITestingSettings>();
+            var result = _target.Get<ITestingSettings>();
+            result.Name.Should().Be("David");
+        }
+
+        [Test]
+        public void BindSettingsFor_ShouldLoadSettingFromJsonFileIfExists()
+        {
+            _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
+
+            var result = _target.Get<ITestingSettings>();
             result.Name.Should().Be("David");
         }
     }
