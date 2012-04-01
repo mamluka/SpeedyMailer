@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using Castle.DynamicProxy;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Extensions.Conventions;
 using Ninject.Extensions.Conventions.BindingGenerators;
 using Ninject.Extensions.Conventions.Syntax;
 using Ninject.Syntax;
+using Raven.Abstractions.Linq;
 using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
@@ -23,7 +28,7 @@ namespace SpeedyMailer.Core.Container
         {
             kernel.Bind(
                 x =>
-                fromAssemblies(x).Select(type => type.Name.EndsWith("Settings")).BindWith(kernel.Get<DocumentStoreSettingBinder>()));
+                fromAssemblies(x).Select(type => type.Name.EndsWith("Settings")).BindWith(kernel.Get<DocumentStoreSettingsBinder>()));
             return kernel;
         }
 
@@ -43,11 +48,30 @@ namespace SpeedyMailer.Core.Container
 
     }
 
-    public class JsonFileSettingBinder : IBindingGenerator
+    public class JsonFileSettingBinder : SettingsBinderBase
     {
-        public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
+        protected override object ReadPresistantSettings(string settingsName)
         {
-            return null;
+            var reader = new StreamReader(string.Format("settings/{0}.settings", settingsName));
+            return JsonConvert.DeserializeObject<object>(reader.ReadToEnd());
+        }
+
+        protected override IInterceptor SetInterceptor(Type type, object settings)
+        {
+            return new JsobInterceptor(settings,type);
+        }
+    }
+
+    public class JsobInterceptor:SettingsInterceptorBase
+    {
+        public JsobInterceptor(object settings, Type settingsInterface) : base(settings, settingsInterface)
+        {
+        }
+
+        protected override dynamic PersistantSetting(IInvocation invocation)
+        {
+            var name = ToAutoPropertyName(invocation);
+            return Settings != null ? (Settings as JObject)[name].ToObject<string>() : null;
         }
     }
 }

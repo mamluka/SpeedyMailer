@@ -111,7 +111,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
             _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
 
             var result = _target.Get<ITestingSettings>();
-            result.Name.Should().Be("David");
+            result.Name.Should().Be("Moshe");
         }
     }
 }

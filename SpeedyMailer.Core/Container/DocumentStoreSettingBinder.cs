@@ -9,7 +9,7 @@ using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
 {
-    public abstract class SettingBinderBase
+    public abstract class SettingsBinderBase:IBindingGenerator
     {
         public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
         {
@@ -23,28 +23,29 @@ namespace SpeedyMailer.Core.Container
             return new[] {bindingRoot.Bind(type).ToConstant<object>(proxy)};
         }
 
-        private static string SettingsPresistanceName(Type type)
+        private string SettingsPresistanceName(Type type)
         {
             var settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
             return settingsName;
         }
 
         protected abstract object ReadPresistantSettings(string settingsName);
+        protected abstract IInterceptor SetInterceptor(Type type, object settings);
 
-        private static object CreateProxy(Type type, object settings)
+        private object CreateProxy(Type type, object settings)
         {
             var proxyGenerator = new ProxyGenerator();
-            IInterceptor settingsInterceptor = new DocumentStoreSettingBinder.SettingsInterceptor(settings as DynamicJsonObject, type);
+            var settingsInterceptor = SetInterceptor(type, settings);
             var proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
             return proxy;
         }
     }
 
-    public class DocumentStoreSettingBinder : SettingBinderBase, IBindingGenerator
+    public class DocumentStoreSettingsBinder : SettingsBinderBase
     {
         private readonly IDocumentStore _store;
 
-        public DocumentStoreSettingBinder(IDocumentStore store)
+        public DocumentStoreSettingsBinder(IDocumentStore store)
         {
             _store = store;
         }
@@ -67,59 +68,23 @@ namespace SpeedyMailer.Core.Container
             return settings;
         }
 
-
-
-        public class SettingsInterceptor : IInterceptor
+        protected override IInterceptor SetInterceptor(Type type, object settings)
         {
-            private readonly DynamicJsonObject _settings;
-            private readonly Type _settingsInterface;
+            IInterceptor settingsInterceptor = new SettingsInterceptor(settings as DynamicJsonObject, type);
+            return settingsInterceptor;
+        }
+    }
 
-            public SettingsInterceptor(DynamicJsonObject settings, Type settingsInterface)
-            {
-                _settings = settings;
-                _settingsInterface = settingsInterface;
-            }
-
-
-            public void Intercept(IInvocation invocation)
-            {
-                var defaultAttr =
-                    Attribute.GetCustomAttribute(_settingsInterface.GetProperty(ToAutoPropertyName(invocation)),
-                                                 typeof (DefaultAttribute)) as DefaultAttribute;
-                dynamic persistantSetting = PersistantSetting(invocation);
-
-                if (_settings != null)
-                {
-                    if (persistantSetting != null)
-                    {
-                        invocation.ReturnValue = persistantSetting;
-                    }
-                    else
-                    {
-                        if (defaultAttr != null)
-                        {
-                            invocation.ReturnValue = defaultAttr.Text;
-                        }
-                    }
-                }
-                else
-                {
-                    invocation.ReturnValue = defaultAttr != null ? defaultAttr.Text : null;
-                }
-            }
-
-
-            private static string ToAutoPropertyName(IInvocation invocation)
-            {
-                return invocation.Method.Name.Substring(4);
-            }
-
-            private dynamic PersistantSetting(IInvocation invocation)
-            {
-                string name = ToAutoPropertyName(invocation);
-                return _settings != null ? _settings.GetValue(name) : null;
-            }
+    public class SettingsInterceptor : SettingsInterceptorBase
+    {
+        public SettingsInterceptor(object settings, Type settingsInterface) : base(settings, settingsInterface)
+        {
         }
 
+        protected override dynamic PersistantSetting(IInvocation invocation)
+        {
+            string name = ToAutoPropertyName(invocation);
+            return Settings != null ? (Settings as DynamicJsonObject).GetValue(name) : null;
+        }
     }
 }
