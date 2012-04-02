@@ -1,5 +1,7 @@
+using System.IO;
 using FluentAssertions;
 using NUnit.Framework;
+using Newtonsoft.Json;
 using Ninject;
 using Raven.Client;
 using SpeedyMailer.Core.Container;
@@ -9,13 +11,13 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
     [TestFixture]
     public class ExtentionsTests : IntergrationTestsBase
     {
+        private StandardKernel _target;
+        
         [SetUp]
         public void Setup()
         {
             _target = new StandardKernel();
         }
-
-        private StandardKernel _target;
 
         private void BindStoreToContainer()
         {
@@ -108,10 +110,23 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         [Test]
         public void BindSettingsToJsonFilesFor_ShouldLoadSettingFromJsonFileIfExists()
         {
+            CreateJsonSettingsFile(new
+                                       {
+                                           Name="Moshe"
+                                       });
+
             _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
 
             var result = _target.Get<ITestingSettings>();
             result.Name.Should().Be("Moshe");
+        }
+
+        private void CreateJsonSettingsFile(dynamic setting)
+        {
+            using (var writter = new  StreamWriter("settings/Testing.settings"))
+            {
+                writter.WriteLine(JsonConvert.SerializeObject(setting));
+            }
         }
     }
 }
