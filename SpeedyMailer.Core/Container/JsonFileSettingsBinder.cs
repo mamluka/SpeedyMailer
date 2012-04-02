@@ -9,8 +9,10 @@ namespace SpeedyMailer.Core.Container
     {
         protected override object ReadPresistantSettings(string settingsName)
         {
-            var reader = new StreamReader(string.Format("settings/{0}.settings", settingsName));
-            return JsonConvert.DeserializeObject<object>(reader.ReadToEnd());
+            using (var reader = new StreamReader(string.Format("settings/{0}.settings", settingsName)))
+            {
+                return JsonConvert.DeserializeObject<object>(reader.ReadToEnd());
+            }
         }
 
         protected override IInterceptor SetInterceptor(Type type, object settings)

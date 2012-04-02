@@ -18,6 +18,16 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         {
             _target = new StandardKernel();
         }
+        [TearDown]
+        public void Teardown()
+        {
+            DeleteJsonFile();
+        }
+
+        private void DeleteJsonFile()
+        {
+            File.Delete("settings/Testing.settings");
+        }
 
         private void BindStoreToContainer()
         {
@@ -119,6 +129,15 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = _target.Get<ITestingSettings>();
             result.Name.Should().Be("Moshe");
+        }
+
+        [Test]
+        public void BindSettingsToJsonFilesFor_ShouldReadSettingsFromDefaultAttrWhenFileDoesntExist()
+        {
+            _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
+
+            var result = _target.Get<ITestingSettings>();
+            result.Name.Should().Be("David");
         }
 
         private void CreateJsonSettingsFile(dynamic setting)
