@@ -100,19 +100,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Container\DefaultAttribute.cs" />
     <Compile Include="Container\Extentions.cs" />
     <Compile Include="Container\JsonFileSettingsBinder.cs" />
     <Compile Include="Container\JsonSettingsInterceptor.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
     <Compile Include="Container\SettingsInterceptorBase.cs" />
-    <Compile Include="Core\IReportResults.cs" />
-    <Compile Include="Contacts\ContactsCSVParser.cs" />
-    <Compile Include="Contacts\ContactFromCSVRow.cs" />
-    <Compile Include="Contacts\IContactsCSVParser.cs" />
-    <Compile Include="Contacts\ContactCSVParserResults.cs" />
-    <Compile Include="Contacts\InitialContactsBatchOptions.cs" />
     <Compile Include="DataAccess\Contacts\ContactsRepository.cs" />
     <Compile Include="DataAccess\Contacts\IContactsRepository.cs" />
     <Compile Include="DataAccess\Drone\IMailDroneRepository.cs" />
@@ -135,8 +128,6 @@
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
-    <Compile Include="Helpers\IUrlCreator.cs" />
-    <Compile Include="Helpers\UrlCreator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -148,14 +139,24 @@
       <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
       <Name>SpeedyMailer.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Settings\SpeedyMailer.Settings.csproj">
+      <Project>{2B9D21F5-E6EF-4662-B47B-4BD9A2AFC967}</Project>
+      <Name>SpeedyMailer.Settings</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Maps\Format\" />
-    <Folder Include="Maps\Resolve\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Contacts\" />
+    <Folder Include="Core\" />
     <Folder Include="NinjectProvider\" />
+    <Folder Include="Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

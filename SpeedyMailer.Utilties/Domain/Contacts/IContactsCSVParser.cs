@@ -1,6 +1,6 @@
-using SpeedyMailer.Core.Core;
+using SpeedyMailer.Utilties.General;
 
-namespace SpeedyMailer.Core.Contacts
+namespace SpeedyMailer.Utilties.Domain.Contacts
 {
     public interface IContactsCSVParser : IReportResults<ContactCSVParserResults>
     {

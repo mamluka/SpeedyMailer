@@ -1,8 +1,8 @@
 using System.Web;
 using AutoMapper;
 using Rhino.Mocks;
-using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.DataAccess.Contacts;
+using SpeedyMailer.Utilties.Domain.Contacts;
 
 namespace SpeedyMailer.Core.Tests.Contacts
 {
@@ -35,7 +35,7 @@ namespace SpeedyMailer.Core.Tests.Contacts
 
         public ContactsCSVParser Build()
         {
-            return new ContactsCSVParser(httpContext, contactRepsitory, mapper);
+            return new ContactsCSVParser(httpContext, mapper);
         }
     }
 }

@@ -3,7 +3,7 @@ using Nancy.Hosting.Self;
 
 namespace SpeedyMailer.Master.Service
 {
-    internal class ServiceHost
+    public class ServiceHost
     {
         private static void Main(string[] args)
         {

@@ -1,11 +1,11 @@
 using AutoMapper;
 using Rhino.Mocks;
-using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.DataAccess.Lists;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Utilties.Domain.Contacts;
 
 namespace SpeedyMailer.Master.Web.Tests.Contacts
 {

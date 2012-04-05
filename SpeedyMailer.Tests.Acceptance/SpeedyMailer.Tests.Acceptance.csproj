@@ -35,6 +35,7 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL" />
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -115,6 +116,7 @@
   <ItemGroup>
     <Compile Include="Drones\DronesAcceptanceTestsBase.cs" />
     <Compile Include="Drones\DroneSanityTests.cs" />
+    <Compile Include="Drones\SendingEmail.cs" />
     <Compile Include="Framework\AcceptanceTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RavenDB\RavenDbSanityTests.cs" />
@@ -130,6 +132,14 @@
     <ProjectReference Include="..\SpeedyMailer.Drone\SpeedyMailer.Drone.csproj">
       <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
       <Name>SpeedyMailer.Drone</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Master.Service\SpeedyMailer.Master.Service.csproj">
+      <Project>{88070415-7AA8-4C82-BC2D-983BB8116FF7}</Project>
+      <Name>SpeedyMailer.Master.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
+      <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
+      <Name>SpeedyMailer.Tests.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

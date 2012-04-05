@@ -13,7 +13,7 @@ namespace SpeedyMailer.Core.Container
         protected override dynamic PersistantSetting(IInvocation invocation)
         {
             var name = ToAutoPropertyName(invocation);
-            return Settings != null ? (Settings as JObject)[name].ToObject<string>() : null;
+            return Settings != null ? (Settings as JObject)[name] != null ? (Settings as JObject)[name].ToObject<string>(): null : null;
         }
     }
 }

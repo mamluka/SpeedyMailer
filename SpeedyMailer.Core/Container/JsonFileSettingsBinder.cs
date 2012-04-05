@@ -9,7 +9,10 @@ namespace SpeedyMailer.Core.Container
     {
         protected override object ReadPresistantSettings(string settingsName)
         {
-            using (var reader = new StreamReader(string.Format("settings/{0}.settings", settingsName)))
+            var filename = string.Format("settings/{0}.settings", settingsName);
+            if (!File.Exists(filename)) return null;
+
+            using (var reader = new StreamReader(filename))
             {
                 return JsonConvert.DeserializeObject<object>(reader.ReadToEnd());
             }

@@ -5,25 +5,21 @@ using System.Linq;
 using System.Web;
 using AutoMapper;
 using CsvHelper;
-using SpeedyMailer.Core.DataAccess.Contacts;
-using SpeedyMailer.Domain.Contacts;
 
-namespace SpeedyMailer.Core.Contacts
+namespace SpeedyMailer.Utilties.Domain.Contacts
 {
     public class ContactsCSVParser : IContactsCSVParser
     {
-        private readonly IContactsRepository contactsRepository;
         private readonly HttpContextBase httpContextBase;
         private readonly IMappingEngine mapper;
         private bool hasInitialEmailBatchOptions;
         private InitialContactsBatchOptions initialContactsBatchOptions;
         private ContactCSVParserResults results;
 
-        public ContactsCSVParser(HttpContextBase httpContextBase, IContactsRepository contactsRepository,
+        public ContactsCSVParser(HttpContextBase httpContextBase,
                                  IMappingEngine mapper)
         {
             this.httpContextBase = httpContextBase;
-            this.contactsRepository = contactsRepository;
             this.mapper = mapper;
         }
 
@@ -63,21 +59,21 @@ namespace SpeedyMailer.Core.Contacts
                 emails.AddRange(csvReader.GetRecords<ContactFromCSVRow>());
             }
 
-            List<Contact> emailsDTO = mapper.Map<List<ContactFromCSVRow>, List<Contact>>(emails);
-
-            if (hasInitialEmailBatchOptions)
-            {
-                emailsDTO.ForEach(x => x.MemberOf.Add(initialContactsBatchOptions.ContainingListId));
-            }
-
-
-            contactsRepository.Store(emailsDTO);
+//            List<Contact> emailsDTO = mapper.Map<List<ContactFromCSVRow>, List<Contact>>(emails);
+//
+//            if (hasInitialEmailBatchOptions)
+//            {
+//                emailsDTO.ForEach(x => x.MemberOf.Add(initialContactsBatchOptions.ContainingListId));
+//            }
+//
+//
+//            contactsRepository.Store(emailsDTO);
 
             results = new ContactCSVParserResults
                           {
                               NumberOfFilesProcessed = files.Count,
                               NumberOfContactsProcessed = emails.Count,
-                              Filenames = files.Select(x => x.FileName).ToList()
+                              Filenames = files.Select(x => x.FileName).ToList<string>()
                           };
         }
 

@@ -1,6 +1,6 @@
 using System.Web.Routing;
 
-namespace SpeedyMailer.Core.Helpers
+namespace SpeedyMailer.Utilties.Domain.Email
 {
     public interface IUrlCreator
     {

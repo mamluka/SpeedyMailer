@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Core.Contacts
+namespace SpeedyMailer.Utilties.Domain.Contacts
 {
     public class InitialContactsBatchOptions
     {

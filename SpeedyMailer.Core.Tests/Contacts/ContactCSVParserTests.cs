@@ -5,10 +5,10 @@ using System.Web;
 using FluentAssertions;
 using NUnit.Framework;
 using Rhino.Mocks;
-using SpeedyMailer.Core.Contacts;
 using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Domain.Contacts;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Utilties.Domain.Contacts;
 
 namespace SpeedyMailer.Core.Tests.Contacts
 {

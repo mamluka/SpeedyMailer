@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using Ninject;
 using Raven.Client;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Settings;
 
 namespace SpeedyMailer.Core.IntegrationTests.Container
 {
@@ -134,6 +135,19 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
         [Test]
         public void BindSettingsToJsonFilesFor_ShouldReadSettingsFromDefaultAttrWhenFileDoesntExist()
         {
+            _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
+
+            var result = _target.Get<ITestingSettings>();
+            result.Name.Should().Be("David");
+        }
+
+        [Test]
+        public void BindSettingsToJsonFilesFor_ShouldReadSettingsFromDefaultAttrWhenFileExistButPropertyIsMissing()
+        {
+            CreateJsonSettingsFile(new
+            {
+                NotAName = "AnotherProperty"
+            });
             _target.BindSettingsToJsonFilesFor(x => x.FromThisAssembly());
 
             var result = _target.Get<ITestingSettings>();
