@@ -1,6 +1,6 @@
 using System;
 
-namespace SpeedyMailer.Core.Container
+namespace SpeedyMailer.Settings
 {
     public class DefaultAttribute : Attribute
     {

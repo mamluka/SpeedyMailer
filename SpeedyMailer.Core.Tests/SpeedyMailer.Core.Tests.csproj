@@ -153,6 +153,10 @@
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
       <Name>SpeedyMailer.Tests.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

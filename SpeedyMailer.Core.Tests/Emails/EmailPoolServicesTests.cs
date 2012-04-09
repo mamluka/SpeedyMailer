@@ -14,6 +14,7 @@ using SpeedyMailer.Domain.Contacts;
 using SpeedyMailer.Domain.Emails;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
+using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {

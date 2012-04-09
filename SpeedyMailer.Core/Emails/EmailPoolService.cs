@@ -7,6 +7,7 @@ using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Domain.Contacts;
 using SpeedyMailer.Domain.Emails;
+using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Core.Emails
 {

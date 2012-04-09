@@ -1,5 +1,6 @@
 using System;
 using Castle.DynamicProxy;
+using SpeedyMailer.Settings;
 
 namespace SpeedyMailer.Core.Container
 {

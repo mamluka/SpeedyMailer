@@ -2,7 +2,7 @@ using NUnit.Framework;
 using SpeedyMailer.Tests.Acceptance.Framework;
 using nDumbster.smtp;
 
-namespace SpeedyMailer.Tests.Acceptance.Drones
+namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
 {
     public class DronesAcceptanceTestsBase : AcceptanceTestsBase
     {

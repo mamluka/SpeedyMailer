@@ -72,6 +72,10 @@
       <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
       <Name>SpeedyMailer.Master.Web.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Format\" />

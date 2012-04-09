@@ -104,6 +104,10 @@
       <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
       <Name>SpeedyMailer.Domain</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -8,7 +8,9 @@ using Ploeh.AutoFixture;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Domain.Emails;
+using SpeedyMailer.Settings;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Master.Web.Tests.Helpers
 {
@@ -28,12 +30,11 @@ namespace SpeedyMailer.Master.Web.Tests.Helpers
         {
             //Arrange
             UrlHelper urlHelper = CreateFakeUrlHelper();
-            var configurationManager = MockRepository.GenerateStub<IConfigurationManager>();
-            configurationManager.Stub(x => x.ControlRoomConfigurations).Return(new ControlRoomConfigurations
-                                                                                   {DomainUrl = "http://www.domain.com"});
+            var settings = MockRepository.GenerateStub<IServiceSettings>();
+            settings.ServiceBaseUrl = "http://www.domain.com";
 
 
-            var urlCreator = new UrlCreator(urlHelper, configurationManager);
+            var urlCreator = new UrlCreator(urlHelper, settings);
             //Act
             string url = urlCreator.UrlByRouteWithParameters("Deals", new RouteValueDictionary
                                                                           {
@@ -54,12 +55,11 @@ namespace SpeedyMailer.Master.Web.Tests.Helpers
             string jsonString = EmulateDynamicEncoding(jsonObject);
 
             UrlHelper urlHelper = CreateFakeUrlHelper();
-            var configurationManager = MockRepository.GenerateStub<IConfigurationManager>();
-            configurationManager.Stub(x => x.ControlRoomConfigurations).Return(new ControlRoomConfigurations
-                                                                                   {DomainUrl = "http://www.domain.com"});
+            var settings = MockRepository.GenerateStub<IServiceSettings>();
+            settings.ServiceBaseUrl = "http://www.domain.com";
 
 
-            var urlCreator = new UrlCreator(urlHelper, configurationManager);
+            var urlCreator = new UrlCreator(urlHelper, settings);
             //Act
             string url = urlCreator.UrlByRouteWithJsonObject("Deals", jsonObject);
 

@@ -11,6 +11,7 @@ using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
+using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Master.Service.Bootstrapper
 {

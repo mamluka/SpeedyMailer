@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using SpeedyMailer.Master.Web.UI;
 
-namespace SpeedyMailer.Tests.Acceptance.Drones
+namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
 {
     [TestFixture]
     public class DroneSanityTests : DronesAcceptanceTestsBase

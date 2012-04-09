@@ -477,6 +477,10 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Contacts\Index.cshtml" />

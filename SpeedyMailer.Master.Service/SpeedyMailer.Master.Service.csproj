@@ -115,6 +115,10 @@
       <Project>{51B62C73-4516-4D3E-8FC2-9D1150C5C91B}</Project>
       <Name>SpeedyMailer.Master.Service.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

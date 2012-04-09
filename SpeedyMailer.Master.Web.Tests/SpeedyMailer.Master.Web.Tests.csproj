@@ -161,9 +161,17 @@
       <Project>{F40597C3-C6F2-486A-A815-EFAC74344E0F}</Project>
       <Name>SpeedyMailer.Master.Web.UI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Settings\SpeedyMailer.Settings.csproj">
+      <Project>{2B9D21F5-E6EF-4662-B47B-4BD9A2AFC967}</Project>
+      <Name>SpeedyMailer.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
       <Name>SpeedyMailer.Tests.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
+      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
+      <Name>SpeedyMailer.Utilties</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
