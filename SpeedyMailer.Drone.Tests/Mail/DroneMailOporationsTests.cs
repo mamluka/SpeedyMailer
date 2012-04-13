@@ -2,6 +2,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Drone.Tests.Mail
 {

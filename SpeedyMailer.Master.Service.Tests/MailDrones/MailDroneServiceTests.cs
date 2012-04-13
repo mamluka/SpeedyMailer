@@ -6,6 +6,7 @@ using Rhino.Mocks;
 using SpeedyMailer.Bridge.Model.Drones;
 using SpeedyMailer.Master.Service.MailDrones;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.MailDrones
 {

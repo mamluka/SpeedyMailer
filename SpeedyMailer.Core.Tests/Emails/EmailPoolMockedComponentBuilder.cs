@@ -8,6 +8,8 @@ using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Domain.Contacts;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.DB;
+using SpeedyMailer.Tests.Core.Unit.Base;
+using SpeedyMailer.Tests.Core.Unit.Database;
 using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Core.Tests.Emails

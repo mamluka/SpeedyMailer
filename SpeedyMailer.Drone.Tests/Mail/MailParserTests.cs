@@ -6,6 +6,7 @@ using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Master.Web.UI.Mail;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Emails;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Drone.Tests.Mail
 {

@@ -2,6 +2,7 @@ using NUnit.Framework;
 using Quartz;
 using Rhino.Mocks;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Drone.Tests.Drone
 {

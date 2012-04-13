@@ -10,6 +10,7 @@ using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Domain.Emails;
 using SpeedyMailer.Settings;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Master.Web.Tests.Helpers

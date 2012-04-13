@@ -14,6 +14,7 @@ using SpeedyMailer.Core.DataAccess.Fragments;
 using SpeedyMailer.Master.Service.Core.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Pool
 {

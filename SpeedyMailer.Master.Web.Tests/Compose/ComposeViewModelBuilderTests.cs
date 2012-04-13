@@ -9,6 +9,7 @@ using SpeedyMailer.Domain.Lists;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Master.Web.Tests.Compose
 {

@@ -7,6 +7,7 @@ using SpeedyMailer.Core.DataAccess.Emails;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Emails;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {

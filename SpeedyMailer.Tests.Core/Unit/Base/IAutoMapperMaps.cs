@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Tests.Core
+namespace SpeedyMailer.Tests.Core.Unit.Base
 {
     public interface IAutoMapperMaps
     {

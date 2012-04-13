@@ -1,7 +1,7 @@
-﻿using Raven.Client;
+using Raven.Client;
 using Rhino.Mocks;
 
-namespace SpeedyMailer.Tests.Core.DB
+namespace SpeedyMailer.Tests.Core.Unit.Database
 {
     public static class DocumentStoreFactory
     {

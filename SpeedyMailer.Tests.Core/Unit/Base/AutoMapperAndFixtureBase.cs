@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Mapping;
 
-namespace SpeedyMailer.Tests.Core
+namespace SpeedyMailer.Tests.Core.Unit.Base
 {
     public class AutoMapperAndFixtureBase
     {
