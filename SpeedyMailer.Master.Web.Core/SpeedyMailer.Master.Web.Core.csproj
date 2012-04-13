@@ -81,6 +81,7 @@
     <Compile Include="Builders\UploadListResultsViewModelBuilder.cs" />
     <Compile Include="Builders\IViewModelBuilder.cs" />
     <Compile Include="Builders\UploadListViewModelBuilder.cs" />
+    <Compile Include="Commands\UploadListCommand.cs" />
     <Compile Include="ComponentViewModel\ListDescriptorViewModel.cs" />
     <Compile Include="Models\ComposeModel.cs" />
     <Compile Include="Models\UploadListModel.cs" />

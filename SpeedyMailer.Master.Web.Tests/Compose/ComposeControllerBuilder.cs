@@ -6,10 +6,11 @@ using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Master.Web.Tests.Compose
 {
-    public class ComposeControllerBuilder : IMockedComponentBuilder<ComposeController>
+    public class ComposeControllerBuilder : IMockedComponentBuilder<ComposerController>
     {
         public ComposeControllerBuilder(IMappingEngine mapper)
         {
@@ -30,9 +31,9 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
         public IEmailRepository EmailRepository { get; set; }
 
 
-        public ComposeController Build()
+        public ComposerController Build()
         {
-            return new ComposeController(IndexViewModelBuilder, EmailRepository, EmailPoolService, Mapper);
+            return new ComposerController(IndexViewModelBuilder, EmailRepository, EmailPoolService, Mapper);
         }
 
     }

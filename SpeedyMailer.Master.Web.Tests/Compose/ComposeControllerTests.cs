@@ -12,6 +12,7 @@ using SpeedyMailer.Master.Web.Core.Models;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
+using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Master.Web.Tests.Compose
 {
@@ -23,7 +24,7 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
             //Arrange
             var controllerBuilder = new ComposeControllerBuilder(Mapper);
 
-            ComposeController controller = controllerBuilder.Build();
+            ComposerController controller = controllerBuilder.Build();
             //Act
             ActionResult viewModel = controller.Index();
             //Assert
@@ -41,7 +42,7 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
 
             controllerBuilder.IndexViewModelBuilder = builder;
 
-            ComposeController controller = controllerBuilder.Build();
+            ComposerController controller = controllerBuilder.Build();
             //Act
             ActionResult viewModel = controller.Index();
             //Assert
@@ -60,7 +61,7 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
 
             controllerBuilder.EmailPoolService = emailPool;
 
-            ComposeController controller = controllerBuilder.Build();
+            ComposerController controller = controllerBuilder.Build();
             //Act
             controller.Index(model);
             //Assert
@@ -80,7 +81,7 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
 
             controllerBuilder.EmailRepository = emailRepository;
 
-            ComposeController controller = controllerBuilder.Build();
+            ComposerController controller = controllerBuilder.Build();
             //Act
             controller.Index(model);
             //Assert
@@ -102,7 +103,7 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
 
             controllerBuilder.EmailPoolService = emailPool;
 
-            ComposeController controller = controllerBuilder.Build();
+            ComposerController controller = controllerBuilder.Build();
             //Act
             controller.Index(model);
             //Assert

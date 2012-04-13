@@ -9,7 +9,7 @@ using SpeedyMailer.Master.Web.Core.ViewModels;
 
 namespace SpeedyMailer.Master.Web.UI.Controllers
 {
-    public class ComposeController : Controller
+    public class ComposerController : Controller
     {
         private readonly IEmailPoolService emailPoolService;
         private readonly IEmailRepository emailRepository;
@@ -18,7 +18,7 @@ namespace SpeedyMailer.Master.Web.UI.Controllers
         //
         // GET: /Compose/
 
-        public ComposeController(IViewModelBuilder<ComposeViewModel> indexViewModelBuilder,
+        public ComposerController(IViewModelBuilder<ComposeViewModel> indexViewModelBuilder,
                                  IEmailRepository emailRepository, IEmailPoolService emailPoolService,
                                  IMappingEngine mapper)
         {

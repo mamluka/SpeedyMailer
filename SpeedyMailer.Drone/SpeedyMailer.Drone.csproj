@@ -92,7 +92,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrappers\NinjectBootstrapper.cs" />
+    <Compile Include="Bootstrappers\DroneNinjectBootstrapper.cs" />
     <Compile Include="Communication\DroneCommunicationService.cs" />
     <Compile Include="Communication\IDroneCommunicationService.cs" />
     <Compile Include="Configurations\DroneConfigurationManager.cs" />

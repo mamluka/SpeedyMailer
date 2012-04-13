@@ -6,12 +6,8 @@ using Ninject.Web.Common;
 using SpeedyMailer.Master.Web.UI.App_Start;
 using WebActivator;
 
-[assembly:
-    WebActivator.PreApplicationStartMethod(typeof (NinjectWebCommon), "Start")]
-[assembly:
-    ApplicationShutdownMethod(typeof (NinjectWebCommon),
-        "Stop")]
-
+[assembly:WebActivator.PreApplicationStartMethod(typeof (NinjectWebCommon), "Start")]
+[assembly:ApplicationShutdownMethod(typeof (NinjectWebCommon),"Stop")]
 namespace SpeedyMailer.Master.Web.UI.App_Start
 {
     public static class NinjectWebCommon

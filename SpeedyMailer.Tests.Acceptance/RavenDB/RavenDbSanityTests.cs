@@ -1,12 +1,12 @@
 using FluentAssertions;
 using NUnit.Framework;
 using Raven.Client;
-using SpeedyMailer.Tests.Acceptance.Framework;
+using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Tests.Acceptance.RavenDB
 {
     [TestFixture]
-    public class RavenDbSanityTests : AcceptanceTestsBase
+    public class RavenDbSanityTests : IntegrationTestBase
     {
         private class ClassToStore
         {
@@ -19,7 +19,7 @@ namespace SpeedyMailer.Tests.Acceptance.RavenDB
             const string testingTheEmbeddedDb = "testing the embedded db";
             const string entityId = "entity1";
 
-            using (var session = GetRavenDbDocumentStore().OpenSession())
+            using (var session = RavenDbDocumentStore.OpenSession())
             {
                 session.Store(new ClassToStore
                                   {
@@ -28,7 +28,7 @@ namespace SpeedyMailer.Tests.Acceptance.RavenDB
                 session.SaveChanges();
             }
 
-            using (var session = GetRavenDbDocumentStore().OpenSession())
+            using (var session = RavenDbDocumentStore.OpenSession())
             {
                 var result = session.Load<ClassToStore>(entityId);
 

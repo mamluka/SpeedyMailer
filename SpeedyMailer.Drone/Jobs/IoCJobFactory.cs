@@ -11,7 +11,7 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
 
         public IJob NewJob(TriggerFiredBundle bundle, IScheduler scheduler)
         {
-            IKernel kernel = NinjectBootstrapper.Kernel;
+            IKernel kernel = DroneNinjectBootstrapper.Kernel;
             Type type = bundle.JobDetail.JobType;
             return kernel.Get(type) as IJob;
         }

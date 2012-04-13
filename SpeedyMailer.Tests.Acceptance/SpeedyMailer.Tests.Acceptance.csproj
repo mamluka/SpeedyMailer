@@ -36,6 +36,12 @@
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
     <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL" />
+    <Reference Include="Bootstrapper, Version=2.0.2.26332, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bootstrapper.2.0.2.0\lib\Bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Bootstrapper.Ninject">
+      <HintPath>..\packages\Bootstrapper.Ninject.2.0.2.0\lib\Bootstrapper.Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -57,11 +63,20 @@
     <Reference Include="Lucene.Net.Contrib.SpellChecker">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\Lucene.Net.Contrib.SpellChecker.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="nDumbster, Version=0.0.2.40461, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\libs\nDumbster\nDumbster.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ninject.3.0.0.15\lib\net40\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="NinjectAdapter">
+      <HintPath>..\packages\CommonServiceLocator.NinjectAdapter.1.0.0.0\lib\NinjectAdapter.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
@@ -114,14 +129,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Drones\DronesAcceptanceTestsBase.cs" />
-    <Compile Include="Drones\DroneSanityTests.cs" />
-    <Compile Include="Drones\SendingEmail.cs" />
-    <Compile Include="Framework\AcceptanceTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RavenDB\RavenDbSanityTests.cs" />
+    <Compile Include="Specs\Drone\DroneIntegrationTestBase.cs" />
+    <Compile Include="Specs\Drone\SanityTests.cs" />
+    <Compile Include="Specs\Drone\SendingEmail.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="fixtures\contacts\sample.csv">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -133,14 +150,29 @@
       <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
       <Name>SpeedyMailer.Drone</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Master.Service.Core\SpeedyMailer.Master.Service.Core.csproj">
+      <Project>{51B62C73-4516-4D3E-8FC2-9D1150C5C91B}</Project>
+      <Name>SpeedyMailer.Master.Service.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Master.Service\SpeedyMailer.Master.Service.csproj">
       <Project>{88070415-7AA8-4C82-BC2D-983BB8116FF7}</Project>
       <Name>SpeedyMailer.Master.Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
+      <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
+      <Name>SpeedyMailer.Master.Web.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Master.Web.UI\SpeedyMailer.Master.Web.UI.csproj">
+      <Project>{F40597C3-C6F2-486A-A815-EFAC74344E0F}</Project>
+      <Name>SpeedyMailer.Master.Web.UI</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
       <Name>SpeedyMailer.Tests.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Framework\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

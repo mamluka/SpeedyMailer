@@ -129,7 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\NinjectWebCommon.cs" />
-    <Compile Include="Controllers\ComposeController.cs" />
+    <Compile Include="Controllers\ComposerController.cs" />
     <Compile Include="Controllers\ContactsController.cs" />
     <Compile Include="Controllers\ListsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -489,7 +489,7 @@
     <Content Include="Views\Contacts\Upload.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Compose\Index.cshtml" />
+    <Content Include="Views\Composer\Index.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />
