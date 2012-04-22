@@ -1,5 +1,5 @@
 using Raven.Client;
-using SpeedyMailer.Domain.Lists;
+using SpeedyMailer.Core.Domain.Lists;
 
 namespace SpeedyMailer.Core.DataAccess.Lists
 {

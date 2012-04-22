@@ -3,7 +3,6 @@ using System.Linq;
 using Raven.Client;
 using Raven.Client.Linq;
 using SpeedyMailer.Bridge.Model.Drones;
-
 namespace SpeedyMailer.Core.DataAccess.Drone
 {
     public class MailDroneRepository : IMailDroneRepository

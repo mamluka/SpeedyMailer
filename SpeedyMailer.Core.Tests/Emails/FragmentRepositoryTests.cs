@@ -5,7 +5,6 @@ using Rhino.Mocks;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.DataAccess.Fragments;
 using SpeedyMailer.Tests.Core;
-using SpeedyMailer.Tests.Core.DB;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
 

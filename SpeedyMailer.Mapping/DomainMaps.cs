@@ -2,9 +2,9 @@ using System;
 using AutoMapper;
 using Bootstrap.AutoMapper;
 using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Domain.Contacts;
-using SpeedyMailer.Domain.Emails;
-using SpeedyMailer.Utilties.Domain.Contacts;
+using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Domain.Emails;
+using SpeedyMailer.Core.Utilities.Domain.Contacts;
 
 namespace SpeedyMailer.Mapping
 {

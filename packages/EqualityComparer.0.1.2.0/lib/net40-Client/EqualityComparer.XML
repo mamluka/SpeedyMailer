@@ -1,0 +1,364 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EqualityComparer</name>
+    </assembly>
+    <members>
+        <member name="T:EqualityComparer.DateComparer">
+            <summary>	An EqualityComparer implementation for DateTimes that can use a configurable comparison algorithm, 
+            			such as comparing exactly and comparing to the second. </summary>
+            <remarks>	ebrown, 6/18/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.DateComparer.#ctor(EqualityComparer.DateComparisonType)">
+            <summary>	Initializes a new instance of the DateComparer class. </summary>
+            <remarks>	ebrown, 6/18/2011. </remarks>
+            <param name="dateComparisonType">	The method by which dates should be compared. </param>
+        </member>
+        <member name="M:EqualityComparer.DateComparer.Equals(System.DateTime,System.DateTime)">
+            <summary>	Tests if two DateTime objects are considered equal, given the DateComparisonType. </summary>
+            <remarks>	ebrown, 6/18/2011. </remarks>
+            <param name="x">	Date time to be compared. </param>
+            <param name="y">	Date time to be compared. </param>
+            <returns>	true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.DateComparer.GetHashCode(System.DateTime)">
+            <summary>	Calculates the hash code for this object. </summary>
+            <remarks>	ebrown, 6/18/2011. </remarks>
+            <param name="obj">	Date/Time of the object. </param>
+            <returns>	The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.DateComparer.Default">
+            <summary>	Gets the default DateComparer instance, which is by DateComparisonType.Exact. </summary>
+            <value>	The default. </value>
+        </member>
+        <member name="T:EqualityComparer.DateComparisonType">
+            <summary>	Defines how to compare dates when using DateComaper{T}. </summary>
+            <remarks>	ebrown, 6/18/2011. </remarks>
+        </member>
+        <member name="F:EqualityComparer.DateComparisonType.Exact">
+            <summary> An exact comparison by ticks.  </summary>
+        </member>
+        <member name="F:EqualityComparer.DateComparisonType.TruncatedToSecond">
+            <summary> A comparison truncated / always rounded down to the nearest second, which can be useful with data stores that do not roundtrip dates properly.  </summary>
+        </member>
+        <member name="T:EqualityComparer.DateTimeExtensions">
+            <summary>	Date time extensions.  </summary>
+            <remarks>	7/19/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.DateTimeExtensions.TruncateToSecond(System.DateTime)">
+            <summary>	Truncates DateTime to second, so that JSON values with DateTimes can be roundtripped / compared properly. </summary>
+            <remarks>	7/19/2011. </remarks>
+            <param name="value">	Original DateTime value. </param>
+            <returns>	A new DateTime value truncated to the nearest second. </returns>
+        </member>
+        <member name="M:EqualityComparer.DateTimeExtensions.RoundToNearestSecond(System.DateTime)">
+            <summary>	A DateTime extension method that rounds DateTimes to the nearest second. </summary>
+            <remarks>	7/19/2011. </remarks>
+            <param name="value">	Original DateTime value. </param>
+            <returns>	A new DateTime value rounded and truncated to the nearest second. </returns>
+        </member>
+        <member name="T:EqualityComparer.GenericEqualityComparer`1">
+            <summary>   A generic comparer that takes accepts a Func{T, T, bool} to create simple on-the-fly comparison routines. </summary>
+            <remarks>   ebrown, 2/7/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.GenericEqualityComparer`1.#ctor(System.Func{`0,`0,System.Boolean})">
+             <summary>	Constructor accepting the comparison function. </summary>
+             <remarks>
+             Uses a hasher function that always returns the default GetHashCode implementation for given instances.  Don't use this for any
+             sorting operations.
+             </remarks>
+             <param name="comparer">	The comparison function to use when comparing the two instances. </param>
+            
+             <exception cref="T:System.ArgumentNullException">	Thrown when the comparer or hashers are null. </exception>
+        </member>
+        <member name="M:EqualityComparer.GenericEqualityComparer`1.#ctor(System.Func{`0,`0,System.Boolean},System.Func{`0,System.Int32})">
+            <summary>   Constructor accepting the comparison function and hashing function. </summary>
+            <remarks>   ebrown, 2/7/2011. </remarks>
+            <exception cref="T:System.ArgumentNullException">    Thrown when the comparer or hashers are null. </exception>
+            <param name="comparer">   The comparison function to use when comparing the two instances. </param>
+            <param name="hasher">       The hash function used to generate object hashes on the instances. </param>
+        </member>
+        <member name="M:EqualityComparer.GenericEqualityComparer`1.Equals(`0,`0)">
+            <summary>   Tests if two T objects are considered equal. </summary>
+            <remarks>   Uses the passed in Func{T, T, bool} for the comparison. </remarks>
+            <param name="x">    T to be compared. </param>
+            <param name="y">    T to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.GenericEqualityComparer`1.GetHashCode(`0)">
+            <summary>	Calculates the hash code for this object. </summary>
+            <remarks>
+            If no hasher function was supplied, will always return the default GetHashCode implementation.  Otherwise uses Func{T, int} hasher
+            function supplied.
+            </remarks>
+            <param name="obj">	The object. </param>
+            <returns>	The hash code for this object. </returns>
+        </member>
+        <member name="M:EqualityComparer.GenericEqualityComparer`1.ByAllMembers">
+            <summary>	
+            Shortcut method to get a simple generic IEqualityComparer{T} where the comparison is by all properties and fields on the instance. 
+            </summary>
+            <remarks>	ebrown, 6/6/2011. </remarks>
+            <returns>	A GenericEqualityComparer{T}. </returns>
+        </member>
+        <member name="M:EqualityComparer.GenericEqualityComparer`1.ByAllMembers(System.Collections.Generic.IEnumerable{System.Collections.IEqualityComparer})">
+            <summary>	
+            Shortcut method to get a simple generic IEqualityComparer{T} where the comparison is by all properties and fields on the instance,
+            with user defined overrides available on specific encountered types. 
+            </summary>
+            <remarks>	ebrown, 6/6/2011. </remarks>
+            <param name="customComparers">	A set of additional comparers to use to override default member by member comparison. </param>
+            <returns>	A GenericEqualityComparer{T}. </returns>
+        </member>
+        <member name="T:EqualityComparer.MemberComparer">
+            <summary>   A class that performs a public property by property and field by field comparison of two object instances.  Useful for testing. </summary>
+            <remarks>   http://stackoverflow.com/questions/986572/hows-to-quick-check-if-data-transfer-two-objects-have-equal-properties-in-c </remarks>
+        </member>
+        <member name="M:EqualityComparer.MemberComparer.Equal``1(``0,``0)">
+            <summary>   Does a public property by property and field by field comparison of the two objects. </summary>
+            <remarks>   ebrown, 1/19/2011. </remarks>
+            <typeparam name="T">    Generic type parameter - inferred by compiler. </typeparam>
+            <param name="instanceX">    The first instance. </param>
+            <param name="instanceY">    The second instance. </param>
+            <returns>   true if the objects are equivalent by comparison of properties OR both instances are NULL, false if not. </returns>
+        </member>
+        <member name="M:EqualityComparer.MemberComparer.Equal``1(``0,``0,System.Collections.Generic.IEnumerable{System.Collections.IEqualityComparer})">
+            <summary>	Does a public property by property and field by field comparison of the two objects. </summary>
+            <remarks>	ebrown, 1/19/2011. </remarks>
+            <exception cref="T:System.ArgumentNullException">	Thrown when the list of comparers is null, the comparers are not also instances of IEqualityComparer{} or any of the comparers are null. </exception>
+            <exception cref="T:System.ArgumentException">		Thrown when there is more than one comparer for a given type. </exception>
+            <typeparam name="T">	Generic type parameter - inferred by compiler. </typeparam>
+            <param name="instanceX">		The first instance. </param>
+            <param name="instanceY">		The second instance. </param>
+            <param name="customComparers">	A variable-length parameters list containing custom comparers. </param>
+            <returns>	true if the objects are equivalent by comparison of properties OR both instances are NULL, false if not. </returns>
+        </member>
+        <member name="T:EqualityComparer.Reflection.ConstructorInfoComparer">
+            <summary>   This is a *very* rudimentary comparison routine that examines two ConstructorInfo definitions for signature compatibility. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.ConstructorInfoComparer.Equals(System.Reflection.ConstructorInfo,System.Reflection.ConstructorInfo)">
+            <summary>   
+            Tests if two ConstructorInfo objects are considered equal by our definition
+             -- same Name, CallingConvention, Abstract, Final, Private, Public, Static, Virtual, Attributes and matching parameters order as defined by
+             ParameterInfoComparer. 
+            </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    ConstructorInfo to be compared. </param>
+            <param name="y">    ConstructorInfo to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.ConstructorInfoComparer.GetHashCode(System.Reflection.ConstructorInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.ConstructorInfoComparer.Default">
+            <summary>   Gets the default ConstructorInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.EventInfoComparer">
+            <summary>   Event information comparer. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.EventInfoComparer.Equals(System.Reflection.EventInfo,System.Reflection.EventInfo)">
+            <summary>   Tests if two EventInfo objects are considered equal by our definition -- same Name, EventHandlerType, IsMulticast, Attributes. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    EventInfo instance to be compared. </param>
+            <param name="y">    EventInfo instance to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.EventInfoComparer.GetHashCode(System.Reflection.EventInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.EventInfoComparer.Default">
+            <summary>   Gets the default EventInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.FieldInfoComparer">
+            <summary>   A rudimentary FieldInfo comparer that checks for equivalency. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.FieldInfoComparer.Equals(System.Reflection.FieldInfo,System.Reflection.FieldInfo)">
+            <summary>   
+            Tests if two FieldInfo objects are considered equal by our definition -- same Name, FieldType, InitOnly, Literal, Pinvoke, Private /
+            Public, NotSerialized, Static, Attributes. 
+            </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    Field information to be compared. </param>
+            <param name="y">    Field information to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.FieldInfoComparer.GetHashCode(System.Reflection.FieldInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.FieldInfoComparer.Default">
+            <summary>   Gets the default FieldInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.MemberInfoComparer">
+            <summary>   A rudimentary comparison routine that Member information comparer. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.MemberInfoComparer.#ctor">
+            <summary>
+            Initializes a new instance of the MemberInfoComparer class.
+            </summary>
+        </member>
+        <member name="M:EqualityComparer.Reflection.MemberInfoComparer.#ctor(System.Reflection.MemberTypes[])">
+            <summary>   Initializes a new instance of the MemberInfoComparer class. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="ignores">  A variable-length parameters list containing MemberTypes to ignores. </param>
+        </member>
+        <member name="M:EqualityComparer.Reflection.MemberInfoComparer.Equals(System.Reflection.MemberInfo,System.Reflection.MemberInfo)">
+            <summary>   Tests if two MemberInfo objects are considered equal. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    MemberInfo instance to be compared. </param>
+            <param name="y">    MemberInfo instance to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.MemberInfoComparer.GetHashCode(System.Reflection.MemberInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.MemberInfoComparer.Default">
+            <summary>   Gets the default MemberInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="P:EqualityComparer.Reflection.MemberInfoComparer.IgnoreNestedTypes">
+            <summary>   
+            Gets the MemberInfoComparer instance that will ignore MemberTypes.Custom, MemberTypes.NestedType and MemberTypes.TypeInfo, rather
+            than continually constructing new instances. 
+            </summary>
+            <value> A MemberInfoComparer following the specified rules. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.MethodInfoComparer">
+            <summary>   This is a *very* rudimentary comparison routine that examines two MethodInfo definitions for signature compatibility. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.MethodInfoComparer.Equals(System.Reflection.MethodInfo,System.Reflection.MethodInfo)">
+            <summary>   Tests if two MethodInfo objects are considered equal. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    MethodInfo instance to be compared. </param>
+            <param name="y">    MethodInfo instance to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.MethodInfoComparer.GetHashCode(System.Reflection.MethodInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.MethodInfoComparer.Default">
+            <summary>   Gets the default MethodInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.ParameterInfoComparer">
+            <summary>   This is a *very* rudimentary comparison routine that examines two ParameterInfo definitions for signature compatibility. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.ParameterInfoComparer.Equals(System.Reflection.ParameterInfo,System.Reflection.ParameterInfo)">
+            <summary>   
+            Tests if two ParameterInfo objects are considered equal
+            -- same DefaultValue, IsIn, IsOptional, IsRetval, ParameterType, Position. 
+            </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    ParameterInfo instance to be compared. </param>
+            <param name="y">    ParameterInfo instance to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.ParameterInfoComparer.GetHashCode(System.Reflection.ParameterInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.ParameterInfoComparer.Default">
+            <summary>   Gets the default ParameterInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.PropertyInfoComparer">
+            <summary>   A class that performs a rudimentary comparison of PropertyInfo instances. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.PropertyInfoComparer.Equals(System.Reflection.PropertyInfo,System.Reflection.PropertyInfo)">
+            <summary>   
+            Tests if two PropertyInfo objects are considered equal by our definition -- same Name, PropertyType, CanRead / CanWrite, Attributes. 
+            </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="x">    PropertyInfo to be compared. </param>
+            <param name="y">    PropertyInfo to be compared. </param>
+            <returns>   true if the objects are considered equal, false if they are not. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.PropertyInfoComparer.GetHashCode(System.Reflection.PropertyInfo)">
+            <summary>   Calculates the hash code for this object. </summary>
+            <remarks>   ebrown, 2/3/2011. </remarks>
+            <param name="obj">  The object. </param>
+            <returns>   The hash code for this object. </returns>
+        </member>
+        <member name="P:EqualityComparer.Reflection.PropertyInfoComparer.Default">
+            <summary>   Gets the default PropertyInfoComparer instance, rather than continually constructing new instances. </summary>
+            <value> The default. </value>
+        </member>
+        <member name="T:EqualityComparer.Reflection.TypeExtensions">
+            <summary>   A set of useful extension methods built on top of <see cref="T:System.Type"/> </summary>
+            <remarks>   ebrown, 11/9/2010. </remarks>
+        </member>
+        <member name="M:EqualityComparer.Reflection.TypeExtensions.IsGenericInterfaceAssignableFrom(System.Type,System.Type)">
+            <summary>   Determines whether a given type implements a specified interface, where the interface *must* be generic. </summary>
+            <remarks>   ebrown, 11/9/2010. </remarks>
+            <exception cref="T:System.ArgumentNullException">    Thrown when one or more required arguments are null. </exception>
+            <exception cref="T:System.ArgumentException">        Thrown when one or more arguments have unsupported or illegal values. </exception>
+            <param name="interfaceType">    The Type of the interface to search for. </param>
+            <param name="concreteType">     The concrete object Type to examine. </param>
+            <returns>   <c>true</c> if the concrete type specified implements the interface type specified; otherwise, <c>false</c>. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.TypeExtensions.GetGenericInterfaceTypeParameters(System.Type,System.Type)">
+            <summary>   
+            For a given type implementing a specified interface, where the interface *must* be generic, this returns the parameters passed to the
+            generic interface. 
+            </summary>
+            <remarks>   ebrown, 11/9/2010. </remarks>
+            <exception cref="T:System.ArgumentNullException">    Thrown when one or more required arguments are null. </exception>
+            <exception cref="T:System.ArgumentException">        Thrown when one or more arguments have unsupported or illegal values. </exception>
+            <param name="interfaceType">    The Type of the interface to search for. </param>
+            <param name="concreteType">     The concrete object Type to examine. </param>
+            <returns>   An enumeration of the Types being used in the generic interface declaration. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.TypeExtensions.IsAnonymous(System.Type)">
+            <summary>   Determines whether the specified type is anonymous. </summary>
+            <remarks>   ebrown, 11/9/2010. </remarks>
+            <exception cref="T:System.ArgumentNullException">    Thrown when one or more required arguments are null. </exception>
+            <param name="type"> The type. </param>
+            <returns>   <c>true</c> if the specified type is anonymous; otherwise, <c>false</c>. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.TypeExtensions.IsAnonymous``1(``0)">
+            <summary>   Determines whether the specified object is anonymous. </summary>
+            <remarks>   ebrown, 11/9/2010. </remarks>
+            <exception cref="T:System.ArgumentNullException">    Thrown when one or more required arguments are null. </exception>
+            <param name="value">    The object to inspect. </param>
+            <returns>   <c>true</c> if the specified object is based on an anonymous type; otherwise, <c>false</c>. </returns>
+        </member>
+        <member name="M:EqualityComparer.Reflection.TypeExtensions.GetAllBaseTypesAndInterfaces(System.Type)">
+            <summary>   A Type extension method that gets all base types and interfaces for a given type by recursing the type hierarchy. </summary>
+            <remarks>   
+            Given Type is explored for all derived types and interfaces. Types are returned in the following depth order:
+            - The type itself at depth 0
+            - Implemented interfaces at depth 1
+            - All based types, in order of derivation with an appropriate depth of 2+. 
+            </remarks>
+            <exception cref="T:System.ArgumentNullException">    Thrown when one or more required arguments are null. </exception>
+            <param name="type"> The type. </param>
+            <returns>   all base types and interfaces in order of depth. </returns>
+        </member>
+    </members>
+</doc>

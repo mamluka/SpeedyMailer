@@ -1,4 +1,5 @@
 using System.Configuration;
+using Castle.Core.Logging;
 
 namespace SpeedyMailer.Core.Helpers
 {

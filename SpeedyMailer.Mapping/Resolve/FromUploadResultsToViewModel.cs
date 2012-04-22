@@ -1,6 +1,6 @@
 using AutoMapper;
+using SpeedyMailer.Core.Utilities.Domain.Contacts;
 using SpeedyMailer.Master.Web.Core.ViewModels;
-using SpeedyMailer.Utilties.Domain.Contacts;
 
 namespace SpeedyMailer.Mapping.Resolve
 {

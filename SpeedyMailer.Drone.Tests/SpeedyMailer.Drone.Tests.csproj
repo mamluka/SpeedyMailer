@@ -45,11 +45,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture">
-      <HintPath>..\packages\AutoFixture.2.9.2\lib\Ploeh.AutoFixture.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture, Version=2.10.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoFixture.2.10.0\lib\Ploeh.AutoFixture.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.SemanticComparison">
-      <HintPath>..\packages\AutoFixture.2.9.2\lib\Ploeh.SemanticComparison.dll</HintPath>
+    <Reference Include="Ploeh.SemanticComparison, Version=2.10.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoFixture.2.10.0\lib\Ploeh.SemanticComparison.dll</HintPath>
     </Reference>
     <Reference Include="Quartz">
       <HintPath>..\libs\Quartz.net\Quartz.dll</HintPath>
@@ -95,10 +97,6 @@
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Domain\SpeedyMailer.Domain.csproj">
-      <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
-      <Name>SpeedyMailer.Domain</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Drone\SpeedyMailer.Drone.csproj">
       <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>

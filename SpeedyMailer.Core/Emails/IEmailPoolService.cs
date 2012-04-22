@@ -1,4 +1,4 @@
-using SpeedyMailer.Domain.Emails;
+using SpeedyMailer.Core.Domain.Emails;
 
 namespace SpeedyMailer.Core.Emails
 {

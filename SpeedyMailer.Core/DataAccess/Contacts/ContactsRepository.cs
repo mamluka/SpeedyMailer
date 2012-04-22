@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Raven.Client;
-using SpeedyMailer.Domain.Contacts;
+using SpeedyMailer.Core.Domain.Contacts;
 
 namespace SpeedyMailer.Core.DataAccess.Contacts
 {

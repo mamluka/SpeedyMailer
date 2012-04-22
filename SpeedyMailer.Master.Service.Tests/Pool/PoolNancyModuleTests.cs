@@ -11,7 +11,7 @@ using SpeedyMailer.Bridge.Model.Drones;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.DataAccess.Drone;
 using SpeedyMailer.Core.DataAccess.Fragments;
-using SpeedyMailer.Master.Service.Core.Emails;
+using SpeedyMailer.Master.Service.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;

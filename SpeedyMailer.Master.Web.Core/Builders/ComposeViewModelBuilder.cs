@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using AutoMapper;
 using SpeedyMailer.Core.DataAccess.Lists;
-using SpeedyMailer.Domain.Lists;
+using SpeedyMailer.Core.Domain.Lists;
 using SpeedyMailer.Master.Web.Core.ComponentViewModel;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 

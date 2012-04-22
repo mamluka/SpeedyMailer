@@ -2,7 +2,6 @@ using Raven.Client;
 using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Emails;
 using SpeedyMailer.Tests.Core;
-using SpeedyMailer.Tests.Core.DB;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
 

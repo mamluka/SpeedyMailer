@@ -3,13 +3,13 @@ using MvcContrib.TestHelper;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Rhino.Mocks;
+using SpeedyMailer.Core.Utilities.Domain.Contacts;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.Models;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.UI.Controllers;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
-using SpeedyMailer.Utilties.Domain.Contacts;
 
 namespace SpeedyMailer.Master.Web.Tests.Contacts
 {

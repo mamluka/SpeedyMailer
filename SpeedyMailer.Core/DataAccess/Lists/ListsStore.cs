@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using SpeedyMailer.Domain.Lists;
+using SpeedyMailer.Core.Domain.Lists;
 
 namespace SpeedyMailer.Core.DataAccess.Lists
 {

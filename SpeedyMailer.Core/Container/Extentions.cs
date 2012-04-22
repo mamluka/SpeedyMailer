@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Diagnostics;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Extensions.Conventions;
+using Ninject.Extensions.Conventions.BindingBuilder;
 using Ninject.Extensions.Conventions.BindingGenerators;
 using Ninject.Extensions.Conventions.Syntax;
-using Ninject.Syntax;
-using Raven.Abstractions.Linq;
 using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
@@ -19,8 +18,7 @@ namespace SpeedyMailer.Core.Container
             return kernel;
         }
 
-        public static IKernel BindSettingsToDocumentStoreFor(this IKernel kernel,
-                                              Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromAssemblies)
+        public static IKernel BindSettingsToDocumentStoreFor(this IKernel kernel, Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromAssemblies)
         {
             kernel.Bind(
                 x =>
@@ -41,6 +39,5 @@ namespace SpeedyMailer.Core.Container
                 fromAssemblies(x).Select(type => type.Name.EndsWith("Settings")).BindWith(kernel.Get<JsonFileSettingsBinder>()));
             return kernel;
         }
-
     }
 }

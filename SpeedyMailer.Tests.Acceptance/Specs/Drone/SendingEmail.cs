@@ -1,6 +1,5 @@
 using System.IO;
 using NUnit.Framework;
-using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -38,17 +37,6 @@ namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
                                                                                      x.ListId = "lists/1";
                                                                                      x.Source = stream;
                                                                                  });
-        }
-    }
-
-    public class CreateListCommand : Command<string>
-    {
-        public string Name { get; set; }
-        public int Id { get; set; }
-
-        public override string Execute()
-        {
-            return null;
         }
     }
 }

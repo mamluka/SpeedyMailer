@@ -9,9 +9,9 @@ using SpeedyMailer.Core.DataAccess.Drone;
 using SpeedyMailer.Core.DataAccess.Fragments;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Master.Service.Core.Emails;
+using SpeedyMailer.Core.Utilities.Domain.Email;
+using SpeedyMailer.Master.Service.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
-using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Master.Service.Bootstrapper
 {

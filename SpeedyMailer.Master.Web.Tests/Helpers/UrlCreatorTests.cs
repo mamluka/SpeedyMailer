@@ -6,12 +6,12 @@ using MvcContrib.TestHelper.Fakes;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Rhino.Mocks;
+using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Domain.Emails;
-using SpeedyMailer.Settings;
+using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Core.Utilities.Domain.Email;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
-using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Master.Web.Tests.Helpers
 {

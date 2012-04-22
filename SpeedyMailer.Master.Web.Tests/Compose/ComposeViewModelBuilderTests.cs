@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Lists;
-using SpeedyMailer.Domain.Lists;
+using SpeedyMailer.Core.Domain.Lists;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Tests.Core;

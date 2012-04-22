@@ -3,14 +3,13 @@ using AutoMapper;
 using Raven.Client;
 using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Contacts;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Domain.Contacts;
+using SpeedyMailer.Core.Utilities.Domain.Email;
 using SpeedyMailer.Tests.Core;
-using SpeedyMailer.Tests.Core.DB;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
-using SpeedyMailer.Utilties.Domain.Email;
 
 namespace SpeedyMailer.Core.Tests.Emails
 {

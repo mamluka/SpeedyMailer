@@ -4,10 +4,10 @@ using AutoMapper;
 using Raven.Client;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.DataAccess.Contacts;
+using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Helpers;
-using SpeedyMailer.Domain.Contacts;
-using SpeedyMailer.Domain.Emails;
-using SpeedyMailer.Utilties.Domain.Email;
+using SpeedyMailer.Core.Utilities.Domain.Email;
 
 namespace SpeedyMailer.Core.Emails
 {

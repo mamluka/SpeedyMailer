@@ -6,10 +6,10 @@ using FluentAssertions;
 using NUnit.Framework;
 using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Contacts;
-using SpeedyMailer.Domain.Contacts;
+using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Utilities.Domain.Contacts;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
-using SpeedyMailer.Utilties.Domain.Contacts;
 
 namespace SpeedyMailer.Core.Tests.Contacts
 {

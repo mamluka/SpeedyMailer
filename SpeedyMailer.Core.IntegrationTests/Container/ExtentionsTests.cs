@@ -5,12 +5,13 @@ using Newtonsoft.Json;
 using Ninject;
 using Raven.Client;
 using SpeedyMailer.Core.Container;
-using SpeedyMailer.Settings;
+using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Core.IntegrationTests.Container
 {
     [TestFixture]
-    public class ExtentionsTests : IntergrationTestsBase
+    public class ExtentionsTests : IntegrationTestBase
     {
         private StandardKernel _target;
         
@@ -32,7 +33,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
         private void BindStoreToContainer()
         {
-            _target.Bind<IDocumentStore>().ToConstant(RavenDbDocumentStore);
+            _target.Bind<IDocumentStore>().ToConstant(DocumentStore);
         }
 
         public interface ITestingSettings

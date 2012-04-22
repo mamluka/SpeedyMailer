@@ -4,7 +4,7 @@ using Rhino.Mocks;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.DataAccess.Drone;
 using SpeedyMailer.Core.DataAccess.Fragments;
-using SpeedyMailer.Master.Service.Core.Emails;
+using SpeedyMailer.Master.Service.Emails;
 using SpeedyMailer.Master.Service.MailDrones;
 
 namespace SpeedyMailer.Master.Service.Tests.Pool

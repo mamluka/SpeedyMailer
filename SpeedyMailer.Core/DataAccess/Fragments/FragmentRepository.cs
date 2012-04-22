@@ -1,7 +1,6 @@
 using System.Linq;
 using Raven.Abstractions.Exceptions;
 using Raven.Client;
-using Raven.Client.Linq;
 using SpeedyMailer.Bridge.Model.Fragments;
 
 namespace SpeedyMailer.Core.DataAccess.Fragments

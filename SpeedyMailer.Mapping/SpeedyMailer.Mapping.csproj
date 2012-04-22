@@ -51,9 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DomainMaps.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resolve\FromUploadResultsToViewModel.cs" />
     <Compile Include="ViewModelMaps.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
@@ -64,22 +64,12 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Domain\SpeedyMailer.Domain.csproj">
-      <Project>{528BA046-9630-4BB5-B516-F0B6A3CAACC9}</Project>
-      <Name>SpeedyMailer.Domain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
       <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
       <Name>SpeedyMailer.Master.Web.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Utilties\SpeedyMailer.Utilties.csproj">
-      <Project>{AFB20C0A-E46C-4C0B-85DC-602459E1C020}</Project>
-      <Name>SpeedyMailer.Utilties</Name>
-    </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Format\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
