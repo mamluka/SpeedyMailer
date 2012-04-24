@@ -69,6 +69,7 @@
     <Compile Include="Commands\CreateListCommand.cs" />
     <Compile Include="Commands\UploadListCommand.cs" />
     <Compile Include="ComponentViewModel\ListDescriptorViewModel.cs" />
+    <Compile Include="CoreAssemblyMarker.cs" />
     <Compile Include="Models\ComposeModel.cs" />
     <Compile Include="Models\UploadListModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

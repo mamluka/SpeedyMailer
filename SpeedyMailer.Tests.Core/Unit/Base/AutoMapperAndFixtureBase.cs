@@ -16,7 +16,6 @@ namespace SpeedyMailer.Tests.Core.Unit.Base
         public void Initialize()
         {
             Fixture = new Fixture();
-            Bootstrapper.IncludingOnly.Assembly(typeof (DomainMaps).Assembly).With.AutoMapper();
             Mapper = AutoMapper.Mapper.Engine;
         }
     }

@@ -94,6 +94,7 @@
     <Compile Include="MailDrones\IMailDroneService.cs" />
     <Compile Include="MailDrones\MailDroneService.cs" />
     <Compile Include="Api\PoolModule.cs" />
+    <Compile Include="ServiceAssemblyMarker.cs" />
     <Compile Include="ServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

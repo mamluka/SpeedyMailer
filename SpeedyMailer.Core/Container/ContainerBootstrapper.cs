@@ -1,164 +1,101 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Bootstrap.Extensions.Containers;
 using Ninject;
 using Ninject.Activation;
+using Ninject.Extensions.Conventions;
+using Ninject.Extensions.Conventions.Syntax;
+using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
 {
     public class ContainerBootstrapper
     {
-        private readonly ContainerStrapperOptions _localOptions;
-
-        public ContainerBootstrapper(Action<ContainerStrapperOptions> options)
+        private static readonly ContainerStrapperOptions Options = new ContainerStrapperOptions();
+                                                                       
+        public static AssemblyGatherer Bootstrap()
         {
-            _localOptions = new ContainerStrapperOptions();
-            options.Invoke(_localOptions);
+            return new AssemblyGatherer(Options);
         }
 
-        public static AssemblyGatherer Bootstrap(IKernel kernel)
+        public static IKernel Execute(ContainerStrapperOptions containerStrapperOptions)
         {
-            return new AssemblyGatherer(kernel);
-        }
-    }
+            var kernel = new StandardKernel();
 
-    public class AssemblyGatherer
-    {
-        private readonly IKernel _kernel;
-        public AssemblyGatherer(IKernel kernel)
-        {
-            _kernel = kernel;
-        }
+            Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromFunction = fromSyntax => fromSyntax.FromThisAssembly();
+            Func<IIncludingNonePublicTypesSelectSyntax, IJoinExcludeIncludeBindSyntax> selectFunction = selectSyntax => selectSyntax.SelectAllClasses();
+            Func<IJoinExcludeIncludeBindSyntax,IConfigureSyntax> bindFunction = bindSyntax => bindSyntax.BindDefaultInterface();
 
-        public DatabaseBindingGatherer Analyze(Action<AssemblyGathererOptions> gatherAction)
-        {
-            var options = new AssemblyGathererOptions(_kernel);
-            gatherAction.Invoke(options);
-            
-            return new DatabaseBindingGatherer(_kernel);
-        }
+            if (containerStrapperOptions.BindingStratery == BindingStrategy.BindInterfaceToDefaultImplementation)
+            {
+                bindFunction = bindSyntax => bindSyntax.BindDefaultInterface();
+            }
+            if (containerStrapperOptions.SelectingStrategy == SelectingStrategy.All)
+            {
+                selectFunction = selectSyntax => selectSyntax.SelectAllTypes();
+            }
 
-       
-    }
+            if (containerStrapperOptions.AnalyzeStrategy == AnalyzeStrategy.ByTypes)
+            {
+                fromFunction = fromSyntax => fromSyntax.From(containerStrapperOptions.TypesToAnalyze.Select(type => type.Assembly));
+            }
 
-    public class DatabaseBindingGatherer
-    {
-        private readonly IKernel _kernel;
+            kernel.Bind(x => bindFunction(selectFunction(fromFunction(x))));
 
-        public DatabaseBindingGatherer(IKernel kernel)
-        {
-            _kernel = kernel;
-        }
+            if (containerStrapperOptions.DatabaseBindingFunction != null)
+            {
+                Options.DatabaseBindingFunction(kernel);    
+            }
 
-        public SettingsResolverGatherer Storage(Action<DatabaseBindingGathererOptions> storageAction)
-        {
-            var options = new DatabaseBindingGathererOptions(_kernel);
-            storageAction.Invoke(options);
-            return new SettingsResolverGatherer(_kernel);
-        }
+            if (containerStrapperOptions.Settings == SettingsType.DocumentDatabase)
+            {
+                try
+                {
+                    var store = kernel.Get<IDocumentStore>();
 
+                    kernel.Bind(x =>
+                        fromFunction(x).Select(type=> type.Name.EndsWith("Settings") && type.IsInterface).BindWith(new DocumentStoreSettingsBinder(store))
+                    );
+                }
+                catch (ActivationException)
+                {
+                    throw new ContainerException(typeof(IDocumentStore),"When resolving the document store for settings binder no canidate was found");
+                }
+            }
 
-    }
+            if (containerStrapperOptions.Settings == SettingsType.JsonFiles)
+            {
+                kernel.Bind(x =>
+                        fromFunction(x).Select(type => type.Name.EndsWith("Settings") && type.IsInterface).BindWith(new JsonFileSettingsBinder())
+                    );
+            }
 
-    public class DatabaseBindingGathererOptions
-    {
-        private readonly IKernel _kernel;
-
-        public DatabaseBindingGathererOptions(IKernel kernel)
-        {
-            _kernel = kernel;
-        }
-
-        public void Provider<T>()
-        {
-            
-        }
-
-        public void Constant<T>(T constant)
-        {
-            
-        }
-
-        public void NoDatabase()
-        {
-            
-        }
-
-
-    }
-
-    public class SettingsResolverGatherer
-    {
-        private readonly IKernel _kernel;
-
-        public SettingsResolverGatherer(IKernel kernel)
-        {
-            _kernel = kernel;
-        }
-
-        public void Settings(Action<SettingsResolverGathererOptions> settingsAction)
-        {
-            
-        }
-
-        
-    }
-
-    public class SettingsResolverGathererOptions
-    {
-        private readonly IKernel _kernel;
-
-        public SettingsResolverGathererOptions(IKernel kernel)
-        {
-            _kernel = kernel;
-        }
-
-        public void UseDocumentDatabase()
-        {
-
-        }
-
-        public void UseJsonFiles()
-        {
-
+            return kernel;
         }
     }
 
-    public class AssemblyGathererOptions
+    public class ContainerException : Exception
     {
-        private readonly IKernel _kernel;
+        private string _message;
+        private Type _type;
 
-        public AssemblyGathererOptions(IKernel kernel)
+        public ContainerException(Type type, string message)
         {
-            _kernel = kernel;
-        }
-
-        public void AssembiesContaining(Type[] types)
-        {
+            _type = type;
+            _message = message;
         }
     }
 
-    public class ContainerStrapperOptions
+    public enum SelectingStrategy
     {
-        public SettingsResolvingType SettingsResolvingType { get; set; }
+        All
     }
 
-    public enum SettingsResolvingType
+    public enum SettingsType
     {
-        Database=0,
-        Json=1
-    }
-
-    public class ServiceAssembly
-    {
-    }
-
-    public class UiAssembly
-    {
-    }
-
-    public class CoreAssembly
-    {
+        None,
+        DocumentDatabase,
+        JsonFiles
     }
 }

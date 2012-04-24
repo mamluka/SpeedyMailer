@@ -138,6 +138,10 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Master.Service\SpeedyMailer.Master.Service.csproj">
+      <Project>{88070415-7AA8-4C82-BC2D-983BB8116FF7}</Project>
+      <Name>SpeedyMailer.Master.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
       <Name>SpeedyMailer.Tests.Core</Name>

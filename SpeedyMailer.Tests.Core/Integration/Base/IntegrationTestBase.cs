@@ -5,7 +5,6 @@ using Ninject;
 using Ninject.Activation.Strategies;
 using Raven.Client;
 using Raven.Client.Embedded;
-using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Web.UI.Bootstrappers;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
@@ -23,28 +22,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
-            var embeddableDocumentStore = new EmbeddableDocumentStore { RunInMemory = true };
-            DocumentStore = embeddableDocumentStore.Initialize();
-
-            MasterKernel = new StandardKernel();
-            SetupMasterKernel(MasterKernel);
-
-            DroneKernel = DroneNinjectBootstrapper.Kernel;
-
-            RebindToInMemeoryDatabase(MasterKernel);
-
-            Drone = new Actions(DroneKernel);
-            Master = new Actions(MasterKernel);
 
         }
 
-        private void SetupMasterKernel(StandardKernel masterKernel)
+        [SetUp]
+        public void Setup()
         {
-            masterKernel.Bind<IDocumentStore>().ToConstant(DocumentStore);
-            masterKernel.BindInterfaces(x => x.FromAssembliesMatching(new[] { "SpeedyMailer.Core" }))
-                .BindSettingsToDocumentStoreFor(x => x.FromAssembliesMatching(new[] { "SpeedyMailer.Core" }));
-            
-
+            var embeddableDocumentStore = new EmbeddableDocumentStore {RunInMemory = true};
+            DocumentStore = embeddableDocumentStore.Initialize();
         }
 
         public void Store(object item)
