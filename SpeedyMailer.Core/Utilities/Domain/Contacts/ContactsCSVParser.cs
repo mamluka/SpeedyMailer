@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using AutoMapper;
 using CsvHelper;
+using SpeedyMailer.Core.Domain.Contacts;
 
 namespace SpeedyMailer.Core.Utilities.Domain.Contacts
 {

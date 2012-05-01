@@ -21,7 +21,7 @@ namespace SpeedyMailer.Core.Tests.Contacts
             Contact contact = Fixture.Build<Contact>().Without(x => x.Id).CreateAnonymous();
 
             var session = MockRepository.GenerateMock<IDocumentSession>();
-            session.Expect(x => x.Store(Arg<Contact>.Matches(m => m.Id == contact.Address))).Repeat.Once();
+            session.Expect(x => x.Store(Arg<Contact>.Matches(m => m.Id == contact.Email))).Repeat.Once();
 
             IDocumentStore store = DocumentStoreFactory.StubDocumentStoreWithSession(session);
 

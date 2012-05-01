@@ -6,6 +6,7 @@ using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Lists;
 using SpeedyMailer.Core.Utilities.Domain.Contacts;
 using SpeedyMailer.Mapping.Resolve;
+using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Master.Web.Core.ComponentViewModel;
 using SpeedyMailer.Master.Web.Core.Models;
 using SpeedyMailer.Master.Web.Core.ViewModels;
@@ -18,7 +19,7 @@ namespace SpeedyMailer.Mapping
         public void CreateMap(IProfileExpression mapper)
         {
             Mapper.CreateMap<ContactFromCSVRow, Contact>()
-                .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
+                .ForMember(x => x.Email, opt => opt.MapFrom(x => x.Email));
             ;
 
             Mapper.CreateMap<ContactCSVParserResults, UploadListViewModel>()

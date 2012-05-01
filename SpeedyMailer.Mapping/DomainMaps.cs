@@ -5,6 +5,7 @@ using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Utilities.Domain.Contacts;
+using SpeedyMailer.Master.Web.Core.Commands;
 
 namespace SpeedyMailer.Mapping
 {
@@ -14,7 +15,7 @@ namespace SpeedyMailer.Mapping
         public void CreateMap(IProfileExpression mapper)
         {
             Mapper.CreateMap<ContactFromCSVRow, Contact>()
-                .ForMember(x => x.Address, opt => opt.MapFrom(x => x.Email));
+                .ForMember(x => x.Email, opt => opt.MapFrom(x => x.Email));
             ;
             Mapper.CreateMap<Email, EmailFragment>()
                 .ForMember(x => x.ExtendedRecipients, opt => opt.Ignore())

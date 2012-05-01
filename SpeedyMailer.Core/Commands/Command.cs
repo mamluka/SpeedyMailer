@@ -1,3 +1,5 @@
+using Raven.Client;
+
 namespace SpeedyMailer.Core.Commands
 {
     public abstract class Command

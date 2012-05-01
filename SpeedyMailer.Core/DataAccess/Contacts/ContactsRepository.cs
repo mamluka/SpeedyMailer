@@ -52,7 +52,7 @@ namespace SpeedyMailer.Core.DataAccess.Contacts
 
         private Contact GiveIdToContact(Contact contact)
         {
-            contact.Id = contact.Address;
+            contact.Id = contact.Email;
             return contact;
         }
     }

@@ -25,7 +25,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         private bool TestIfRecipientsDataContainsTheContacts(List<Contact> contacts,
                                                              List<ExtendedRecipient> recipientDatas)
         {
-            return recipientDatas.Select(x => x.Address).ToList() == contacts.Select(x => x.Address).ToList();
+            return recipientDatas.Select(x => x.Address).ToList() == contacts.Select(x => x.Email).ToList();
         }
 
         private void AddEmailBodyTemplateToSession(IDocumentSession session)
@@ -52,7 +52,7 @@ namespace SpeedyMailer.Core.Tests.Emails
                 x =>
                 x.UrlByRouteWithJsonObject(Arg<string>.Is.Equal("Deals"),
                                            Arg<LeadIdentity>.Matches(
-                                               m => m.Address == contacts[0].Address && m.EmailId == email.Id))).Repeat.
+                                               m => m.Address == contacts[0].Email && m.EmailId == email.Id))).Repeat.
                 Once().Return("url");
 
             var componenBuilder = new EmailPoolMockedComponentBuilder(Mapper);
@@ -79,7 +79,7 @@ namespace SpeedyMailer.Core.Tests.Emails
                 x =>
                 x.UrlByRouteWithJsonObject(Arg<string>.Is.Equal("Unsubscribe"),
                                            Arg<LeadIdentity>.Matches(
-                                               m => m.Address == contacts[0].Address && m.EmailId == email.Id))).Repeat.
+                                               m => m.Address == contacts[0].Email && m.EmailId == email.Id))).Repeat.
                 Once().Return("url");
 
             var componenBuilder = new EmailPoolMockedComponentBuilder(Mapper);

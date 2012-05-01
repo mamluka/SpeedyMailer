@@ -93,9 +93,6 @@
     <Compile Include="Specs\Drone\SendingEmail.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="fixtures\contacts\sample.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

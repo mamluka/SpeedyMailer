@@ -6,7 +6,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
     public class ActionsBase
     {
-        protected IKernel _kernel;
+        private readonly IKernel _kernel;
 
         public ActionsBase(IKernel kernel)
         {

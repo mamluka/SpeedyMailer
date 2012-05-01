@@ -98,6 +98,7 @@
     <Compile Include="Configurations\DroneConfigurationManager.cs" />
     <Compile Include="Configurations\IDroneConfigurationManager.cs" />
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
+    <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Drone\MailDronInitializer.cs" />
     <Compile Include="Jobs\DroneJobManager.cs" />
     <Compile Include="Jobs\IoCJobFactory.cs" />

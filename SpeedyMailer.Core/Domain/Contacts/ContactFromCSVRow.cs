@@ -1,6 +1,6 @@
 using CsvHelper.Configuration;
 
-namespace SpeedyMailer.Core.Utilities.Domain.Contacts
+namespace SpeedyMailer.Core.Domain.Contacts
 {
     public class ContactFromCSVRow
     {

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpeedyMailer.Master.Web.Core
 {
-    public class CoreAssemblyMarker
+    public class WebCoreAssemblyMarker
     {
     }
 }

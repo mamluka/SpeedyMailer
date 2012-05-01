@@ -62,7 +62,7 @@ namespace SpeedyMailer.Core.Emails
                         emailFragment.ExtendedRecipients = listFragment.Select(x =>
                                                                                new ExtendedRecipient
                                                                                    {
-                                                                                       Address = x.Address,
+                                                                                       Address = x.Email,
                                                                                        Name = x.Name,
                                                                                        DealUrl =
                                                                                            urlCreator.
@@ -71,7 +71,7 @@ namespace SpeedyMailer.Core.Emails
                                                                                                new LeadIdentity
                                                                                                    {
                                                                                                        Address =
-                                                                                                           x.Address,
+                                                                                                           x.Email,
                                                                                                        EmailId =
                                                                                                            email.Id
                                                                                                    }),
@@ -82,7 +82,7 @@ namespace SpeedyMailer.Core.Emails
                                                                                                new LeadIdentity
                                                                                                    {
                                                                                                        Address =
-                                                                                                           x.Address,
+                                                                                                           x.Email,
                                                                                                        EmailId =
                                                                                                            email.Id
                                                                                                    })
