@@ -132,6 +132,7 @@
     <Compile Include="DataAccess\Lists\ListsStore.cs" />
     <Compile Include="Domain\Contacts\Contact.cs" />
     <Compile Include="Domain\Contacts\ContactFromCSVRow.cs" />
+    <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />

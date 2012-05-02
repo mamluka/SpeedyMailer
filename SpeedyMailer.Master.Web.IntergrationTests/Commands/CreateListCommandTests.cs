@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Rhino.Mocks;
 using FluentAssertions;
+using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Lists;
 using SpeedyMailer.Master.Web.Core.Commands;
-using SpeedyMailer.Tests.Acceptance.Specs.Drone;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
-namespace SpeedyMailer.Master.Web.IntergrationTests.Commands.Contacts
+namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 {
     [TestFixture]
     public class CreateListCommandTests : IntegrationTestBase

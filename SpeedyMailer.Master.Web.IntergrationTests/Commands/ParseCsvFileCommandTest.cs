@@ -2,22 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using CsvHelper;
+using FluentAssertions;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Master.Web.Core.Commands;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
-using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
-namespace SpeedyMailer.Master.Web.IntergrationTests.Commands.Contacts
+namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 {
     [TestFixture]
-    public class UploadContactListCommandTest : IntegrationTestBase
+    public class ParseCsvFileCommandTest : IntegrationTestBase
     {
         [Test]
         public void Execute_WhenAPerfectCSVListIsGiven_ShouldParseItAndWriteToDataBase()
@@ -28,7 +24,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands.Contacts
             CreateContactsCSV(filename);
 
             var csvSource = File.OpenRead(filename);
-            var result = Master.ExecuteCommand<UploadListCommand, UploadListCommandResult>(x =>
+            var result = Master.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
                                                                                   {
                                                                                       x.ListId = listId;
                                                                                       x.Source = csvSource;
@@ -54,7 +50,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands.Contacts
             CreateContactsCSVWithDuplicate(filename);
 
             var csvSource = File.OpenRead(filename);
-            var result = Master.ExecuteCommand<UploadListCommand, UploadListCommandResult>(x =>
+            var result = Master.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
             {
                 x.ListId = listId;
                 x.Source = csvSource;

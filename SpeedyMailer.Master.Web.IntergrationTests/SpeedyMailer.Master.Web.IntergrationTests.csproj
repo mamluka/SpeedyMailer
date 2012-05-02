@@ -125,8 +125,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Contacts\CreateListCommandTests.cs" />
-    <Compile Include="Commands\Contacts\UploadContactListCommandTest.cs" />
+    <Compile Include="Commands\AddCreativeCommandTests.cs" />
+    <Compile Include="Commands\CreateListCommandTests.cs" />
+    <Compile Include="Commands\ParseCsvFileCommandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

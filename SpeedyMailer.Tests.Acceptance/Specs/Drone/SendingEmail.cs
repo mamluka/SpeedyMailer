@@ -32,7 +32,7 @@ namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
         private void AddContacts()
         {
             var stream = File.OpenRead("fixture/contacts/csv-sample.csv");
-            Master.ExecuteCommand<UploadListCommand, UploadListCommandResult>(x =>
+            Master.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
                                                                                  {
                                                                                      x.ListId = "lists/1";
                                                                                      x.Source = stream;

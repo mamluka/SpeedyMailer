@@ -12,7 +12,7 @@ using SpeedyMailer.Core.Domain.Contacts;
 
 namespace SpeedyMailer.Master.Web.Core.Commands
 {
-    public class UploadListCommand : Command<UploadListCommandResult>
+    public class ParseCsvFileCommand : Command<UploadListCommandResult>
      
     {
         private readonly IDocumentStore _store;
@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Web.Core.Commands
         public string ListId { get; set; }
         public string Filename { get; set; }
 
-        public UploadListCommand(IDocumentStore store)
+        public ParseCsvFileCommand(IDocumentStore store)
         {
             _store = store;
         }
