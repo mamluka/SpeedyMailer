@@ -13,6 +13,7 @@ using Raven.Client.Embedded;
 using Rhino.Mocks;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Master.Web.UI;
 using SpeedyMailer.Master.Web.UI.Bootstrappers;
@@ -38,12 +39,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
             DocumentStore = MockRepository.GenerateStub<IDocumentStore>();
 
+            Bootstrap(MasterKernel);
+
             MasterKernel = ContainerBootstrapper
                 .Bootstrap()
                 .Analyze(x => x.AssembiesContaining(new[]
                                                         {
                                                             typeof (CoreAssemblyMarker),
-                                                            typeof (WebCoreAssemblyMarker)
+                                                            typeof (WebCoreAssemblyMarker),
+                                                            typeof(ServiceAssemblyMarker)
                                                         }))
                 .BindInterfaceToDefaultImplementation()
                 .Storage<IDocumentStore>(x => x.Constant(DocumentStore))

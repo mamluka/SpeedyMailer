@@ -56,6 +56,8 @@ namespace SpeedyMailer.Master.Service.Api
 
                                                return Response.AsJson(fragmentResponse);
                                            };
+
+        	Get["/test"] = x => Response.AsJs("Hello World!");
         }
     }
 }

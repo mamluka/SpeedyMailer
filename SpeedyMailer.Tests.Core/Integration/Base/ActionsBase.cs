@@ -13,6 +13,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             _kernel = kernel;
         }
 
+		public void ExecuteCommand<T>() where T : Command
+		{
+			var command = _kernel.Get<T>();
+			command.Execute();
+		}
+
         public void ExecuteCommand<T>(Action<T> action) where T:Command
         {
             var command = _kernel.Get<T>();

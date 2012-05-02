@@ -18,6 +18,10 @@ namespace SpeedyMailer.Core.Container
 
         public IKernel Done()
         {
+            if (ContainerBootstrapper.Kernel != null)
+            {
+                return ContainerBootstrapper.Execute(_options,ContainerBootstrapper.Kernel);
+            }
             return ContainerBootstrapper.Execute(_options);
         }
     }

@@ -1,20 +1,36 @@
 ﻿using System;
+using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
+using SpeedyMailer.Master.Service.Bootstrapper;
 
 namespace SpeedyMailer.Master.Service
 {
     public class ServiceHost
     {
-        private static void Main(string[] args)
-        {
-            var nancyHost = new NancyHost(new Uri("http://localhost:2589/"));
-            nancyHost.Start();
+    	private static NancyHost _nancyHost;
 
-            Console.WriteLine("Nancy now listening - navigating to http://localhost:2589. Press enter to stop");
-            Console.ReadKey();
+    	public static void Main(string[] args)
+    	{
+    		_nancyHost = new NancyHost(new MyNinjectBootstrapper(),new Uri("http://localhost:2589/"));
+    		StartNancy();
+    	}
 
-            nancyHost.Stop();
-            Console.WriteLine("Stopped. Good bye!");
-        }
+		public static void Main(NinjectNancyBootstrapper ninjectNancyBootstrapper)
+		{
+			_nancyHost = new NancyHost(ninjectNancyBootstrapper, new Uri("http://localhost:2589/"));
+			StartNancy();
+		}
+
+
+    	private static void StartNancy()
+    	{
+    		_nancyHost.Start();
+
+    		Console.WriteLine("Nancy now listening - navigating to http://localhost:2589. Press enter to stop");
+    		Console.ReadKey();
+
+    		_nancyHost.Stop();
+    		Console.WriteLine("Stopped. Good bye!");
+    	}
     }
 }

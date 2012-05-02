@@ -34,8 +34,9 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="AutoMapper, Version=2.1.266.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.2.1.266\lib\net40\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=2.1.267.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.2.1.267\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\BouncyCastle.Crypto.dll</HintPath>
@@ -67,8 +68,8 @@
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.0.10.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.Bootstrappers.Ninject">
-      <HintPath>..\packages\Nancy.Bootstrappers.Ninject.0.10.0\lib\net40\Nancy.Bootstrappers.Ninject.dll</HintPath>
+    <Reference Include="Nancy.Bootstrappers.Ninject, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\libs\Nancy.Bootstrappers\Nancy.Bootstrappers.Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.Testing">
       <HintPath>..\packages\Nancy.Testing.0.10.0\lib\net40\Nancy.Testing.dll</HintPath>
