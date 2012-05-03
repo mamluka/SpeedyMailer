@@ -10,6 +10,7 @@ using Ninject.Activation.Strategies;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
+using RestSharp;
 using Rhino.Mocks;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
@@ -31,15 +32,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         public IDocumentStore DocumentStore { get; private set; }
 
         public Actions Drone { get; set; }
-        public Actions Master { get; set; }
+        public Actions UI { get; set; }
+		public ServiceActions Service { get; set; }
+
 
         [TestFixtureSetUp]
         public void FixtureSetup()
         {
 
-            DocumentStore = MockRepository.GenerateStub<IDocumentStore>();
-
-            Bootstrap(MasterKernel);
+        	DocumentStore = MockRepository.GenerateStub<IDocumentStore>();
 
             MasterKernel = ContainerBootstrapper
                 .Bootstrap()
@@ -47,7 +48,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                         {
                                                             typeof (CoreAssemblyMarker),
                                                             typeof (WebCoreAssemblyMarker),
-                                                            typeof(ServiceAssemblyMarker)
+                                                            typeof(ServiceAssemblyMarker),
+															typeof(IRestClient)
                                                         }))
                 .BindInterfaceToDefaultImplementation()
                 .Storage<IDocumentStore>(x => x.Constant(DocumentStore))
@@ -65,7 +67,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                 .Settings(x => x.UseJsonFiles())
                 .Done();
 
-            Master = new Actions(MasterKernel);
+            UI = new Actions(MasterKernel);
+			Service = new ServiceActions(MasterKernel);
             Drone = new Actions(DroneKernel);
         }
 
@@ -74,11 +77,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         {
             var embeddableDocumentStore = new EmbeddableDocumentStore { 
                 RunInMemory = true,
-                Conventions = new DocumentConvention
-                {
-                    DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites,
-                }
-                
             };
             DocumentStore = embeddableDocumentStore.Initialize();
 

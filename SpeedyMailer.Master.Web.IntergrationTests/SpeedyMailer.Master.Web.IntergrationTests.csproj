@@ -118,6 +118,9 @@
     <Reference Include="Raven.Storage.Managed">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\Raven.Storage.Managed.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.103.0.0\lib\net35\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>
@@ -133,8 +136,8 @@
   <ItemGroup>
     <Compile Include="Commands\AddCreativeCommandTests.cs" />
     <Compile Include="Commands\CreateListCommandTests.cs" />
-    <Compile Include="Commands\ParseCsvFileCommandTest.cs" />
     <Compile Include="Commands\SendCreativeCommandTests.cs" />
+    <Compile Include="Commands\UploadContactListCommandTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

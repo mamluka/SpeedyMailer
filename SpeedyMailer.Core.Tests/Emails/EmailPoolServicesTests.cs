@@ -42,7 +42,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         public void AddEmail_ShouldCallTheUrlCreatorWithTheRightEmailAddressAndEmailIdForTheDealUrl()
         {
             //Arrange
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist1"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist1"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 1);
@@ -69,7 +69,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         public void AddEmail_ShouldCallTheUrlCreatorWithTheRightEmailAddressAndEmailIdforTheUnsubscribeUrl()
         {
             //Arrange
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist1"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist1"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 1);
@@ -98,7 +98,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             //Arrange
 
 
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist"}).CreateAnonymous();
 
             var template = new EmailBodyElements
                                {
@@ -134,7 +134,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             //Arrange
 
 
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 25);
@@ -165,7 +165,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             //Arrange
 
 
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 25);
@@ -196,7 +196,7 @@ namespace SpeedyMailer.Core.Tests.Emails
         public void AddEmail_ShouldStoreTheDealAndUnsubscribeUrls()
         {
             //Arrange
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 1);
@@ -244,7 +244,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             //Arrange
 
             Email email =
-                Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist1", "testlist2"}).CreateAnonymous
+                Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist1", "testlist2"}).CreateAnonymous
                     ();
 
             var contactsRepository = MockRepository.GenerateMock<IContactsRepository>();
@@ -282,7 +282,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             //Arrange
 
 
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 25);
@@ -317,7 +317,7 @@ namespace SpeedyMailer.Core.Tests.Emails
             //Arrange
 
 
-            Email email = Fixture.Build<Email>().With(x => x.ToLists, new List<string> {"testlist"}).CreateAnonymous();
+            Email email = Fixture.Build<Email>().With(x => x.Lists, new List<string> {"testlist"}).CreateAnonymous();
 
             var contacts = new List<Contact>();
             contacts.AddMany(() => Fixture.CreateAnonymous<Contact>(), 25);

@@ -37,7 +37,7 @@ namespace SpeedyMailer.Core.Emails
 
                 var systemTemplates = session.Load<EmailBodyElements>("system/templates");
 
-                foreach (string list in email.ToLists)
+                foreach (string list in email.Lists)
                 {
                     int pageNumber = 1;
 
