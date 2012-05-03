@@ -18,13 +18,13 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
         [Test]
         public void Execute_WhenAPerfectCSVListIsGiven_ShouldParseItAndWriteToDataBase()
         {
-            var listId = Master.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
+            var listId = UI.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
             var filename = GenerateFileName("sample", "csv");
             CreateContactsCSV(filename);
 
             var csvSource = File.OpenRead(filename);
-            var result = Master.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
+            var result = UI.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
                                                                                   {
                                                                                       x.ListId = listId;
                                                                                       x.Source = csvSource;
@@ -44,13 +44,13 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
         [Test]
         public void Execute_WhenListContainsDuplicates_ShouldIgnoreThem()
         {
-            var listId = Master.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
+            var listId = UI.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
             var filename = GenerateFileName("sample", "csv");
             CreateContactsCSVWithDuplicate(filename);
 
             var csvSource = File.OpenRead(filename);
-            var result = Master.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
+            var result = UI.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
             {
                 x.ListId = listId;
                 x.Source = csvSource;

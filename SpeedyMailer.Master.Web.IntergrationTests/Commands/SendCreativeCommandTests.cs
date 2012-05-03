@@ -13,20 +13,20 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
     [TestFixture]
     public class SendCreativeCommandTests : IntegrationTestBase
     {
-		[Test]
-		public void Execute_WhenGivenAnEmailId_SendApiRequestToMasterService()
-		{
-			Service.Start();
-			Service.EditSettings<ICreativeApisSettings>(x=> x.AddCreative = "/api/1");
+        [Test]
+        public void Execute_WhenGivenAnEmailId_SendApiRequestToMasterService()
+        {
+            Service.Start();
+            Service.EditSettings<ICreativeApisSettings>(x=> x.AddCreative = "/api/1");
 
-			const string creativeId = "email/1";
+            const string creativeId = "email/1";
 
-			UI.ExecuteCommand<SendCreativeCommand>(x =>
-			                                           	{
-			                                           		x.CreativeId = creativeId;
-			                                           	});
+            UI.ExecuteCommand<SendCreativeCommand>(x =>
+                                                        {
+                                                            x.CreativeId = creativeId;
+                                                        });
 
-			Service.Stop();
-		}
+            Service.Stop();
+        }
     }
 }
