@@ -39,8 +39,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
             DocumentStore = MockRepository.GenerateStub<IDocumentStore>();
 
-            Bootstrap(MasterKernel);
-
             MasterKernel = ContainerBootstrapper
                 .Bootstrap()
                 .Analyze(x => x.AssembiesContaining(new[]

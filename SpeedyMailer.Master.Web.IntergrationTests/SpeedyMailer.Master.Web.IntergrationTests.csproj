@@ -118,6 +118,9 @@
     <Reference Include="Raven.Storage.Managed">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\Raven.Storage.Managed.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.103.0.0\lib\net35\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Rhino.Mocks">
       <HintPath>..\packages\RhinoMocks.3.6.1\lib\net\Rhino.Mocks.dll</HintPath>
     </Reference>

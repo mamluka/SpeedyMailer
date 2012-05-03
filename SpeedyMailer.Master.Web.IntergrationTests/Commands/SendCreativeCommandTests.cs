@@ -3,9 +3,14 @@ using System.Linq;
 using NUnit.Framework;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
+using Raven.Client;
+using RestSharp;
 using Rhino.Mocks;
+using SpeedyMailer.Core;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Service;
+using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
@@ -16,7 +21,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 		[Test]
 		public void Execute_WhenGivenAnEmailId_SendApiRequestToMasterService()
 		{
-			ServiceHost.Main(new IntegrationNancyNinjectBootstrapper());
+			ServiceHost.Main(new IntegrationNancyNinjectBootstrapper(DocumentStore));
 
 			const string creativeId = "email/1";
 
@@ -40,20 +45,27 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 
 	public class IntegrationNancyNinjectBootstrapper : NinjectNancyBootstrapper
 	{
-		private readonly Action<IKernel> _kernelAction;
+		private readonly IDocumentStore _documentStore;
 
-		public IntegrationNancyNinjectBootstrapper(Action<IKernel> kernelAction)
+		public IntegrationNancyNinjectBootstrapper(IDocumentStore documentStore)
 		{
-			_kernelAction = kernelAction;
+			_documentStore = documentStore;
 		}
 
-		public IntegrationNancyNinjectBootstrapper()
-		{
-			
-		}
 		protected override void ConfigureApplicationContainer(IKernel existingContainer)
 		{
-			_kernelAction.Invoke(existingContainer);
+			ContainerBootstrapper
+				.Bootstrap(existingContainer)
+				.Analyze(x => x.AssembiesContaining(new[]
+                                                        {
+                                                            typeof (CoreAssemblyMarker),
+                                                            typeof(ServiceAssemblyMarker),
+															typeof(IRestClient)
+                                                        }))
+				.BindInterfaceToDefaultImplementation()
+				.Storage<IDocumentStore>(x => x.Constant(_documentStore))
+				.Settings(x => x.UseDocumentDatabase())
+				.Done();
 		}
 	}
 }
