@@ -1,71 +1,32 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
-using Nancy.Bootstrappers.Ninject;
-using Ninject;
-using Raven.Client;
-using RestSharp;
 using Rhino.Mocks;
-using SpeedyMailer.Core;
-using SpeedyMailer.Core.Commands;
-using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
+using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 {
-	[TestFixture]
-	public class SendCreativeCommandTests : IntegrationTestBase
-	{
+    [TestFixture]
+    public class SendCreativeCommandTests : IntegrationTestBase
+    {
 		[Test]
 		public void Execute_WhenGivenAnEmailId_SendApiRequestToMasterService()
 		{
-			ServiceHost.Main(new IntegrationNancyNinjectBootstrapper(DocumentStore));
+			Service.Start();
+			Service.EditSettings<ICreativeApisSettings>(x=> x.AddCreative = "/api/1");
 
 			const string creativeId = "email/1";
 
-			Master.ExecuteCommand<SendCreativeCommand>(x=>
+			UI.ExecuteCommand<SendCreativeCommand>(x =>
 			                                           	{
 			                                           		x.CreativeId = creativeId;
 			                                           	});
+
+			Service.Stop();
 		}
-	}
-
-	public class SendCreativeCommand:Command
-	{
-		public string CreativeId { get; set; }
-
-		public override void Execute()
-		{
-			
-		}
-		
-	}
-
-	public class IntegrationNancyNinjectBootstrapper : NinjectNancyBootstrapper
-	{
-		private readonly IDocumentStore _documentStore;
-
-		public IntegrationNancyNinjectBootstrapper(IDocumentStore documentStore)
-		{
-			_documentStore = documentStore;
-		}
-
-		protected override void ConfigureApplicationContainer(IKernel existingContainer)
-		{
-			ContainerBootstrapper
-				.Bootstrap(existingContainer)
-				.Analyze(x => x.AssembiesContaining(new[]
-                                                        {
-                                                            typeof (CoreAssemblyMarker),
-                                                            typeof(ServiceAssemblyMarker),
-															typeof(IRestClient)
-                                                        }))
-				.BindInterfaceToDefaultImplementation()
-				.Storage<IDocumentStore>(x => x.Constant(_documentStore))
-				.Settings(x => x.UseDocumentDatabase())
-				.Done();
-		}
-	}
+    }
 }

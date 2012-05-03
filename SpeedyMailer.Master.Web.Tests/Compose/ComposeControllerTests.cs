@@ -113,7 +113,7 @@ namespace SpeedyMailer.Master.Web.Tests.Compose
 
         private bool CompareTwoStringLists(ComposeModel model, Email m)
         {
-            return String.Join(",", m.ToLists) == String.Join(",", model.ToLists);
+            return String.Join(",", m.Lists) == String.Join(",", model.ToLists);
         }
     }
 }
