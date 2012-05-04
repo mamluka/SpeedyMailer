@@ -14,6 +14,7 @@ using RestSharp;
 using Rhino.Mocks;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Master.Web.UI;
@@ -48,8 +49,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                         {
                                                             typeof (CoreAssemblyMarker),
                                                             typeof (WebCoreAssemblyMarker),
-                                                            typeof(ServiceAssemblyMarker),
-															typeof(IRestClient)
+                                                            typeof (ServiceAssemblyMarker),
+                                                            typeof (IRestClient)
                                                         }))
                 .BindInterfaceToDefaultImplementation()
                 .Storage<IDocumentStore>(x => x.Constant(DocumentStore))
@@ -70,6 +71,20 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             UI = new Actions(MasterKernel);
 			Service = new ServiceActions(MasterKernel);
             Drone = new Actions(DroneKernel);
+
+            LoadBasicSettings();
+        }
+
+        private void LoadBasicSettings()
+        {
+            UI.EditSettings<IBaseApiSettings>(x=>
+                                                  {
+                                                      x.ServiceBaseUrl = "localhost:2589";
+                                                  });
+            UI.EditSettings<ICreativeApisSettings>(x=>
+                                                       {
+                                                           x.AddCreative = "/creative/add";
+                                                       });
         }
 
         [SetUp]

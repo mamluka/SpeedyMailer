@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rhino.Mocks;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Master.Web.Core.Commands;
@@ -17,7 +18,6 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
         public void Execute_WhenGivenAnEmailId_SendApiRequestToMasterService()
         {
             Service.Start();
-            Service.EditSettings<ICreativeApisSettings>(x=> x.AddCreative = "/api/1");
 
             const string creativeId = "email/1";
 

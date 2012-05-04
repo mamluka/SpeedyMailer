@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Castle.DynamicProxy;
 using SpeedyMailer.Core.Settings;
 
@@ -8,6 +9,7 @@ namespace SpeedyMailer.Core.Container
     {
         protected readonly object Settings;
         protected readonly Type SettingsInterface;
+        private Dictionary<string,object> _storedSettings = new Dictionary<string, object>();
 
 
         protected SettingsInterceptorBase(object settings, Type settingsInterface)
@@ -18,9 +20,19 @@ namespace SpeedyMailer.Core.Container
 
         public void Intercept(IInvocation invocation)
         {
+
+            var methodName = GetMethodName(invocation);
+
+            if (invocation.Arguments.Length > 0)
+            {
+                _storedSettings[methodName] = invocation.Arguments[0];
+                return;
+            }
+
             var defaultAttr =
                 Attribute.GetCustomAttribute(SettingsInterface.GetProperty(ToAutoPropertyName(invocation)),
                                              typeof (DefaultAttribute)) as DefaultAttribute;
+
             dynamic persistantSetting = PersistantSetting(invocation);
 
             if (Settings != null)
@@ -39,8 +51,18 @@ namespace SpeedyMailer.Core.Container
             }
             else
             {
-                invocation.ReturnValue = defaultAttr != null ? defaultAttr.Text : null;
+                invocation.ReturnValue = defaultAttr != null ? defaultAttr.Text : _storedSettings.ContainsKey(methodName) ? _storedSettings[methodName] : null;
             }
+        }
+
+        private static string GetMethodName(IInvocation invocation)
+        {
+            var methodName = invocation.Method.Name;
+            if (methodName.StartsWith("set_") || methodName.StartsWith("get_"))
+            {
+                methodName = methodName.Substring(3);
+            }
+            return methodName;
         }
 
         protected static string ToAutoPropertyName(IInvocation invocation)
