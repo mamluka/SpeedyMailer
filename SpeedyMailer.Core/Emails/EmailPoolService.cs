@@ -51,7 +51,7 @@ namespace SpeedyMailer.Core.Emails
                             break;
                         }
 
-                        EmailFragment emailFragment = mapper.Map<Email, EmailFragment>(email);
+                        var emailFragment = mapper.Map<Email, EmailFragment>(email);
 
                         emailFragment.UnsubscribeTemplate = systemTemplates.Unsubscribe ?? "";
 

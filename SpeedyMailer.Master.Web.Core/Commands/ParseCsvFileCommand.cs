@@ -16,13 +16,15 @@ namespace SpeedyMailer.Master.Web.Core.Commands
      
     {
         private readonly IDocumentStore _store;
+        private readonly AddContactsCommand _addContactsCommand;
 
         public Stream Source { get; set; }
         public string ListId { get; set; }
         public string Filename { get; set; }
 
-        public ParseCsvFileCommand(IDocumentStore store)
+        public ParseCsvFileCommand(IDocumentStore store,AddContactsCommand addContactsCommand)
         {
+            _addContactsCommand = addContactsCommand;
             _store = store;
         }
 
@@ -31,44 +33,20 @@ namespace SpeedyMailer.Master.Web.Core.Commands
             var csvReader = new CsvReader(new StreamReader(Source));
             var rows = csvReader.GetRecords<ContactFromCSVRow>().ToList();
 
-            var numberOfProccessedLines = 0;
-            
-            using (var session = _store.OpenSession())
-            {
-                foreach (var contactFromCSVRow in rows)
-                {
-                    
-                    try
-                    {
-                        var entity = new Contact
-                                     {
-                                         Email = contactFromCSVRow.Email, Name = contactFromCSVRow.Name, Country = contactFromCSVRow.Country, MemberOf = new List<string> {ListId}
-                                     };
-                        session.Store(entity);
+            var contacts = rows.Select(x => new Contact
+                                                {
+                                                    Country = x.Country,
+                                                    Email = x.Email,
+                                                    Name = x.Name,
+                                                });
 
-                        session.Store(new UniqueContactEnforcer(contactFromCSVRow.Email,entity.Id));
-                        Trace.WriteLine(contactFromCSVRow.Email);
-                        numberOfProccessedLines++;
-                    }
-                    catch (NonUniqueObjectException)
-                    {
-                        var uniqueEnforcer = session.Load<UniqueContactEnforcer>(contactFromCSVRow.Email);
-                        var entity = session.Load<Contact>(uniqueEnforcer.EnforcedId);
-                        if (entity.MemberOf.Contains(ListId)==false)
-                        {
-                            entity.MemberOf.Add(ListId);
-                            session.Store(entity);
-                            numberOfProccessedLines++;
-                        }
-                    }
-                    
-                }
-                session.SaveChanges();
-            }
+            _addContactsCommand.Contacts = contacts;
+            _addContactsCommand.ListId = ListId;
+            var counter = _addContactsCommand.Execute();
 
             return new UploadListCommandResult
                        {
-                           NumberOfContacts = numberOfProccessedLines,
+                           NumberOfContacts = counter,
                            Filename = Filename
                            
                        };

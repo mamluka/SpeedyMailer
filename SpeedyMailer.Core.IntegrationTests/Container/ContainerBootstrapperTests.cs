@@ -95,7 +95,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
             var entity = new
             {
                 Id = "settings/Testing",
-                JustSomeProperty = "from-store"
+                JustSomeTextProperty = "from-store",
+                JustSomeIntegerProperty = 10
+
             };
 
             Store(entity);
@@ -110,7 +112,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeProperty.Should().Be("from-store");
+            result.JustSomeTextProperty.Should().Be("from-store");
+            result.JustSomeIntegerProperty.Should().Be(10);
 
         }
 
@@ -127,7 +130,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeProperty.Should().Be("default");
+            result.JustSomeTextProperty.Should().Be("default");
+            result.JustSomeIntegerProperty.Should().Be(10);
         }
 
         [Test]
@@ -149,15 +153,16 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeProperty.Should().Be("default");
+            result.JustSomeTextProperty.Should().Be("default");
         }
 
         [Test]
-        public void Bootstrap_WhenBindingSettingsToJsonFiles_ShouldResolveSettingsUsingStore()
+        public void Bootstrap_WhenBindingSettingsToJsonFiles_ShouldResolveSettingsUsingFile()
         {
             var entity = new
             {
-                JustSomeProperty = "from-json"
+                JustSomeTextProperty = "from-json",
+                JustSomeIntegerProperty = 10
             };
 
             CreateJsonSettingsFile(entity);
@@ -172,7 +177,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeProperty.Should().Be("from-json");
+            result.JustSomeTextProperty.Should().Be("from-json");
+            result.JustSomeIntegerProperty.Should().Be(10);
 
         }
 
@@ -191,7 +197,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeProperty.Should().Be("default");
+            result.JustSomeTextProperty.Should().Be("default");
+            result.JustSomeIntegerProperty.Should().Be(10);
         }
 
         [Test]
@@ -213,7 +220,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
             var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeProperty.Should().Be("default");
+            result.JustSomeTextProperty.Should().Be("default");
         }
 
         private void CreateJsonSettingsFile(dynamic setting)
@@ -235,7 +242,12 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
     public interface ITestingSettings
     {
         [Default("default")]
-        string JustSomeProperty { get; set; }
+        string JustSomeTextProperty { get; set; }
+        [Default(10)]
+        int JustSomeIntegerProperty { get; set; }
+
+        
+
     }
 
     public class TestAssemblyMarkerType

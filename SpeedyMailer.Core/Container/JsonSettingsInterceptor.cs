@@ -1,6 +1,7 @@
 using System;
 using Castle.DynamicProxy;
 using Newtonsoft.Json.Linq;
+using Raven.Client.Util;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -10,10 +11,19 @@ namespace SpeedyMailer.Core.Container
         {
         }
 
-        protected override dynamic PersistantSetting(IInvocation invocation)
+        protected override dynamic PersistantSetting(IInvocation invocation, Type returnType)
         {
+            if (Settings == null) return null;
+
             var name = ToAutoPropertyName(invocation);
-            return Settings != null ? (Settings as JObject)[name] != null ? (Settings as JObject)[name].ToObject<string>(): null : null;
+            var jToken = (Settings as JObject)[name];
+
+            var method = jToken.GetType().GetMethod("ToObject",new Type[]{});
+            var generic = method.MakeGenericMethod(returnType);
+
+            var persistantSetting = generic.Invoke(jToken, null);
+
+            return jToken != null ? persistantSetting : null;
         }
     }
 }

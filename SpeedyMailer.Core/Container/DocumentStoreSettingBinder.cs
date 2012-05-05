@@ -81,7 +81,7 @@ namespace SpeedyMailer.Core.Container
         {
         }
 
-        protected override dynamic PersistantSetting(IInvocation invocation)
+        protected override dynamic PersistantSetting(IInvocation invocation, Type returnType)
         {
             string name = ToAutoPropertyName(invocation);
             return Settings != null ? (Settings as DynamicJsonObject).GetValue(name) : null;

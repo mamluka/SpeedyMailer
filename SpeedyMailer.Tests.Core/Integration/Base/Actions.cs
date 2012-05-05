@@ -12,10 +12,18 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         public Actions(IKernel kernel):base(kernel)
         {}
 
-    	public override void EditSettings<T>(Action<T> expression)
-    	{
-    		
-    	}
+        public override void EditSettings<T>(Action<T> action)
+        {
+            var documentStore = Kernel.Get<IDocumentStore>();
+            using (var session = documentStore.OpenSession())
+            {
+                var settings = Kernel.Get<T>();
+                action.Invoke(settings);
+                session.Store(settings);
+
+                session.SaveChanges();
+            }
+        }
     }
 
 	public class ServiceActions : ActionsBase

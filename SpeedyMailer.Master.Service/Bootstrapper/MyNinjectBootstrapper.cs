@@ -23,7 +23,7 @@ namespace SpeedyMailer.Master.Service.Bootstrapper
             existingContainer.Bind<IMailDroneService>().To<MailDroneService>();
             existingContainer.Bind<IPoolMailOporations>().To<PoolMailOporations>();
             existingContainer.Bind<IEmailPoolService>().To<EmailPoolService>();
-            existingContainer.Bind<IDocumentStore>().ToProvider<RavenDocumentStoreProvider>();
+            existingContainer.Bind<IDocumentStore>().ToProvider<RavenDocumentStoreProvider>().InThreadScope();
 
             existingContainer.Bind<IDroneMailOporations>().To<DroneMailOporations>();
 

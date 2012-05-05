@@ -90,7 +90,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\CreativeModule.cs" />
+    <Compile Include="Api\ModuleBase.cs" />
     <Compile Include="Bootstrapper\MyNinjectBootstrapper.cs" />
+    <Compile Include="Commands\CreateCreativeFragmentsCommand.cs" />
     <Compile Include="Container\MasterNinjectBootstrapper.cs" />
     <Compile Include="Emails\IPoolMailOporations.cs" />
     <Compile Include="Emails\PoolMailOporations.cs" />

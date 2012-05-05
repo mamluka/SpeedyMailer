@@ -158,6 +158,7 @@
     <Compile Include="Integration\Base\IntegrationTestBase.cs" />
     <Compile Include="Integration\Datebase\InMemoryRavenDocumentStoreProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestingExtentions.cs" />
     <Compile Include="Unit\Base\AutoMapperAndFixtureBase.cs" />
     <Compile Include="Unit\Base\IAutoMapperMaps.cs" />
     <Compile Include="Unit\Base\IMockedComponentBuilder.cs" />

@@ -87,6 +87,7 @@
     <Compile Include="Builders\UploadListResultsViewModelBuilder.cs" />
     <Compile Include="Builders\IViewModelBuilder.cs" />
     <Compile Include="Builders\UploadListViewModelBuilder.cs" />
+    <Compile Include="Commands\AddContactsCommand.cs" />
     <Compile Include="Commands\AddCreativeCommand.cs" />
     <Compile Include="Commands\CreateListCommand.cs" />
     <Compile Include="Commands\ParseCsvFileCommand.cs" />

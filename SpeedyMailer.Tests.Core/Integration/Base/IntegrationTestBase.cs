@@ -71,15 +71,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             UI = new Actions(MasterKernel);
 			Service = new ServiceActions(MasterKernel);
             Drone = new Actions(DroneKernel);
-
-            LoadBasicSettings();
         }
 
         private void LoadBasicSettings()
         {
             UI.EditSettings<IBaseApiSettings>(x=>
                                                   {
-                                                      x.ServiceBaseUrl = "localhost:2589";
+                                                      x.ServiceBaseUrl = "http://localhost:2589";
                                                   });
             UI.EditSettings<ICreativeApisSettings>(x=>
                                                        {
@@ -97,6 +95,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
             MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
             DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
+
+            LoadBasicSettings();
         }
 
         public void Store(object item)

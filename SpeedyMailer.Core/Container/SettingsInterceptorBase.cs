@@ -33,7 +33,8 @@ namespace SpeedyMailer.Core.Container
                 Attribute.GetCustomAttribute(SettingsInterface.GetProperty(ToAutoPropertyName(invocation)),
                                              typeof (DefaultAttribute)) as DefaultAttribute;
 
-            dynamic persistantSetting = PersistantSetting(invocation);
+
+            dynamic persistantSetting = PersistantSetting(invocation,invocation.Method.ReturnType);
 
             if (Settings != null)
             {
@@ -45,13 +46,13 @@ namespace SpeedyMailer.Core.Container
                 {
                     if (defaultAttr != null)
                     {
-                        invocation.ReturnValue = defaultAttr.Text;
+                        invocation.ReturnValue = defaultAttr.Value;
                     }
                 }
             }
             else
             {
-                invocation.ReturnValue = defaultAttr != null ? defaultAttr.Text : _storedSettings.ContainsKey(methodName) ? _storedSettings[methodName] : null;
+                invocation.ReturnValue = defaultAttr != null ? defaultAttr.Value : _storedSettings.ContainsKey(methodName) ? _storedSettings[methodName] : null;
             }
         }
 
@@ -60,7 +61,7 @@ namespace SpeedyMailer.Core.Container
             var methodName = invocation.Method.Name;
             if (methodName.StartsWith("set_") || methodName.StartsWith("get_"))
             {
-                methodName = methodName.Substring(3);
+                methodName = methodName.Substring(4);
             }
             return methodName;
         }
@@ -70,6 +71,6 @@ namespace SpeedyMailer.Core.Container
             return invocation.Method.Name.Substring(4);
         }
 
-        protected abstract dynamic PersistantSetting(IInvocation invocation);
+        protected abstract dynamic PersistantSetting(IInvocation invocation, Type returnType);
     }
 }
