@@ -16,7 +16,6 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 		private readonly ICreativeApisSettings _creativeApisSettings;
 	    private readonly IBaseApiSettings _baseApiSettings;
 	    public string CreativeId { get; set; }
-	    public string UnsubscribedTemplateId { get; set; }
 
 	    public SendCreativeCommand(IDocumentStore documentStore,IRestClient restClient,IBaseApiSettings baseApiSettings,ICreativeApisSettings creativeApisSettings)
 		{
@@ -26,22 +25,18 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 			_documentStore = documentStore;
 		}
 
-		public override void Execute()
-		{
-			using (var session = _documentStore.OpenSession())
-			{
-				var restRequest = new RestRequest(_creativeApisSettings.AddCreative);
-			    var request = new CreativeApi.Add.Request
-			                      {
-                                      CreativeId = CreativeId,
-                                      UnsubscribedTemplateId = UnsubscribedTemplateId
-			                      };
+        public override void Execute()
+        {
+            var restRequest = new RestRequest(_creativeApisSettings.AddCreative);
+            var request = new CreativeApi.Add.Request
+                              {
+                                  CreativeId = CreativeId,
+                              };
 
-				restRequest.AddBody(creative);
-			    _restClient.BaseUrl = _baseApiSettings.ServiceBaseUrl;
-				_restClient.Execute<FaultTolerantResponse>(restRequest);
-			}
-		}
+            restRequest.AddBody(request);
+            _restClient.BaseUrl = _baseApiSettings.ServiceBaseUrl;
+            _restClient.Execute<FaultTolerantResponse>(restRequest);
+        }
 	}
 
     public class FaultTolerantResponse

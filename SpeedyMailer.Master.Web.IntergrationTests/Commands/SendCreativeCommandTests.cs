@@ -41,7 +41,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
                                                                                    x.Subject = "Subject";
                                                                                });
 
-            var templateId = UI.ExecuteCommand<CreateTemplateCommand>(x =>
+            var templateId = UI.ExecuteCommand<CreateTemplateCommand,string>(x =>
                                                                           {
                                                                               x.Body = "body";
                                                                           });
@@ -49,7 +49,6 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
             UI.ExecuteCommand<SendCreativeCommand>(x =>
                                                         {
                                                             x.CreativeId = creativeId;
-                                                            x.UnsubscribedTemplateId = "tempId";
                                                         });
             Service.Stop();
 
@@ -64,9 +63,12 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 
     public class CreateTemplateCommand:Command<string>
     {
+        public string Body { get; set; }
+
         public override string Execute()
         {
             return null;
         }
+        
     }
 }

@@ -19,7 +19,6 @@ namespace SpeedyMailer.Master.Service.Api
                                   ExecuteCommand(createCreativeFragmentsCommand, x=>
                                                                                      {
                                                                                          x.CreativeId = model.CreativeId;
-                                                                                         x.UnsubsribeTemplateId = model.UnsubscribedTemplateId;
                                                                                          x.RecipientsPerFragment = creativeFragmentSettings.RecipientsPerFragment;
                                                                                      });
                                    return "sdfsdf";

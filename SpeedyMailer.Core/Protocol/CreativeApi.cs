@@ -9,8 +9,6 @@ namespace SpeedyMailer.Core.Protocol
             public class Request
             {
                 public string CreativeId { get; set; }
-
-                public string UnsubscribedTemplateId { get; set; }
             }
 
             public class Response

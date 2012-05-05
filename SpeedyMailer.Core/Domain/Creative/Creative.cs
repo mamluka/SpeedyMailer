@@ -8,5 +8,6 @@ namespace SpeedyMailer.Core.Domain.Creative
         public string Body { get; set; }
         public string Subject { get; set; }
         public List<string> Lists { get; set; }
+        public string UnsubscribeTemplateId { get; set; }
     }
 }
