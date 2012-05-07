@@ -25,7 +25,8 @@ namespace SpeedyMailer.Master.Web.Core.Commands
                                    {
                                        Body = Body,
                                        Lists = Lists,
-                                       Subject = Subject
+                                       Subject = Subject,
+                                       UnsubscribeTemplateId = UnsubscribeTemplateId
                                    };
                 session.Store(creative);
                 session.SaveChanges();
@@ -37,5 +38,6 @@ namespace SpeedyMailer.Master.Web.Core.Commands
         public string Body { get; set; }
         public string Subject { get; set; }
         public List<string> Lists { get; set; }
+        public string UnsubscribeTemplateId { get; set; }
     }
 }

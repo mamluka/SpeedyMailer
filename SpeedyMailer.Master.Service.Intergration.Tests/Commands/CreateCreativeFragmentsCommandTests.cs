@@ -22,10 +22,18 @@ namespace SpeedyMailer.Master.Service.Intergration.Tests.Commands
         public void Execute_WhenACreativeIsGiven_ShouldStoreTheFragmentsWithRecipientsDevidedBetweenTheFragments()
         {
             var listId = UI.ExecuteCommand<CreateListCommand,string>(x => x.Name = "MyList");
+            
+            const string templateBody = "Body";
+            var templateId = UI.ExecuteCommand<CreateTemplateCommand, string>(x =>
+            {
+                x.Body = templateBody;
+            });
+
             var creativeId = UI.ExecuteCommand<AddCreativeCommand,string>(x=>
                                                       {
                                                           x.Body = "Body";
                                                           x.Subject = "Subject";
+                                                          x.UnsubscribeTemplateId = templateId;
                                                           x.Lists = new List<string> {listId};
                                                       });
 
@@ -36,6 +44,9 @@ namespace SpeedyMailer.Master.Service.Intergration.Tests.Commands
             result.Should().HaveCount(2);
             result.First().Recipients.Should().HaveCount(1000);
             result.Second().Recipients.Should().HaveCount(1000);
+
+            result.First().UnsubscribeTemplate.Should().Be(templateBody);
+            result.Second().UnsubscribeTemplate.Should().Be(templateBody);
         }
     }
 }

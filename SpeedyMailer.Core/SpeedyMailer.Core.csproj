@@ -134,6 +134,7 @@
     <Compile Include="Domain\Contacts\ContactFromCSVRow.cs" />
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
+    <Compile Include="Domain\Creative\CreativeTemplate.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />

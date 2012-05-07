@@ -13,8 +13,8 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
         [Test]
         public void Execute_WhenAllCreateParametersAreValid_ShouldAddCreativeToStore()
         {
-            var body = "Body";
-            var subject = "Subject";
+            const string body = "Body";
+            const string subject = "Subject";
 
             var lists = new List<string>
                             {
@@ -26,10 +26,6 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
                                                                                    {
                                                                                        x.Subject = subject;
                                                                                        x.Body = body;
-
-                                                                                       x.Subject = subject;
-                                                                                       x.Body = body;
-
                                                                                        x.Lists = lists;
                                                                                    });
 

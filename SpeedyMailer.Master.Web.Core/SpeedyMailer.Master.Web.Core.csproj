@@ -90,6 +90,7 @@
     <Compile Include="Commands\AddContactsCommand.cs" />
     <Compile Include="Commands\AddCreativeCommand.cs" />
     <Compile Include="Commands\CreateListCommand.cs" />
+    <Compile Include="Commands\CreateTemplateCommand.cs" />
     <Compile Include="Commands\ParseCsvFileCommand.cs" />
     <Compile Include="Commands\SendCreativeCommand.cs" />
     <Compile Include="ComponentViewModel\ListDescriptorViewModel.cs" />

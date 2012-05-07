@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using NUnit.Framework;
 using Rhino.Mocks;
-using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Settings;
@@ -34,17 +33,20 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
                                                                x.Contacts = Fixture.CreateMany<Contact>(2000);
                                                            });
 
+            const string templateBody = "Body";
+            var templateId = UI.ExecuteCommand<CreateTemplateCommand,string>(x =>
+                                                                                 {
+                                                                                     x.Body = templateBody;
+                                                                                 });
+
             var creativeId = UI.ExecuteCommand<AddCreativeCommand, string>(x =>
                                                                                {
-                                                                                   x.Body = "Body";
+                                                                                   x.Body = "body";
                                                                                    x.Lists =  new List<string> { listId};
                                                                                    x.Subject = "Subject";
+                                                                                   x.UnsubscribeTemplateId = templateId;
                                                                                });
 
-            var templateId = UI.ExecuteCommand<CreateTemplateCommand,string>(x =>
-                                                                          {
-                                                                              x.Body = "body";
-                                                                          });
             Service.Start();
             UI.ExecuteCommand<SendCreativeCommand>(x =>
                                                         {
@@ -58,17 +60,8 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
             result.First().Recipients.Should().HaveCount(1000);
             result.Second().Recipients.Should().HaveCount(1000);
 
+            result.First().UnsubscribeTemplate.Should().Be(templateBody);
+            result.Second().UnsubscribeTemplate.Should().Be(templateBody);
         }
-    }
-
-    public class CreateTemplateCommand:Command<string>
-    {
-        public string Body { get; set; }
-
-        public override string Execute()
-        {
-            return null;
-        }
-        
     }
 }

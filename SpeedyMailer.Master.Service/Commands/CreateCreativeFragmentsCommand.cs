@@ -12,7 +12,6 @@ namespace SpeedyMailer.Master.Service.Commands
 
         public string CreativeId { get; set; }
         public int RecipientsPerFragment { get; set; }
-        public string UnsubsribeTemplateId { get; set; }
 
         public CreateCreativeFragmentsCommand(IDocumentStore documentStore)
         {
@@ -24,7 +23,7 @@ namespace SpeedyMailer.Master.Service.Commands
             using (var session = _documentStore.OpenSession())
             {
                 var creative = session.Load<Creative>(CreativeId);
-                var unsubscribeTempalte = session.Load<CreativeTemplate>(UnsubsribeTemplateId);
+                var unsubscribeTempalte = session.Load<CreativeTemplate>(creative.UnsubscribeTemplateId);
 
                 var recipients = creative.Lists.SelectMany(listId => session.Query<Contact>().Where(contact => contact.MemberOf.Any(x => x == listId))).ToList();
                 var fragmentsChunks = recipients.Clump(RecipientsPerFragment);
@@ -41,11 +40,5 @@ namespace SpeedyMailer.Master.Service.Commands
 
             }
         }
-    }
-
-    public class CreativeTemplate
-    {
-        public long Id { get; set; }
-        public string Body { get; set; }
     }
 }
