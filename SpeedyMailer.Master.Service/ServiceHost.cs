@@ -10,6 +10,7 @@ namespace SpeedyMailer.Master.Service
     	public static void Main(string[] args)
     	{
     		var service = new Service(new MyNinjectBootstrapper());
+    		service.Start();
 			Console.WriteLine("To stop press any key");
     		Console.ReadKey();
 			service.Stop();
@@ -23,10 +24,9 @@ namespace SpeedyMailer.Master.Service
 		public Service(NinjectNancyBootstrapper ninjectNancyBootstrapper)
 		{
 			_nancyHost = new NancyHost(ninjectNancyBootstrapper, new Uri("http://localhost:2589/"));
-			Start();
 		}
 
-		private void Start()
+		public void Start()
     	{
     		_nancyHost.Start();
     		Console.WriteLine("Nancy now listening - navigating to http://localhost:2589. Press enter to stop");

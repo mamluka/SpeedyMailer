@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Rhino.Mocks;
 using FluentAssertions;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Web.Core.Commands;
@@ -21,13 +22,11 @@ namespace SpeedyMailer.Master.Service.Intergration.Tests.Commands
         [Test]
         public void Execute_WhenACreativeIsGiven_ShouldStoreTheFragmentsWithRecipientsDevidedBetweenTheFragments()
         {
-            var listId = UI.ExecuteCommand<CreateListCommand,string>(x => x.Name = "MyList");
+
+            var listId = UI.CreateAListWithRandomContacts("MyList", 1500);
             
             const string templateBody = "Body";
-            var templateId = UI.ExecuteCommand<CreateTemplateCommand, string>(x =>
-            {
-                x.Body = templateBody;
-            });
+            var templateId = CreateTemplate(templateBody);
 
             var creativeId = UI.ExecuteCommand<AddCreativeCommand,string>(x=>
                                                       {
@@ -37,16 +36,26 @@ namespace SpeedyMailer.Master.Service.Intergration.Tests.Commands
                                                           x.Lists = new List<string> {listId};
                                                       });
 
-            Service.ExecuteCommand<CreateCreativeFragmentsCommand>(x => x.CreativeId = creativeId);
+            Service.ExecuteCommand<CreateCreativeFragmentsCommand>(x =>
+                                                                       {
+                                                                           x.CreativeId = creativeId;
+                                                                           x.RecipientsPerFragment = 1000;
+                                                                       });
 
             var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
 
             result.Should().HaveCount(2);
             result.First().Recipients.Should().HaveCount(1000);
-            result.Second().Recipients.Should().HaveCount(1000);
+            result.Second().Recipients.Should().HaveCount(500);
 
             result.First().UnsubscribeTemplate.Should().Be(templateBody);
             result.Second().UnsubscribeTemplate.Should().Be(templateBody);
+        }
+
+        private string CreateTemplate(string templateBody)
+        {
+            var templateId = UI.ExecuteCommand<CreateTemplateCommand, string>(x => { x.Body = templateBody; });
+            return templateId;
         }
     }
 }

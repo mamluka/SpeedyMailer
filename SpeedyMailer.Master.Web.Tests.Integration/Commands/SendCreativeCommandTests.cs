@@ -22,16 +22,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
         [Test]
         public void Execute_WhenGivenACreativeId_CreateCreativeFragmentsUsingServiceApi()
         {
-            var listId = UI.ExecuteCommand<CreateListCommand, string>(x =>
-                                                             {
-                                                                 x.Name = "MyList";
-                                                             });
-
-            UI.ExecuteCommand<AddContactsCommand,long>(x =>
-                                                           {
-                                                               x.ListId = listId;
-                                                               x.Contacts = Fixture.CreateMany<Contact>(2000);
-                                                           });
+            var listId = UI.CreateAListWithRandomContacts("MyList", 1500);
 
             const string templateBody = "Body";
             var templateId = UI.ExecuteCommand<CreateTemplateCommand,string>(x =>
@@ -47,6 +38,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
                                                                                    x.UnsubscribeTemplateId = templateId;
                                                                                });
 
+			Service.Initialize();
             Service.Start();
             UI.ExecuteCommand<SendCreativeCommand>(x =>
                                                         {
@@ -58,7 +50,7 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 
             result.Should().HaveCount(2);
             result.First().Recipients.Should().HaveCount(1000);
-            result.Second().Recipients.Should().HaveCount(1000);
+            result.Second().Recipients.Should().HaveCount(500);
 
             result.First().UnsubscribeTemplate.Should().Be(templateBody);
             result.Second().UnsubscribeTemplate.Should().Be(templateBody);

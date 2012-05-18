@@ -8,8 +8,8 @@
     <ProjectGuid>{C04698CD-7517-496C-A5E1-66A3AC7E34C4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeedyMailer.Core.Tests</RootNamespace>
-    <AssemblyName>SpeedyMailer.Core.Tests</AssemblyName>
+    <RootNamespace>SpeedyMailer.Core.Tests.Unit</RootNamespace>
+    <AssemblyName>SpeedyMailer.Core.Tests.Unit</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

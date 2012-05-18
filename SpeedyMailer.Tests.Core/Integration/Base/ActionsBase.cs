@@ -1,6 +1,7 @@
 using System;
 using System.Linq.Expressions;
 using Ninject;
+using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Commands;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
@@ -9,12 +10,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
     {
     	public readonly IKernel Kernel;
 
-    	protected ActionsBase(IKernel kernel)
+        public Fixture Fixture { get; private set; }
+
+        protected ActionsBase(IKernel kernel)
         {
             Kernel = kernel;
+            Fixture = new Fixture();
         }
 
-		public void ExecuteCommand<T>() where T : Command
+        public void ExecuteCommand<T>() where T : Command
 		{
 			var command = Kernel.Get<T>();
 			command.Execute();

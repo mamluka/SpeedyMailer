@@ -8,8 +8,8 @@
     <ProjectGuid>{C38CDE41-1504-4944-AD26-7DF686C70878}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeedyMailer.Drone.Tests</RootNamespace>
-    <AssemblyName>SpeedyMailer.Drone.Tests</AssemblyName>
+    <RootNamespace>SpeedyMailer.Drone.Tests.Unit</RootNamespace>
+    <AssemblyName>SpeedyMailer.Drone.Tests.Unit</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

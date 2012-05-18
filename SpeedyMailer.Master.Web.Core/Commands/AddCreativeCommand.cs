@@ -24,7 +24,7 @@ namespace SpeedyMailer.Master.Web.Core.Commands
                 var creative = new Creative
                                    {
                                        Body = Body,
-                                       Lists = Lists,
+                                       Lists = Lists.ToList(),
                                        Subject = Subject,
                                        UnsubscribeTemplateId = UnsubscribeTemplateId
                                    };
@@ -37,7 +37,7 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 
         public string Body { get; set; }
         public string Subject { get; set; }
-        public List<string> Lists { get; set; }
+        public IList<string> Lists { get; set; }
         public string UnsubscribeTemplateId { get; set; }
     }
 }

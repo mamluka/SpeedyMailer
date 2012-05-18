@@ -1,30 +1,63 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using Ninject;
+using Ploeh.AutoFixture;
 using Raven.Client;
 using Raven.Client.Document;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Master.Service;
+using SpeedyMailer.Master.Web.Core.Commands;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
-    public class Actions : ActionsBase
-    {
-        public Actions(IKernel kernel):base(kernel)
-        {}
+	public class Actions : ActionsBase
+	{
+		public Actions(IKernel kernel)
+			: base(kernel)
+		{ }
 
-        public override void EditSettings<T>(Action<T> action)
-        {
-            var documentStore = Kernel.Get<IDocumentStore>();
-            using (var session = documentStore.OpenSession())
-            {
-                var settings = Kernel.Get<T>();
-                action.Invoke(settings);
-                session.Store(settings);
+		public override void EditSettings<T>(Action<T> action)
+		{
+			var documentStore = Kernel.Get<IDocumentStore>();
+			using (var session = documentStore.OpenSession())
+			{
+				var settings = Kernel.Get<T>();
+				action.Invoke(settings);
+				session.Store(settings);
 
-                session.SaveChanges();
-            }
-        }
-    }
+				session.SaveChanges();
+			}
+		}
+
+		public string CreateAListWithRandomContacts(string listName, int contactsCount)
+		{
+			var listId = ExecuteCommand<CreateListCommand, string>(x => x.Name = "MyList");
+			ExecuteCommand<AddContactsCommand, long>(command =>
+			{
+				command.Contacts = Fixture
+					.Build<Contact>()
+					.Without(x => x.Id)
+					.CreateMany(1500);
+
+				command.ListId = listId;
+
+			});
+			return listId;
+		}
+
+		public string CreateSimpleCreative(IEnumerable<string> lists, string unsubscribeTemplateId)
+		{
+			return ExecuteCommand<AddCreativeCommand, string>(x =>
+			{
+				x.Body = "body";
+				x.Lists = lists.ToList();
+				x.Subject = "Subject";
+				x.UnsubscribeTemplateId = unsubscribeTemplateId;
+			});
+		}
+	}
 
 	public class ServiceActions : ActionsBase
 	{
@@ -32,13 +65,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public ServiceActions(IKernel kernel)
 			: base(kernel)
-		{}
+		{ }
 
-		public void Start()
+		public void Initialize()
 		{
 			var documentStore = Kernel.Get<IDocumentStore>();
 			_service = new Service(new IntegrationNancyNinjectBootstrapper(documentStore));
-			_service.Stop();
+		}
+		public void Start()
+		{
+
+			_service.Start();
 		}
 
 		public void Stop()
@@ -59,6 +96,4 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 	}
-
-
 }

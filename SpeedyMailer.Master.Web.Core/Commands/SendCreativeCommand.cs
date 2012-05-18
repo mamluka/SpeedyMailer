@@ -11,7 +11,6 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 {
 	public class SendCreativeCommand:Command
 	{
-		private readonly IDocumentStore _documentStore;
 		private readonly IRestClient _restClient;
 		private readonly ICreativeApisSettings _creativeApisSettings;
 	    private readonly IBaseApiSettings _baseApiSettings;
@@ -22,7 +21,6 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 		    _baseApiSettings = baseApiSettings;
 		    _creativeApisSettings = creativeApisSettings;
 			_restClient = restClient;
-			_documentStore = documentStore;
 		}
 
         public override void Execute()
@@ -31,9 +29,12 @@ namespace SpeedyMailer.Master.Web.Core.Commands
             var request = new CreativeApi.Add.Request
                               {
                                   CreativeId = CreativeId,
-                              };
+							  };
 
             restRequest.AddBody(request);
+			restRequest.RequestFormat = DataFormat.Json;
+			restRequest.Method = Method.POST;
+
             _restClient.BaseUrl = _baseApiSettings.ServiceBaseUrl;
             _restClient.Execute<FaultTolerantResponse>(restRequest);
         }
