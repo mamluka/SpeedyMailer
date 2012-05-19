@@ -73,16 +73,10 @@
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB-Client.1.0.888\lib\net40\Raven.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Client.Debug, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB-Client.1.0.888\lib\net40\Raven.Client.Debug.dll</HintPath>
+      <HintPath>..\packages\RavenDB.Client.1.0.888\lib\net40\Raven.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB-Client.1.0.888\lib\net40\Raven.Client.Lightweight.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Client.MvcIntegration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB-Client.1.0.888\lib\net40\Raven.Client.MvcIntegration.dll</HintPath>
+      <HintPath>..\packages\RavenDB.Client.1.0.888\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.103.0.0\lib\net35\RestSharp.dll</HintPath>
@@ -159,6 +153,12 @@
     <Compile Include="Settings\ICreativeApisSettings.cs" />
     <Compile Include="Settings\ICreativeFragmentSettings.cs" />
     <Compile Include="Settings\IServiceSettings.cs" />
+    <Compile Include="Tasks\ComputationResult.cs" />
+    <Compile Include="Tasks\TaskExecutor.cs" />
+    <Compile Include="Tasks\PersistentTask.cs" />
+    <Compile Include="Tasks\PersistentTaskExecutor.cs" />
+    <Compile Include="Tasks\TaskManager.cs" />
+    <Compile Include="Tasks\Testing\AdditionTask.cs" />
     <Compile Include="Utilities\Domain\Contacts\ContactCSVParserResults.cs" />
     <Compile Include="Utilities\Domain\Contacts\ContactsCSVParser.cs" />
     <Compile Include="Utilities\Domain\Contacts\IContactsCSVParser.cs" />
@@ -180,7 +180,6 @@
   <ItemGroup>
     <Folder Include="Domain\Drones\" />
     <Folder Include="Exceptions\" />
-    <Folder Include="Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
