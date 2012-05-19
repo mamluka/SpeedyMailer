@@ -17,9 +17,11 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		private readonly IDocumentStore _documentStore;
 		private readonly IKernel _kernel;
+		private ITaskExecutionSettings _taskExecutionSettings;
 
-		public TaskExecutor(IDocumentStore documentStore, IKernel kernel)
+		public TaskExecutor(IKernel kernel, IDocumentStore documentStore, ITaskExecutionSettings taskExecutionSettings)
 		{
+			_taskExecutionSettings = taskExecutionSettings;
 			_kernel = kernel;
 			_documentStore = documentStore;
 		}
@@ -29,7 +31,7 @@ namespace SpeedyMailer.Core.Tasks
 			using (var session = _documentStore.OpenSession())
 			{
 				var tasks = session.Query<PersistentTask>()
-					.Where(task => !task.Executed)
+					.Where(task => task.Status == PersistentTaskStatus.Pending)
 					.Customize(x=> x.WaitForNonStaleResults())
 					.OrderBy(x => x.CreateDate).Take(3)
 					.ToList();
@@ -38,7 +40,7 @@ namespace SpeedyMailer.Core.Tasks
 
 				foreach (var task in tasks)
 				{
-					MarkAsExecuted(session, task);
+					MarkAs(session, task, PersistentTaskStatus.Executing);
 
 					try
 					{
@@ -47,12 +49,19 @@ namespace SpeedyMailer.Core.Tasks
 
 						var executeMethod = executor.GetType().GetMethod("Execute");
 						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] {task},null);
+
+						MarkAs(session, task, PersistentTaskStatus.Executed);
 					}
 					catch (Exception)
 					{
-						task.Executed = false;
-						session.Store(task);
-						session.SaveChanges();
+						if (task.RetryCount >= _taskExecutionSettings.NumberOfRetries)
+						{
+							MarkAs(session, task, PersistentTaskStatus.Failed);
+						}
+						else
+						{
+							IncreaseRetryCount(session, task);
+						}
 					}
 				}
 
@@ -60,11 +69,17 @@ namespace SpeedyMailer.Core.Tasks
 			}
 		}
 
-		private static void MarkAsExecuted(IDocumentSession session, PersistentTask task)
+		private void MarkAs(IDocumentSession session, PersistentTask task, PersistentTaskStatus persistentTaskStatus)
 		{
-			task.Executed = true;
+			task.Status = persistentTaskStatus;
 			session.Store(task);
 			session.SaveChanges();
+		}
+
+		private void IncreaseRetryCount(IDocumentSession session, PersistentTask task)
+		{
+			task.RetryCount++;
+			MarkAs(session, task, PersistentTaskStatus.Pending);
 		}
 	}
 }

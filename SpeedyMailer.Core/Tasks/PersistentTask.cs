@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace SpeedyMailer.Core.Tasks
 {
@@ -6,6 +7,15 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		public string Id { get; set; }
 		public DateTime CreateDate { get; set; }
-		public bool Executed { get; set; }
+		public PersistentTaskStatus Status { get; set; }
+		public int RetryCount { get; set; }
+	}
+
+	public enum PersistentTaskStatus
+	{
+		Pending=0,
+		Executing=1,
+		Executed=2,
+		Failed=3
 	}
 }

@@ -22,7 +22,8 @@ namespace SpeedyMailer.Core.Tasks
 			using (var session = _documentStore.OpenSession())
 			{
 				persistentTask.CreateDate = DateTime.UtcNow;
-
+				persistentTask.Status = PersistentTaskStatus.Pending;
+				
 				session.Store(persistentTask);
 				session.SaveChanges();
 

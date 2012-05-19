@@ -1,7 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Tasks;
@@ -97,8 +97,62 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		[Test]
 		public void Start_WhenTaskThrowsAnException_ShouldRetryUntilConsideredFailed()
 		{
+			var taskId = CreateFailingTask();
 
+			_target.Start();
+
+			var result = Load<PersistentTask>(taskId);
+
+			result.Status.Should().Be(PersistentTaskStatus.Failed);
 		}
+
+		[Test]
+		public void Start_WhenExecutedInMultipleThreads_ShouldBeThreadSafeAndNotExecuteSameTaskTwice()
+		{
+			const string resultId = "result/1";
+
+			foreach (var i in Enumerable.Range(1,2))
+			{
+				CreateRaceConditionTask(resultId);
+				var thread1 = new Thread(() =>
+				                         	{
+				                         		var taskExecutor = MasterResolve<ITaskExecutor>();
+				                         		taskExecutor.Start();
+				                         	});
+				var thread2 = new Thread(() =>
+				                         	{
+				                         		var taskExecutor = MasterResolve<ITaskExecutor>();
+				                         		taskExecutor.Start();
+				                         	});
+
+				thread1.Start();
+				thread2.Start();
+
+				thread1.Join();
+				thread2.Join();
+			}
+
+			var result = Load<ComputationResult<int>>(resultId);
+
+			result.Result.Should().Be(100);
+			
+		}
+
+		private string CreateRaceConditionTask(string resultId)
+		{
+			var task = new RaceConditionTask
+			           	{
+			           		ResultId = resultId
+			           	};
+			return _taskManager.Save(task);
+		}
+
+		private string CreateFailingTask()
+		{
+			var task = new FailingTask();
+			return _taskManager.Save(task);
+		}
+
 		private void CreateTask(string resultId, int first, int second)
 		{
 			var task = new AdditionTask
