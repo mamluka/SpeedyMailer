@@ -4,7 +4,7 @@ using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Utilities.Domain.Contacts;
 
-namespace SpeedyMailer.Core.Tests.Contacts
+namespace SpeedyMailer.Core.Tests.Unit.Contacts
 {
     public class ContactsCSVParserBuilder
     {

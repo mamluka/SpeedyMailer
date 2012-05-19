@@ -1,7 +1,7 @@
 ﻿using Rhino.Mocks;
 using SpeedyMailer.Master.Web.Core.Builders;
 
-namespace SpeedyMailer.Master.Web.Tests
+namespace SpeedyMailer.Master.Web.Tests.Unit
 {
     public static class Extentions
     {

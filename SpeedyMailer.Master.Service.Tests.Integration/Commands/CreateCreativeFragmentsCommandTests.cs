@@ -1,20 +1,14 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Rhino.Mocks;
 using FluentAssertions;
-using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Web.Core.Commands;
-using SpeedyMailer.Master.Web.IntergrationTests.Commands;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
-namespace SpeedyMailer.Master.Service.Intergration.Tests.Commands
+namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 {
     [TestFixture]
     public class CreateCreativeFragmentsCommandTests : IntegrationTestBase

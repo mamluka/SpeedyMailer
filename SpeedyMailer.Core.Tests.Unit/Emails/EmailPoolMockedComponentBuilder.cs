@@ -5,13 +5,11 @@ using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Utilities.Domain.Email;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
 
-namespace SpeedyMailer.Core.Tests.Emails
+namespace SpeedyMailer.Core.Tests.Unit.Emails
 {
     public class EmailPoolMockedComponentBuilder : IMockedComponentBuilder<EmailPoolService>
     {

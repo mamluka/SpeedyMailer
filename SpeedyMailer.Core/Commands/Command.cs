@@ -1,4 +1,5 @@
 using Raven.Client;
+using SpeedyMailer.Core.Api;
 
 namespace SpeedyMailer.Core.Commands
 {
@@ -11,4 +12,8 @@ namespace SpeedyMailer.Core.Commands
     {
         public abstract T Execute();
     }
+
+	public abstract class ApiCommand:Command<ApiResult>
+	{
+	}
 }

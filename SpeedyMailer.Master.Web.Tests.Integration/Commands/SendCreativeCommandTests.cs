@@ -1,20 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using NUnit.Framework;
-using Rhino.Mocks;
-using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Settings;
-using SpeedyMailer.Master.Service;
-using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Integration.Base;
-using Ploeh.AutoFixture;
 using FluentAssertions;
-namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
+
+namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
 {
     [TestFixture]
     public class SendCreativeCommandTests : IntegrationTestBase
@@ -40,10 +34,10 @@ namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
 
 			Service.Initialize();
             Service.Start();
-            UI.ExecuteCommand<SendCreativeCommand>(x =>
-                                                        {
-                                                            x.CreativeId = creativeId;
-                                                        });
+            UI.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
+                                                             	{
+                                                             		x.CreativeId = creativeId;
+                                                             	});
             Service.Stop();
 
             var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);

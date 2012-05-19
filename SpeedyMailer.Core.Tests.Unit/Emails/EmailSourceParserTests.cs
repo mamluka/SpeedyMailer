@@ -2,11 +2,10 @@ using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.DataAccess.Emails;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Emails;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
-namespace SpeedyMailer.Core.Tests.Emails
+namespace SpeedyMailer.Core.Tests.Unit.Emails
 {
     [TestFixture]
     public class EmailSourceParserTests : AutoMapperAndFixtureBase

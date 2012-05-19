@@ -7,13 +7,11 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Domain.Emails;
-using SpeedyMailer.Core.Helpers;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities.Domain.Email;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
-namespace SpeedyMailer.Master.Web.Tests.Helpers
+namespace SpeedyMailer.Master.Web.Tests.Unit.Helpers
 {
     internal class UrlCreatorTests : AutoMapperAndFixtureBase
     {

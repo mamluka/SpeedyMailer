@@ -2,7 +2,7 @@ using System.IO;
 using System.Web;
 using Rhino.Mocks;
 
-namespace SpeedyMailer.Core.Tests.Contacts
+namespace SpeedyMailer.Core.Tests.Unit.Contacts
 {
     public class HttpContextBaseBuilderForFiles
     {

@@ -1,17 +1,12 @@
-using System;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Master.Web.Core.Commands;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
-namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
+namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
 {
     [TestFixture]
     public class AddContactsCommandTests : IntegrationTestBase

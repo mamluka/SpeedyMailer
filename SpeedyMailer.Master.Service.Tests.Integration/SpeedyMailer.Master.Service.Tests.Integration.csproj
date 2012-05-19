@@ -34,6 +34,7 @@
     <Reference Include="AsyncCtpLibrary">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\AsyncCtpLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="AutoMapper, Version=2.1.267.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL" />
     <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB-Embedded.1.0.701\lib\net40\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -115,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CreateCreativeFragmentsCommandTests.cs" />
+    <Compile Include="Commands\WakeDronesUpCommandTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

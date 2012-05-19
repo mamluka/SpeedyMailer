@@ -1,8 +1,7 @@
 using NUnit.Framework;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
-namespace SpeedyMailer.Master.Web.Tests.Compose
+namespace SpeedyMailer.Master.Web.Tests.Unit.Compose
 {
     [TestFixture]
     public class ComposeResultsViewModelBuilder : AutoMapperAndFixtureBase

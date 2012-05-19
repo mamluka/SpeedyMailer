@@ -84,6 +84,9 @@
     <Reference Include="Raven.Client.MvcIntegration, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB-Client.1.0.888\lib\net40\Raven.Client.MvcIntegration.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp">
+      <HintPath>..\packages\RestSharp.103.0.0\lib\net35\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
@@ -97,6 +100,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ApiResult.cs" />
+    <Compile Include="Api\Status.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />
     <Compile Include="Container\AssemblyGatherer.cs" />
@@ -173,6 +178,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Domain\Drones\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Tasks\" />
   </ItemGroup>

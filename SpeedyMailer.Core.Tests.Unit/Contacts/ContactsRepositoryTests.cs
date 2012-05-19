@@ -5,11 +5,10 @@ using Raven.Client;
 using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Contacts;
 using SpeedyMailer.Core.Domain.Contacts;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
 
-namespace SpeedyMailer.Core.Tests.Contacts
+namespace SpeedyMailer.Core.Tests.Unit.Contacts
 {
     [TestFixture]
     public class ContactsRepositoryTests : AutoMapperAndFixtureBase

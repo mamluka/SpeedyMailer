@@ -5,10 +5,9 @@ using SpeedyMailer.Core.Utilities.Domain.Contacts;
 using SpeedyMailer.Master.Web.Core.Builders;
 using SpeedyMailer.Master.Web.Core.ViewModels;
 using SpeedyMailer.Master.Web.UI.Controllers;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
-namespace SpeedyMailer.Master.Web.Tests.Contacts
+namespace SpeedyMailer.Master.Web.Tests.Unit.Contacts
 {
     public class ContactsMockedComponentBuilder : IMockedComponentBuilder<ContactsController>
     {

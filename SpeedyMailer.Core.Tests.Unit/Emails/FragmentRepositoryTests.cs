@@ -4,11 +4,10 @@ using Raven.Client;
 using Rhino.Mocks;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.DataAccess.Fragments;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
 
-namespace SpeedyMailer.Core.Tests.Emails
+namespace SpeedyMailer.Core.Tests.Unit.Emails
 {
     [TestFixture]
     public class FragmentRepositoryTests : AutoMapperAndFixtureBase

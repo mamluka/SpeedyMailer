@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Drone.Tests.Drone
+namespace SpeedyMailer.Drone.Tests.Unit.Drone
 {
     public class Drone
     {

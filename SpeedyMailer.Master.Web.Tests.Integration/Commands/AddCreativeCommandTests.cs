@@ -5,7 +5,7 @@ using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 using FluentAssertions;
 
-namespace SpeedyMailer.Master.Web.IntergrationTests.Commands
+namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
 {
     [TestFixture]
     public class AddCreativeCommandTests : IntegrationTestBase

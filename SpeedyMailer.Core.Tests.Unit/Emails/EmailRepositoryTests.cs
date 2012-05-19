@@ -7,12 +7,11 @@ using Raven.Client;
 using Rhino.Mocks;
 using SpeedyMailer.Core.DataAccess.Emails;
 using SpeedyMailer.Core.Domain.Emails;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Emails;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using SpeedyMailer.Tests.Core.Unit.Database;
 
-namespace SpeedyMailer.Core.Tests.Emails
+namespace SpeedyMailer.Core.Tests.Unit.Emails
 {
     internal class EmailRepositoryTests : AutoMapperAndFixtureBase
     {

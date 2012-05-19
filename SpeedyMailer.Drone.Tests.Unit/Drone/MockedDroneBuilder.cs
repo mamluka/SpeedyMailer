@@ -1,7 +1,6 @@
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
-namespace SpeedyMailer.Drone.Tests.Drone
+namespace SpeedyMailer.Drone.Tests.Unit.Drone
 {
     public class MockedDroneBuilder : IMockedComponentBuilder<Drone>
     {

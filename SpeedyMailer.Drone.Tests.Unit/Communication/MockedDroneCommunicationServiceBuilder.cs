@@ -4,10 +4,9 @@ using Rhino.Mocks;
 using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Master.Web.UI.Communication;
 using SpeedyMailer.Master.Web.UI.Configurations;
-using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
-namespace SpeedyMailer.Drone.Tests.Communication
+namespace SpeedyMailer.Drone.Tests.Unit.Communication
 {
     public class MockedDroneCommunicationServiceBuilder : IMockedComponentBuilder<DroneCommunicationService>
     {
