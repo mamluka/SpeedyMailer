@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Ninject;
+using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using Raven.Client.Linq;
 using Raven.Client.Extensions;
@@ -17,7 +18,7 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		private readonly IDocumentStore _documentStore;
 		private readonly IKernel _kernel;
-		private ITaskExecutionSettings _taskExecutionSettings;
+		private readonly ITaskExecutionSettings _taskExecutionSettings;
 
 		public TaskExecutor(IKernel kernel, IDocumentStore documentStore, ITaskExecutionSettings taskExecutionSettings)
 		{
@@ -32,7 +33,7 @@ namespace SpeedyMailer.Core.Tasks
 			{
 				var tasks = session.Query<PersistentTask>()
 					.Where(task => task.Status == PersistentTaskStatus.Pending)
-					.Customize(x=> x.WaitForNonStaleResults())
+					.Customize(x => x.WaitForNonStaleResults())
 					.OrderBy(x => x.CreateDate).Take(3)
 					.ToList();
 
@@ -40,23 +41,22 @@ namespace SpeedyMailer.Core.Tasks
 
 				foreach (var task in tasks)
 				{
-					MarkAs(session, task, PersistentTaskStatus.Executing);
-
+					MarkAs(task, session, PersistentTaskStatus.Executing);
 					try
 					{
 						var executorType = Type.GetType(task.GetType().FullName + "Executor");
 						var executor = _kernel.Get(executorType);
 
 						var executeMethod = executor.GetType().GetMethod("Execute");
-						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] {task},null);
+						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] {task}, null);
 
-						MarkAs(session, task, PersistentTaskStatus.Executed);
+						MarkAs(task, session, PersistentTaskStatus.Executed);
 					}
 					catch (Exception)
 					{
 						if (task.RetryCount >= _taskExecutionSettings.NumberOfRetries)
 						{
-							MarkAs(session, task, PersistentTaskStatus.Failed);
+							MarkAs(task, session, PersistentTaskStatus.Failed);
 						}
 						else
 						{
@@ -69,7 +69,7 @@ namespace SpeedyMailer.Core.Tasks
 			}
 		}
 
-		private void MarkAs(IDocumentSession session, PersistentTask task, PersistentTaskStatus persistentTaskStatus)
+		private void MarkAs(PersistentTask task, IDocumentSession session, PersistentTaskStatus persistentTaskStatus)
 		{
 			task.Status = persistentTaskStatus;
 			session.Store(task);
@@ -79,7 +79,7 @@ namespace SpeedyMailer.Core.Tasks
 		private void IncreaseRetryCount(IDocumentSession session, PersistentTask task)
 		{
 			task.RetryCount++;
-			MarkAs(session, task, PersistentTaskStatus.Pending);
+			MarkAs(task, session, PersistentTaskStatus.Pending);
 		}
 	}
 }

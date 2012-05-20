@@ -15,17 +15,18 @@ namespace SpeedyMailer.Core.Tasks.Testing
 		{
 			using (var session = _documentStore.OpenSession())
 			{
-				var result = session.Load<ComputationResult<int>>(task.ResultId) ?? NewResult();
+				var result = session.Load<ComputationResult<int>>(task.ResultId) ?? NewResult(task.ResultId);
 				result.Result++;
 				session.Store(result);
 				session.SaveChanges();
 			}
 		}
 
-		private static ComputationResult<int> NewResult()
+		private static ComputationResult<int> NewResult(string resultId)
 		{
 			return new ComputationResult<int>
 			       	{
+						Id = resultId,
 			       		Result = 0
 			       	};
 		}

@@ -111,7 +111,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		{
 			const string resultId = "result/1";
 
-			foreach (var i in Enumerable.Range(1,2))
+			foreach (var i in Enumerable.Range(1,10))
 			{
 				CreateRaceConditionTask(resultId);
 				var thread1 = new Thread(() =>
@@ -134,17 +134,17 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			var result = Load<ComputationResult<int>>(resultId);
 
-			result.Result.Should().Be(100);
+			result.Result.Should().Be(10);
 			
 		}
 
-		private string CreateRaceConditionTask(string resultId)
+		private void CreateRaceConditionTask(string resultId)
 		{
 			var task = new RaceConditionTask
 			           	{
 			           		ResultId = resultId
 			           	};
-			return _taskManager.Save(task);
+			_taskManager.Save(task);
 		}
 
 		private string CreateFailingTask()
