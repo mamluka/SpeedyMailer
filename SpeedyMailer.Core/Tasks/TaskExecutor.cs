@@ -31,6 +31,7 @@ namespace SpeedyMailer.Core.Tasks
 		{
 			using (var session = _documentStore.OpenSession())
 			{
+				session.Advanced.UseOptimisticConcurrency = true;
 				var tasks = session.Query<PersistentTask>()
 					.Where(task => task.Status == PersistentTaskStatus.Pending)
 					.Customize(x => x.WaitForNonStaleResults())
@@ -41,10 +42,18 @@ namespace SpeedyMailer.Core.Tasks
 
 				foreach (var task in tasks)
 				{
-					MarkAs(task, session, PersistentTaskStatus.Executing);
 					try
 					{
-						var executorType = Type.GetType(task.GetType().FullName + "Executor");
+						MarkAs(task, session, PersistentTaskStatus.Executing);
+					}
+					catch (ConcurrencyException)
+					{
+						continue;
+					}
+
+					try
+					{
+						var executorType = Type.GetType(GetExecutorQualifiedName(task));
 						var executor = _kernel.Get(executorType);
 
 						var executeMethod = executor.GetType().GetMethod("Execute");
@@ -67,6 +76,14 @@ namespace SpeedyMailer.Core.Tasks
 
 				Start();
 			}
+		}
+
+		private static string GetExecutorQualifiedName(PersistentTask task)
+		{
+			var qualifiedNameSplit = task.GetType().AssemblyQualifiedName.Split(',');
+			qualifiedNameSplit[0] += "Executor";
+
+			return String.Join(",", qualifiedNameSplit);
 		}
 
 		private void MarkAs(PersistentTask task, IDocumentSession session, PersistentTaskStatus persistentTaskStatus)

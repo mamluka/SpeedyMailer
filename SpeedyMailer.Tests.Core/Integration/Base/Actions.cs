@@ -7,6 +7,7 @@ using Ploeh.AutoFixture;
 using Raven.Client;
 using Raven.Client.Document;
 using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core.Commands;
 
@@ -14,8 +15,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class Actions : ActionsBase
 	{
-		public Actions(IKernel kernel)
-			: base(kernel)
+		public Actions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor)
+			: base(kernel, taskManager, taskExecutor)
 		{ }
 
 		public override void EditSettings<T>(Action<T> action)
@@ -59,12 +60,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		}
 	}
 
-	public class ServiceActions : ActionsBase
+	public class MasterActions : ActionsBase
 	{
 		private Service _service;
 
-		public ServiceActions(IKernel kernel)
-			: base(kernel)
+		public MasterActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor)
+			: base(kernel, taskManager, taskExecutor)
 		{ }
 
 		public void Initialize()

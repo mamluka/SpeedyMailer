@@ -53,6 +53,12 @@
     <Reference Include="AutoMapper, Version=2.1.267.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.2.1.267\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="C5, Version=1.1.0.0, Culture=neutral, PublicKeyToken=06a1b38866503b69, processorArchitecture=MSIL">
+      <HintPath>..\packages\Quartz.2.0.1\lib\net40\C5.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
+    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.0.10.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
@@ -74,8 +80,9 @@
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
     <Reference Include="nunit.mocks, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77" />
-    <Reference Include="Quartz">
-      <HintPath>..\libs\Quartz.net\Quartz.dll</HintPath>
+    <Reference Include="Quartz, Version=2.0.1.100, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -101,7 +108,7 @@
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Drone\MailDronInitializer.cs" />
     <Compile Include="Jobs\DroneJobManager.cs" />
-    <Compile Include="Jobs\IoCJobFactory.cs" />
+    <Compile Include="Jobs\ContainerJobFactory.cs" />
     <Compile Include="Jobs\RetrieveFragmentJob.cs" />
     <Compile Include="MailDroneHost.cs" />
     <Compile Include="Mail\IMailParser.cs" />

@@ -1,35 +1,37 @@
 using Raven.Client;
-using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using System.Linq;
-using SpeedyMailer.Core.Utilities.Extentions;
+using SpeedyMailer.Core.Tasks;
 
-namespace SpeedyMailer.Master.Service.Commands
+namespace SpeedyMailer.Master.Service.Tasks
 {
-    public class CreateCreativeFragmentsCommand:Command
+    public class CreateCreativeFragmentsTask:PersistentTask
+    {
+        public string CreativeId { get; set; }
+        public int RecipientsPerFragment { get; set; }
+    }
+
+	public class CreateCreativeFragmentsTaskExecutor: PersistentTaskExecutor<CreateCreativeFragmentsTask>
     {
         private readonly IDocumentStore _documentStore;
 
-        public string CreativeId { get; set; }
-        public int RecipientsPerFragment { get; set; }
-
-        public CreateCreativeFragmentsCommand(IDocumentStore documentStore)
+        public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore)
         {
             _documentStore = documentStore;
         }
 
-        public override void Execute()
+        public override void Execute(CreateCreativeFragmentsTask task)
         {
-            using (var session = _documentStore.OpenSession())
+             using (var session = _documentStore.OpenSession())
             {
-                var creative = session.Load<Creative>(CreativeId);
+                var creative = session.Load<Creative>(task.CreativeId);
                 var unsubscribeTempalte = session.Load<CreativeTemplate>(creative.UnsubscribeTemplateId);
 
                 foreach (var listId in creative.Lists)
                 {
                     var counter = 0;
-                    var chunk = RecipientsPerFragment;
+                    var chunk = task.RecipientsPerFragment;
                     var hasMoreContacts = true;
                     while (hasMoreContacts)
                     {

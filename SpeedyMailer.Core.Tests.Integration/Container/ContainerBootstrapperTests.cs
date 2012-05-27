@@ -7,6 +7,7 @@ using NUnit.Framework;
 using Newtonsoft.Json;
 using Ninject;
 using Ninject.Activation;
+using Ninject.Modules;
 using Ploeh.AutoFixture;
 using Raven.Client;
 using Raven.Client.Embedded;
@@ -21,254 +22,326 @@ using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Core.IntegrationTests.Container
 {
-    [TestFixture]
-    public class ContainerBootstrapperTests : IntegrationTestBase
-    {
-        [Test]
-        public void Bootstrap_WhenAnalyzingAnAssemblyUsingAGivenType_ShouldResolveTypesFromThatAssembly()
-        {
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[]{typeof(TestAssemblyMarkerType)}))
-                .BindInterfaceToDefaultImplementation()
-                .Done();
+	[TestFixture]
+	public class ContainerBootstrapperTests : IntegrationTestBase
+	{
+		[Test]
+		public void Bootstrap_WhenAnalyzingAnAssemblyUsingAGivenType_ShouldResolveTypesFromThatAssembly()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Done();
 
-            var result = kernel.Get<ITestingInterface>();
+			var result = kernel.Get<ITestingInterface>();
 
-            result.GetType().Should().Be<TestingInterface>();
-        }
+			result.GetType().Should().Be<TestingInterface>();
+		}
 
-        [Test]
-        public void Bootstrap_WhenAnalyzingAnAssemblyUsingAGivenType_ShouldNotResolveOtherAssemblies()
-        {
-            Assert.Throws<ActivationException>(() =>
-                                                   {
-                                                       var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(ServiceAssemblyMarker) }))
-                .BindInterfaceToDefaultImplementation()
-                .Done();
+		[Test]
+		public void Bootstrap_WhenAnalyzingAnAssemblyUsingAGivenType_ShouldNotResolveOtherAssemblies()
+		{
+			Assert.Throws<ActivationException>(() =>
+												   {
+													   var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(ServiceAssemblyMarker) }))
+				.BindInterfaceToDefaultImplementation()
+				.Done();
 
-                                                       var result = kernel.Get<ITestingInterface>();
-                                                   });
-        }
+													   var result = kernel.Get<ITestingInterface>();
+												   });
+		}
 
-        [Test]
-        public void Bootstrap_WhenBindingToStore_ShouldResovleIt()
-        {
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .Storage<IDocumentStore>(x => x.Provider<TestDatabaseProvider>())
-                .Done();
+		[Test]
+		public void Bootstrap_WhenBindingToStore_ShouldResovleIt()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Storage<IDocumentStore>(x => x.Provider<TestDatabaseProvider>())
+				.Done();
 
-            var result = kernel.Get<IDocumentStore>();
+			var result = kernel.Get<IDocumentStore>();
 
-            result.GetType().Should().Be<EmbeddableDocumentStore>();
-        }
+			result.GetType().Should().Be<EmbeddableDocumentStore>();
+		}
 
-        [Test]
-        public void Bootstrap_WhenBindingToConstantDatabase_ShouldResolveToThatConstant()
-        {
-            var store = new EmbeddableDocumentStore
-                            {
-                                RunInMemory = true
-                            };
-            store.Initialize();
+		[Test]
+		public void Bootstrap_WhenBindingToConstantDatabase_ShouldResolveToThatConstant()
+		{
+			var store = new EmbeddableDocumentStore
+							{
+								RunInMemory = true
+							};
+			store.Initialize();
 
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .Storage<IDocumentStore>(x => x.Constant(store))
-                .Done();
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Storage<IDocumentStore>(x => x.Constant(store))
+				.Done();
 
-            var result = kernel.Get<IDocumentStore>();
+			var result = kernel.Get<IDocumentStore>();
 
-            result.GetType().Should().Be<EmbeddableDocumentStore>();
-        }
+			result.GetType().Should().Be<EmbeddableDocumentStore>();
+		}
 
-        [Test]
-        public void Bootstrap_WhenBindingSettingsToStore_ShouldResolveSettingsUsingStore()
-        {
-            var entity = new
-            {
-                Id = "settings/Testing",
-                JustSomeTextProperty = "from-store",
-                JustSomeIntegerProperty = 10
+		[Test]
+		public void Bootstrap_WhenBindingSettingsToStore_ShouldResolveSettingsUsingStore()
+		{
+			var entity = new
+			{
+				Id = "settings/Testing",
+				JustSomeTextProperty = "from-store",
+				JustSomeIntegerProperty = 10
+			};
 
-            };
+			Store(entity);
 
-            Store(entity);
 
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .Storage<IDocumentStore>(x => x.Constant(DocumentStore))
-                .Settings(x=> x.UseDocumentDatabase())
-                .Done();
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
+				.Settings(x => x.UseDocumentDatabase())
+				.Done();
 
-            var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeTextProperty.Should().Be("from-store");
-            result.JustSomeIntegerProperty.Should().Be(10);
+			result.JustSomeTextProperty.Should().Be("from-store");
+			result.JustSomeIntegerProperty.Should().Be(10);
 
-        }
+		}
 
-        [Test]
-        public void Bootstrap_WhenSettingsDoesntExistInStore_ShouldReturnDefaultValues()
-        {
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .Storage<IDocumentStore>(x => x.Constant(DocumentStore))
-                .Settings(x => x.UseDocumentDatabase())
-                .Done();
+		[Test]
+		public void Bootstrap_WhenSettingsDoesntExistInStore_ShouldReturnDefaultValues()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
+				.Settings(x => x.UseDocumentDatabase())
+				.Done();
 
-            var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeTextProperty.Should().Be("default");
-            result.JustSomeIntegerProperty.Should().Be(10);
-        }
+			result.JustSomeTextProperty.Should().Be("default");
+			result.JustSomeIntegerProperty.Should().Be(10);
+		}
 
-        [Test]
-        public void Bootstrap_WhenSettingsExistInStoreButThePropertyDoesnt_ShouldReturnDefaultValues()
-        {
-            var entity = new
-            {
-                Id = "settings/Testing",
-            };
-            Store(entity);
+		[Test]
+		public void Bootstrap_WhenSettingsExistInStoreButThePropertyDoesnt_ShouldReturnDefaultValues()
+		{
+			var entity = new
+			{
+				Id = "settings/Testing",
+			};
+			Store(entity);
 
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .Storage<IDocumentStore>(x => x.Constant(DocumentStore))
-                .Settings(x => x.UseDocumentDatabase())
-                .Done();
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
+				.Settings(x => x.UseDocumentDatabase())
+				.Done();
 
-            var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeTextProperty.Should().Be("default");
-        }
+			result.JustSomeTextProperty.Should().Be("default");
+		}
 
-        [Test]
-        public void Bootstrap_WhenBindingSettingsToJsonFiles_ShouldResolveSettingsUsingFile()
-        {
-            var entity = new
-            {
-                JustSomeTextProperty = "from-json",
-                JustSomeIntegerProperty = 10
-            };
+		[Test]
+		public void Bootstrap_WhenBindingSettingsToJsonFiles_ShouldResolveSettingsUsingFile()
+		{
+			var entity = new
+			{
+				JustSomeTextProperty = "from-json",
+				JustSomeIntegerProperty = 10
+			};
 
-            CreateJsonSettingsFile(entity);
+			CreateJsonSettingsFile(entity);
 
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .NoDatabase()
-                .Settings(x => x.UseJsonFiles())
-                .Done();
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
 
-            var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeTextProperty.Should().Be("from-json");
-            result.JustSomeIntegerProperty.Should().Be(10);
+			result.JustSomeTextProperty.Should().Be("from-json");
+			result.JustSomeIntegerProperty.Should().Be(10);
 
-        }
+		}
 
-        [Test]
-        public void Bootstrap_WhenSettingsDoesntExistInJsonFiles_ShouldReturnDefaultValues()
-        {
-            DeleteJsonFile();
+		[Test]
+		public void Bootstrap_WhenSettingsDoesntExistInJsonFiles_ShouldReturnDefaultValues()
+		{
+			DeleteJsonFile();
 
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .NoDatabase()
-                .Settings(x => x.UseJsonFiles())
-                .Done();
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
 
-            var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeTextProperty.Should().Be("default");
-            result.JustSomeIntegerProperty.Should().Be(10);
-        }
+			result.JustSomeTextProperty.Should().Be("default");
+			result.JustSomeIntegerProperty.Should().Be(10);
+		}
 
-        [Test]
-        public void Bootstrap_WhenSettingsExistInJsonButThePropertyDoesnt_ShouldReturnDefaultValues()
-        {
-            var entity = new
-            {
-            };
+		[Test]
+		public void Bootstrap_WhenSettingsExistInJsonButThePropertyDoesnt_ShouldReturnDefaultValues()
+		{
+			var entity = new
+			{
+			};
 
-            CreateJsonSettingsFile(entity);
+			CreateJsonSettingsFile(entity);
 
-            var kernel = ContainerBootstrapper
-                .Bootstrap()
-                .Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
-                .BindInterfaceToDefaultImplementation()
-                .NoDatabase()
-                .Settings(x => x.UseDocumentDatabase())
-                .Done();
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
 
-            var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<ITestingSettings>();
 
-            result.JustSomeTextProperty.Should().Be("default");
-        }
+			result.JustSomeTextProperty.Should().Be("default");
+		}
 
-        private void CreateJsonSettingsFile(dynamic setting)
-        {
-            using (var writter = new StreamWriter("settings/Testing.settings"))
-            {
-                writter.WriteLine(JsonConvert.SerializeObject(setting));
-            }
-        }
+		[Test]
+		public void Bootstrap_WhenGivenAModule_ShouldLoadIt()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.NoDatabase()
+				.Done();
 
-        private void DeleteJsonFile()
-        {
-            File.Delete("settings/Testing.settings");
-        }
+			var result = kernel.Get<IProvidedByAProvider>();
 
-    }
+			result.Should().NotBeNull();
+		}
 
-    
-    public interface ITestingSettings
-    {
-        [Default("default")]
-        string JustSomeTextProperty { get; set; }
-        [Default(10)]
-        int JustSomeIntegerProperty { get; set; }
+		[Test]
+		public void Bootstrap_WhenResolving_ShouldBeInSingeltonScope()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.NoDatabase()
+				.Done();
 
-        
+			var firstResolve = kernel.Get<IShouldBeSingelton>();
+			firstResolve.Increase();
 
-    }
+			var secondResolve = kernel.Get<IShouldBeSingelton>();
 
-    public class TestAssemblyMarkerType
-    {}
+			secondResolve.State.Should().Be(1);
+		}
 
-    public interface ITestingInterface
-    {}
+		private void CreateJsonSettingsFile(dynamic setting)
+		{
+			using (var writter = new StreamWriter("settings/Testing.settings"))
+			{
+				writter.WriteLine(JsonConvert.SerializeObject(setting));
+			}
+		}
 
-    public class TestingInterface : ITestingInterface
-    {}
+		private void DeleteJsonFile()
+		{
+			File.Delete("settings/Testing.settings");
+		}
 
-    public class TestDatabaseProvider:Provider<IDocumentStore>
-    {
-        protected override IDocumentStore CreateInstance(IContext context)
-        {
-            var store = new EmbeddableDocumentStore
-                            {
-                                RunInMemory = true
-                            };
-            return store.Initialize();
+	}
 
-        }
-    }
+	public interface IShouldBeSingelton
+	{
+		void Increase();
+		int State { get; set; }
+	}
+
+	public class ShouldBeSingelton : IShouldBeSingelton
+	{
+		public int State { get; set; }
+
+		public void Increase()
+		{
+			State++;
+		}
+	}
+
+	public class TestingModule:NinjectModule
+	{
+		public override void Load()
+		{
+			Kernel.Bind<IProvidedByAProvider>().ToProvider<TestProvider>();
+		}
+	}
+
+	public class TestProvider:Provider<IProvidedByAProvider>
+	{
+		protected override IProvidedByAProvider CreateInstance(IContext context)
+		{
+			return new ClassProvidedByProvider();
+		}
+	}
+
+	public interface IProvidedByAProvider
+	{
+		
+	}
+
+	public class ClassProvidedByProvider:IProvidedByAProvider
+	{
+		
+	}
+
+
+	public interface ITestingSettings
+	{
+		[Default("default")]
+		string JustSomeTextProperty { get; set; }
+		[Default(10)]
+		int JustSomeIntegerProperty { get; set; }
+	}
+
+	public class TestAssemblyMarkerType
+	{ }
+
+	public interface ITestingInterface
+	{ }
+
+	public class TestingInterface : ITestingInterface
+	{ }
+
+	public class TestDatabaseProvider : Provider<IDocumentStore>
+	{
+		protected override IDocumentStore CreateInstance(IContext context)
+		{
+			var store = new EmbeddableDocumentStore
+							{
+								RunInMemory = true
+							};
+			return store.Initialize();
+
+		}
+	}
 }

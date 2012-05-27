@@ -18,6 +18,8 @@ namespace SpeedyMailer.Core.Container
             var name = ToAutoPropertyName(invocation);
             var jToken = (Settings as JObject)[name];
 
+			if (jToken == null) return null;
+
             var method = jToken.GetType().GetMethod("ToObject",new Type[]{});
             var generic = method.MakeGenericMethod(returnType);
 

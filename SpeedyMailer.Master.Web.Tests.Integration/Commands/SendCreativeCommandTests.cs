@@ -32,13 +32,13 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
                                                                                    x.UnsubscribeTemplateId = templateId;
                                                                                });
 
-			Service.Initialize();
-            Service.Start();
+			Master.Initialize();
+            Master.Start();
             UI.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
                                                              	{
                                                              		x.CreativeId = creativeId;
                                                              	});
-            Service.Stop();
+            Master.Stop();
 
             var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
 

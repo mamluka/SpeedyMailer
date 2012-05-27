@@ -14,8 +14,8 @@ namespace SpeedyMailer.Core.Container
 
         public SettingsResolverGatherer Storage<T>(Action<DatabaseBindingGathererOptions<T>> storageAction)
         {
-            var options = new DatabaseBindingGathererOptions<T>(_options);
-            storageAction.Invoke(options);
+            var databaseBindingGathererOptions = new DatabaseBindingGathererOptions<T>(_options);
+            storageAction.Invoke(databaseBindingGathererOptions);
             return new SettingsResolverGatherer(_options);
         }
 

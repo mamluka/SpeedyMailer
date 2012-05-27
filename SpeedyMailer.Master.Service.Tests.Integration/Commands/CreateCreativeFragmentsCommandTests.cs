@@ -3,7 +3,7 @@ using System.Linq;
 using NUnit.Framework;
 using FluentAssertions;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Master.Service.Commands;
+using SpeedyMailer.Master.Service.Tasks;
 using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Integration.Base;
@@ -30,11 +30,15 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
                                                           x.Lists = new List<string> {listId};
                                                       });
 
-            Service.ExecuteCommand<CreateCreativeFragmentsCommand>(x =>
-                                                                       {
-                                                                           x.CreativeId = creativeId;
-                                                                           x.RecipientsPerFragment = 1000;
-                                                                       });
+        	var task = new CreateCreativeFragmentsTask
+        	           	{
+        	           		CreativeId = creativeId,
+        	           		RecipientsPerFragment = 1000
+        	           	};
+
+			Master.SaveAndExecuteTask(task);
+
+			WaitForEntityToExist<CreativeFragment>(2);
 
             var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
 

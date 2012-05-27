@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq.Expressions;
+using System.Threading;
 using EqualityComparer;
 using NUnit.Framework;
 using Newtonsoft.Json;
 using Ninject;
-using Ninject.Activation.Strategies;
+using Quartz;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
@@ -20,7 +20,6 @@ using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Master.Web.UI;
-using SpeedyMailer.Master.Web.UI.Bootstrappers;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using Raven.Client.Linq;
 using System.Linq;
@@ -34,9 +33,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IKernel MasterKernel { get; private set; }
 		public IDocumentStore DocumentStore { get; private set; }
 
-		public Actions Drone { get; set; }
+		public DroneActions Drone { get; set; }
 		public Actions UI { get; set; }
-		public ServiceActions Service { get; set; }
+		public MasterActions Master { get; set; }
 
 
 		[TestFixtureSetUp]
@@ -52,7 +51,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                             typeof (CoreAssemblyMarker),
                                                             typeof (WebCoreAssemblyMarker),
                                                             typeof (ServiceAssemblyMarker),
-                                                            typeof (IRestClient)
+                                                            typeof (IRestClient),
+                                                            typeof (ISchedulerFactory)
                                                         }))
 				.BindInterfaceToDefaultImplementation()
 				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
@@ -69,10 +69,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
+		}
 
-			UI = new Actions(MasterKernel);
-			Service = new ServiceActions(MasterKernel);
-			Drone = new Actions(DroneKernel);
+		private void RegisterActions()
+		{
+			UI = MasterKernel.Get<Actions>();
+			Master = MasterKernel.Get<MasterActions>();
+			Drone = DroneKernel.Get<DroneActions>();
 		}
 
 		private void LoadBasicSettings()
@@ -110,6 +113,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
 			DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
 
+			RegisterActions();
 			LoadBasicSettings();
 			ExtraSetup();
 		}
@@ -171,9 +175,44 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			using (var session = DocumentStore.OpenSession())
 			{
 				var entity = session.Load<T>(entityId);
-				session.Delete(entity);				
+				session.Delete(entity);
 				session.SaveChanges();
-			}	
+			}
+		}
+
+		protected void WaitForEntityToExist(string entityId, int secondsToWait = 30)
+		{
+			Func<IDocumentSession, Stopwatch, bool> condition =
+				(session, stopwatch) =>
+					session.Load<object>(entityId) == null &&
+					stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
+
+			WaitForStoreWithFunction(condition);
+		}
+
+		protected void WaitForEntityToExist<T>(int numberOfEntities, int secondsToWait = 30)
+		{
+			Func<IDocumentSession, Stopwatch, bool> condition =
+				(session, stopwatch) =>
+				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Count() > numberOfEntities &&
+				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
+
+			WaitForStoreWithFunction(condition);
+		}
+
+		private void WaitForStoreWithFunction(Func<IDocumentSession, Stopwatch, bool> condition)
+		{
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			using (var session = DocumentStore.OpenSession())
+			{
+				session.Advanced.MaxNumberOfRequestsPerSession = 200;
+				while (condition(session, stopwatch))
+				{
+					Thread.Sleep(500);
+				}
+			}
 		}
 	}
 }

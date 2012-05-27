@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using Castle.DynamicProxy;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -20,7 +21,7 @@ namespace SpeedyMailer.Core.Container
 
         protected override IInterceptor SetInterceptor(Type type, object settings)
         {
-            return new JsonSettingsInterceptor(settings,type);
+            return new JsonSettingsInterceptor(settings as JObject,type);
         }
     }
 }

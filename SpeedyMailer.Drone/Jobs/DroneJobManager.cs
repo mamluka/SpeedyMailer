@@ -5,14 +5,14 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
 {
     public class DroneJobManager
     {
-        private readonly IScheduler scheduler;
+        private readonly IScheduler _scheduler;
 
         public DroneJobManager()
         {
             var scheduleFactory = new StdSchedulerFactory();
-            scheduler = scheduleFactory.GetScheduler();
-            var IoCjobFactory = new IoCJobFactory();
-            scheduler.JobFactory = IoCjobFactory;
+            _scheduler = scheduleFactory.GetScheduler();
+           // var IoCjobFactory = new ContainerJobFactory();
+           // _scheduler.JobFactory = IoCjobFactory;
         }
 
         public void StartRetrieveJob()
@@ -27,9 +27,9 @@ namespace SpeedyMailer.Master.Web.UI.Jobs
                 .Build();
 
 
-            scheduler.ScheduleJob(job, trigger);
+            _scheduler.ScheduleJob(job, trigger);
 
-            scheduler.Start();
+            _scheduler.Start();
         }
     }
 }

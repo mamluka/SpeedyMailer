@@ -9,7 +9,7 @@ namespace SpeedyMailer.Core.Container
     {
         protected readonly object Settings;
         protected readonly Type SettingsInterface;
-        private Dictionary<string,object> _storedSettings = new Dictionary<string, object>();
+        private readonly Dictionary<string,object> _storedSettings = new Dictionary<string, object>();
 
 
         protected SettingsInterceptorBase(object settings, Type settingsInterface)
@@ -34,7 +34,7 @@ namespace SpeedyMailer.Core.Container
                                              typeof (DefaultAttribute)) as DefaultAttribute;
 
 
-            dynamic persistantSetting = PersistantSetting(invocation,invocation.Method.ReturnType);
+            var persistantSetting = PersistantSetting(invocation,invocation.Method.ReturnType);
 
             if (Settings != null)
             {

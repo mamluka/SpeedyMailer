@@ -115,9 +115,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\CreativeModule.cs" />
-    <Compile Include="Api\ModuleBase.cs" />
     <Compile Include="Bootstrapper\MyNinjectBootstrapper.cs" />
-    <Compile Include="Commands\CreateCreativeFragmentsCommand.cs" />
+    <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\MasterNinjectBootstrapper.cs" />
     <Compile Include="Emails\IPoolMailOporations.cs" />
     <Compile Include="Emails\PoolMailOporations.cs" />
@@ -143,6 +142,9 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -41,8 +41,14 @@
     <Reference Include="Bootstrapper.AutoMapper">
       <HintPath>..\packages\Bootstrapper.AutoMapper.2.0.2.0\lib\Bootstrapper.AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="C5">
+      <HintPath>..\packages\Quartz.2.0.1\lib\net40\C5.dll</HintPath>
+    </Reference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.0.0.4001\lib\net40-client\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=1.4.0.36028, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,6 +77,9 @@
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Quartz">
+      <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB.Client.1.0.888\lib\net40\Raven.Abstractions.dll</HintPath>
@@ -106,12 +115,14 @@
     <Compile Include="Container\ContainerStrapperOptions.cs" />
     <Compile Include="Container\DatabaseBindingGatherer.cs" />
     <Compile Include="Container\DatabaseBindingGathererOptions.cs" />
+    <Compile Include="Container\DocumentStoreSettingsBinder.cs" />
     <Compile Include="Container\Extentions.cs" />
     <Compile Include="Container\IDoneBootstrapping.cs" />
     <Compile Include="Container\JsonFileSettingsBinder.cs" />
     <Compile Include="Container\JsonSettingsInterceptor.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
+    <Compile Include="Container\SettingsInterceptor.cs" />
     <Compile Include="Container\SettingsInterceptorBase.cs" />
     <Compile Include="Container\SettingsResolverGatherer.cs" />
     <Compile Include="Container\SettingsResolverGathererOptions.cs" />
@@ -155,13 +166,16 @@
     <Compile Include="Settings\IServiceSettings.cs" />
     <Compile Include="Tasks\ComputationResult.cs" />
     <Compile Include="Tasks\ITaskExecutionSettings.cs" />
+    <Compile Include="Tasks\TaskCoordinator.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Tasks\PersistentTask.cs" />
     <Compile Include="Tasks\PersistentTaskExecutor.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
+    <Compile Include="Tasks\TasksNinjectModule.cs" />
     <Compile Include="Tasks\Testing\AdditionTask.cs" />
     <Compile Include="Tasks\Testing\FailingTask.cs" />
     <Compile Include="Tasks\Testing\FailingTaskExecutor.cs" />
+    <Compile Include="Tasks\Testing\LongTask.cs" />
     <Compile Include="Tasks\Testing\RaceConditionTask.cs" />
     <Compile Include="Tasks\Testing\RaceConditionTaskExecutor.cs" />
     <Compile Include="Utilities\Domain\Contacts\ContactCSVParserResults.cs" />
@@ -171,6 +185,7 @@
     <Compile Include="Utilities\Domain\Email\IUrlCreator.cs" />
     <Compile Include="Utilities\Domain\Email\UrlCreator.cs" />
     <Compile Include="Utilities\Extentions\LinqExtentions.cs" />
+    <Compile Include="Utilities\Framework.cs" />
     <Compile Include="Utilities\General\IReportResults.cs" />
   </ItemGroup>
   <ItemGroup>

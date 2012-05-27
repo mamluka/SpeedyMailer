@@ -118,6 +118,7 @@
     <Compile Include="Container\ContainerBootstrapperTests.cs" />
     <Compile Include="Database\PerformenceTestingForRavenDB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\TaskCoordinatorTests.cs" />
     <Compile Include="Tasks\TaskExecutorTests.cs" />
   </ItemGroup>
   <ItemGroup>
