@@ -16,15 +16,15 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
         [Test]
         public void Execute_WhenGivenACreativeId_CreateCreativeFragmentsUsingServiceApi()
         {
-            var listId = UI.CreateAListWithRandomContacts("MyList", 1500);
+            var listId = UIActions.CreateListWithRandomContacts("MyList", 1500);
 
             const string templateBody = "Body";
-            var templateId = UI.ExecuteCommand<CreateTemplateCommand,string>(x =>
+            var templateId = UIActions.ExecuteCommand<CreateTemplateCommand,string>(x =>
                                                                                  {
                                                                                      x.Body = templateBody;
                                                                                  });
 
-            var creativeId = UI.ExecuteCommand<AddCreativeCommand, string>(x =>
+            var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
                                                                                {
                                                                                    x.Body = "body";
                                                                                    x.Lists =  new List<string> { listId};
@@ -32,13 +32,13 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
                                                                                    x.UnsubscribeTemplateId = templateId;
                                                                                });
 
-			Master.Initialize();
-            Master.Start();
-            UI.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
+			ServiceActions.Initialize();
+            ServiceActions.Start();
+            UIActions.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
                                                              	{
                                                              		x.CreativeId = creativeId;
                                                              	});
-            Master.Stop();
+            ServiceActions.Stop();
 
             var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
 

@@ -1,7 +1,7 @@
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Emails;
 
-namespace SpeedyMailer.Master.Web.UI.Mail
+namespace SpeedyMailer.Drone.Mail
 {
     public class MailParser : IMailParser
     {

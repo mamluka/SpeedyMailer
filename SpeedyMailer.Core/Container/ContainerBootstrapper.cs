@@ -51,7 +51,7 @@ namespace SpeedyMailer.Core.Container
                 fromFunction = fromSyntax => fromSyntax.From(containerStrapperOptions.TypesToAnalyze.Select(type => type.Assembly));
             }
 
-            kernel.Bind(x => bindFunction(selectFunction(fromFunction(x))));
+            kernel.Bind(x => bindFunction(selectFunction(fromFunction(x))).Configure(opt=> opt.InSingletonScope()));
 			kernel.Load(containerStrapperOptions.TypesToAnalyze.Select(type => type.Assembly));
 
             if (containerStrapperOptions.DatabaseBindingFunction != null)

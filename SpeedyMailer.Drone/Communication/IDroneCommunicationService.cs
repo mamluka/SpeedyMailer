@@ -1,6 +1,6 @@
 using SpeedyMailer.Bridge.Communication;
 
-namespace SpeedyMailer.Master.Web.UI.Communication
+namespace SpeedyMailer.Drone.Communication
 {
     public interface IDroneCommunicationService
     {

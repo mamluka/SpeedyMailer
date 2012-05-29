@@ -5,6 +5,7 @@ using Raven.Client;
 using Raven.Client.Exceptions;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Master.Web.Core.Tasks;
 
 namespace SpeedyMailer.Master.Web.Core.Commands
 {

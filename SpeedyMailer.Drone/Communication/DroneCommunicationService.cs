@@ -2,9 +2,9 @@ using Nancy.Json;
 using Newtonsoft.Json;
 using RestSharp;
 using SpeedyMailer.Bridge.Communication;
-using SpeedyMailer.Master.Web.UI.Configurations;
+using SpeedyMailer.Drone.Configurations;
 
-namespace SpeedyMailer.Master.Web.UI.Communication
+namespace SpeedyMailer.Drone.Communication
 {
     public class DroneCommunicationService : IDroneCommunicationService
     {
@@ -31,7 +31,7 @@ namespace SpeedyMailer.Master.Web.UI.Communication
             request.RequestFormat = DataFormat.Json;
 
 
-            RestResponse<FragmentResponse> response = restClient.Execute<FragmentResponse>(request);
+            var response = restClient.Execute<FragmentResponse>(request);
 
             var fragment = JsonConvert.DeserializeObject<FragmentResponse>(response.Content);
 

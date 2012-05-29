@@ -1,6 +1,6 @@
 using SpeedyMailer.Bridge.Model.Fragments;
 
-namespace SpeedyMailer.Master.Web.UI.Mail
+namespace SpeedyMailer.Drone.Mail
 {
     public class MailSender : IMailSender
     {

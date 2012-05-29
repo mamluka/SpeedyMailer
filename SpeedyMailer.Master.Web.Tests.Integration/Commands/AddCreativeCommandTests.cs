@@ -22,7 +22,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
                                 "list2"
                             };
 
-            var creativeId = UI.ExecuteCommand<AddCreativeCommand, string>(x =>
+            var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
                                                                                    {
                                                                                        x.Subject = subject;
                                                                                        x.Body = body;

@@ -1,4 +1,4 @@
-using SpeedyMailer.Master.Web.UI.Mail;
+using SpeedyMailer.Drone.Mail;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Drone.Tests.Unit.Mail

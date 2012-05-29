@@ -90,12 +90,12 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			_taskManager.Save(task1);
 			_target.BeginExecuting();
 
-			WaitForEntityToExist(resultId1, 10);
+			WaitForEntityToExist(resultId1, 5);
 
 			_taskManager.Save(task2);
 			_target.BeginExecuting();
 
-			WaitForEntityToExist(resultId2, 10);
+			WaitForEntityToExist(resultId2, 5);
 
 			var result1 = Load<ComputationResult<int>>(resultId1);
 			var result2 = Load<ComputationResult<int>>(resultId2);

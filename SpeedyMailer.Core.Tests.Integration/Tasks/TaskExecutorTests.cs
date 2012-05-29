@@ -111,39 +111,43 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		{
 			const string resultId = "result/1";
 
-			foreach (var i in Enumerable.Range(1,20))
-			{
-				CreateRaceConditionTask(resultId);
-				var thread1 = new Thread(() =>
-				                         	{
-				                         		var taskExecutor = MasterResolve<ITaskExecutor>();
-				                         		taskExecutor.Start();
-				                         	});
-				var thread2 = new Thread(() =>
-				                         	{
-				                         		var taskExecutor = MasterResolve<ITaskExecutor>();
-				                         		taskExecutor.Start();
-				                         	});
+			Enumerable.Range(1, 100)
+				.ToList()
+				.ForEach(i =>
+				         	{
+				         		CreateRaceConditionTask(resultId);
+				         		var thread1 = new Thread(() =>
+				         		                         	{
+				         		                         		var taskExecutor =
+				         		                         			MasterResolve<ITaskExecutor>();
+				         		                         		taskExecutor.Start();
+				         		                         	});
+				         		var thread2 = new Thread(() =>
+				         		                         	{
+				         		                         		var taskExecutor =
+				         		                         			MasterResolve<ITaskExecutor>();
+				         		                         		taskExecutor.Start();
+				         		                         	});
 
-				thread1.Start();
-				thread2.Start();
+				         		thread1.Start();
+				         		thread2.Start();
 
-				thread1.Join();
-				thread2.Join();
-			}
+				         		thread1.Join();
+				         		thread2.Join();
+				         	});
 
 			var result = Load<ComputationResult<int>>(resultId);
 
-			result.Result.Should().Be(20);
-			
+			result.Result.Should().Be(100);
+
 		}
 
 		private void CreateRaceConditionTask(string resultId)
 		{
 			var task = new RaceConditionTask
-			           	{
-			           		ResultId = resultId
-			           	};
+						{
+							ResultId = resultId
+						};
 			_taskManager.Save(task);
 		}
 

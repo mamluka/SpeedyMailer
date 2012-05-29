@@ -17,9 +17,10 @@ using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drone;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
-using SpeedyMailer.Master.Web.UI;
+using SpeedyMailer.Shared;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using Raven.Client.Linq;
 using System.Linq;
@@ -33,9 +34,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IKernel MasterKernel { get; private set; }
 		public IDocumentStore DocumentStore { get; private set; }
 
-		public DroneActions Drone { get; set; }
-		public Actions UI { get; set; }
-		public MasterActions Master { get; set; }
+		public DroneActions DroneActions { get; set; }
+		public UIActions UIActions { get; set; }
+		public ServiceActions ServiceActions { get; set; }
 
 
 		[TestFixtureSetUp]
@@ -51,6 +52,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                             typeof (CoreAssemblyMarker),
                                                             typeof (WebCoreAssemblyMarker),
                                                             typeof (ServiceAssemblyMarker),
+                                                            typeof (SharedAssemblyMarker),
                                                             typeof (IRestClient),
                                                             typeof (ISchedulerFactory)
                                                         }))
@@ -64,6 +66,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Analyze(x => x.AssembiesContaining(new[]
                                                         {
                                                             typeof (DroneAssemblyMarker),
+															typeof (SharedAssemblyMarker),
+															typeof (ISchedulerFactory)
                                                         }))
 				.BindInterfaceToDefaultImplementation()
 				.NoDatabase()
@@ -73,18 +77,18 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private void RegisterActions()
 		{
-			UI = MasterKernel.Get<Actions>();
-			Master = MasterKernel.Get<MasterActions>();
-			Drone = DroneKernel.Get<DroneActions>();
+			UIActions = MasterKernel.Get<UIActions>();
+			ServiceActions = MasterKernel.Get<ServiceActions>();
+			DroneActions = DroneKernel.Get<DroneActions>();
 		}
 
 		private void LoadBasicSettings()
 		{
-			UI.EditSettings<IBaseApiSettings>(x =>
+			UIActions.EditSettings<IBaseApiSettings>(x =>
 												  {
 													  x.ServiceBaseUrl = "http://localhost:2589";
 												  });
-			UI.EditSettings<ICreativeApisSettings>(x =>
+			UIActions.EditSettings<ICreativeApisSettings>(x =>
 													   {
 														   x.AddCreative = "/creative/add";
 													   });
@@ -195,6 +199,16 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
 				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Count() > numberOfEntities &&
+				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
+
+			WaitForStoreWithFunction(condition);
+		}
+
+		protected void WaitForTaskToComplete(string taskId, int secondsToWait = 30)
+		{
+			Func<IDocumentSession, Stopwatch, bool> condition =
+				(session, stopwatch) =>
+				session.Load<PersistentTask>(taskId).Status == PersistentTaskStatus.Executed &&
 				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
 
 			WaitForStoreWithFunction(condition);

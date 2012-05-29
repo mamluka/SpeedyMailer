@@ -1,6 +1,7 @@
 using System.IO;
 using NUnit.Framework;
 using SpeedyMailer.Master.Web.Core.Commands;
+using SpeedyMailer.Master.Web.Core.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
@@ -22,7 +23,7 @@ namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
 
         private void AddList()
         {
-            UI.ExecuteCommand<CreateListCommand, string>(x =>
+            UIActions.ExecuteCommand<CreateListCommand, string>(x =>
                                                                  {
                                                                      x.Name = "Default list";
                                                                      x.Id = 1;
@@ -32,11 +33,12 @@ namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
         private void AddContacts()
         {
             var stream = File.OpenRead("fixture/contacts/csv-sample.csv");
-            UI.ExecuteCommand<ParseCsvFileCommand, UploadListCommandResult>(x =>
-                                                                                 {
-                                                                                     x.ListId = "lists/1";
-                                                                                     x.Source = stream;
-                                                                                 });
+        	var task = new ImportContactsFromCsvTask
+        	           	{
+        	           		ListId = "lists/1",
+        	           	};
+
+			UIActions.SaveAndExecuteTask(task);
         }
     }
 }

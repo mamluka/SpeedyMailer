@@ -3,6 +3,7 @@ using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using System.Linq;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Core.Utilities;
 
 namespace SpeedyMailer.Master.Service.Tasks
 {

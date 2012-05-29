@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Master.Web.UI.Mail
+namespace SpeedyMailer.Drone.Mail
 {
     public class MailParserInitializer
     {

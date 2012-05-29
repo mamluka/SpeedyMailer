@@ -23,7 +23,7 @@ namespace SpeedyMailer.Master.Service.MailDrones
                                   Resource = mailDrone.WakeUpUri
                               };
 
-            RestResponse<DroneStatus> result = restClient.Execute<DroneStatus>(request);
+            var result = restClient.Execute<DroneStatus>(request);
 
             if (result.ResponseStatus == ResponseStatus.Error)
             {

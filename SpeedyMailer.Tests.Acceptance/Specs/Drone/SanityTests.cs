@@ -1,4 +1,5 @@
 using NUnit.Framework;
+using SpeedyMailer.Drone;
 using SpeedyMailer.Master.Web.UI;
 
 namespace SpeedyMailer.Tests.Acceptance.Specs.Drone

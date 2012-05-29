@@ -1,6 +1,6 @@
 using System.Configuration;
 
-namespace SpeedyMailer.Master.Web.UI.Configurations
+namespace SpeedyMailer.Drone.Configurations
 {
     internal class DroneConfigurationManager : IDroneConfigurationManager
     {

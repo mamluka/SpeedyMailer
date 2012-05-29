@@ -1,4 +1,5 @@
 using System;
+using Raven.Client;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Tasks;
 
@@ -8,16 +9,23 @@ namespace SpeedyMailer.Core.Utilities
 	{
 		private readonly ITaskManager _taskManager;
 		private readonly ITaskExecutor _taskExecutor;
+		private readonly IDocumentStore _documentStore;
 
-		public Framework(ITaskManager taskManager, ITaskExecutor taskExecutor)
+		public Framework(IDocumentStore documentStore, ITaskManager taskManager, ITaskExecutor taskExecutor)
 		{
+			_documentStore = documentStore;
 			_taskExecutor = taskExecutor;
 			_taskManager = taskManager;
 		}
 
-		public void ExecuteCommand<T>(T command) where T : Command
+		public void ExecuteCommand(Command command)
 		{
 			command.Execute();
+		}
+
+		public TResult ExecuteCommand<TResult>(Command<TResult> command)
+		{
+			return command.Execute();
 		}
 
 		public void ExecuteCommand<T>(T command, Action<T> action) where T : Command
@@ -36,6 +44,15 @@ namespace SpeedyMailer.Core.Utilities
 		{
 			_taskManager.Save(task);
 			_taskExecutor.Start();
+		}
+
+		public void Store(dynamic entity)
+		{
+			using (var session = _documentStore.OpenSession())
+			{
+				session.Store(entity);
+				session.SaveChanges();
+			}
 		}
 	}
 }

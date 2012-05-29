@@ -1,8 +1,8 @@
 ﻿using System;
 using Nancy.Hosting.Self;
-using SpeedyMailer.Master.Web.UI.Jobs;
+using SpeedyMailer.Drone.Tasks;
 
-namespace SpeedyMailer.Master.Web.UI
+namespace SpeedyMailer.Drone
 {
     public class MailDroneHost
     {

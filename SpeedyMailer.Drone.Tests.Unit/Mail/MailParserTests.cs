@@ -3,7 +3,7 @@ using Ploeh.AutoFixture;
 using Rhino.Mocks;
 using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Emails;
-using SpeedyMailer.Master.Web.UI.Mail;
+using SpeedyMailer.Drone.Mail;
 using SpeedyMailer.Tests.Core.Emails;
 using SpeedyMailer.Tests.Core.Unit.Base;
 

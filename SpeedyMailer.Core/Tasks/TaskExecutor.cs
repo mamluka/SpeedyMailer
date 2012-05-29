@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Reflection;
 using Ninject;
 using Raven.Abstractions.Exceptions;
@@ -35,7 +36,7 @@ namespace SpeedyMailer.Core.Tasks
 				var tasks = session.Query<PersistentTask>()
 					.Where(task => task.Status == PersistentTaskStatus.Pending)
 					.Customize(x => x.WaitForNonStaleResults())
-					.OrderBy(x => x.CreateDate).Take(3)
+					.OrderBy(x => x.CreateDate).Take(1)
 					.ToList();
 
 				if (!tasks.Any()) return;
@@ -57,7 +58,7 @@ namespace SpeedyMailer.Core.Tasks
 						var executor = _kernel.Get(executorType);
 
 						var executeMethod = executor.GetType().GetMethod("Execute");
-						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] {task}, null);
+						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] { task }, null);
 
 						MarkAs(task, session, PersistentTaskStatus.Executed);
 					}

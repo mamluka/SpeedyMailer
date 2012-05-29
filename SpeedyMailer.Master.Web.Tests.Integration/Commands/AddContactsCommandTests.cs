@@ -16,13 +16,13 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
         {
 
             const string listName = "MyList";
-            var listId = UI.ExecuteCommand<CreateListCommand,string>(x =>
+            var listId = UIActions.ExecuteCommand<CreateListCommand,string>(x =>
                                                                          {
                                                                              x.Name = listName;
                                                                          });
             var contacts = Fixture.CreateMany<Contact>(10).ToList();
 
-            UI.ExecuteCommand<AddContactsCommand,long>(x=>
+            UIActions.ExecuteCommand<AddContactsCommand,long>(x=>
                                                       {
                                                           x.Contacts = contacts;
                                                           x.ListId = listId;
@@ -41,7 +41,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
         public void Execute_WhenWeHaveDuplicates_ShouldRemovetheDuplicates()
         {
             const string listName = "MyList";
-            var listId = UI.ExecuteCommand<CreateListCommand, string>(x =>
+            var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x =>
             {
                 x.Name = listName;
             });
@@ -51,7 +51,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
 
             contacts.Add(theDuplicate);
 
-            UI.ExecuteCommand<AddContactsCommand, long>(x =>
+            UIActions.ExecuteCommand<AddContactsCommand, long>(x =>
             {
                 x.Contacts = contacts;
                 x.ListId = listId;

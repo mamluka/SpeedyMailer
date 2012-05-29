@@ -18,6 +18,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Database
     public class PerformenceTestingForRavenDB : IntegrationTestBase
     {
         [Test]
+		[Ignore]
         public void Store_WhenTryingToStoreAMillionContacts_ShouldMeasureTheTimeItTakes()
         {
             var stopWatch = new Stopwatch();

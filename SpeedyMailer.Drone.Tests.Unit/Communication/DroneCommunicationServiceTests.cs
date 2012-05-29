@@ -4,7 +4,7 @@ using Ploeh.AutoFixture;
 using RestSharp;
 using Rhino.Mocks;
 using SpeedyMailer.Bridge.Communication;
-using SpeedyMailer.Master.Web.UI.Communication;
+using SpeedyMailer.Drone.Communication;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Drone.Tests.Unit.Communication

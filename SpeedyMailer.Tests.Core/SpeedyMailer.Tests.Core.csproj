@@ -111,13 +111,13 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=2.10.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+    <Reference Include="Ploeh.AutoFixture, Version=2.11.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.2.10.0\lib\Ploeh.AutoFixture.dll</HintPath>
+      <HintPath>..\packages\AutoFixture.2.11.1\lib\Ploeh.AutoFixture.dll</HintPath>
     </Reference>
-    <Reference Include="Ploeh.SemanticComparison, Version=2.10.0.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
+    <Reference Include="Ploeh.SemanticComparison, Version=2.11.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.2.10.0\lib\Ploeh.SemanticComparison.dll</HintPath>
+      <HintPath>..\packages\AutoFixture.2.11.1\lib\Ploeh.SemanticComparison.dll</HintPath>
     </Reference>
     <Reference Include="Quartz, Version=2.0.1.100, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
@@ -156,8 +156,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Emails\EmailSourceFactory.cs" />
-    <Compile Include="Integration\Base\Actions.cs" />
     <Compile Include="Integration\Base\ActionsBase.cs" />
+    <Compile Include="Integration\Base\UIActions.cs" />
+    <Compile Include="Integration\Base\MasterActionsBase.cs" />
     <Compile Include="Integration\Base\DroneActions.cs" />
     <Compile Include="Integration\Base\IntegrationNancyNinjectBootstrapper.cs" />
     <Compile Include="Integration\Base\IntegrationTestBase.cs" />
@@ -209,6 +210,10 @@
     <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
       <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
       <Name>SpeedyMailer.Master.Web.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Shared\SpeedyMailer.Shared.csproj">
+      <Project>{14CE29B4-79C3-4149-A4DD-0A031253387C}</Project>
+      <Name>SpeedyMailer.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

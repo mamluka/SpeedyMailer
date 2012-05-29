@@ -1,7 +1,6 @@
 ﻿using Ninject;
-using Ninject.Extensions.Conventions;
 
-namespace SpeedyMailer.Master.Web.UI.Bootstrappers
+namespace SpeedyMailer.Drone.Bootstrappers
 {
     public static class DroneNinjectBootstrapper
     {

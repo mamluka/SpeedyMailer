@@ -13,7 +13,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
         public void Execute_WhenGivenATemplateBody_ShouldSaveTheTemplateInTheStore()
         {
             const string templateBody = "template body";
-            var templateId = UI.ExecuteCommand<CreateTemplateCommand, string>(x =>
+            var templateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x =>
                                                                  {
                                                                      x.Body = templateBody;
                                                                  });

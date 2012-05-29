@@ -59,7 +59,7 @@
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB.Client.1.0.888\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
+    <Reference Include="RestSharp, Version=102.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\RestSharp.103.0.0\lib\net35\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -82,7 +82,7 @@
     <Compile Include="Commands\AddCreativeCommand.cs" />
     <Compile Include="Commands\CreateListCommand.cs" />
     <Compile Include="Commands\CreateTemplateCommand.cs" />
-    <Compile Include="Commands\ParseCsvFileCommand.cs" />
+    <Compile Include="Tasks\ImportContactsFromCsvTask.cs" />
     <Compile Include="Commands\SendCreativeCommand.cs" />
     <Compile Include="ComponentViewModel\ListDescriptorViewModel.cs" />
     <Compile Include="WebCoreAssemblyMarker.cs" />
@@ -108,6 +108,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

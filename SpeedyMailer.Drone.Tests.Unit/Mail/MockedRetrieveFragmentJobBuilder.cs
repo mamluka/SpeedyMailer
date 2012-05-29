@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using Rhino.Mocks;
 using SpeedyMailer.Bridge.Communication;
 using SpeedyMailer.Bridge.Model.Fragments;
-using SpeedyMailer.Master.Web.UI.Communication;
-using SpeedyMailer.Master.Web.UI.Jobs;
-using SpeedyMailer.Master.Web.UI.Mail;
+using SpeedyMailer.Drone.Communication;
+using SpeedyMailer.Drone.Mail;
+using SpeedyMailer.Drone.Tasks;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Drone.Tests.Unit.Mail
