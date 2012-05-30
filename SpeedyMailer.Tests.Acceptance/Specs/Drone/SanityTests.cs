@@ -10,7 +10,7 @@ namespace SpeedyMailer.Tests.Acceptance.Specs.Drone
         [Test]
         public void Sanity_ShouldSendTheFirstBanchOfEmailsWhenActivated()
         {
-            MailDroneHost.Main(new string[] {});
+            DroneHost.Main(new string[] {});
         }
     }
 }

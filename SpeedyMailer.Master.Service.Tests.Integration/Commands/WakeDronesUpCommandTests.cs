@@ -18,6 +18,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 		[Test]
 		public void Execute_WhenCalled_ShouldSendAAwakeUpApiCallToAllDronesRegistered()
 		{
+			DroneActions.Start();
 			var result = ServiceActions.ExecuteCommand<WakeupDronesCommand, IList<Drone>>(x=>
 			                                                                       	{
 			                                                                       		

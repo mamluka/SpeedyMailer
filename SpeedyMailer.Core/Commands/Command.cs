@@ -1,3 +1,4 @@
+using System;
 using SpeedyMailer.Core.Api;
 
 namespace SpeedyMailer.Core.Commands

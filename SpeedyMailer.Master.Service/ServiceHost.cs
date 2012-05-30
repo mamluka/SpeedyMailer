@@ -1,7 +1,10 @@
 ﻿using System;
+using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
-using SpeedyMailer.Master.Service.Bootstrapper;
+using SpeedyMailer.Core.Container;
+using SpeedyMailer.Master.Service.Container;
+using Ninject;
 
 namespace SpeedyMailer.Master.Service
 {
@@ -9,7 +12,9 @@ namespace SpeedyMailer.Master.Service
     {
     	public static void Main(string[] args)
     	{
-    		var service = new Service(new MyNinjectBootstrapper());
+    		var kernel = ServiceContainerBootstrapper.Kernel;
+    		var service = kernel.Get<Service>();
+
     		service.Start();
 			Console.WriteLine("To stop press any key");
     		Console.ReadKey();
@@ -21,7 +26,7 @@ namespace SpeedyMailer.Master.Service
 	{
 		private readonly NancyHost _nancyHost;
 
-		public Service(NinjectNancyBootstrapper ninjectNancyBootstrapper)
+		public Service(INancyBootstrapper ninjectNancyBootstrapper)
 		{
 			_nancyHost = new NancyHost(ninjectNancyBootstrapper, new Uri("http://localhost:2589/"));
 		}

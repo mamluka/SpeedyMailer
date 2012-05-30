@@ -69,7 +69,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		}
 
 		[Test]
-		public void BeginExecuting_WhenAJobWasTriggeredAndWasOverAndBeginExecutingWasCaleedAgain_ShouldStartTheJobAgain()
+		public void BeginExecuting_WhenAJobWasTriggeredAndWasOverAndBeginExecutingWasCaleedAgain_ShouldStartNewJob()
 		{
 			const string resultId1 = "addition/1";
 			const string resultId2 = "addition/2";

@@ -60,6 +60,12 @@
     <Reference Include="ImpromptuInterface">
       <HintPath>..\packages\ImpromptuInterface.5.6.7\lib\net40\ImpromptuInterface.dll</HintPath>
     </Reference>
+    <Reference Include="Nancy">
+      <HintPath>..\packages\Nancy.0.11.0\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Bootstrappers.Ninject">
+      <HintPath>..\libs\Nancy.Bootstrappers\Nancy.Bootstrappers.Ninject.dll</HintPath>
+    </Reference>
     <Reference Include="NConfig, Version=1.0.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NConfig.1.0.12\lib\Net40\NConfig.dll</HintPath>
@@ -120,6 +126,8 @@
     <Compile Include="Container\IDoneBootstrapping.cs" />
     <Compile Include="Container\JsonFileSettingsBinder.cs" />
     <Compile Include="Container\JsonSettingsInterceptor.cs" />
+    <Compile Include="Container\NancyBootstrapperProvider.cs" />
+    <Compile Include="Container\NancyContainerBootstrapper.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
     <Compile Include="Container\SettingsInterceptor.cs" />
