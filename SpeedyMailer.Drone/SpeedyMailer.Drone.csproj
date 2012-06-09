@@ -110,14 +110,8 @@
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Tasks\DroneJobManager.cs" />
     <Compile Include="Tasks\ContainerJobFactory.cs" />
-    <Compile Include="Tasks\ITaskData.cs" />
-    <Compile Include="Tasks\JobBase.cs" />
-    <Compile Include="Tasks\ScheduledTaskData.cs" />
-    <Compile Include="Tasks\ScheduledTaskDataProvider.cs" />
-    <Compile Include="Tasks\ScheduledTaskManager.cs" />
     <Compile Include="Tasks\RegisterDroneWithMasterServiceTask.cs" />
     <Compile Include="Tasks\RetrieveFragmentJob.cs" />
-    <Compile Include="Tasks\ScheduledTask.cs" />
     <Compile Include="DroneHost.cs" />
     <Compile Include="Mail\IMailParser.cs" />
     <Compile Include="Mail\IMailSender.cs" />

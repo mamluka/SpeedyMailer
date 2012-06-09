@@ -173,7 +173,12 @@
     <Compile Include="Settings\ICreativeFragmentSettings.cs" />
     <Compile Include="Settings\IServiceSettings.cs" />
     <Compile Include="Tasks\ComputationResult.cs" />
+    <Compile Include="Tasks\ITaskData.cs" />
     <Compile Include="Tasks\ITaskExecutionSettings.cs" />
+    <Compile Include="Tasks\JobBase.cs" />
+    <Compile Include="Tasks\ScheduledTask.cs" />
+    <Compile Include="Tasks\ScheduledTaskData.cs" />
+    <Compile Include="Tasks\ScheduledTaskManager.cs" />
     <Compile Include="Tasks\TaskCoordinator.cs" />
     <Compile Include="Tasks\TaskExecutor.cs" />
     <Compile Include="Tasks\PersistentTask.cs" />

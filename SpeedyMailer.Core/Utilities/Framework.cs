@@ -28,7 +28,7 @@ namespace SpeedyMailer.Core.Utilities
 			return command.Execute();
 		}
 
-		public void SaveAndExecuteTask(PersistentTask task)
+		public void ExecuteTask(PersistentTask task)
 		{
 			_taskManager.Save(task);
 			_taskCoordinator.BeginExecuting();

@@ -1,6 +1,6 @@
 using Quartz;
 
-namespace SpeedyMailer.Drone.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public interface ITaskData<out T>
 	{

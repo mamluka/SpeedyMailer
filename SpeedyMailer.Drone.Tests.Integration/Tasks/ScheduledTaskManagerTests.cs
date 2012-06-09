@@ -7,6 +7,8 @@ using System.Threading;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using Quartz;
+using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drone.Tasks;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
@@ -22,60 +24,47 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 
 		public override void ExtraSetup()
 		{
-			_target = DroneResolve<IScheduledTaskManager>();
+			_target = MasterResolve<IScheduledTaskManager>();
 		}
 
 		[Test]
 		public void Start_WhenGivenAScheduledTask_ShouldScheduleAndStartTheTask()
 		{
-			var testFile = Guid.NewGuid() + ".txt";
+			const string resultId = "result/1";
 			var task = new TestScheduledTask(x =>
 												{
-													x.TestFile = testFile;
+
+													x.ResultId = resultId;
 												});
 
 			_target.Start(task);
 
 			LetSchedulerThreadSpinAlive();
-			DoesFileExist(testFile).Should().BeTrue();
+			WaitForEntityToExist(resultId);
 
-			ClearnUpFile(testFile);
-		}
+			var result = Load<ComputationResult<string>>(resultId);
 
-		private void ClearnUpFile(string testFile)
-		{
-			File.Delete(testFile);
+			result.Result.Should().Be("done");
+
+
 		}
 
 		private static void LetSchedulerThreadSpinAlive()
 		{
 			Thread.Sleep(1000);
 		}
-
-		private static bool DoesFileExist(string testFile)
-		{
-			return File.Exists(testFile);
-		}
 	}
 
-	public class TestScheduledTask : ScheduledTask
+	public class TestScheduledTask : ScheduledTaskWithData<TestScheduledTask.Data>
 	{
-		private readonly Data _data;
-
 		public TestScheduledTask(Action<Data> action)
+			: base(action)
 		{
-			_data = new Data();
-			action.Invoke(_data);
-		}
-
-		public override string Name
-		{
-			get { return "TestScheduledTask"; }
 		}
 
 		public override IJobDetail GetJob()
 		{
-			return SimpleJob<Job>(_data);
+			return SimpleJob<Job>(TaskData);
 		}
 
 		public override ITrigger GetTrigger()
@@ -87,25 +76,29 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 												});
 		}
 
-		public override ScheduledTaskData GetData()
-		{
-			return _data;
-		}
-
 		public class Data : ScheduledTaskData
 		{
-			public string TestFile { get; set; }
+			public string ResultId { get; set; }
 		}
 
-		public class Job : JobBase<Data>,IJob
+		public class Job : JobBase<Data>, IJob
 		{
+			private readonly Framework _framework;
+
+			public Job(Framework framework)
+			{
+				_framework = framework;
+			}
+
 			public void Execute(IJobExecutionContext context)
 			{
 				var data = GetData(context);
-				using (var file = new StreamWriter(data.TestFile, true))
-				{
-					file.WriteLine(context.JobRunTime);
-				}
+
+				_framework.Store(new ComputationResult<string>
+				                 	{
+										Id = data.ResultId,
+				                 		Result = "done"
+				                 	});
 			}
 		}
 	}

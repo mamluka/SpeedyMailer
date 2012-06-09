@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Quartz;
 
-namespace SpeedyMailer.Drone.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public abstract class JobBase<T> : ITaskData<T>
 	{

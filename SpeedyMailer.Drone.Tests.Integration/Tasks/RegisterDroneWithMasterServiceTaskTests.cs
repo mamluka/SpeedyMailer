@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drone.Tasks;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;

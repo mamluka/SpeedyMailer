@@ -58,7 +58,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 			           		SecondNumber = 2,
 							ResultId = "result/1"
 			           	};
-			_target.SaveAndExecuteTask(task);
+			_target.ExecuteTask(task);
 
 			var result = Load<ComputationResult<int>>("result/1");
 
@@ -75,12 +75,18 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 				SecondNumber = 2,
 				ResultId = resultId
 			};
-			_target.SaveAndExecuteTask(task);
+			_target.ExecuteTask(task);
 
 			WaitForEntityToExist(resultId,10);
 			var result = Load<ComputationResult<int>>(resultId);
 
 			result.Result.Should().Be(4);
+		}
+
+		[Test]
+		public void ExecuteScheduledTask_WhenATaskIsGiven_ShouldExecuteIt()
+		{
+
 		}
 	}
 

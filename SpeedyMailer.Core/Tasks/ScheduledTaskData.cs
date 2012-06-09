@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Drone.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public class ScheduledTaskData
 	{

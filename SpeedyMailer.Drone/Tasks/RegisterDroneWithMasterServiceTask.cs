@@ -1,15 +1,11 @@
 using System;
 using Quartz;
+using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Drone.Tasks
 {
 	public class RegisterDroneWithMasterServiceTask : ScheduledTask
 	{
-		public override string Name
-		{
-			get { return "RegisterDroneWithMasterServiceTask"; }
-		}
-
 		public override IJobDetail GetJob()
 		{
 			return SimpleJob<Job>();
@@ -20,11 +16,6 @@ namespace SpeedyMailer.Drone.Tasks
 			return TriggerWithTimeCondition(x =>
 											x.WithIntervalInMinutes(1).RepeatForever()
 				);
-		}
-
-		public override ScheduledTaskData GetData()
-		{
-			throw new NotImplementedException();
 		}
 
 		public class Job : IJob

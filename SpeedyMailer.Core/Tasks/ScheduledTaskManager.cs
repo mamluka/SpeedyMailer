@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using Quartz;
-using Quartz.Listener;
 
-namespace SpeedyMailer.Drone.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public interface IScheduledTaskManager
 	{
