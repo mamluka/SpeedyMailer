@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
+using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drone.Tasks;
 using SpeedyMailer.Tests.Core;
@@ -40,14 +41,12 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 			                                          		
 			                                          		x.Identifier = identifier;
 			                                          	});
-			ServiceActions.Start();
+
+			StartRestServer<ServiceApi.RegisterDrone.Request>("/drones/register");
 			var task = new RegisterDroneWithMasterServiceTask();
 			_scheduledTaskManager.Start(task);
 
-			var result = Query<Shared.Domain.Drone>();
-
-			result.Should().HaveCount(1);
-			result.First().Identifier.Should().Be(identifier);
+			AssertRestCall<ServiceApi.RegisterDrone.Request>(x => x.Identifier == identifier);
 		}
 	}
 
@@ -61,4 +60,6 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 		string Hostname { get; set; }
 		int Port { get; set; }
 	}
+
+	
 }

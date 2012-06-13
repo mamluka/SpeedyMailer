@@ -1,7 +1,6 @@
 ﻿using System;
 using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
-using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drone.Bootstrappers;
 using Ninject;
 
@@ -24,11 +23,9 @@ namespace SpeedyMailer.Drone
 		private NancyHost _nancy;
 		private readonly ITransportSettings _transportSettings;
 		private readonly INancyBootstrapper _nancyBootstrapper;
-		private readonly Framework _framework;
 
-		public Drone(INancyBootstrapper nancyBootstrapper,ITransportSettings transportSettings,Framework framework)
+		public Drone(INancyBootstrapper nancyBootstrapper,ITransportSettings transportSettings)
 		{
-			_framework = framework;
 			_nancyBootstrapper = nancyBootstrapper;
 			_transportSettings = transportSettings;
 		}

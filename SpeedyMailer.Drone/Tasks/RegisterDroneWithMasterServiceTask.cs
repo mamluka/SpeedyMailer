@@ -14,7 +14,7 @@ namespace SpeedyMailer.Drone.Tasks
 		public override ITrigger GetTrigger()
 		{
 			return TriggerWithTimeCondition(x =>
-											x.WithIntervalInMinutes(1).RepeatForever()
+			                                x.WithIntervalInMinutes(1).RepeatForever()
 				);
 		}
 

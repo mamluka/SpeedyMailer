@@ -23,7 +23,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Bootstrap(existingContainer)
 				.Analyze(x => x.AssembiesContaining(new[]
 				                                    	{
-				                                    		typeof (CoreAssemblyMarker),
+				                                    		typeof(CoreAssemblyMarker),
 				                                    		typeof(ServiceAssemblyMarker),
 				                                    		typeof(IRestClient)
 				                                    	}))
