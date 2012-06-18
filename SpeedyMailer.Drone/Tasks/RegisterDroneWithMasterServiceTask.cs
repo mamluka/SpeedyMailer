@@ -1,5 +1,6 @@
 using System;
 using Quartz;
+using RestSharp;
 using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Drone.Tasks
@@ -20,6 +21,13 @@ namespace SpeedyMailer.Drone.Tasks
 
 		public class Job : IJob
 		{
+			private IRestClient _restClient;
+
+			public Job(IRestClient restClient)
+			{
+				_restClient = restClient;
+			}
+
 			public void Execute(IJobExecutionContext context)
 			{
 

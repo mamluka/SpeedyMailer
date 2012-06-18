@@ -1,5 +1,3 @@
-using SpeedyMailer.Core.Domain.Creative;
-
 namespace SpeedyMailer.Core.Protocol
 {
     public class CreativeApi

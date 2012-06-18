@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Api
 													  RecipientsPerFragment = creativeFragmentSettings.RecipientsPerFragment
 												  });
 
-								  return "sdfsdf";
+								  return null;
 							  };
 		}
 	}

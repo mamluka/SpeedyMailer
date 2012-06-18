@@ -60,12 +60,6 @@
     <Reference Include="ImpromptuInterface">
       <HintPath>..\packages\ImpromptuInterface.5.6.7\lib\net40\ImpromptuInterface.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy">
-      <HintPath>..\packages\Nancy.0.11.0\lib\net40\Nancy.dll</HintPath>
-    </Reference>
-    <Reference Include="Nancy.Bootstrappers.Ninject">
-      <HintPath>..\libs\Nancy.Bootstrappers\Nancy.Bootstrappers.Ninject.dll</HintPath>
-    </Reference>
     <Reference Include="NConfig, Version=1.0.12.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NConfig.1.0.12\lib\Net40\NConfig.dll</HintPath>
@@ -109,7 +103,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\Api.cs" />
+    <Compile Include="Api\ApiCall.cs" />
     <Compile Include="Api\ApiResult.cs" />
+    <Compile Include="Api\IApiCallsSettings.cs" />
+    <Compile Include="Api\IApiHost.cs" />
     <Compile Include="Api\ServiceApi.cs" />
     <Compile Include="Api\Status.cs" />
     <Compile Include="Commands\Command.cs" />
@@ -202,6 +200,14 @@
     <Compile Include="Utilities\General\IReportResults.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Nancy.Bootstrappers.Ninject\src\Nancy.Bootstrappers.Ninject\Nancy.Bootstrappers.Ninject.csproj">
+      <Project>{760A88F1-7CEA-47FE-86AC-4F75609100F2}</Project>
+      <Name>Nancy.Bootstrappers.Ninject</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Nancy\src\Nancy\Nancy.csproj">
+      <Project>{34576216-0DCA-4B0F-A0DC-9075E75A676F}</Project>
+      <Name>Nancy</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
       <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
       <Name>SpeedyMailer.Bridge</Name>

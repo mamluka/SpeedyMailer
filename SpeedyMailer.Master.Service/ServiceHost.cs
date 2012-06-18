@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Service
 
 		public Service(INancyBootstrapper ninjectNancyBootstrapper)
 		{
-			_nancyHost = new NancyHost(ninjectNancyBootstrapper, new Uri("http://localhost:2589/"));
+			_nancyHost = new NancyHost(new Uri("http://localhost:2589/"), ninjectNancyBootstrapper);
 		}
 
 		public void Start()

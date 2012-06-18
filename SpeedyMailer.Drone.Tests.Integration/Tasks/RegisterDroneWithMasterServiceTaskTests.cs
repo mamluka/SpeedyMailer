@@ -42,11 +42,11 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 			                                          		x.Identifier = identifier;
 			                                          	});
 
-			StartRestServer<ServiceApi.RegisterDrone.Request>("/drones/register");
+			//ListenToApiCall<ServiceApi.RegisterDrone>("/drones/register");
 			var task = new RegisterDroneWithMasterServiceTask();
 			_scheduledTaskManager.Start(task);
 
-			AssertRestCall<ServiceApi.RegisterDrone.Request>(x => x.Identifier == identifier);
+			AssertApiCall<ServiceApi.RegisterDrone.Request>(x => x.Identifier == identifier);
 		}
 	}
 

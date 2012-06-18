@@ -47,9 +47,6 @@
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.0.10.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.Bootstrappers.Ninject, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\libs\Nancy.Bootstrappers\Nancy.Bootstrappers.Ninject.dll</HintPath>
-    </Reference>
     <Reference Include="Nancy.Testing">
       <HintPath>..\packages\Nancy.Testing.0.10.0\lib\net40\Nancy.Testing.dll</HintPath>
     </Reference>
@@ -114,6 +111,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Nancy.Bootstrappers.Ninject\src\Nancy.Bootstrappers.Ninject\Nancy.Bootstrappers.Ninject.csproj">
+      <Project>{760A88F1-7CEA-47FE-86AC-4F75609100F2}</Project>
+      <Name>Nancy.Bootstrappers.Ninject</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
       <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
       <Name>SpeedyMailer.Bridge</Name>
