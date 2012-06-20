@@ -1,21 +1,12 @@
 using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
+using FluentAssertions;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 using Quartz;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Drone.Tasks;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
-using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
-namespace SpeedyMailer.Drone.Tests.Integration.Tasks
+namespace SpeedyMailer.Core.IntegrationTests.Tasks
 {
 	[TestFixture]
 	public class ScheduledTaskManagerTests : IntegrationTestBase
