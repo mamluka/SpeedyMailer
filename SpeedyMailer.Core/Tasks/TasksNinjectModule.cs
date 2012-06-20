@@ -1,7 +1,7 @@
 using Ninject.Modules;
 using Quartz;
 
-namespace SpeedyMailer.Shared.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public class TasksNinjectModule:NinjectModule
 	{

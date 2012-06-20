@@ -32,14 +32,13 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 		{
 			const string resultId = "result/1";
 			var task = new TestScheduledTask(x =>
-												{
+			                                 	{
 
-													x.ResultId = resultId;
-												});
+			                                 		x.ResultId = resultId;
+			                                 	});
 
 			_target.Start(task);
 
-			LetSchedulerThreadSpinAlive();
 			WaitForEntityToExist(resultId);
 
 			var result = Load<ComputationResult<string>>(resultId);
@@ -47,11 +46,6 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 			result.Result.Should().Be("done");
 
 
-		}
-
-		private static void LetSchedulerThreadSpinAlive()
-		{
-			Thread.Sleep(1000);
 		}
 	}
 

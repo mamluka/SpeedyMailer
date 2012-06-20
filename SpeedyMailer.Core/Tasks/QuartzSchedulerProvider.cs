@@ -2,7 +2,7 @@ using Ninject.Activation;
 using Quartz;
 using Quartz.Impl;
 
-namespace SpeedyMailer.Shared.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public class QuartzSchedulerProvider : Provider<IScheduler>
 	{

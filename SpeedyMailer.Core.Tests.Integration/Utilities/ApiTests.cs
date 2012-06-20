@@ -27,14 +27,14 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		[Test]
 		public void Call_WhenUsingPost_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x=> x.ApiBaseUri = ApiListningHostname);
-			ListenToApiCall<TestApi,TestApi.Request>();
+			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
+			ListenToApiCall<TestApi, TestApi.Request>();
 
 			_target.Call<TestApi>()
 				.WithParameters(x => x.CallId = "testing call")
 				.Post();
 
-			AssertApiCall<TestApi.Request>(x=> x.CallId == "testing call");
+			AssertApiCall<TestApi.Request>(x => x.CallId == "testing call");
 		}
 
 		[Test]
@@ -53,17 +53,14 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 
 	public class TestApi : ApiCall<TestApi.Request>
 	{
+		public TestApi(): base("/testing/api") {}
+
 		public class Request
 		{
 			public string CallId { get; set; }
 		}
-
-		public override string Endpoint
-		{
-			get { return "/testing/api"; }
-		}
 	}
 
 
-	
+
 }

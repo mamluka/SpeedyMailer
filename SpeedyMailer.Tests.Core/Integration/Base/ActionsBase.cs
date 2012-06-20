@@ -6,29 +6,29 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public abstract class ActionsBase
 	{
-		private IKernel _kernel;
+		private readonly IKernel _kernel;
 
-		public ActionsBase(IKernel kernel)
+		protected ActionsBase(IKernel kernel)
 		{
 			_kernel = kernel;
 		}
 
 		public void ExecuteCommand<T>() where T : Command
 		{
-			var command = ResolutionExtensions.Get<T>(_kernel);
+			var command = _kernel.Get<T>();
 			command.Execute();
 		}
 
 		public void ExecuteCommand<T>(Action<T> action) where T : Command
 		{
-			var command = ResolutionExtensions.Get<T>(_kernel);
+			var command = _kernel.Get<T>();
 			action.Invoke(command);
 			command.Execute();
 		}
 
 		public TResult ExecuteCommand<T, TResult>(Action<T> action) where T : Command<TResult>
 		{
-			var command = ResolutionExtensions.Get<T>(_kernel);
+			var command = _kernel.Get<T>();
 			action.Invoke(command);
 			return command.Execute();
 		}

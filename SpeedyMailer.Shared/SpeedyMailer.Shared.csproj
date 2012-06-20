@@ -58,9 +58,6 @@
     <Compile Include="Domain\Drone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SharedAssemblyMarker.cs" />
-    <Compile Include="Tasks\ContainerJobFactory.cs" />
-    <Compile Include="Tasks\QuartzSchedulerProvider.cs" />
-    <Compile Include="Tasks\TasksNinjectModule.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

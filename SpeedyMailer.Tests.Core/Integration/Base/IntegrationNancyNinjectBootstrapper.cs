@@ -5,6 +5,7 @@ using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Service;
+using System.Linq;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {

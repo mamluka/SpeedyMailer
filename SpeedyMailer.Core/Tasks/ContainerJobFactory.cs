@@ -2,7 +2,7 @@ using Ninject;
 using Quartz;
 using Quartz.Spi;
 
-namespace SpeedyMailer.Shared.Tasks
+namespace SpeedyMailer.Core.Tasks
 {
 	public class ContainerJobFactory : IJobFactory
 	{

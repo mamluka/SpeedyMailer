@@ -1,52 +1,40 @@
 using RestSharp;
 using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Master.Web.Core.Commands
 {
-	public class SendCreativeCommand:ApiCommand
+	public class SendCreativeCommand : ApiCommand
 	{
-		private readonly IRestClient _restClient;
-		private readonly ICreativeApisSettings _creativeApisSettings;
-	    private readonly IBaseApiSettings _baseApiSettings;
-	    public string CreativeId { get; set; }
+		private readonly Api _api;
+		public string CreativeId { get; set; }
 
-	    public SendCreativeCommand(IRestClient restClient,IBaseApiSettings baseApiSettings,ICreativeApisSettings creativeApisSettings)
+		public SendCreativeCommand(Api api)
 		{
-		    _baseApiSettings = baseApiSettings;
-		    _creativeApisSettings = creativeApisSettings;
-			_restClient = restClient;
+			_api = api;
 		}
 
-        public override ApiResult Execute()
-        {
-            var restRequest = new RestRequest(_creativeApisSettings.AddCreative);
-            var request = new CreativeApi.Add.Request
-                              {
-                                  CreativeId = CreativeId,
-							  };
+		public override ApiResult Execute()
+		{
+			_api.Call<CreativeEndpoint.Add>()
+				.WithParameters(x => x.CreativeId = CreativeId)
+				.Post();
 
-            restRequest.AddBody(request);
-			restRequest.RequestFormat = DataFormat.Json;
-			restRequest.Method = Method.POST;
-
-            _restClient.BaseUrl = _baseApiSettings.ServiceBaseUrl;
-            _restClient.Execute<FaultTolerantResponse>(restRequest);
-
-        	return new ApiResult();
-        }
+			return new ApiResult();
+		}
 	}
 
-    public class FaultTolerantResponse
+	public class FaultTolerantResponse
 	{
 		public bool ExceptionOccured;
 		public string ExceptionMessage { get; set; }
 		public string ExceptionName { get; set; }
 	}
 
-	public class FaultTolerantResponse<T>:FaultTolerantResponse
+	public class FaultTolerantResponse<T> : FaultTolerantResponse
 	{
 		public T Model;
 	}

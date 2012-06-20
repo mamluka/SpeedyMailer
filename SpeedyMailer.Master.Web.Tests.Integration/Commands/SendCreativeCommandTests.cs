@@ -34,13 +34,17 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
 
 			ServiceActions.Initialize();
             ServiceActions.Start();
+			
+
             UIActions.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
                                                              	{
                                                              		x.CreativeId = creativeId;
                                                              	});
-            ServiceActions.Stop();
+           
+        	WaitForEntityToExist<CreativeFragment>(x => x.Creative.Id == creativeId,2);
+			ServiceActions.Stop();
 
-            var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
+        	var result = Query<CreativeFragment>().Where(x => x.Creative.Id == creativeId);
 
             result.Should().HaveCount(2);
             result.First().Recipients.Should().HaveCount(1000);

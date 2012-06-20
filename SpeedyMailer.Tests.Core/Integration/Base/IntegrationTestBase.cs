@@ -96,14 +96,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private void LoadBasicSettings()
 		{
-			UIActions.EditSettings<IBaseApiSettings>(x =>
-												  {
-													  x.ServiceBaseUrl = "http://localhost:2589";
-												  });
-			UIActions.EditSettings<ICreativeApisSettings>(x =>
-													   {
-														   x.AddCreative = "/creative/add";
-													   });
+			UIActions.EditSettings<IApiCallsSettings>(x=> x.ApiBaseUri = ApiListningHostname);
+			DroneActions.EditSettings<IApiCallsSettings>(x=> x.ApiBaseUri = ApiListningHostname);
 		}
 
 		[SetUp]
@@ -215,6 +209,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			WaitForStoreWithFunction(condition);
 		}
+		protected void WaitForEntityToExist<T>(Func<T,bool> whereCondition ,int count=1, int secondsToWait = 30)
+		{
+			Func<IDocumentSession, Stopwatch, bool> condition =
+				(session, stopwatch) =>
+				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Where(whereCondition).Count() < count &&
+				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
+
+			WaitForStoreWithFunction(condition);
+		}
 
 		protected void WaitForTaskToComplete(string taskId, int secondsToWait = 30)
 		{
@@ -249,15 +252,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			_nancy.Start();
 		}
 
-		public void AssertApiCall<T>(Func<T, bool> func) where T : class
+		public void AssertApiCall<T>(Func<T, bool> func,int seconds = 30) where T : class
 		{
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
-			while (RestCallTestingModule<T>.Model == null && stopwatch.ElapsedMilliseconds < 30000)
+			while (RestCallTestingModule<T>.Model == null && stopwatch.ElapsedMilliseconds < seconds*1000)
 			{
 				Thread.Sleep(500);
-				Trace.WriteLine(stopwatch.ElapsedMilliseconds);
 			}
 
 			StopListeningToApiCall();
@@ -277,12 +279,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		}
 	}
 
-	public class RestCallTestingModule<T> : NancyModule
+	public class RestCallTestingModule<T> : NancyModule,IDoNotResolveModule
 	{
 		public static T Model;
 
-		public RestCallTestingModule(string baseUrl, string endpoint)
-			: base(baseUrl)
+		public RestCallTestingModule(string baseBaseUrl, string endpoint)
+			: base(baseBaseUrl)
 		{
 			Get[endpoint] = x =>
 								{

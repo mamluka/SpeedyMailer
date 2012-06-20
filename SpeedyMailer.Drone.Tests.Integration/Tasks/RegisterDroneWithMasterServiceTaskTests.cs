@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drone.Settings;
 using SpeedyMailer.Drone.Tasks;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
@@ -22,7 +23,7 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 
 		public override void ExtraSetup()
 		{
-			_scheduledTaskManager = DroneResolve<IScheduledTaskManager>();
+			_scheduledTaskManager = MasterResolve<IScheduledTaskManager>();
 		}
 
 		[Test]
@@ -30,36 +31,16 @@ namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 		{
 			const string identifier = "drone1";
 
-			DroneActions.EditSettings<IMasterServiceSettings>(x=>
-			                                           	{
-			                                           		x.Hostname = "localhost";
-			                                           		x.Port = 2589;
-			                                           	});
-
 			DroneActions.EditSettings<IDroneSettings>(x=>
 			                                          	{
-			                                          		
 			                                          		x.Identifier = identifier;
 			                                          	});
 
-			//ListenToApiCall<ServiceApi.RegisterDrone>("/drones/register");
-			var task = new RegisterDroneWithMasterServiceTask();
+		    ListenToApiCall<ServiceApi.RegisterDrone,ServiceApi.RegisterDrone.Request>();
+			var task = new RegisterDroneWithServiceTask(x=> x.Identifier = identifier);
 			_scheduledTaskManager.Start(task);
 
 			AssertApiCall<ServiceApi.RegisterDrone.Request>(x => x.Identifier == identifier);
 		}
 	}
-
-	public interface IDroneSettings
-	{
-		string Identifier { get; set; }
-	}
-
-	public interface IMasterServiceSettings
-	{
-		string Hostname { get; set; }
-		int Port { get; set; }
-	}
-
-	
 }
