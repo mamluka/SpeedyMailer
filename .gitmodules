@@ -1,0 +1,3 @@
+[submodule "Nancy.Bootstrappers.Ninject"]
+	path = Nancy.Bootstrappers.Ninject
+	url = https://github.com/mamluka/Nancy.Bootstrappers.Ninject.git

@@ -36,29 +36,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Creative.Id.Should().Be(creativeId);
 		}
 
-		[Test]
-		public void Add_WhenThereIsOneDroneAsleep_ShouldWakeUpSleepyDrone()
-		{
-			ServiceActions.Initialize();
-			ServiceActions.Start();
-			var drone = new Drone
-			            	{
-								Identifier = "drone1",
-								Hostname="http://localhost:2587"
-			            	};
-
-			RegisterDroneWithService(drone);
-			var creativeId = CreateCreative();
-			AddCreative(creativeId);
-
-
-		}
-
-		private void RegisterDroneWithService(Drone drone)
-		{
-			//ServiceActions.ExecuteCommand<>()
-		}
-
 		private void AddCreative(string creativeId)
 		{
 			Api.Call<CreativeEndpoint.Add>()
