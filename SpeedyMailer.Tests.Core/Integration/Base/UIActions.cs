@@ -27,7 +27,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				command.Contacts = Fixture
 					.Build<Contact>()
 					.Without(x => x.Id)
-					.CreateMany(1500);
+					.CreateMany(contactsCount);
 
 				command.ListId = listId;
 
@@ -49,7 +49,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 	public class ServiceActions : MasterActionsBase
 	{
-		private Service _service;
+		private TopService _topService;
 
 		public ServiceActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor)
 			: base(kernel, taskManager, taskExecutor)
@@ -58,17 +58,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public void Initialize()
 		{
 			var documentStore = Kernel.Get<IDocumentStore>();
-			_service = new Service(new IntegrationNancyNinjectBootstrapper(documentStore));
+			_topService = new TopService(new IntegrationNancyNinjectBootstrapper(documentStore));
 		}
 		public void Start()
 		{
 
-			_service.Start();
+			_topService.Start();
 		}
 
 		public void Stop()
 		{
-			_service.Stop();
+			_topService.Stop();
 		}
 	}
 }

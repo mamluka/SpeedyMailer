@@ -3,7 +3,6 @@ using Ninject;
 using Ninject.Modules;
 using Quartz;
 using SpeedyMailer.Core.Container;
-using SpeedyMailer.Shared;
 
 namespace SpeedyMailer.Drone.Bootstrappers
 {
@@ -21,10 +20,10 @@ namespace SpeedyMailer.Drone.Bootstrappers
 			return assemblyGatherer.Analyze(x => x.AssembiesContaining(new[]
 			                                                           	{
 			                                                           		typeof (DroneAssemblyMarker),
-			                                                           		typeof (SharedAssemblyMarker),
 			                                                           		typeof (ISchedulerFactory)
 			                                                           	}))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();

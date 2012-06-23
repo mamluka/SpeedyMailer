@@ -220,10 +220,6 @@
       <Project>{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}</Project>
       <Name>SpeedyMailer.Master.Web.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Shared\SpeedyMailer.Shared.csproj">
-      <Project>{14CE29B4-79C3-4149-A4DD-0A031253387C}</Project>
-      <Name>SpeedyMailer.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DB\" />

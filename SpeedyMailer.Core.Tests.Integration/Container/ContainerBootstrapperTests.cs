@@ -32,6 +32,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Done();
 
 			var result = kernel.Get<ITestingInterface>();
@@ -48,6 +49,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(ServiceAssemblyMarker) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Done();
 
 													   var result = kernel.Get<ITestingInterface>();
@@ -61,6 +63,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Storage<IDocumentStore>(x => x.Provider<TestDatabaseProvider>())
 				.Done();
 
@@ -82,6 +85,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Storage<IDocumentStore>(x => x.Constant(store))
 				.Done();
 
@@ -107,6 +111,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
@@ -125,6 +130,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
@@ -148,6 +154,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
@@ -172,6 +179,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
@@ -192,6 +200,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
@@ -215,6 +224,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
@@ -231,6 +241,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
 				.NoDatabase()
 				.Done();
 
@@ -240,12 +251,13 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		}
 
 		[Test]
-		public void Bootstrap_WhenResolving_ShouldBeInSingeltonScope()
+		public void Bootstrap_WhenResolvingWithSingeltonConfiguration_ShouldBeInSingeltonScope()
 		{
 			var kernel = ContainerBootstrapper
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
 				.BindInterfaceToDefaultImplementation()
+				.Configure(x=> x.InSingletonScope())
 				.NoDatabase()
 				.Done();
 
@@ -255,6 +267,44 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 			var secondResolve = kernel.Get<IShouldBeSingelton>();
 
 			secondResolve.State.Should().Be(1);
+		}
+
+		[Test]
+		public void Bootstrap_WhenResolvingWithDefaultConfiguration_ShouldBeInSingeltonScope()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Configure(x => x.InSingletonScope())
+				.NoDatabase()
+				.Done();
+
+			var firstResolve = kernel.Get<IShouldBeSingelton>();
+			firstResolve.Increase();
+
+			var secondResolve = kernel.Get<IShouldBeSingelton>();
+
+			secondResolve.State.Should().Be(1);
+		}
+
+		[Test]
+		public void Bootstrap_WhenResolvingWithTransiantScope_ShouldBeCreateNeeOnjectAtEachResolve()
+		{
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.Configure(x => x.InTransientScope())
+				.NoDatabase()
+				.Done();
+
+			var firstResolve = kernel.Get<IShouldBeSingelton>();
+			firstResolve.Increase();
+
+			var secondResolve = kernel.Get<IShouldBeSingelton>();
+
+			secondResolve.State.Should().Be(0);
 		}
 
 		private void CreateJsonSettingsFile(dynamic setting)

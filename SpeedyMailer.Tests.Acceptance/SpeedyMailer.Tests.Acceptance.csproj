@@ -120,10 +120,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RavenDB\RavenDbSanityTests.cs" />
-    <Compile Include="Specs\Drone\DroneIntegrationTestBase.cs" />
-    <Compile Include="Specs\Drone\SanityTests.cs" />
-    <Compile Include="Specs\Drone\SendingEmail.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -154,9 +150,7 @@
       <Name>SpeedyMailer.Tests.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Framework\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

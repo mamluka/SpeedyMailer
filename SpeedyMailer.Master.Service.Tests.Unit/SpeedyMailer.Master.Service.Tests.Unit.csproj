@@ -100,11 +100,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Emails\PoolMailOporationsTests.cs" />
-    <Compile Include="MailDrones\MailDroneServiceMockedComponent.cs" />
-    <Compile Include="MailDrones\MailDroneServiceTests.cs" />
-    <Compile Include="Pool\MyNinjectBootstrapperWithMockedObjects.cs" />
-    <Compile Include="Pool\PoolNancyModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -114,10 +109,6 @@
     <ProjectReference Include="..\..\Nancy.Bootstrappers.Ninject\src\Nancy.Bootstrappers.Ninject\Nancy.Bootstrappers.Ninject.csproj">
       <Project>{760A88F1-7CEA-47FE-86AC-4F75609100F2}</Project>
       <Name>Nancy.Bootstrappers.Ninject</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>

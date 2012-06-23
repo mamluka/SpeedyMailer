@@ -36,7 +36,7 @@ namespace SpeedyMailer.Core.Tasks
 				var tasks = session.Query<PersistentTask>()
 					.Where(task => task.Status == PersistentTaskStatus.Pending)
 					.Customize(x => x.WaitForNonStaleResults())
-					.OrderBy(x => x.CreateDate).Take(1)
+					.OrderBy(x => x.CreateDate).Take(3)
 					.ToList();
 
 				if (!tasks.Any()) return;

@@ -13,7 +13,7 @@ namespace SpeedyMailer.Master.Service
     	public static void Main(string[] args)
     	{
     		var kernel = ServiceContainerBootstrapper.Kernel;
-    		var service = kernel.Get<Service>();
+    		var service = kernel.Get<TopService>();
 
     		service.Start();
 			Console.WriteLine("To stop press any key");
@@ -22,11 +22,11 @@ namespace SpeedyMailer.Master.Service
     	}
     }
 
-	public class Service
+	public class TopService
 	{
 		private readonly NancyHost _nancyHost;
 
-		public Service(INancyBootstrapper ninjectNancyBootstrapper)
+		public TopService(INancyBootstrapper ninjectNancyBootstrapper)
 		{
 			_nancyHost = new NancyHost(new Uri("http://localhost:2589/"), ninjectNancyBootstrapper);
 		}

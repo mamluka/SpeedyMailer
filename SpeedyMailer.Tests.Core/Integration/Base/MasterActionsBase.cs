@@ -29,7 +29,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			_taskManager.Save(task);
 		}
 
-		public string SaveAndExecuteTask(PersistentTask task)
+		public string ExecuteTask(PersistentTask task)
 		{
 			var taskId = _taskManager.Save(task);
 			_taskExecutor.Start();

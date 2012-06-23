@@ -36,7 +36,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
         	           		RecipientsPerFragment = 1000
         	           	};
 
-			ServiceActions.SaveAndExecuteTask(task);
+			ServiceActions.ExecuteTask(task);
 
             var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
 

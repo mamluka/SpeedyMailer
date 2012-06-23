@@ -73,11 +73,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\ComposeViewModelBuilder.cs" />
-    <Compile Include="Builders\IViewModelBuilderWithBuildParameters.cs" />
-    <Compile Include="Builders\UploadListResultsViewModelBuilder.cs" />
-    <Compile Include="Builders\IViewModelBuilder.cs" />
-    <Compile Include="Builders\UploadListViewModelBuilder.cs" />
     <Compile Include="Commands\AddContactsCommand.cs" />
     <Compile Include="Commands\AddCreativeCommand.cs" />
     <Compile Include="Commands\CreateListCommand.cs" />
@@ -96,10 +91,6 @@
     <Compile Include="ViewModels\UploadListViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>

@@ -1,18 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drone.Settings;
 using SpeedyMailer.Drone.Tasks;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
-using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
-using SpeedyMailer.Shared;
 
 namespace SpeedyMailer.Drone.Tests.Integration.Tasks
 {

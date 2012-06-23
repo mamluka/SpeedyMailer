@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -92,6 +93,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			var fourhResult = Load<ComputationResult<int>>(resultId4);
 
 			fourhResult.Result.Should().Be(10);
+
 		}
 
 		[Test]

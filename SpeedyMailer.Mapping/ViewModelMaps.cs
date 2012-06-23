@@ -1,6 +1,5 @@
 using AutoMapper;
 using Bootstrap.AutoMapper;
-using SpeedyMailer.Bridge.Model.Fragments;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Lists;
@@ -34,9 +33,6 @@ namespace SpeedyMailer.Mapping
                 ;
 
             Mapper.CreateMap<ComposeModel, Email>()
-                ;
-            Mapper.CreateMap<Email, EmailFragment>()
-                .ForMember(x => x.Id, opt => opt.Ignore())
                 ;
         }
 

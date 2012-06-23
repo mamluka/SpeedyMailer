@@ -116,6 +116,7 @@
     <Compile Include="Container\AssemblyGathererOptions.cs" />
     <Compile Include="Container\BindingStrategy.cs" />
     <Compile Include="Container\BindingStrategyGatherer.cs" />
+    <Compile Include="Container\ConfigurationsGatherer.cs" />
     <Compile Include="Container\ContainerBootstrapper.cs" />
     <Compile Include="Container\ContainerStrapperOptions.cs" />
     <Compile Include="Container\DatabaseBindingGatherer.cs" />
@@ -134,31 +135,19 @@
     <Compile Include="Container\SettingsResolverGatherer.cs" />
     <Compile Include="Container\SettingsResolverGathererOptions.cs" />
     <Compile Include="CoreAssemblyMarker.cs" />
-    <Compile Include="DataAccess\Contacts\ContactsRepository.cs" />
-    <Compile Include="DataAccess\Contacts\IContactsRepository.cs" />
-    <Compile Include="DataAccess\Drone\IMailDroneRepository.cs" />
-    <Compile Include="DataAccess\Drone\MailDroneRepository.cs" />
-    <Compile Include="DataAccess\Emails\EmailRepository.cs" />
-    <Compile Include="DataAccess\Emails\EmailSourceParser.cs" />
-    <Compile Include="DataAccess\Emails\IEmailRepository.cs" />
-    <Compile Include="DataAccess\Emails\IEmailSourceParser.cs" />
-    <Compile Include="DataAccess\Fragments\FragmentRepository.cs" />
-    <Compile Include="DataAccess\Fragments\IFragmentRepository.cs" />
-    <Compile Include="DataAccess\Lists\IListRepository.cs" />
-    <Compile Include="DataAccess\Lists\ListRepository.cs" />
-    <Compile Include="DataAccess\Lists\ListsStore.cs" />
     <Compile Include="Domain\Contacts\Contact.cs" />
     <Compile Include="Domain\Contacts\ContactFromCSVRow.cs" />
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativeTemplate.cs" />
+    <Compile Include="Domain\Drones\Drone.cs" />
+    <Compile Include="Domain\Drones\DroneStatus.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />
     <Compile Include="Emails\IEmailSourceWeaver.cs" />
-    <Compile Include="Emails\EmailPoolService.cs" />
     <Compile Include="Emails\EmailSourceWeaver.cs" />
     <Compile Include="Emails\IEmailPoolService.cs" />
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
@@ -211,16 +200,11 @@
       <Project>{34576216-0DCA-4B0F-A0DC-9075E75A676F}</Project>
       <Name>Nancy</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Domain\Drones\" />
     <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Ninject;
+using Ninject.Extensions.Conventions.Syntax;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -14,5 +15,6 @@ namespace SpeedyMailer.Core.Container
         public Action<IKernel> DatabaseBindingFunction { get; set; }
         public Action<IKernel> SettingsResolverFunction { get; set; }
         public bool NoDatabase { get; set; }
+    	public ConfigurationAction ConfigurationAction { get; set; }
     }
 }

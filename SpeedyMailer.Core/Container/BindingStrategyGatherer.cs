@@ -11,10 +11,10 @@ namespace SpeedyMailer.Core.Container
             _options = options;
         }
 
-        public DatabaseBindingGatherer BindInterfaceToDefaultImplementation()
+        public ConfigurationsGatherer BindInterfaceToDefaultImplementation()
         {
             _options.BindingStratery = BindingStrategy.BindInterfaceToDefaultImplementation;
-            return new DatabaseBindingGatherer(_options);
+            return new ConfigurationsGatherer(_options);
         }
 
         

@@ -80,17 +80,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Communication\DroneCommunicationServiceTests.cs" />
-    <Compile Include="Communication\MockedDroneCommunicationServiceBuilder.cs" />
-    <Compile Include="Drone\Drone.cs" />
-    <Compile Include="Drone\DroneTests.cs" />
-    <Compile Include="Drone\MockedDroneBuilder.cs" />
-    <Compile Include="Mail\DroneMailOporationsTests.cs" />
-    <Compile Include="Mail\MailParserTests.cs" />
-    <Compile Include="Mail\MailSenderTests.cs" />
-    <Compile Include="Mail\MockedMailSenderComponentBuilder.cs" />
-    <Compile Include="Mail\MockedRetrieveFragmentJobBuilder.cs" />
-    <Compile Include="Mail\RetrieveFragmentJobTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -98,10 +87,6 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>

@@ -97,15 +97,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compose\ComposeControllerBuilder.cs" />
-    <Compile Include="Compose\ComposeControllerTests.cs" />
-    <Compile Include="Compose\ComposeResultsViewModelBuilder.cs" />
-    <Compile Include="Compose\ComposeViewModelBuilderTests.cs" />
-    <Compile Include="Contacts\ContactsControllerTests.cs" />
-    <Compile Include="Contacts\ContactsMockedComponentBuilder.cs" />
-    <Compile Include="Contacts\UploadListResultsViewModelBuilderTests.cs" />
-    <Compile Include="Contacts\UploadListViewModelBuilderTests.cs" />
-    <Compile Include="Extentions.cs" />
     <Compile Include="Helpers\UrlCreatorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -130,10 +121,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core.Tests.Unit\SpeedyMailer.Core.Tests.Unit.csproj">
       <Project>{C04698CD-7517-496C-A5E1-66A3AC7E34C4}</Project>
       <Name>SpeedyMailer.Core.Tests.Unit</Name>

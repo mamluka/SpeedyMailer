@@ -5,7 +5,6 @@ using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Service;
-using System.Linq;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -29,6 +28,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				                                    		typeof(IRestClient)
 				                                    	}))
 				.BindInterfaceToDefaultImplementation()
+				.Configure(x=> x.InTransientScope())
 				.Storage<IDocumentStore>(x => x.Constant(_documentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();

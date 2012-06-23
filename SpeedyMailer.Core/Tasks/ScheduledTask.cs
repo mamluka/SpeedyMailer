@@ -8,8 +8,8 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		public string Name { get { return GetType().FullName; } }
 
-		public abstract IJobDetail GetJob();
-		public abstract ITrigger GetTrigger();
+		public abstract IJobDetail ConfigureJob();
+		public abstract ITrigger ConfigureTrigger();
 
 		protected ITrigger TriggerWithTimeCondition(Action<SimpleScheduleBuilder> condition)
 		{
@@ -28,14 +28,17 @@ namespace SpeedyMailer.Core.Tasks
 				.Build();
 		}
 
-		protected IJobDetail SimpleJob<T>(ScheduledTaskData data) where T : IJob
+		//.UsingJobData("data", JsonConvert.SerializeObject(data))
+		public virtual IJobDetail GetJob()
 		{
-			return JobBuilder.Create<T>()
-				.WithIdentity(Name)
-				.RequestRecovery()
-				.UsingJobData("data", JsonConvert.SerializeObject(data))
-				.Build();
+			return ConfigureJob();
 		}
+
+		public ITrigger GetTrigger()
+		{
+			return ConfigureTrigger();
+		}
+
 	}
 
 	public abstract class ScheduledTaskWithData<T> : ScheduledTask where T : ScheduledTaskData, new()
@@ -46,6 +49,13 @@ namespace SpeedyMailer.Core.Tasks
 		{
 			TaskData = new T();
 			action.Invoke(TaskData);
+		}
+
+		public override IJobDetail GetJob()
+		{
+			var job =  base.GetJob();
+			job.JobDataMap.Add("data", JsonConvert.SerializeObject(TaskData));
+			return job;
 		}
 
 		public ScheduledTaskData GetData()

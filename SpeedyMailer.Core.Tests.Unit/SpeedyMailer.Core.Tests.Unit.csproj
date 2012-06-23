@@ -94,20 +94,6 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Contacts\ContactsCSVParserBuilder.cs" />
-    <Compile Include="Contacts\HttpContextBaseBuilderForFiles.cs" />
-    <Compile Include="Emails\EmailPoolMockedComponentBuilder.cs" />
-    <Compile Include="Emails\EmailPoolServicesTests.cs" />
-    <Compile Include="Emails\EmailRepositoryBuilder.cs" />
-    <Compile Include="Emails\EmailRepositoryTests.cs" />
-    <Compile Include="Emails\EmailSourceParserTests.cs" />
-    <Compile Include="Emails\EmailSourceWeaverTests.cs" />
-    <Compile Include="Emails\FragmentRepositoryTests.cs" />
-    <Compile Include="Emails\MockedEmailSourceWeaverBuilder.cs" />
-    <Compile Include="Lists\ListRepositoryTests.cs" />
-    <Compile Include="MailDrones\MailDroneRepositoryTests.cs" />
-    <Compile Include="Contacts\ContactCSVParserTests.cs" />
-    <Compile Include="Contacts\ContactsRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -131,10 +117,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>

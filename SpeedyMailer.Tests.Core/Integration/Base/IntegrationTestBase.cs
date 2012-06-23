@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Linq;
@@ -12,6 +13,7 @@ using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
 using Newtonsoft.Json;
 using Ninject;
+using Ninject.Planning.Bindings;
 using Quartz;
 using Raven.Client;
 using Raven.Client.Document;
@@ -26,7 +28,6 @@ using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drone;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
-using SpeedyMailer.Shared;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using Raven.Client.Linq;
 using Nancy.ModelBinding;
@@ -39,6 +40,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		private NancyHost _nancy;
 		public IKernel DroneKernel { get; private set; }
 		public IKernel MasterKernel { get; private set; }
+		public Api Api { get; set; }
 		protected string ApiListningHostname { set; get; }
 
 		public IDocumentStore DocumentStore { get; private set; }
@@ -61,11 +63,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                             typeof (CoreAssemblyMarker),
                                                             typeof (WebCoreAssemblyMarker),
                                                             typeof (ServiceAssemblyMarker),
-                                                            typeof (SharedAssemblyMarker),
                                                             typeof (IRestClient),
                                                             typeof (ISchedulerFactory)
                                                         }))
 				.BindInterfaceToDefaultImplementation()
+				.Configure(x=> x.InTransientScope())
 				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
@@ -75,16 +77,42 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Analyze(x => x.AssembiesContaining(new[]
                                                         {
                                                             typeof (DroneAssemblyMarker),
-                                                            typeof (SharedAssemblyMarker),
                                                             typeof (ISchedulerFactory),
                                                              typeof (CoreAssemblyMarker)
                                                         }))
 				.BindInterfaceToDefaultImplementation()
+				.Configure(x=> x.InTransientScope())
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
+			Api = MasterResolve<Api>();
+
 			ApiListningHostname = "http://localhost:2589/";
+		}
+
+		[TestFixtureTearDown]
+		public void FixtureTearDown()
+		{
+			var masterScheduler = MasterResolve<IScheduler>();
+			WaitForSchedulerToShutdown(masterScheduler);
+
+			var droneScheduler = MasterResolve<IScheduler>();
+			WaitForSchedulerToShutdown(droneScheduler);
+			
+		}
+
+		private static void WaitForSchedulerToShutdown(IScheduler scheduler)
+		{
+			if (scheduler.IsStarted)
+			{
+				scheduler.Shutdown();
+
+				while (!scheduler.IsShutdown)
+				{
+					Thread.Sleep(200);
+				}
+			}
 		}
 
 		private void RegisterActions()
@@ -96,8 +124,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private void LoadBasicSettings()
 		{
-			UIActions.EditSettings<IApiCallsSettings>(x=> x.ApiBaseUri = ApiListningHostname);
-			DroneActions.EditSettings<IApiCallsSettings>(x=> x.ApiBaseUri = ApiListningHostname);
+			UIActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
+			DroneActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
 		}
 
 		[SetUp]
@@ -113,19 +141,23 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 															{
 																serializer.TypeNameHandling = TypeNameHandling.All;
 															},
-														FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "PersistentTasks" : DocumentConvention.DefaultTypeTagName(type),
-
+														FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
 													}
 											};
 
 			DocumentStore = embeddableDocumentStore.Initialize();
-
 			MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
 			DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
 
 			RegisterActions();
 			LoadBasicSettings();
 			ExtraSetup();
+		}
+
+		[TearDown]
+		public void Teardown()
+		{
+			
 		}
 
 		public virtual void ExtraSetup()
@@ -160,6 +192,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			using (var session = DocumentStore.OpenSession())
 			{
+				Trace.WriteLine(id);
 				return session.Load<T>(id);
 			}
 		}
@@ -204,12 +237,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
-				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Count() > numberOfEntities &&
+				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Count() < numberOfEntities &&
 				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
 
 			WaitForStoreWithFunction(condition);
 		}
-		protected void WaitForEntityToExist<T>(Func<T,bool> whereCondition ,int count=1, int secondsToWait = 30)
+		protected void WaitForEntityToExist<T>(Func<T, bool> whereCondition, int count = 1, int secondsToWait = 30)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
@@ -252,12 +285,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			_nancy.Start();
 		}
 
-		public void AssertApiCall<T>(Func<T, bool> func,int seconds = 30) where T : class
+		public void AssertApiCall<T>(Func<T, bool> func, int seconds = 30) where T : class
 		{
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
-			while (RestCallTestingModule<T>.Model == null && stopwatch.ElapsedMilliseconds < seconds*1000)
+			while (RestCallTestingModule<T>.Model == null && stopwatch.ElapsedMilliseconds < seconds * 1000)
 			{
 				Thread.Sleep(500);
 			}
@@ -270,7 +303,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				return;
 			}
 			Assert.Fail("Rest call was not executed in the ellapsed time");
-			
+
 		}
 
 		public void StopListeningToApiCall()
@@ -279,7 +312,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		}
 	}
 
-	public class RestCallTestingModule<T> : NancyModule,IDoNotResolveModule
+	public class RestCallTestingModule<T> : NancyModule, IDoNotResolveModule
 	{
 		public static T Model;
 
@@ -293,10 +326,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 								};
 
 			Post[endpoint] = x =>
-			                 	{
-			                 		Model = this.Bind<T>();
-			                 		return null;
-			                 	};
+								{
+									Model = this.Bind<T>();
+									return null;
+								};
 		}
 	}
 

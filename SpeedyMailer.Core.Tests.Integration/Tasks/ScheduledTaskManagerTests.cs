@@ -47,12 +47,12 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		{
 		}
 
-		public override IJobDetail GetJob()
+		public override IJobDetail ConfigureJob()
 		{
-			return SimpleJob<Job>(TaskData);
+			return SimpleJob<Job>();
 		}
 
-		public override ITrigger GetTrigger()
+		public override ITrigger ConfigureTrigger()
 		{
 			return TriggerWithTimeCondition(x =>
 												{

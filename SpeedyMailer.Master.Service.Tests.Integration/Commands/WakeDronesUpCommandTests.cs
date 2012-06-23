@@ -5,6 +5,7 @@ using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 using FluentAssertions;
@@ -33,10 +34,5 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 		{
 			return null;
 		}
-	}
-
-	public class Drone
-	{
-		
 	}
 }

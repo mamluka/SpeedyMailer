@@ -6,7 +6,6 @@ using Raven.Client;
 using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
-using SpeedyMailer.Shared;
 
 namespace SpeedyMailer.Master.Service.Container
 {
@@ -25,11 +24,11 @@ namespace SpeedyMailer.Master.Service.Container
                                                         {
                                                             typeof (CoreAssemblyMarker),
                                                             typeof (ServiceAssemblyMarker),
-                                                            typeof (SharedAssemblyMarker),
                                                             typeof (IRestClient),
                                                             typeof (ISchedulerFactory)
                                                         }))
                 .BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
                 .Storage<IDocumentStore>(x=> x.Provider<RavenDocumentStoreProvider>())
                 .Settings(x => x.UseJsonFiles())
                 .Done();

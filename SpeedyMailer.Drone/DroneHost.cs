@@ -11,20 +11,20 @@ namespace SpeedyMailer.Drone
         public static void Main(string[] args)
         {
         	var kernel = DroneContainerBootstrapper.Kernel;
-        	var drone = kernel.Get<Drone>();
+        	var drone = kernel.Get<TopDrone>();
 			drone.Start();
 			Console.WriteLine("Starting drone...");
         	Console.ReadKey();
         }
     }
 
-	public class Drone
+	public class TopDrone
 	{
 		private NancyHost _nancy;
 		private readonly ITransportSettings _transportSettings;
 		private readonly INancyBootstrapper _nancyBootstrapper;
 
-		public Drone(INancyBootstrapper nancyBootstrapper,ITransportSettings transportSettings)
+		public TopDrone(INancyBootstrapper nancyBootstrapper,ITransportSettings transportSettings)
 		{
 			_nancyBootstrapper = nancyBootstrapper;
 			_transportSettings = transportSettings;

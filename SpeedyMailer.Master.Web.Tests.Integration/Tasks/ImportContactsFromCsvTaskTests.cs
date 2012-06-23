@@ -30,7 +30,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 							File = filename
 						};
 
-			UIActions.SaveAndExecuteTask(task);
+			UIActions.ExecuteTask(task);
 
 			var result = Load<ImportContactsFromCsvTask>(task.Id);
 
@@ -53,7 +53,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 				File = filename
 			};
 
-			UIActions.SaveAndExecuteTask(task);
+			UIActions.ExecuteTask(task);
 
 			var result = Load<ImportContactsFromCsvTask>(task.Id);
 

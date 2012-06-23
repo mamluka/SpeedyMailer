@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SpeedyMailer.Shared.Domain
+namespace SpeedyMailer.Core.Domain.Drones
 {
-	public class Drone
+	public enum DroneStatus
 	{
-		public string Identifier { get; set; }
+		Online,
+		Asleep,
+		Offline
 	}
 }

@@ -12,11 +12,11 @@ namespace SpeedyMailer.Core.Container
             _options = options;
         }
 
-        public IDoneBootstrapping Settings(Action<SettingsResolverGathererOptions> settingsAction)
+		public IDoneBootstrapping Settings(Action<SettingsResolverGathererOptions> settingsAction)
         {
             var settingsResolverGathererOptions = new SettingsResolverGathererOptions(_options);
             settingsAction.Invoke(settingsResolverGathererOptions);
-            return new DoneBootstrapping(_options);
+			return new DoneBootstrapping(_options);
         }
 
         public IKernel Done()

@@ -145,10 +145,6 @@
       <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
       <Name>SpeedyMailer.Drone</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Shared\SpeedyMailer.Shared.csproj">
-      <Project>{14CE29B4-79C3-4149-A4DD-0A031253387C}</Project>
-      <Name>SpeedyMailer.Shared</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>
       <Name>SpeedyMailer.Tests.Core</Name>

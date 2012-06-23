@@ -124,11 +124,6 @@
     <Compile Include="Api\CreativeModule.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
-    <Compile Include="Emails\IPoolMailOporations.cs" />
-    <Compile Include="Emails\PoolMailOporations.cs" />
-    <Compile Include="MailDrones\IMailDroneService.cs" />
-    <Compile Include="MailDrones\MailDroneService.cs" />
-    <Compile Include="Api\PoolModule.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />
     <Compile Include="ServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -144,21 +139,12 @@
       <Project>{760A88F1-7CEA-47FE-86AC-4F75609100F2}</Project>
       <Name>Nancy.Bootstrappers.Ninject</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Bridge\SpeedyMailer.Bridge.csproj">
-      <Project>{BE4E3ED4-4FBB-443C-AD4E-022E75EBBF18}</Project>
-      <Name>SpeedyMailer.Bridge</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Shared\SpeedyMailer.Shared.csproj">
-      <Project>{14CE29B4-79C3-4149-A4DD-0A031253387C}</Project>
-      <Name>SpeedyMailer.Shared</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Bootstrapper\" />
     <Folder Include="Commands\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
