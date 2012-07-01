@@ -8,8 +8,8 @@
     <ProjectGuid>{69B34FBC-A9AD-4EE7-B450-E868BB4CF373}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SpeedyMailer.Drone.Tests.Integration</RootNamespace>
-    <AssemblyName>SpeedyMailer.Drone.Tests.Integration</AssemblyName>
+    <RootNamespace>SpeedyMailer.Drones.Tests.Integration</RootNamespace>
+    <AssemblyName>SpeedyMailer.Drones.Tests.Integration</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

@@ -5,7 +5,7 @@ using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
-namespace SpeedyMailer.Drone.Tests.Integration.Tasks
+namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
 	[TestFixture]
 	public class RegisterDroneWithMasterServiceTaskTests : IntegrationTestBase
