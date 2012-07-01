@@ -1,10 +1,11 @@
 ﻿using System;
 using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
-using SpeedyMailer.Drone.Bootstrappers;
+using SpeedyMailer.Core.Api;
 using Ninject;
+using SpeedyMailer.Drones.Bootstrappers;
 
-namespace SpeedyMailer.Drone
+namespace SpeedyMailer.Drones
 {
     public class DroneHost
     {
@@ -21,18 +22,18 @@ namespace SpeedyMailer.Drone
 	public class TopDrone
 	{
 		private NancyHost _nancy;
-		private readonly ITransportSettings _transportSettings;
 		private readonly INancyBootstrapper _nancyBootstrapper;
+		private readonly IApiCallsSettings _apiCallsSettings;
 
-		public TopDrone(INancyBootstrapper nancyBootstrapper,ITransportSettings transportSettings)
+		public TopDrone(INancyBootstrapper nancyBootstrapper,IApiCallsSettings apiCallsSettings)
 		{
+			_apiCallsSettings = apiCallsSettings;
 			_nancyBootstrapper = nancyBootstrapper;
-			_transportSettings = transportSettings;
 		}
 
 		public void Initialize()
 		{
-			_nancy = new NancyHost(_nancyBootstrapper, new Uri(_transportSettings.Host));
+			_nancy = new NancyHost(new Uri(_apiCallsSettings.ApiBaseUri), _nancyBootstrapper);
 		}
 
 		public void Start()

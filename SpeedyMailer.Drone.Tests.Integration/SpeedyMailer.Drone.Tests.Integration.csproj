@@ -40,9 +40,8 @@
     <Reference Include="C5, Version=1.1.0.0, Culture=neutral, PublicKeyToken=06a1b38866503b69, processorArchitecture=MSIL">
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\C5.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging, Version=2.1.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Common.Logging.2.1.1\lib\net40\Common.Logging.dll</HintPath>
+    <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Esent.Interop, Version=1.7.0.0, Culture=neutral, PublicKeyToken=8dd49bbdae3f61af, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB.Database.1.0.960\lib\net40\Esent.Interop.dll</HintPath>
@@ -147,9 +146,9 @@
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Drone\SpeedyMailer.Drone.csproj">
+    <ProjectReference Include="..\SpeedyMailer.Drones\SpeedyMailer.Drones.csproj">
       <Project>{D1A0856E-4C66-4E6A-AC41-212FEA0D3D84}</Project>
-      <Name>SpeedyMailer.Drone</Name>
+      <Name>SpeedyMailer.Drones</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Tests.Core\SpeedyMailer.Tests.Core.csproj">
       <Project>{CECA9509-77E6-4618-9D15-27BE3A311D35}</Project>

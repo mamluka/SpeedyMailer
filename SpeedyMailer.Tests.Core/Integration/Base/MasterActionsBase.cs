@@ -13,11 +13,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public readonly IKernel Kernel;
 		private readonly ITaskManager _taskManager;
 		private readonly ITaskExecutor _taskExecutor;
+		private readonly IScheduledTaskManager _scheduledTaskManager;
 
 		public Fixture Fixture { get; private set; }
 
-		protected MasterActionsBase(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor):base(kernel)
+		protected MasterActionsBase(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor,IScheduledTaskManager scheduledTaskManager):base(kernel)
 		{
+			_scheduledTaskManager = scheduledTaskManager;
 			_taskExecutor = taskExecutor;
 			_taskManager = taskManager;
 			Kernel = kernel;
@@ -34,6 +36,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var taskId = _taskManager.Save(task);
 			_taskExecutor.Start();
 			return taskId;
+		}
+
+		public void StartScheduledTask(ScheduledTask scheduledTask)
+		{
+			_scheduledTaskManager.AddAndStart(scheduledTask);
 		}
 
 		public override void EditSettings<T>(Action<T> action)

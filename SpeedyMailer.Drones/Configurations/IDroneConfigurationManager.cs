@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Drone.Configurations
+namespace SpeedyMailer.Drones.Configurations
 {
     public interface IDroneConfigurationManager
     {

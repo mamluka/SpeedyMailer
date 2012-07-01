@@ -27,7 +27,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		[Test]
 		public void Call_WhenUsingPost_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
+			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ServiceApiListningHostname);
 			ListenToApiCall<TestApi, TestApi.Request>();
 
 			_target.Call<TestApi>()
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		[Test]
 		public void Call_WhenUsingGet_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
+			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ServiceApiListningHostname);
 			ListenToApiCall<TestApi, TestApi.Request>();
 
 			_target.Call<TestApi>()

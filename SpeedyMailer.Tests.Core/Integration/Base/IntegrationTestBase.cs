@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Linq;
@@ -13,7 +12,7 @@ using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
 using Newtonsoft.Json;
 using Ninject;
-using Ninject.Planning.Bindings;
+using Ninject.Modules;
 using Quartz;
 using Raven.Client;
 using Raven.Client.Document;
@@ -23,9 +22,8 @@ using Rhino.Mocks;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Container;
-using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
-using SpeedyMailer.Drone;
+using SpeedyMailer.Drones;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
@@ -41,10 +39,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IKernel DroneKernel { get; private set; }
 		public IKernel MasterKernel { get; private set; }
 		public Api Api { get; set; }
-		protected string ApiListningHostname { set; get; }
+
+		protected string DroneApiListningHostname { get; set; }
+		protected string ServiceApiListningHostname { set; get; }
 
 		public IDocumentStore DocumentStore { get; private set; }
-
 		public DroneActions DroneActions { get; set; }
 		public UIActions UIActions { get; set; }
 		public ServiceActions ServiceActions { get; set; }
@@ -67,7 +66,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                             typeof (ISchedulerFactory)
                                                         }))
 				.BindInterfaceToDefaultImplementation()
-				.Configure(x=> x.InTransientScope())
+				.Configure(x => x.InTransientScope())
 				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
@@ -75,20 +74,21 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DroneKernel = ContainerBootstrapper
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[]
-                                                        {
-                                                            typeof (DroneAssemblyMarker),
-                                                            typeof (ISchedulerFactory),
-                                                             typeof (CoreAssemblyMarker)
-                                                        }))
+				                                    	{
+				                                    		typeof (DroneAssemblyMarker),
+				                                    		typeof (ISchedulerFactory),
+				                                    		typeof (CoreAssemblyMarker)
+				                                    	}))
 				.BindInterfaceToDefaultImplementation()
-				.Configure(x=> x.InTransientScope())
+				.Configure(x => x.InTransientScope())
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
 			Api = MasterResolve<Api>();
 
-			ApiListningHostname = "http://localhost:2589/";
+			ServiceApiListningHostname = "http://localhost:2589/";
+			DroneApiListningHostname = "http://localhost:2589/";
 		}
 
 		[TestFixtureTearDown]
@@ -99,7 +99,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			var droneScheduler = MasterResolve<IScheduler>();
 			WaitForSchedulerToShutdown(droneScheduler);
-			
+
 		}
 
 		private static void WaitForSchedulerToShutdown(IScheduler scheduler)
@@ -120,12 +120,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			UIActions = MasterKernel.Get<UIActions>();
 			ServiceActions = MasterKernel.Get<ServiceActions>();
 			DroneActions = DroneKernel.Get<DroneActions>();
+
+			ServiceActions.Hostname = ServiceApiListningHostname;
 		}
 
 		private void LoadBasicSettings()
 		{
-			UIActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
-			DroneActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ApiListningHostname);
+			UIActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ServiceApiListningHostname);
+			DroneActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ServiceApiListningHostname);
 		}
 
 		[SetUp]
@@ -157,7 +159,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TearDown]
 		public void Teardown()
 		{
-			
+
 		}
 
 		public virtual void ExtraSetup()
@@ -281,7 +283,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var endpoint = new TEndpoint().Endpoint;
 			var restCallTestingBootstrapper = new RestCallTestingBootstrapper<TResponse>(endpoint);
-			_nancy = new NancyHost(new Uri(ApiListningHostname), restCallTestingBootstrapper);
+			_nancy = new NancyHost(new Uri(ServiceApiListningHostname), restCallTestingBootstrapper);
 			_nancy.Start();
 		}
 

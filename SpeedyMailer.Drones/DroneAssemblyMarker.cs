@@ -1,4 +1,4 @@
-﻿namespace SpeedyMailer.Drone
+﻿namespace SpeedyMailer.Drones
 {
     public class DroneAssemblyMarker
     {

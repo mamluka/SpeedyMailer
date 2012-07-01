@@ -4,7 +4,7 @@ namespace SpeedyMailer.Core.Tasks
 {
 	public interface IScheduledTaskManager
 	{
-		void Start(ScheduledTask task);
+		void AddAndStart(ScheduledTask task);
 	}
 
 	public class ScheduledTaskManager : IScheduledTaskManager
@@ -16,7 +16,7 @@ namespace SpeedyMailer.Core.Tasks
 			_scheduler = scheduler;
 		}
 
-		public void Start(ScheduledTask task)
+		public void AddAndStart(ScheduledTask task)
 		{
 			var job = task.GetJob();
 			_scheduler.ScheduleJob(job, task.GetTrigger());

@@ -4,7 +4,7 @@ using Ninject.Modules;
 using Quartz;
 using SpeedyMailer.Core.Container;
 
-namespace SpeedyMailer.Drone.Bootstrappers
+namespace SpeedyMailer.Drones.Bootstrappers
 {
 	public static class DroneContainerBootstrapper
 	{

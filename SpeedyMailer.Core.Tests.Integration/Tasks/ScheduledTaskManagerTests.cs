@@ -28,7 +28,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			                                 		x.ResultId = resultId;
 			                                 	});
 
-			_target.Start(task);
+			_target.AddAndStart(task);
 
 			WaitForEntityToExist(resultId);
 
@@ -54,11 +54,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 		public override ITrigger ConfigureTrigger()
 		{
-			return TriggerWithTimeCondition(x =>
-												{
-													x.WithIntervalInSeconds(5);
-													x.WithRepeatCount(1);
-												});
+			return TriggerWithTimeCondition(x => x.WithIntervalInSeconds(5).WithRepeatCount(1));
 		}
 
 		public class Data : ScheduledTaskData

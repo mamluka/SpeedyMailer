@@ -1,4 +1,4 @@
-namespace SpeedyMailer.Drone.Settings
+namespace SpeedyMailer.Drones.Settings
 {
 	public interface IDroneSettings
 	{

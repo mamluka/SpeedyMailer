@@ -2,6 +2,7 @@
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
+using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Service.Container;
 using Ninject;
@@ -25,10 +26,12 @@ namespace SpeedyMailer.Master.Service
 	public class TopService
 	{
 		private readonly NancyHost _nancyHost;
+		private readonly IApiCallsSettings _apiCallsSettings;
 
-		public TopService(INancyBootstrapper ninjectNancyBootstrapper)
+		public TopService(INancyBootstrapper ninjectNancyBootstrapper,IApiCallsSettings apiCallsSettings)
 		{
-			_nancyHost = new NancyHost(new Uri("http://localhost:2589/"), ninjectNancyBootstrapper);
+			_apiCallsSettings = apiCallsSettings;
+			_nancyHost = new NancyHost(new Uri(_apiCallsSettings.ApiBaseUri), ninjectNancyBootstrapper);
 		}
 
 		public void Start()

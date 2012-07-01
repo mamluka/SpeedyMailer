@@ -1,10 +1,9 @@
 using System;
 using Quartz;
-using RestSharp;
 using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Tasks;
 
-namespace SpeedyMailer.Drone.Tasks
+namespace SpeedyMailer.Drones.Tasks
 {
 	public class RegisterDroneWithServiceTask : ScheduledTaskWithData<RegisterDroneWithServiceTask.Data>
 	{

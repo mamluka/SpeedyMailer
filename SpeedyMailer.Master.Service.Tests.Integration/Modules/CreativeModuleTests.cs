@@ -1,16 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Protocol;
-using SpeedyMailer.Master.Service.Tests.Integration.Commands;
 using SpeedyMailer.Master.Web.Core.Commands;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
