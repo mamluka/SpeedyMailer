@@ -5,7 +5,7 @@ using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Master.Service.Tasks;
 
-namespace SpeedyMailer.Master.Service.Api
+namespace SpeedyMailer.Master.Service.Apis
 {
 	public class CreativeModule : NancyModule
 	{

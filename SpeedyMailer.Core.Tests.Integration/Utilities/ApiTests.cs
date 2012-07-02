@@ -6,6 +6,7 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using RestSharp;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
@@ -17,37 +18,37 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 	[TestFixture]
 	public class ApiTests : IntegrationTestBase
 	{
-		private Api.Api _target;
+		private Api _target;
 
 		public override void ExtraSetup()
 		{
-			_target = MasterResolve<Api.Api>();
+			_target = MasterResolve<Api>();
 		}
 
 		[Test]
 		public void Call_WhenUsingPost_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ServiceApiListningHostname);
+			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultServiceBaseUrl);
 			ListenToApiCall<TestApi, TestApi.Request>();
 
 			_target.Call<TestApi>()
 				.WithParameters(x => x.CallId = "testing call")
 				.Post();
 
-			AssertApiCall<TestApi.Request>(x => x.CallId == "testing call");
+			AssertApiCalled<TestApi.Request>(x => x.CallId == "testing call");
 		}
 
 		[Test]
 		public void Call_WhenUsingGet_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = ServiceApiListningHostname);
+			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultServiceBaseUrl);
 			ListenToApiCall<TestApi, TestApi.Request>();
 
 			_target.Call<TestApi>()
 				.WithParameters(x => x.CallId = "testing call")
 				.Get();
 
-			AssertApiCall<TestApi.Request>(x => x.CallId == "testing call");
+			AssertApiCalled<TestApi.Request>(x => x.CallId == "testing call");
 		}
 	}
 

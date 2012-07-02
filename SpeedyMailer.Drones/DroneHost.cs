@@ -3,6 +3,7 @@ using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
 using SpeedyMailer.Core.Api;
 using Ninject;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Drones.Bootstrappers;
 
 namespace SpeedyMailer.Drones

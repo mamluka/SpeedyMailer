@@ -1,6 +1,4 @@
-using RestSharp;
-
-namespace SpeedyMailer.Core.Api
+namespace SpeedyMailer.Core.Apis
 {
 	public class ApiResult
 	{

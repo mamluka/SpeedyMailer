@@ -1,13 +1,14 @@
 using System;
 using Quartz;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Drones.Tasks
 {
-	public class RegisterDroneWithServiceTask : ScheduledTaskWithData<RegisterDroneWithServiceTask.Data>
+	public class BroadcastDroneToServiceTask : ScheduledTaskWithData<BroadcastDroneToServiceTask.Data>
 	{
-		public RegisterDroneWithServiceTask(Action<Data> action)
+		public BroadcastDroneToServiceTask(Action<Data> action)
 			: base(action)
 		{ }
 

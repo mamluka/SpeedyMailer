@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Master.Web.Core.Commands;
@@ -25,7 +26,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
                                                              		x.CreativeId = creativeId;
                                                              	});
 
-			AssertApiCall<CreativeEndpoint.Add.Request>(x=> x.CreativeId == creativeId);
+			AssertApiCalled<CreativeEndpoint.Add.Request>(x=> x.CreativeId == creativeId);
         }
     }
 }

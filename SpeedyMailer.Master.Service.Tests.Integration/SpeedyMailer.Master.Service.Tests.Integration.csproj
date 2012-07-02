@@ -135,6 +135,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,9 +169,7 @@
   <ItemGroup>
     <Content Include="Raven.Studio.xap" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

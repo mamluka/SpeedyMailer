@@ -1,5 +1,6 @@
 using RestSharp;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;

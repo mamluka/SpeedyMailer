@@ -2,6 +2,7 @@ using System;
 using Nancy.Bootstrapper;
 using Ninject;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Drones;
 
@@ -24,7 +25,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return new Drone
 			       	{
 			       		Hostname = apiBaseUri,
-						Identifier = droneId,
+						Id = droneId,
 			       	};
 		}
 

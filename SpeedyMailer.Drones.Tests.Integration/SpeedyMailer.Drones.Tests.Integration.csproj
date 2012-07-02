@@ -136,7 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tasks\RegisterDroneWithMasterServiceTaskTests.cs" />
+    <Compile Include="Tasks\BroadcastDroneToServiceTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

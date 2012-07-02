@@ -106,7 +106,7 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Settings\IDroneSettings.cs" />
-    <Compile Include="Tasks\RegisterDroneWithServiceTask.cs" />
+    <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

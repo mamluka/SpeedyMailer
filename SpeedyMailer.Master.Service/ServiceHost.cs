@@ -3,6 +3,7 @@ using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Service.Container;
 using Ninject;

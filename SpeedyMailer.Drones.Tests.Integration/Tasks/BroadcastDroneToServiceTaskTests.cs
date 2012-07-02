@@ -1,5 +1,6 @@
 using NUnit.Framework;
 using SpeedyMailer.Core.Api;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Drones.Tasks;
@@ -8,7 +9,7 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
 	[TestFixture]
-	public class RegisterDroneWithMasterServiceTaskTests : IntegrationTestBase
+	public class BroadcastDroneToServiceTaskTests : IntegrationTestBase
 	{
 		private IScheduledTaskManager _scheduledTaskManager;
 
@@ -28,10 +29,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			                                          	});
 
 		    ListenToApiCall<ServiceApi.RegisterDrone,ServiceApi.RegisterDrone.Request>();
-			var task = new RegisterDroneWithServiceTask(x=> x.Identifier = identifier);
+			var task = new BroadcastDroneToServiceTask(x=> x.Identifier = identifier);
 			_scheduledTaskManager.AddAndStart(task);
 
-			AssertApiCall<ServiceApi.RegisterDrone.Request>(x => x.Identifier == identifier);
+			AssertApiCalled<ServiceApi.RegisterDrone.Request>(x => x.Identifier == identifier);
 		}
 	}
 }

@@ -108,13 +108,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\Api.cs" />
-    <Compile Include="Api\ApiCall.cs" />
-    <Compile Include="Api\ApiResult.cs" />
-    <Compile Include="Api\IApiCallsSettings.cs" />
-    <Compile Include="Api\IApiHost.cs" />
-    <Compile Include="Api\ServiceApi.cs" />
-    <Compile Include="Api\Status.cs" />
+    <Compile Include="Apis\Api.cs" />
+    <Compile Include="Apis\ApiCall.cs" />
+    <Compile Include="Apis\ApiResult.cs" />
+    <Compile Include="Apis\IApiCallsSettings.cs" />
+    <Compile Include="Apis\IApiHost.cs" />
+    <Compile Include="Apis\ServiceApi.cs" />
+    <Compile Include="Apis\Status.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />
     <Compile Include="Container\AssemblyGatherer.cs" />

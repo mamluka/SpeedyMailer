@@ -132,7 +132,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\CreativeModule.cs" />
+    <Compile Include="Apis\CreativeModule.cs" />
+    <Compile Include="Commands\UpdateDroneCommand.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />
@@ -156,9 +157,7 @@
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Commands\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="Raven.Studio.xap" />
   </ItemGroup>
