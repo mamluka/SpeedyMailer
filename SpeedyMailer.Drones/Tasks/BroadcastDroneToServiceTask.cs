@@ -1,6 +1,5 @@
 using System;
 using Quartz;
-using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Tasks;
 
@@ -42,9 +41,10 @@ namespace SpeedyMailer.Drones.Tasks
 			public void Execute(IJobExecutionContext context)
 			{
 				var data = GetData(context);
-				_api.Call<ServiceApi.RegisterDrone>()
-					.WithParameters(x => x.Identifier = data.Identifier)
-					.Get();
+				_api.Call<ServiceApi.RegisterDrone>(call =>
+					call.WithParameters(p =>
+						p.Identifier = data.Identifier
+					)).Get();
 			}
 		}
 	}

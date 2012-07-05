@@ -30,9 +30,11 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 		private void AddCreative(string creativeId)
 		{
-			Api.Call<CreativeEndpoint.Add>()
-				.WithParameters(x => x.CreativeId = creativeId)
+			Api.Call<CreativeEndpoint.Add>(call =>
+			                               call.WithParameters(p =>
+			                                                   p.CreativeId = creativeId))
 				.Post();
+
 		}
 
 		private string CreateCreative()

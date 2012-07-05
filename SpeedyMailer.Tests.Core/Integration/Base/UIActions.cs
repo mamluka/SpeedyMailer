@@ -8,7 +8,6 @@ using Ninject;
 using Ploeh.AutoFixture;
 using Raven.Client;
 using Raven.Client.Document;
-using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Tasks;

@@ -1,5 +1,4 @@
 using RestSharp;
-using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
@@ -20,8 +19,10 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 
 		public override ApiResult Execute()
 		{
-			_api.Call<CreativeEndpoint.Add>()
-				.WithParameters(x => x.CreativeId = CreativeId)
+			_api.Call<CreativeEndpoint.Add>(call=> 
+				call.WithParameters(p=> 
+					p.CreativeId = CreativeId
+				))
 				.Post();
 
 			return new ApiResult();

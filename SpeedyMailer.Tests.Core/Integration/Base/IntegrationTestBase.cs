@@ -20,7 +20,6 @@ using Raven.Client.Embedded;
 using RestSharp;
 using Rhino.Mocks;
 using SpeedyMailer.Core;
-using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
@@ -41,8 +40,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IKernel MasterKernel { get; private set; }
 		public Api Api { get; set; }
 
-		protected string DefaultDroneBaseUrl { get; set; }
-		protected string DefaultServiceBaseUrl { set; get; }
+		protected string DefaultBaseUrl { set; get; }
 
 		public IDocumentStore DocumentStore { get; private set; }
 		public DroneActions DroneActions { get; set; }
@@ -88,8 +86,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			Api = MasterResolve<Api>();
 
-			DefaultServiceBaseUrl = "http://localhost:2589/";
-			DefaultDroneBaseUrl = "http://localhost:2589/";
+			DefaultBaseUrl = "http://localhost:2589/";
 		}
 
 		[TestFixtureTearDown]
@@ -122,13 +119,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			ServiceActions = MasterKernel.Get<ServiceActions>();
 			DroneActions = DroneKernel.Get<DroneActions>();
 
-			ServiceActions.Hostname = DefaultServiceBaseUrl;
+			ServiceActions.Hostname = DefaultBaseUrl;
 		}
 
 		private void LoadBasicSettings()
 		{
-			UIActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultServiceBaseUrl);
-			DroneActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultServiceBaseUrl);
+			UIActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 		}
 
 		[SetUp]
@@ -145,6 +142,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 																serializer.TypeNameHandling = TypeNameHandling.All;
 															},
 														FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
+														DefaultQueryingConsistency = ConsistencyOptions.MonotonicRead
 													}
 											};
 
@@ -204,7 +202,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			using (var session = DocumentStore.OpenSession())
 			{
-				return session.Query<T>().Where(expression).Customize(x => x.WaitForNonStaleResults()).ToList();
+				return session.Query<T>().Where(expression).ToList();
 			}
 		}
 
@@ -212,7 +210,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			using (var session = DocumentStore.OpenSession())
 			{
-				return session.Query<T>().Customize(x => x.WaitForNonStaleResults()).ToList();
+				return session.Query<T>().ToList();
 			}
 		}
 
@@ -240,7 +238,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
-				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Count() < numberOfEntities &&
+				session.Query<T>().Count() < numberOfEntities &&
 				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
 
 			WaitForStoreWithFunction(condition);
@@ -249,7 +247,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
-				session.Query<T>().Customize(x => x.WaitForNonStaleResults()).Where(whereCondition).Count() < count &&
+				session.Query<T>().Where(whereCondition).Count() < count &&
 				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
 
 			WaitForStoreWithFunction(condition);
@@ -293,7 +291,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		private void StartGeneticEndpoint<TEndpoint, TResponse>(string endpointBaseUrl) where TEndpoint : ApiCall, new()
 		{
 			var endpoint = new TEndpoint().Endpoint;
-			var uri = string.IsNullOrEmpty(endpointBaseUrl) ? DefaultServiceBaseUrl : endpointBaseUrl;
+			var uri = DefaultBaseUrl ?? endpointBaseUrl;
 
 			var restCallTestingBootstrapper = new RestCallTestingBootstrapper<TResponse>(endpoint);
 			_nancy = new NancyHost(new Uri(uri), restCallTestingBootstrapper);
@@ -315,7 +313,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void AssertApiCalled<T>(int seconds = 30) where T : class
 		{
-			AssertApiWasntCalled<T>(seconds);
+			WaitForApiToBeCalled<T>(seconds);
 
 			Assert.That(RestCallTestingModule<T>.WasCalled, Is.True);
 		}
@@ -329,7 +327,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void AssertApiCalled(int seconds = 30)
 		{
-			AssertApiWasntCalled<NoResponse>(seconds);
+			WaitForApiToBeCalled<NoResponse>(seconds);
 
 			Assert.That(RestCallTestingModule<NoResponse>.WasCalled, Is.True);
 		}

@@ -1,4 +1,5 @@
 using System;
+using System.Web.UI.WebControls.WebParts;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -12,20 +13,19 @@ namespace SpeedyMailer.Core.Apis
 		public string Endpoint { get; set; }
 	}
 
-	public abstract class ApiCall<T> : ApiCall, IApiHost where T : new()
+	public abstract class ApiCall<T> : ApiCall where T : new()
 	{
 		protected ApiCall(string endpoint) : base(endpoint)
 		{ }
 
-		public T Parameters { get; set; }
-		public Api ApiContext { get; set; }
+		public  T Parameters;
 
-		public Api WithParameters(Action<T> action)
+		public void WithParameters(Action<T> action)
 		{
-			Parameters = new T();
-			action(Parameters);
-			BoxedParameters = Parameters;
-			return ApiContext;
+			var parameters = new T();
+			action(parameters);
+			BoxedParameters = parameters;
+			Parameters = parameters;
 		}
 	}
 }

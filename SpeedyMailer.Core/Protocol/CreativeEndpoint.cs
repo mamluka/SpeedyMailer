@@ -1,4 +1,3 @@
-using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Apis;
 
 namespace SpeedyMailer.Core.Protocol

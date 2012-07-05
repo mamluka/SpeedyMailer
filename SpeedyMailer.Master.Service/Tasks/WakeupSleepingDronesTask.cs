@@ -5,6 +5,7 @@ using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Tasks;
 using System.Linq;
+using SpeedyMailer.Master.Service.Apis;
 
 namespace SpeedyMailer.Master.Service.Tasks
 {
@@ -17,13 +18,13 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 		public override ITrigger ConfigureTrigger()
 		{
-			return TriggerWithTimeCondition(x => x.WithIntervalInSeconds(5).RepeatForever());
+			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(1).RepeatForever());
 		}
 
 		public class Job : IJob
 		{
 			private readonly IDocumentStore _documentStore;
-			private Api _api;
+			private readonly Api _api;
 
 			public Job(IDocumentStore documentStore,Api api)
 			{
@@ -37,8 +38,8 @@ namespace SpeedyMailer.Master.Service.Tasks
 				{
 					if (session.Query<CreativeFragment>().Customize(x=> x.WaitForNonStaleResults()).Any())
 					{
-						var drones = session.Query<Drone>().Customize(x => x.WaitForNonStaleResults()).Where(x => x.Status == DroneStatus.Asleep).ToList();
-	
+						var drones = session.Query<Drone>().Where(x => x.Status == DroneStatus.Asleep).ToList();
+						 drones.ForEach(drone => _api.SetBaseUrl(drone.Hostname).Call<DroneApi.Manage.Wakeup>().Post());
 					}
 					
 				}

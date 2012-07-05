@@ -1,5 +1,4 @@
 using NUnit.Framework;
-using SpeedyMailer.Core.Api;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Settings;

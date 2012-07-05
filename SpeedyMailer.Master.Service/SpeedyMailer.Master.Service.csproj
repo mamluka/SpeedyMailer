@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apis\CreativeModule.cs" />
+    <Compile Include="Apis\DroneApi.cs" />
     <Compile Include="Commands\UpdateDroneCommand.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
