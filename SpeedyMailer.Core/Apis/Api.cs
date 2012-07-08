@@ -32,17 +32,17 @@ namespace SpeedyMailer.Core.Apis
 			return new ApiActions(this);
 		}
 
-		public void Get()
+		public TResponse Get<TResponse>() where TResponse : new()
 		{
-			ExecuteCall(Method.GET);
+			return ExecuteCall<TResponse>(Method.GET);
 		}
 
-		public void Post()
+		public TResponse Post<TResponse>() where TResponse : new()
 		{
-			ExecuteCall(Method.POST);
+			return ExecuteCall<TResponse>(Method.POST);
 		}
 
-		private void ExecuteCall(Method method)
+		private TResponse ExecuteCall<TResponse>(Method method) where TResponse : new()
 		{
 			var restRequest = new RestRequest(ApiCall.Endpoint);
 
@@ -53,10 +53,10 @@ namespace SpeedyMailer.Core.Apis
 			restRequest.Method = method;
 
 			_restClient.BaseUrl = GetBaseUrl();
-			_restClient.Execute(restRequest);
+			return _restClient.Execute<TResponse>(restRequest).Data;
 		}
 
-		private void HandleRequestBody(Method method, RestRequest restRequest)
+		private void HandleRequestBody(Method method, IRestRequest restRequest)
 		{
 			if (method == Method.GET)
 			{
@@ -85,7 +85,9 @@ namespace SpeedyMailer.Core.Apis
 	public interface IApiActions
 	{
 		void Get();
+		T Get<T>() where T : new();
 		void Post();
+		T Post<T>() where T : new();
 	}
 
 	public class ApiActions : IApiActions
@@ -99,12 +101,26 @@ namespace SpeedyMailer.Core.Apis
 
 		public void Get()
 		{
-			_apiHost.Get();
+			_apiHost.Get<VoidResponse>();
+		}
+
+		public T Get<T>() where T : new()
+		{
+			return _apiHost.Get<T>();
 		}
 
 		public void Post()
 		{
-			_apiHost.Post();
+			_apiHost.Post<VoidResponse>();
 		}
+
+		public T Post<T>() where T : new()
+		{
+			return _apiHost.Post<T>();
+		}
+	}
+
+	public class VoidResponse
+	{
 	}
 }

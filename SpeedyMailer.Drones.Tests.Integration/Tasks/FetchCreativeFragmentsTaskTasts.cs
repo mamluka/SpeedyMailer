@@ -6,6 +6,7 @@ using System.Threading;
 using NUnit.Framework;
 using Ninject;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -29,12 +30,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStartSendingEmails()
 		{
-			ApiResponse<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>();
-		}
+			ApiResponse<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>(x=> x.CreativeFragment = new CreativeFragment() {Id = "testingId"});
+			var task = new FetchCreativeFragmentsTask();
 
-		private void ApiResponse<T, T1>()
-		{
-			throw new NotImplementedException();
+			DroneActions.StartScheduledTask(task);
+
+			Thread.Sleep(30000);
 		}
 	}
 }

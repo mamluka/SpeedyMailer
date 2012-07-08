@@ -30,7 +30,8 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				_api.Call<ServiceEndpoints.FetchFragment>().Get();
+				var fragment = _api.Call<ServiceEndpoints.FetchFragment>().Get<ServiceEndpoints.FetchFragment.Response>();
+				Trace.WriteLine(fragment.CreativeFragment.Id);
 			}
 		}
 	}
