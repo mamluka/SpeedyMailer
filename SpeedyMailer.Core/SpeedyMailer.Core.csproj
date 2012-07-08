@@ -113,7 +113,7 @@
     <Compile Include="Apis\ApiResult.cs" />
     <Compile Include="Apis\IApiCallsSettings.cs" />
     <Compile Include="Apis\IApiHost.cs" />
-    <Compile Include="Apis\ServiceApi.cs" />
+    <Compile Include="Apis\ServiceEndPoints.cs" />
     <Compile Include="Apis\Status.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />

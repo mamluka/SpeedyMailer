@@ -28,7 +28,6 @@ namespace SpeedyMailer.Core.Tasks
 				.Build();
 		}
 
-		//.UsingJobData("data", JsonConvert.SerializeObject(data))
 		public virtual IJobDetail GetJob()
 		{
 			return ConfigureJob();

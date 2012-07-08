@@ -41,7 +41,7 @@ namespace SpeedyMailer.Drones.Tasks
 			public void Execute(IJobExecutionContext context)
 			{
 				var data = GetData(context);
-				_api.Call<ServiceApi.RegisterDrone>(call =>
+				_api.Call<ServiceEndpoints.RegisterDrone>(call =>
 					call.WithParameters(p =>
 						p.Identifier = data.Identifier
 					)).Get();

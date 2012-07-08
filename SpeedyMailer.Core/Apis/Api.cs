@@ -8,7 +8,7 @@ namespace SpeedyMailer.Core.Apis
 		private readonly IRestClient _restClient;
 		private readonly IApiCallsSettings _apiCallsSettings;
 		private string _apiBaseUrl;
-		private ApiCall _apiCall { get; set; }
+		private ApiCall ApiCall { get; set; }
 
 		public Api(IRestClient restClient,IApiCallsSettings apiCallsSettings)
 		{
@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Apis
 		{
 			var apiCall = new T();
 			action(apiCall);
-			_apiCall = apiCall;
+			ApiCall = apiCall;
 
 			return new ApiActions(this);
 		}
@@ -28,7 +28,7 @@ namespace SpeedyMailer.Core.Apis
 		public IApiActions Call<T>() where T : ApiCall, new()
 		{
 			var apiCall = new T();
-			_apiCall = apiCall;
+			ApiCall = apiCall;
 			return new ApiActions(this);
 		}
 
@@ -44,9 +44,9 @@ namespace SpeedyMailer.Core.Apis
 
 		private void ExecuteCall(Method method)
 		{
-			var restRequest = new RestRequest(_apiCall.Endpoint);
+			var restRequest = new RestRequest(ApiCall.Endpoint);
 
-			if (_apiCall.BoxedParameters != null)
+			if (ApiCall.BoxedParameters != null)
 				HandleRequestBody(method, restRequest);
 
 			
@@ -60,11 +60,11 @@ namespace SpeedyMailer.Core.Apis
 		{
 			if (method == Method.GET)
 			{
-				restRequest.AddObject(_apiCall.BoxedParameters);
+				restRequest.AddObject(ApiCall.BoxedParameters);
 			}
 			else
 			{
-				restRequest.AddBody(_apiCall.BoxedParameters);
+				restRequest.AddBody(ApiCall.BoxedParameters);
 			}
 
 			restRequest.RequestFormat = DataFormat.Json;

@@ -109,6 +109,7 @@
     <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\FetchCreativeFragmentsTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

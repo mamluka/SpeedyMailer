@@ -76,7 +76,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				                                    	{
 				                                    		typeof (DroneAssemblyMarker),
 				                                    		typeof (ISchedulerFactory),
-				                                    		typeof (CoreAssemblyMarker)
+				                                    		typeof (CoreAssemblyMarker),
+															typeof(IRestClient)
 				                                    	}))
 				.BindInterfaceToDefaultImplementation()
 				.Configure(x => x.InTransientScope())
@@ -97,7 +98,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			var droneScheduler = MasterResolve<IScheduler>();
 			WaitForSchedulerToShutdown(droneScheduler);
-
 		}
 
 		private static void WaitForSchedulerToShutdown(IScheduler scheduler)
@@ -142,7 +142,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 																serializer.TypeNameHandling = TypeNameHandling.All;
 															},
 														FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
-														DefaultQueryingConsistency = ConsistencyOptions.MonotonicRead
+														DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
 													}
 											};
 
@@ -158,10 +158,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TearDown]
 		public void Teardown()
 		{
-
+			ExtraTeardown();
 		}
 
 		public virtual void ExtraSetup()
+		{ }
+		
+		public virtual void ExtraTeardown()
 		{ }
 
 		public void Store(object item)
@@ -193,7 +196,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			using (var session = DocumentStore.OpenSession())
 			{
-				Trace.WriteLine(id);
 				return session.Load<T>(id);
 			}
 		}
@@ -234,7 +236,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			WaitForStoreWithFunction(condition);
 		}
 
-		protected void WaitForEntityToExist<T>(int numberOfEntities, int secondsToWait = 30)
+		protected void WaitForEntitiesToExist<T>(int numberOfEntities, int secondsToWait = 30)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
@@ -292,6 +294,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var endpoint = new TEndpoint().Endpoint;
 			var uri = DefaultBaseUrl ?? endpointBaseUrl;
+			RestCallTestingModule<TResponse>.Model = default(TResponse);
+			RestCallTestingModule<TResponse>.WasCalled = false;
 
 			var restCallTestingBootstrapper = new RestCallTestingBootstrapper<TResponse>(endpoint);
 			_nancy = new NancyHost(new Uri(uri), restCallTestingBootstrapper);

@@ -3,7 +3,7 @@ using SpeedyMailer.Core.Domain.Drones;
 
 namespace SpeedyMailer.Master.Service.Apis
 {
-	public class DroneApi
+	public class DroneEndpoints
 	{
 		public class Manage
 		{

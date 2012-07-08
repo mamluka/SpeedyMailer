@@ -32,7 +32,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			      		Id = "creativefragment/1"
 			      	});
 
-			ListenToApiCall<DroneApi.Manage.Wakeup>();
+			ListenToApiCall<DroneEndpoints.Manage.Wakeup>(DefaultBaseUrl);
 
 			var task = new WakeupSleepingDronesTask();
 			ServiceActions.StartScheduledTask(task);
@@ -43,12 +43,50 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenThereAreNoFragments_ShouldNotWakeupAnyDrones()
 		{
-			ListenToApiCall<DroneApi.Manage.Wakeup>();
+			ListenToApiCall<DroneEndpoints.Manage.Wakeup>(DefaultBaseUrl);
 
 			var task = new WakeupSleepingDronesTask();
 			ServiceActions.StartScheduledTask(task);
 
 			AssertApiWasntCalled();
 		}
+
+		[Test]
+		public void Execute_WhenThereAreNoDrones_ShouldDoNothing()
+		{
+			Store(new CreativeFragment
+			{
+				Id = "creativefragment/1"
+			});
+
+			ListenToApiCall<DroneEndpoints.Manage.Wakeup>(DefaultBaseUrl);
+
+			var task = new WakeupSleepingDronesTask();
+			ServiceActions.StartScheduledTask(task);
+
+			AssertApiWasntCalled();
+		}
+
+		[Test]
+		public void Execute_WhenDroneIsNotAsleep_ShouldNotCallIt()
+		{
+			ServiceActions.ExecuteCommand<UpdateDroneCommand>(x => x.Drone = new Drone
+			{
+				Status = DroneStatus.Online,
+				Hostname = DefaultBaseUrl
+			});
+			Store(new CreativeFragment
+			{
+				Id = "creativefragment/1"
+			});
+
+			ListenToApiCall<DroneEndpoints.Manage.Wakeup>(DefaultBaseUrl);
+
+			var task = new WakeupSleepingDronesTask();
+			ServiceActions.StartScheduledTask(task);
+
+			AssertApiWasntCalled();
+		}
+
 	}
 }

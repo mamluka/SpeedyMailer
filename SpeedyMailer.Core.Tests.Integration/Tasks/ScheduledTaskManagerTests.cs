@@ -38,6 +38,31 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 
 		}
+
+		[Test]
+		public void AddAndStart_WhenCalledTwiceWithSameTask_ShouldOverrideTheOldTask()
+		{
+			const string resultId1 = "result/1";
+			const string resultId2 = "result/2";
+			var firstTask = new TestScheduledTask(x =>
+			{
+				x.ResultId = resultId1;
+			});
+
+			_target.AddAndStart(firstTask);
+
+			var secondTask = new TestScheduledTask(x =>
+			{
+				x.ResultId = resultId2;
+			});
+
+			_target.AddAndStart(secondTask);
+
+			WaitForEntityToExist(resultId2);
+
+			var result = Load<ComputationResult<string>>(resultId2);
+			result.Result.Should().Be("done");
+		}
 	}
 
 	public class TestScheduledTask : ScheduledTaskWithData<TestScheduledTask.Data>

@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			AddCreative(creativeId);
 
-			WaitForEntityToExist<CreativeFragment>(1);
+			WaitForEntitiesToExist<CreativeFragment>(1);
 			var result = Query<CreativeFragment>().First();
 
 			result.Recipients.Should().HaveCount(100);

@@ -19,8 +19,12 @@ namespace SpeedyMailer.Core.Tasks
 		public void AddAndStart(ScheduledTask task)
 		{
 			var job = task.GetJob();
-			_scheduler.ScheduleJob(job, task.GetTrigger());
 
+			if (_scheduler.CheckExists(job.Key))
+			{
+				_scheduler.DeleteJob(job.Key);
+			}
+			_scheduler.ScheduleJob(job, task.GetTrigger());
 			if (!_scheduler.IsStarted)
 				_scheduler.Start();
 		}
