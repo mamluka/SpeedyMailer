@@ -42,5 +42,13 @@ namespace SpeedyMailer.Core.Utilities
 				session.SaveChanges();
 			}
 		}
+
+		public T Load<T>(string entityId)
+		{
+			using (var session = _documentStore.OpenSession())
+			{
+				return session.Load<T>(entityId);
+			}
+		}
 	}
 }

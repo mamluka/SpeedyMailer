@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using NUnit.Framework;
 using Ninject;
+using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Drones.Tasks;
@@ -34,8 +35,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var task = new FetchCreativeFragmentsTask();
 
 			DroneActions.StartScheduledTask(task);
-
-			Thread.Sleep(30000);
 		}
 	}
 }

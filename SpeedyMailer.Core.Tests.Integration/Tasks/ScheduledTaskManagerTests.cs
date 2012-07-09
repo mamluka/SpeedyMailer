@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using Quartz;
@@ -63,14 +64,28 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			var result = Load<ComputationResult<string>>(resultId2);
 			result.Result.Should().Be("done");
 		}
+
+		[Test]
+		public void ExecuteAndStart_WhenTheTaskTakesMoreTimeThenTheIntervalAndNoConcurrency_ShouldNotExecuteInParallel()
+		{
+			const string resultId = "result/1";
+			var task = new ConcurrentScheduledTask(x => x.ResultId = resultId);
+
+			_target.AddAndStart(task);
+
+			Thread.Sleep(12*1000);
+
+			var result = Load<ComputationResult<int>>(resultId);
+
+			result.Result.Should().Be(1);
+		}
 	}
 
 	public class TestScheduledTask : ScheduledTaskWithData<TestScheduledTask.Data>
 	{
 		public TestScheduledTask(Action<Data> action)
 			: base(action)
-		{
-		}
+		{ }
 
 		public override IJobDetail ConfigureJob()
 		{
@@ -105,6 +120,55 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 										Id = data.ResultId,
 				                 		Result = "done"
 				                 	});
+			}
+		}
+	}
+
+	public class ConcurrentScheduledTask : ScheduledTaskWithData<ConcurrentScheduledTask.Data>
+	{
+		public ConcurrentScheduledTask(Action<Data> action)
+			: base(action)
+		{
+		}
+
+		public override IJobDetail ConfigureJob()
+		{
+			return SimpleJob<Job>();
+		}
+
+		public override ITrigger ConfigureTrigger()
+		{
+			return TriggerWithTimeCondition(x => x.WithIntervalInSeconds(3).WithRepeatCount(3));
+		}
+
+		public class Data : ScheduledTaskData
+		{
+			public string ResultId { get; set; }
+		}
+
+		[DisallowConcurrentExecution]
+		public class Job : JobBase<Data>, IJob
+		{
+			private readonly Framework _framework;
+
+			public Job(Framework framework)
+			{
+				_framework = framework;
+			}
+
+			public void Execute(IJobExecutionContext context)
+			{
+				var data = GetData(context);
+				var computation = _framework.Load<ComputationResult<int>>(data.ResultId);
+				var currentIndex = computation == null ? 0 : computation.Result;
+
+				_framework.Store(new ComputationResult<int>
+				{
+					Id = data.ResultId,
+					Result = currentIndex+1
+				});
+
+				Thread.Sleep(10*1000);
 			}
 		}
 	}
