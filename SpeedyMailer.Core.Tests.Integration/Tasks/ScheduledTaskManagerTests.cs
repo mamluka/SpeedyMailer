@@ -24,10 +24,10 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		{
 			const string resultId = "result/1";
 			var task = new TestScheduledTask(x =>
-			                                 	{
+												{
 
-			                                 		x.ResultId = resultId;
-			                                 	});
+													x.ResultId = resultId;
+												});
 
 			_target.AddAndStart(task);
 
@@ -73,11 +73,11 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.AddAndStart(task);
 
-			Thread.Sleep(12*1000);
+			Thread.Sleep(12 * 1000);
 
 			var result = Load<ComputationResult<int>>(resultId);
 
-			result.Result.Should().Be(1);
+			result.Result.Should().Be(2);
 		}
 	}
 
@@ -116,10 +116,10 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 				var data = GetData(context);
 
 				_framework.Store(new ComputationResult<string>
-				                 	{
+									{
 										Id = data.ResultId,
-				                 		Result = "done"
-				                 	});
+										Result = "done"
+									});
 			}
 		}
 	}
@@ -165,10 +165,10 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 				_framework.Store(new ComputationResult<int>
 				{
 					Id = data.ResultId,
-					Result = currentIndex+1
+					Result = currentIndex + 1
 				});
 
-				Thread.Sleep(10*1000);
+				Thread.Sleep(10 * 1000);
 			}
 		}
 	}

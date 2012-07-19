@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
@@ -8,63 +9,101 @@ namespace SpeedyMailer.Core.Apis
 		private readonly IRestClient _restClient;
 		private readonly IApiCallsSettings _apiCallsSettings;
 		private string _apiBaseUrl;
-		private ApiCall ApiCall { get; set; }
 
-		public Api(IRestClient restClient,IApiCallsSettings apiCallsSettings)
+		public Api(IRestClient restClient, IApiCallsSettings apiCallsSettings)
 		{
 			_apiCallsSettings = apiCallsSettings;
 			_restClient = restClient;
 		}
 
-		public IApiActions Call<T>(Action<T> action) where T : ApiCall, new()
+		public void Call<TEndpoint>() where TEndpoint : ApiCall, new()
 		{
-			var apiCall = new T();
+			var apiCall = new TEndpoint();
+			ExecuteCall(apiCall);
+		}
+
+		public void Call<TEndpoint>(Action<TEndpoint> action) where TEndpoint : ApiCall, new()
+		{
+			var apiCall = new TEndpoint();
 			action(apiCall);
-			ApiCall = apiCall;
-
-			return new ApiActions(this);
+			ExecuteCall(apiCall);
 		}
 
-		public IApiActions Call<T>() where T : ApiCall, new()
+		public TResponse Call<TEndpoint, TResponse>() where TEndpoint : ApiCall, new() where TResponse : new()
 		{
-			var apiCall = new T();
-			ApiCall = apiCall;
-			return new ApiActions(this);
+			var apiCall = new TEndpoint();
+			return ExecuteCall<TResponse>(apiCall);
 		}
 
-		public TResponse Get<TResponse>() where TResponse : new()
+		public TResponse Call<TEndpoint, TResponse>(Action<TEndpoint> action) where TEndpoint : ApiCall, new() where TResponse : new()
 		{
-			return ExecuteCall<TResponse>(Method.GET);
+			var apiCall = new TEndpoint();
+			action(apiCall);
+			return ExecuteCall<TResponse>(apiCall);
 		}
 
-		public TResponse Post<TResponse>() where TResponse : new()
+		private TResponse ExecuteCall<TResponse>(ApiCall apiCall) where TResponse : new()
 		{
-			return ExecuteCall<TResponse>(Method.POST);
+			var restRequest = SetupApiCall(apiCall);
+			var result = _restClient.Execute<TResponse>(restRequest);
+
+			Trace.WriteLine(result.ResponseStatus);
+			Trace.WriteLine(result.StatusCode);
+			Trace.WriteLine(result.ErrorMessage);
+			Trace.WriteLine(result.Content);
+
+			return result.Data;
+
 		}
 
-		private TResponse ExecuteCall<TResponse>(Method method) where TResponse : new()
+		private void ExecuteCall(ApiCall apiCall)
 		{
-			var restRequest = new RestRequest(ApiCall.Endpoint);
+			var restRequest = SetupApiCall(apiCall);
+			var result = _restClient.Execute(restRequest);
 
-			if (ApiCall.BoxedParameters != null)
-				HandleRequestBody(method, restRequest);
+			Trace.WriteLine(result.ResponseStatus);
+			Trace.WriteLine(result.StatusCode);
+			Trace.WriteLine(result.ErrorMessage);
+		}
 
-			
+		private RestRequest SetupApiCall(ApiCall apiCall)
+		{
+			var restRequest = new RestRequest(apiCall.Endpoint);
+			var method = Translate(apiCall);
+			HandleRequestBody(apiCall, restRequest);
+
 			restRequest.Method = method;
 
 			_restClient.BaseUrl = GetBaseUrl();
-			return _restClient.Execute<TResponse>(restRequest).Data;
+			return restRequest;
 		}
 
-		private void HandleRequestBody(Method method, IRestRequest restRequest)
+		private static Method Translate(ApiCall apiCall)
 		{
-			if (method == Method.GET)
+			switch (apiCall.CallMethod)
 			{
-				restRequest.AddObject(ApiCall.BoxedParameters);
+				case RestMethod.Get:
+					return Method.GET;
+				case RestMethod.Post:
+					return Method.POST;
+				case RestMethod.Put:
+					return Method.PUT;
+				case RestMethod.Delete:
+					return Method.DELETE;
+				default:
+					return Method.GET;
+			}
+		}
+
+		private void HandleRequestBody(ApiCall apiCall, IRestRequest restRequest)
+		{
+			if (apiCall.CallMethod == RestMethod.Get)
+			{
+				restRequest.AddObject(apiCall);
 			}
 			else
 			{
-				restRequest.AddBody(ApiCall.BoxedParameters);
+				restRequest.AddBody(apiCall);
 			}
 
 			restRequest.RequestFormat = DataFormat.Json;
@@ -79,44 +118,6 @@ namespace SpeedyMailer.Core.Apis
 		{
 			_apiBaseUrl = baseUrl;
 			return this;
-		}
-	}
-
-	public interface IApiActions
-	{
-		void Get();
-		T Get<T>() where T : new();
-		void Post();
-		T Post<T>() where T : new();
-	}
-
-	public class ApiActions : IApiActions
-	{
-		private readonly Api _apiHost;
-
-		public ApiActions(Api apiHost)
-		{
-			_apiHost = apiHost;
-		}
-
-		public void Get()
-		{
-			_apiHost.Get<VoidResponse>();
-		}
-
-		public T Get<T>() where T : new()
-		{
-			return _apiHost.Get<T>();
-		}
-
-		public void Post()
-		{
-			_apiHost.Post<VoidResponse>();
-		}
-
-		public T Post<T>() where T : new()
-		{
-			return _apiHost.Post<T>();
 		}
 	}
 

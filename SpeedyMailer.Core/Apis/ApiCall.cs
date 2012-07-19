@@ -1,31 +1,29 @@
 using System;
 using System.Web.UI.WebControls.WebParts;
+using Newtonsoft.Json;
+using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
 {
+	[JsonObject(MemberSerialization.OptOut)]
 	public class ApiCall
 	{
 		protected ApiCall(string endpoint)
 		{
 			Endpoint = endpoint;
 		}
-		public object BoxedParameters { get; set; }
+		[JsonIgnoreAttribute]
 		public string Endpoint { get; set; }
+
+		[JsonIgnoreAttribute]
+		public RestMethod CallMethod { get; set; }
 	}
 
-	public abstract class ApiCall<T> : ApiCall where T : new()
+	public enum RestMethod
 	{
-		protected ApiCall(string endpoint) : base(endpoint)
-		{ }
-
-		public  T Parameters;
-
-		public void WithParameters(Action<T> action)
-		{
-			var parameters = new T();
-			action(parameters);
-			BoxedParameters = parameters;
-			Parameters = parameters;
-		}
+		Get,
+		Post,
+		Put,
+		Delete
 	}
 }

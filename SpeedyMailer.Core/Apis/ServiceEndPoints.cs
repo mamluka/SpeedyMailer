@@ -4,20 +4,22 @@ namespace SpeedyMailer.Core.Apis
 {
 	public class ServiceEndpoints
 	{
-		public class RegisterDrone : ApiCall<RegisterDrone.Request>
+		public class RegisterDrone : ApiCall
 		{
-			public RegisterDrone():base("drones/register") {}
-
-			public class Request
+			public RegisterDrone():base("drones/register")
 			{
-				public string Identifier { get; set; }
+				CallMethod = RestMethod.Post;
 			}
+
+			public string Identifier { get; set; }
 		}
 
 		public class FetchFragment : ApiCall
 		{
 			public FetchFragment() : base("fragments/fetch")
-			{}
+			{
+				CallMethod = RestMethod.Get;
+			}
 
 			public class Response
 			{

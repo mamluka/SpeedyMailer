@@ -19,11 +19,7 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 
 		public override ApiResult Execute()
 		{
-			_api.Call<CreativeEndpoint.Add>(call=> 
-				call.WithParameters(p=> 
-					p.CreativeId = CreativeId
-				))
-				.Post();
+			_api.Call<CreativeEndpoint.Add>(x => x.CreativeId = CreativeId);
 
 			return new ApiResult();
 		}

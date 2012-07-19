@@ -40,7 +40,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IKernel MasterKernel { get; private set; }
 		public Api Api { get; set; }
 
-		protected string DefaultBaseUrl { set; get; }
+		protected string DefaultBaseUrl { get; set; }
 
 		public IDocumentStore DocumentStore { get; private set; }
 		public DroneActions DroneActions { get; set; }
@@ -85,9 +85,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
-			Api = MasterResolve<Api>();
+			DefaultBaseUrl = "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
 
-			DefaultBaseUrl = "http://localhost:2589/";
+			Api = MasterResolve<Api>();
 		}
 
 		[TestFixtureTearDown]
@@ -280,69 +280,57 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		public void ListenToApiCall<TEndpoint, TRequest>(string endpointBaseUrl="") where TEndpoint : ApiCall, new()
+		public void ListenToApiCall<TEndpoint>(string endpointBaseUrl="") where TEndpoint : ApiCall, new()
 		{
-			StartGeneticEndpoint<TEndpoint, TRequest,NoResponse>(endpointBaseUrl,null);
+			StartGeneticEndpoint<TEndpoint,NoResponse>(endpointBaseUrl,new NoResponse());
 		}
 
-		public void ListenToApiCall<TEndpoint>(string endpointBaseUrl = "") where TEndpoint : ApiCall, new()
-		{
-			StartGeneticEndpoint<TEndpoint, NoRequest,NoResponse>(endpointBaseUrl,null);
-		}
-
-		private void StartGeneticEndpoint<TEndpoint, TRequest,TResponse>(string endpointBaseUrl,TResponse response) where TEndpoint : ApiCall,new() where TResponse : class
+		private void StartGeneticEndpoint<TEndpoint,TResponse>(string endpointBaseUrl,TResponse response) where TEndpoint : ApiCall,new() where TResponse : class
 		{
 			var endpoint = new TEndpoint().Endpoint;
 			var uri = DefaultBaseUrl ?? endpointBaseUrl;
-			RestCallTestingModule<TRequest,TResponse>.Model = default(TRequest);
-			RestCallTestingModule<TRequest,TResponse>.WasCalled = false;
+			RestCallTestingModule<TEndpoint, TResponse>.Model = default(TEndpoint);
+			RestCallTestingModule<TEndpoint,TResponse>.WasCalled = false;
 
-			var restCallTestingBootstrapper = new RestCallTestingBootstrapper<TRequest,TResponse>(endpoint,response);
+			var restCallTestingBootstrapper = new RestCallTestingBootstrapper<TEndpoint, TResponse>(endpoint, response);
 			_nancy = new NancyHost(new Uri(uri), restCallTestingBootstrapper);
 			_nancy.Start();
 		}
 
-		protected void ApiResponse<TEndpoint, TResponse>(Action<TResponse> action,string endpointBaseUrl="") where TResponse : class, new() where TEndpoint : ApiCall, new()
+		protected void PrepareApiResponse<TEndpoint, TResponse>(Action<TResponse> action,string endpointBaseUrl="") where TResponse : class, new() where TEndpoint : ApiCall, new()
 		{
 			var response = new TResponse();
 			action(response);
-			StartGeneticEndpoint<TEndpoint, NoRequest, TResponse>(endpointBaseUrl, response);
+			StartGeneticEndpoint<TEndpoint,  TResponse>(endpointBaseUrl, response);
 		}
 
-		public void AssertApiCalled<TRequest>(Func<TRequest, bool> func, int seconds = 30) where TRequest : class
+		public void AssertApiCalled<TEndpoint>(Func<TEndpoint, bool> func, int seconds = 30) where TEndpoint : class
 		{
-			WaitForApiToBeCalled<TRequest>(seconds);
+			WaitForApiToBeCalled<TEndpoint>(seconds);
 
-			if (RestCallTestingModule<TRequest,NoResponse>.Model != null)
+			if (RestCallTestingModule<TEndpoint,NoResponse>.Model != null)
 			{
-				Assert.That(func(RestCallTestingModule<TRequest, NoResponse>.Model), Is.True);
+				Assert.That(func(RestCallTestingModule<TEndpoint, NoResponse>.Model), Is.True);
 				return;
 			}
 			Assert.Fail("Rest call was not executed in the ellapsed time");
 
 		}
 
-		public void AssertApiCalled<TRequest>(int seconds = 30) where TRequest : class
+		public void AssertApiCalled<TEndpoint>(int seconds = 30) where TEndpoint : class
 		{
-			WaitForApiToBeCalled<TRequest>(seconds);
+			WaitForApiToBeCalled<TEndpoint>(seconds);
 
-			Assert.That(RestCallTestingModule<TRequest, NoResponse>.WasCalled, Is.True);
+			Assert.That(RestCallTestingModule<TEndpoint, NoResponse>.WasCalled, Is.True);
 		}
 
-		public void AssertApiWasntCalled<TRequest>(int seconds = 30) where TRequest : class
+		public void AssertApiWasntCalled<TEndpoint>(int seconds = 30) where TEndpoint : class
 		{
-			WaitForApiToBeCalled<TRequest>(seconds);
+			WaitForApiToBeCalled<TEndpoint>(seconds);
 
-			Assert.That(RestCallTestingModule<TRequest, NoResponse>.WasCalled, Is.False);
+			Assert.That(RestCallTestingModule<TEndpoint, NoResponse>.WasCalled, Is.False);
 		}
-
-		public void AssertApiCalled(int seconds = 30)
-		{
-			WaitForApiToBeCalled<NoResponse>(seconds);
-
-			Assert.That(RestCallTestingModule<NoRequest,NoResponse>.WasCalled, Is.True);
-		}
-
+		
 		public void AssertApiWasntCalled(int seconds = 30)
 		{
 			WaitForApiToBeCalled<NoResponse>(seconds);
@@ -350,12 +338,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Assert.That(RestCallTestingModule<NoRequest, NoResponse>.WasCalled, Is.False);
 		}
 
-		private void WaitForApiToBeCalled<TRequest>(int seconds) where TRequest : class
+		private void WaitForApiToBeCalled<TEndpoint>(int seconds) where TEndpoint : class
 		{
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
-			while (RestCallTestingModule<TRequest, NoResponse>.WasCalled == false && stopwatch.ElapsedMilliseconds < seconds * 1000)
+			while (RestCallTestingModule<TEndpoint, NoResponse>.WasCalled == false && stopwatch.ElapsedMilliseconds < seconds * 1000)
 			{
 				Thread.Sleep(500);
 			}
@@ -369,9 +357,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		}
 	}
 
-	public class RestCallTestingModule<TRequest,TResponse> : NancyModule, IDoNotResolveModule where TResponse : class
+	public class RestCallTestingModule<TEndpoint,TResponse> : NancyModule, IDoNotResolveModule where TResponse : class
 	{
-		public static TRequest Model;
+		public static TEndpoint Model;
 		public static bool WasCalled;
 
 		public RestCallTestingModule(string baseBaseUrl, string endpoint,TResponse response)
@@ -379,21 +367,21 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			Get[endpoint] = x =>
 								{
-									Model = this.Bind<TRequest>();
+									Model = this.Bind<TEndpoint>();
 									WasCalled = true;
 									return response != null ? Response.AsJson(response) : null;
 								};
 
 			Post[endpoint] = x =>
 								{
-									Model = this.Bind<TRequest>();
+									Model = this.Bind<TEndpoint>();
 									WasCalled = true;
 									return response != null ? Response.AsJson(response) : null;
 								};
 		}
 	}
 
-	public class RestCallTestingBootstrapper<TRequest,TResponse> : NinjectNancyBootstrapper where TResponse : class
+	public class RestCallTestingBootstrapper<TEndpoint,TResponse> : NinjectNancyBootstrapper where TResponse : class
 	{
 		private readonly string _baseAndEndpoint;
 		private readonly TResponse _response;
@@ -410,8 +398,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var baseUrl = _baseAndEndpoint.Substring(0, _baseAndEndpoint.Length - endpoint.Length);
 
 			container.Bind<NancyModule>()
-				.ToConstant(new RestCallTestingModule<TRequest,TResponse>(baseUrl, endpoint,_response))
-				.Named(GetModuleKeyGenerator().GetKeyForModuleType(typeof(RestCallTestingModule<TRequest,TResponse>)));
+				.ToConstant(new RestCallTestingModule<TEndpoint,TResponse>(baseUrl, endpoint,_response))
+				.Named(GetModuleKeyGenerator().GetKeyForModuleType(typeof(RestCallTestingModule<TEndpoint,TResponse>)));
 		}
 	}
 

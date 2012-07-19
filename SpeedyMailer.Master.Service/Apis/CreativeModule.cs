@@ -14,7 +14,7 @@ namespace SpeedyMailer.Master.Service.Apis
 		{
 			Post["/add"] = call =>
 							  {
-								  var model = this.Bind<CreativeEndpoint.Add.Request>();
+								  var model = this.Bind<CreativeEndpoint.Add>();
 								  framework.ExecuteTask(new CreateCreativeFragmentsTask
 												  {
 													  CreativeId = model.CreativeId,

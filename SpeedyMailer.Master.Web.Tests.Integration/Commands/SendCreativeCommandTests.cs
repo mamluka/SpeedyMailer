@@ -18,14 +18,14 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Commands
         public void Execute_WhenGivenACreativeId_CallsTheEndpointWithTheCreativeId()
         {
         	const string creativeId = "creative/1";
-			ListenToApiCall<CreativeEndpoint.Add,CreativeEndpoint.Add.Request>();
+			ListenToApiCall<CreativeEndpoint.Add>();
 
             UIActions.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
                                                              	{
                                                              		x.CreativeId = creativeId;
                                                              	});
 
-			AssertApiCalled<CreativeEndpoint.Add.Request>(x=> x.CreativeId == creativeId);
+			AssertApiCalled<CreativeEndpoint.Add>(x=> x.CreativeId == creativeId);
         }
     }
 }

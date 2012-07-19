@@ -37,7 +37,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new WakeupSleepingDronesTask();
 			ServiceActions.StartScheduledTask(task);
 
-			AssertApiCalled();
+			AssertApiCalled<DroneEndpoints.Manage.Wakeup>();
 		}
 
 		[Test]
@@ -48,7 +48,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new WakeupSleepingDronesTask();
 			ServiceActions.StartScheduledTask(task);
 
-			AssertApiWasntCalled();
+			AssertApiWasntCalled<DroneEndpoints.Manage.Wakeup>();
 		}
 
 		[Test]
@@ -64,7 +64,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new WakeupSleepingDronesTask();
 			ServiceActions.StartScheduledTask(task);
 
-			AssertApiWasntCalled();
+			AssertApiWasntCalled<DroneEndpoints.Manage.Wakeup>();
 		}
 
 		[Test]
@@ -85,7 +85,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new WakeupSleepingDronesTask();
 			ServiceActions.StartScheduledTask(task);
 
-			AssertApiWasntCalled();
+			AssertApiWasntCalled<DroneEndpoints.Manage.Wakeup>();
 		}
 
 	}

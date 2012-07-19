@@ -4,14 +4,14 @@ namespace SpeedyMailer.Core.Protocol
 {
 	public class CreativeEndpoint
 	{
-		public class Add : ApiCall<Add.Request>
+		public class Add : ApiCall
 		{
-			public Add() : base("/creative/add") {}
-
-			public class Request
+			public Add() : base("/creative/add")
 			{
-				public string CreativeId { get; set; }
+				CallMethod = RestMethod.Post;
 			}
+
+			public string CreativeId { get; set; }
 
 			public class Response
 			{

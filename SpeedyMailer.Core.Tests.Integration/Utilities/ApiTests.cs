@@ -25,46 +25,32 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		}
 
 		[Test]
-		public void Call_WhenUsingPost_ShouldCallTheEndpoint()
+		public void Call_WhenCalled_ShouldCallTheEndpoint()
 		{
 			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-			ListenToApiCall<TestApi, TestApi.Request>();
+			ListenToApiCall<PostTestApi>();
 
-			_target.Call<TestApi>(call =>
-								  call.WithParameters(p =>
-													  p.CallId = "testing call"
-									))
-				.Post();
+			_target.Call<PostTestApi>(x => x.CallId = "testing call");
 
-			AssertApiCalled<TestApi.Request>(x => x.CallId == "testing call");
+			AssertApiCalled<PostTestApi>(x => x.CallId == "testing call");
 		}
-
-		[Test]
-		public void Call_WhenUsingGet_ShouldCallTheEndpoint()
-		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-			ListenToApiCall<TestApi, TestApi.Request>();
-
-			_target.Call<TestApi>(call =>
-								  call.WithParameters(p =>
-													  p.CallId = "testing call"
-									))
-				.Get();
-
-			AssertApiCalled<TestApi.Request>(x => x.CallId == "testing call");
-		}
+		
 	}
 
-	public class TestApi : ApiCall<TestApi.Request>
+	public class PostTestApi : ApiCall
 	{
-		public TestApi() : base("/testing/api") { }
-
-		public class Request
+		public PostTestApi() : base("/testing/api")
 		{
-			public string CallId { get; set; }
+			CallMethod = RestMethod.Post;
 		}
+
+		public string CallId { get; set; }
+
+		public class Response
+		{
+			public string WhatWeGet { get; set; }
+		}
+
 	}
-
-
 
 }

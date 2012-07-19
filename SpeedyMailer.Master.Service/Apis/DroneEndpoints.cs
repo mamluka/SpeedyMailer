@@ -11,7 +11,9 @@ namespace SpeedyMailer.Master.Service.Apis
 			{
 				public Wakeup()
 					: base("/manage/wakeup")
-				{ }
+				{
+					CallMethod = RestMethod.Post; 
+				}
 
 				public class Response
 				{
