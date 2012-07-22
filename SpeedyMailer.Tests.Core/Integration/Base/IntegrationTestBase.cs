@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Linq;
 using EqualityComparer;
@@ -47,6 +49,16 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public UIActions UIActions { get; set; }
 		public ServiceActions ServiceActions { get; set; }
 
+		public string AssemblyDirectory
+		{
+			get
+			{
+				var codeBase = Assembly.GetExecutingAssembly().CodeBase;
+				var uri = new UriBuilder(codeBase);
+				var path = Uri.UnescapeDataString(uri.Path);
+				return Path.GetDirectoryName(path);
+			}
+		}
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
