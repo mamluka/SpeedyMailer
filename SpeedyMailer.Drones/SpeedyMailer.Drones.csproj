@@ -101,6 +101,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrappers\DroneContainerBootstrapper.cs" />
+    <Compile Include="Commands\SendCreativePackageCommand.cs" />
     <Compile Include="Configurations\DroneConfigurationManager.cs" />
     <Compile Include="Configurations\IDroneConfigurationManager.cs" />
     <Compile Include="Configurations\PoolOporationsUrls.cs" />

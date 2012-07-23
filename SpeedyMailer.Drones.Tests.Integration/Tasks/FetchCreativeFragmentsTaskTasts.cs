@@ -47,7 +47,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 															},
 												Recipients = new List<Contact>
 												             	{
-												             		new Contact()
+												             		new Contact
+												             			{
+												             				Email = "test@test.com"
+												             			}
 												             	}
 											}
 				);
