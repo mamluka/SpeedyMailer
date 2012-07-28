@@ -9,7 +9,7 @@ namespace SpeedyMailer.Master.Service.Apis
 {
 	public class CreativeModule : NancyModule
 	{
-		public CreativeModule(Framework framework, ICreativeFragmentSettings creativeFragmentSettings)
+		public CreativeModule(Framework framework, CreativeFragmentSettings creativeFragmentSettings)
 			: base("/creative")
 		{
 			Post["/add"] = call =>

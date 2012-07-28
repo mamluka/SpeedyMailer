@@ -21,7 +21,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStarted_ShouldFetchACreativeFragmentFromServer()
 		{
-			DroneActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			ListenToApiCall<ServiceEndpoints.FetchFragment>();
 
 			var task = new FetchCreativeFragmentsTask();
@@ -34,7 +34,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStartSendingEmails()
 		{
-			DroneActions.EditSettings<IEmailingSettings>(x=> x.WriteEmailsToDisk=true);
+			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
 
 			PrepareApiResponse<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>(x =>
 					x.CreativeFragment = new CreativeFragment
@@ -68,7 +68,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			stopWatch.Start();
 			while (!Directory.GetFiles(AssemblyDirectory).Any(x => x.StartsWith("email")) && stopWatch.ElapsedMilliseconds < 30 * 1000)
 			{
-				
+
 			};
 
 			Assert.True(Directory.GetFiles(AssemblyDirectory).Any(x => x.StartsWith("email")));

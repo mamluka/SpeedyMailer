@@ -22,7 +22,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		{
 			const string identifier = "drone1";
 
-			DroneActions.EditSettings<IDroneSettings>(x=>
+			DroneActions.EditSettings<DroneSettings>(x=>
 			                                          	{
 			                                          		x.Identifier = identifier;
 			                                          	});

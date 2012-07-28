@@ -65,7 +65,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			if (String.IsNullOrEmpty(hostname))
 				hostname = Hostname;
 
-			EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = hostname);
+			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = hostname);
 			var documentStore = Kernel.Get<IDocumentStore>();
 			Kernel.Rebind<INancyBootstrapper>().ToConstant(new ServiceNancyNinjectBootstrapperForTesting(documentStore) as INancyBootstrapper);
 			_topService = Kernel.Get<TopService>();

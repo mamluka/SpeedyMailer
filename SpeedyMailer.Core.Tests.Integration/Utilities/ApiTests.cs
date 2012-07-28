@@ -27,7 +27,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		[Test]
 		public void Call_WhenCalled_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			ServiceActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			ListenToApiCall<PostTestApi>();
 
 			_target.Call<PostTestApi>(x => x.CallId = "testing call");

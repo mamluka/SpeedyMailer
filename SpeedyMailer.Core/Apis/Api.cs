@@ -7,10 +7,10 @@ namespace SpeedyMailer.Core.Apis
 	public class Api
 	{
 		private readonly IRestClient _restClient;
-		private readonly IApiCallsSettings _apiCallsSettings;
+		private readonly ApiCallsSettings _apiCallsSettings;
 		private string _apiBaseUrl;
 
-		public Api(IRestClient restClient, IApiCallsSettings apiCallsSettings)
+		public Api(IRestClient restClient, ApiCallsSettings apiCallsSettings)
 		{
 			_apiCallsSettings = apiCallsSettings;
 			_restClient = restClient;

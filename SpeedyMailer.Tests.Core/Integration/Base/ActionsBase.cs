@@ -40,7 +40,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return command.Execute();
 		}
 
-		public abstract void EditSettings<T>(Action<T> expression);
+		public abstract void EditSettings<T>(Action<T> expression) where T : class,new();
 
 		public void SaveTask(PersistentTask task)
 		{

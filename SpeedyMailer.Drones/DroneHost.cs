@@ -23,9 +23,9 @@ namespace SpeedyMailer.Drones
 	{
 		private NancyHost _nancy;
 		private readonly INancyBootstrapper _nancyBootstrapper;
-		private readonly IApiCallsSettings _apiCallsSettings;
+		private readonly ApiCallsSettings _apiCallsSettings;
 
-		public TopDrone(INancyBootstrapper nancyBootstrapper,IApiCallsSettings apiCallsSettings)
+		public TopDrone(INancyBootstrapper nancyBootstrapper,ApiCallsSettings apiCallsSettings)
 		{
 			_apiCallsSettings = apiCallsSettings;
 			_nancyBootstrapper = nancyBootstrapper;
@@ -47,8 +47,8 @@ namespace SpeedyMailer.Drones
 		}
 	}
 
-	public interface ITransportSettings
+	public class TransportSettings
 	{
-		string Host { get; set; }
+		public string Host { get; set; }
 	}
 }

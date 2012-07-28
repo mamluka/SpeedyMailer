@@ -2,9 +2,9 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Core.Tasks
 {
-	public interface ITaskExecutionSettings
+	public class TaskExecutionSettings
 	{
 		[Default(3)]
-		int NumberOfRetries { get; set; }
+		public virtual int NumberOfRetries { get; set; }
 	}
 }

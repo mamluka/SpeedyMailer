@@ -26,9 +26,9 @@ namespace SpeedyMailer.Master.Service
 	public class TopService
 	{
 		private readonly NancyHost _nancyHost;
-		private readonly IApiCallsSettings _apiCallsSettings;
+		private readonly ApiCallsSettings _apiCallsSettings;
 
-		public TopService(INancyBootstrapper ninjectNancyBootstrapper,IApiCallsSettings apiCallsSettings)
+		public TopService(INancyBootstrapper ninjectNancyBootstrapper,ApiCallsSettings apiCallsSettings)
 		{
 			_apiCallsSettings = apiCallsSettings;
 			_nancyHost = new NancyHost(new Uri(_apiCallsSettings.ApiBaseUri), ninjectNancyBootstrapper);

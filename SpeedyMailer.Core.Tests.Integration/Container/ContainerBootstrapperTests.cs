@@ -97,14 +97,13 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		[Test]
 		public void Bootstrap_WhenBindingSettingsToStore_ShouldResolveSettingsUsingStore()
 		{
-			var entity = new
+			var entity = new TestingSettings
 			{
-				Id = "settings/Testing",
 				JustSomeTextProperty = "from-store",
 				JustSomeIntegerProperty = 10
 			};
 
-			Store(entity);
+			Store(entity,"settings/Testing");
 
 
 			var kernel = ContainerBootstrapper
@@ -116,7 +115,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
 
-			var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<TestingSettings>();
 
 			result.JustSomeTextProperty.Should().Be("from-store");
 			result.JustSomeIntegerProperty.Should().Be(10);
@@ -135,7 +134,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
 
-			var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<TestingSettings>();
 
 			result.JustSomeTextProperty.Should().Be("default");
 			result.JustSomeIntegerProperty.Should().Be(10);
@@ -144,10 +143,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		[Test]
 		public void Bootstrap_WhenSettingsExistInStoreButThePropertyDoesnt_ShouldReturnDefaultValues()
 		{
-			var entity = new
-			{
-				Id = "settings/Testing",
-			};
+			var entity = new TestingSettings();
 			Store(entity);
 
 			var kernel = ContainerBootstrapper
@@ -159,7 +155,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
 
-			var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<TestingSettings>();
 
 			result.JustSomeTextProperty.Should().Be("default");
 		}
@@ -167,7 +163,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		[Test]
 		public void Bootstrap_WhenBindingSettingsToJsonFiles_ShouldResolveSettingsUsingFile()
 		{
-			var entity = new
+			var entity = new TestingSettings
 			{
 				JustSomeTextProperty = "from-json",
 				JustSomeIntegerProperty = 10
@@ -184,7 +180,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
-			var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<TestingSettings>();
 
 			result.JustSomeTextProperty.Should().Be("from-json");
 			result.JustSomeIntegerProperty.Should().Be(10);
@@ -205,7 +201,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
-			var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<TestingSettings>();
 
 			result.JustSomeTextProperty.Should().Be("default");
 			result.JustSomeIntegerProperty.Should().Be(10);
@@ -214,9 +210,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		[Test]
 		public void Bootstrap_WhenSettingsExistInJsonButThePropertyDoesnt_ShouldReturnDefaultValues()
 		{
-			var entity = new
-			{
-			};
+			var entity = new TestingSettings();
 
 			CreateJsonSettingsFile(entity);
 
@@ -229,7 +223,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
-			var result = kernel.Get<ITestingSettings>();
+			var result = kernel.Get<TestingSettings>();
 
 			result.JustSomeTextProperty.Should().Be("default");
 		}
@@ -365,12 +359,12 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 	}
 
 
-	public interface ITestingSettings
+	public class TestingSettings
 	{
 		[Default("default")]
-		string JustSomeTextProperty { get; set; }
+		public virtual string JustSomeTextProperty { get; set; }
 		[Default(10)]
-		int JustSomeIntegerProperty { get; set; }
+		public virtual int JustSomeIntegerProperty { get; set; }
 	}
 
 	public class TestAssemblyMarkerType

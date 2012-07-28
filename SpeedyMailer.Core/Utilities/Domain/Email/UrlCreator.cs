@@ -10,9 +10,9 @@ namespace SpeedyMailer.Core.Utilities.Domain.Email
     public class UrlCreator : IUrlCreator
     {
         private readonly UrlHelper _urlHelper;
-        private readonly IServiceSettings _serviceSettings;
+        private readonly ServiceSettings _serviceSettings;
 
-        public UrlCreator(UrlHelper urlHelper, IServiceSettings serviceSettings)
+        public UrlCreator(UrlHelper urlHelper, ServiceSettings serviceSettings)
         {
             _urlHelper = urlHelper;
             _serviceSettings = serviceSettings;

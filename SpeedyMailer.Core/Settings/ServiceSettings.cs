@@ -1,8 +1,8 @@
 namespace SpeedyMailer.Core.Settings
 {
-    public interface IServiceSettings
+    public class ServiceSettings
     {
         [Default("http://localhost:12345")]
-        string ServiceBaseUrl { get; set; }
+        public virtual string ServiceBaseUrl { get; set; }
     }
 }

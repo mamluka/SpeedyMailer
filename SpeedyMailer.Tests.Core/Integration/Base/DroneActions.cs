@@ -1,8 +1,12 @@
 using System;
+using System.Dynamic;
 using System.IO;
+using ImpromptuInterface;
 using Nancy.Bootstrapper;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Ninject;
+using Rhino.Mocks;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Tasks;
@@ -15,7 +19,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IKernel Kernel { get; set; }
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
-			: base(kernel,taskManager,taskExecutor,scheduledTaskManager)
+			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
 		{
 			Kernel = kernel;
 		}
@@ -23,13 +27,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public Drone CreateDrone(string droneId)
 		{
 			var apiBaseUri = RandomHostname();
-			EditSettings<IApiCallsSettings>(x => x.ApiBaseUri = apiBaseUri);
-			new TopDrone(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper, Kernel.Get<IApiCallsSettings>());
+			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = apiBaseUri);
+			new TopDrone(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper, Kernel.Get<ApiCallsSettings>());
 			return new Drone
-			       	{
-			       		Hostname = apiBaseUri,
+					{
+						Hostname = apiBaseUri,
 						Id = droneId,
-			       	};
+					};
 		}
 
 		private string RandomHostname()
@@ -41,17 +45,24 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public override void EditSettings<T>(Action<T> action)
 		{
 			var name = SettingsFileName<T>();
-			using (var writter = new StreamWriter(name))
+			var settingsFolder = Directory.CreateDirectory("settings");
+
+			using (var writter = new StreamWriter(Path.Combine(settingsFolder.FullName, name)))
 			{
-				var settings = Kernel.Get<T>();
+				dynamic settings = new T();
 				action(settings);
-				writter.WriteLine(JsonConvert.SerializeObject(settings));
+				writter.WriteLine(JsonConvert.SerializeObject(settings,
+				                                              Formatting.Indented,
+				                                              new JsonSerializerSettings
+				                                              	{
+				                                              		NullValueHandling = NullValueHandling.Ignore
+				                                              	}));
 			}
 		}
 
 		private static string SettingsFileName<T>()
 		{
-			return typeof (T).Name.Substring(1).Replace("Settings", "") + ".settings";
+			return typeof(T).Name.Replace("Settings", "") + ".settings";
 		}
 	}
 }

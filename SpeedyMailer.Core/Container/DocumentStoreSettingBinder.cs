@@ -23,7 +23,7 @@ namespace SpeedyMailer.Core.Container
 
 		private string SettingsPresistanceName(Type type)
 		{
-			var settingsName = Regex.Match(type.Name, "I(.+?)Settings").Groups[1].Value;
+			var settingsName = Regex.Match(type.Name, "(.+?)Settings").Groups[1].Value;
 			return settingsName;
 		}
 
@@ -34,7 +34,7 @@ namespace SpeedyMailer.Core.Container
 		{
 			var proxyGenerator = new ProxyGenerator();
 			var settingsInterceptor = SetInterceptor(type, settings);
-			var proxy = proxyGenerator.CreateInterfaceProxyWithoutTarget(type, settingsInterceptor);
+			var proxy = proxyGenerator.CreateClassProxy(type, settingsInterceptor);
 			return proxy;
 		}
 	}
