@@ -24,6 +24,7 @@ namespace SpeedyMailer.Drones.Commands
 			var email = new MailMessage();
 			email.To.Add(Package.To);
 			email.Body = Package.Body;
+			email.Subject = Package.Subject;
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{

@@ -4,5 +4,7 @@ namespace SpeedyMailer.Core.Domain.Master
 	{
 		public string BaseUrl { get; set; }
 		public string DealsEndpoint { get; set; }
+		public string UnsubscribeEndpoint { get; set; }
+
 	}
 }

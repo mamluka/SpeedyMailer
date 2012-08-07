@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq.Expressions;
 using System.Net.Mail;
 using Quartz;
 using RestSharp;
@@ -10,9 +10,10 @@ using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
-using System.Linq;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Commands;
+using Antlr4.StringTemplate;
+
 
 namespace SpeedyMailer.Drones.Tasks
 {
@@ -36,7 +37,8 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly ICreativeBodySourceWeaver _creativeBodySourceWeaver;
 			private readonly UrlBuilder _urlBuilder;
 
-			public Job(Api api, SendCreativePackageCommand sendCreativePackageCommand, ICreativeBodySourceWeaver creativeBodySourceWeaver, UrlBuilder urlBuilder)
+			public Job(Api api, SendCreativePackageCommand sendCreativePackageCommand,
+					   ICreativeBodySourceWeaver creativeBodySourceWeaver, UrlBuilder urlBuilder)
 			{
 				_urlBuilder = urlBuilder;
 				_creativeBodySourceWeaver = creativeBodySourceWeaver;
@@ -46,58 +48,65 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				try
-				{
-					var response = _api.Call<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>();
+				var creativeFragment = _api
+					.Call<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>()
+					.CreativeFragment;
 
-					var creativePackages = ToCreativePackages(response.CreativeFragment);
+				var recipiens = creativeFragment.Recipients;
 
-					foreach (var package in creativePackages)
-					{
-						_sendCreativePackageCommand.Package = package;
-						_sendCreativePackageCommand.Execute();
-					}
-				}
-				catch (Exception ex)
+				foreach (var recipient in recipiens)
 				{
-					Trace.WriteLine(ex.Message);
-					throw;
+					var package = ToPackage(recipient, creativeFragment);
+
+					_sendCreativePackageCommand.Package = package;
+					_sendCreativePackageCommand.Execute();
 				}
 			}
 
-			private IList<CreativePackage> ToCreativePackages(CreativeFragment creativeFragment)
+			private CreativePackage ToPackage(Contact recipient, CreativeFragment creativeFragment)
 			{
-				var dealUrlBase = BuildDealUrl(creativeFragment.Service);
-				return creativeFragment.Recipients.Select(x => new CreativePackage
-																{
-																	Body = PersonalizeBody(creativeFragment, dealUrlBase, x),
-																	Subject = creativeFragment.Subject,
-																	To = x.Email,
-																}).ToList();
+				return new CreativePackage
+						{
+							Subject = creativeFragment.Subject,
+							Body = PersonalizeBody(creativeFragment, recipient),
+							To = recipient.Email
+						};
 			}
 
-			private string BuildDealUrl(Service service)
+			private string ServiceEndpoint(Service service,Func<Service,string> endpointSelector)
 			{
-				return string.Format("{0}/{1}", service.BaseUrl, service.DealsEndpoint);
+				return string.Format("{0}/{1}", service.BaseUrl, endpointSelector(service));
 			}
 
-			private string PersonalizeBody(CreativeFragment fragment, string dealUrlBase, Contact contact)
+			private string PersonalizeBody(CreativeFragment fragment, Contact contact)
 			{
+				var service = fragment.Service;
+
 				var dealUrl = _urlBuilder
-					.Base(dealUrlBase)
+					.Base(ServiceEndpoint(service,x=> x.DealsEndpoint))
+					.AddObject(GetDealUrl(fragment, contact))
+					.AppendAsSlashes();
+				
+				var unsubsribeUrl = _urlBuilder
+					.Base(ServiceEndpoint(service,x=> x.UnsubscribeEndpoint))
 					.AddObject(GetDealUrl(fragment, contact))
 					.AppendAsSlashes();
 
-				return _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
+				var deal =  _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
+
+				var unsubscribeTemplate = new Template(fragment.UnsubscribeTemplate);
+				unsubscribeTemplate.Add("url", unsubsribeUrl);
+
+				return deal + unsubscribeTemplate.Render();
 			}
 
-			private static DealUrl GetDealUrl(CreativeFragment fragment, Contact contact)
+			private static DealUrlData GetDealUrl(CreativeFragment fragment, Contact contact)
 			{
-				return new DealUrl
-				       	{
-				       		CreativeId = fragment.CreativeId,
-				       		ContactId = contact.Id
-				       	};
+				return new DealUrlData
+						{
+							CreativeId = fragment.CreativeId,
+							ContactId = contact.Id
+						};
 			}
 		}
 	}

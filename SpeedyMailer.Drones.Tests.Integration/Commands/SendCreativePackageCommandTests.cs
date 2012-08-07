@@ -31,6 +31,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x => x.Package = creativePackage);
 
 			AssertEmailSent(x => x.To.Any(address=> address.Address == "test@test"));
+			AssertEmailSent(x => x.Body == "test body");
+			AssertEmailSent(x => x.Subject == "test subject");
 		}
 	}
 }
