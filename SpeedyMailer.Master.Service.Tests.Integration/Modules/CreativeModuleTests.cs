@@ -1,5 +1,6 @@
 using System.Linq;
 using NUnit.Framework;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Master.Web.Core.Commands;
@@ -12,25 +13,26 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 	public class CreativeModuleTests :IntegrationTestBase
 	{
 		[Test]
-		public void Add_WhenGivenACreativeId_ShouldAddCreativeFragments()
+		public void Add_WhenGivenACreativeId_ShouldCreateAnCreativeFragments()
 		{
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
 			var creativeId = CreateCreative();
 
-			AddCreative(creativeId);
+			CallAddEndpoint(creativeId);
 
 			WaitForEntitiesToExist<CreativeFragment>(1);
 			var result = Query<CreativeFragment>().First();
 
 			result.Recipients.Should().HaveCount(100);
-			result.Creative.Id.Should().Be(creativeId);
+			result.CreativeId.Should().Be(creativeId);
 		}
 
-		private void AddCreative(string creativeId)
+		private void CallAddEndpoint(string creativeId)
 		{
-			Api.Call<CreativeEndpoint.Add>(x => x.CreativeId = creativeId);
+			var api = MasterResolve<Api>();
+			api.Call<CreativeEndpoint.Add>(x => x.CreativeId = creativeId);
 		}
 
 		private string CreateCreative()

@@ -146,15 +146,17 @@
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativePackage.cs" />
     <Compile Include="Domain\Creative\CreativeTemplate.cs" />
+    <Compile Include="Domain\Creative\DealUrl.cs" />
     <Compile Include="Domain\Drones\Drone.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
+    <Compile Include="Domain\Master\Service.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />
-    <Compile Include="Emails\IEmailSourceWeaver.cs" />
-    <Compile Include="Emails\EmailSourceWeaver.cs" />
+    <Compile Include="Emails\ICreativeBodySourceWeaver.cs" />
+    <Compile Include="Emails\CreativeBodySourceWeaver.cs" />
     <Compile Include="Emails\IEmailPoolService.cs" />
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
@@ -191,11 +193,11 @@
     <Compile Include="Utilities\Domain\Contacts\ContactsCSVParser.cs" />
     <Compile Include="Utilities\Domain\Contacts\IContactsCSVParser.cs" />
     <Compile Include="Utilities\Domain\Contacts\InitialContactsBatchOptions.cs" />
-    <Compile Include="Utilities\Domain\Email\IUrlCreator.cs" />
     <Compile Include="Utilities\Domain\Email\UrlCreator.cs" />
     <Compile Include="Utilities\Extentions\LinqExtentions.cs" />
     <Compile Include="Utilities\Framework.cs" />
     <Compile Include="Utilities\General\IReportResults.cs" />
+    <Compile Include="Utilities\UrlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

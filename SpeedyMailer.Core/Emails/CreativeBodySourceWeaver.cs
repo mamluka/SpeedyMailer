@@ -4,7 +4,7 @@ using HtmlAgilityPack;
 
 namespace SpeedyMailer.Core.Emails
 {
-    public class EmailSourceWeaver : IEmailSourceWeaver
+    public class CreativeBodySourceWeaver : ICreativeBodySourceWeaver
     {
 
         public string WeaveUnsubscribeTemplate(string bodySource, string template, string unsubscribeLink)
@@ -16,10 +16,10 @@ namespace SpeedyMailer.Core.Emails
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(bodySource);
-            List<HtmlNode> dealList =
+            var dealList =
                 doc.DocumentNode.SelectNodes("//a[@href]").ToList();
 
-            foreach (HtmlNode deal in dealList)
+            foreach (var deal in dealList)
             {
                 deal.Attributes["href"].Value = dealLink;
             }

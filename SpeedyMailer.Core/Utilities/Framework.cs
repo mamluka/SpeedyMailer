@@ -9,7 +9,7 @@ namespace SpeedyMailer.Core.Utilities
 	{
 		private readonly ITaskManager _taskManager;
 		private readonly IDocumentStore _documentStore;
-		private ITaskCoordinator _taskCoordinator;
+		private readonly ITaskCoordinator _taskCoordinator;
 
 		public Framework(IDocumentStore documentStore, ITaskManager taskManager,ITaskCoordinator taskCoordinator)
 		{

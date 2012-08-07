@@ -21,48 +21,39 @@ namespace SpeedyMailer.Master.Web.Tests.Unit.Helpers
             RouteCollection routes = RouteTable.Routes;
             routes.Clear();
             CreateTestRoutes(routes);
-            // MvcApplication.RegisterRoutes(CreateTestRoutes());
         }
 
         [Test]
         public void UrlByRoute_ShouldReturnTheRightUrlForDeals()
         {
-            //Arrange
-            UrlHelper urlHelper = CreateFakeUrlHelper();
+            var urlHelper = CreateFakeUrlHelper();
             var settings = MockRepository.GenerateStub<ServiceSettings>();
             settings.ServiceBaseUrl = "http://www.domain.com";
 
-
             var urlCreator = new UrlCreator(urlHelper, settings);
-            //Act
-            string url = urlCreator.UrlByRouteWithParameters("Deals", new RouteValueDictionary
+
+            var url = urlCreator.UrlByRouteWithParameters("Deals", new RouteValueDictionary
                                                                           {
                                                                               {"JsonObject", "jsonbase64object"}
                                                                           });
 
-            //Assert
             url.Should().Be("http://www.domain.com/Deals/jsonbase64object");
         }
 
         [Test]
         public void UrlByRouteWithJsonObject_ShouldReturnAUrlWithBase64JsonObject()
         {
-            //Arrange
-
             var jsonObject = Fixture.CreateAnonymous<LeadIdentity>();
 
-            string jsonString = EmulateDynamicEncoding(jsonObject);
+            var jsonString = EmulateDynamicEncoding(jsonObject);
 
-            UrlHelper urlHelper = CreateFakeUrlHelper();
+            var urlHelper = CreateFakeUrlHelper();
             var settings = MockRepository.GenerateStub<ServiceSettings>();
             settings.ServiceBaseUrl = "http://www.domain.com";
 
 
             var urlCreator = new UrlCreator(urlHelper, settings);
-            //Act
-            string url = urlCreator.UrlByRouteWithJsonObject("Deals", jsonObject);
-
-            //Assert
+            var url = urlCreator.UrlByRouteWithJsonObject("Deals", jsonObject);
 
             url.Should().Be("http://www.domain.com/Deals/" + HttpUtility.UrlEncode(jsonString));
         }

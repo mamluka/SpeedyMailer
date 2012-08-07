@@ -2,15 +2,12 @@ using System;
 using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Drones.Tasks
 {
-	public class BroadcastDroneToServiceTask : ScheduledTaskWithData<BroadcastDroneToServiceTask.Data>
+	public class BroadcastDroneToServiceTask : ScheduledTask
 	{
-		public BroadcastDroneToServiceTask(Action<Data> action)
-			: base(action)
-		{ }
-
 		public override IJobDetail ConfigureJob()
 		{
 			return SimpleJob<Job>();
@@ -24,24 +21,20 @@ namespace SpeedyMailer.Drones.Tasks
 				);
 		}
 
-		public class Data : ScheduledTaskData
-		{
-			public string Identifier { get; set; }
-		}
-
-		public class Job : JobBase<Data>, IJob
+		public class Job : IJob
 		{
 			private readonly Api _api;
+			private readonly DroneSettings _droneSettings;
 
-			public Job(Api api)
+			public Job(Api api,DroneSettings droneSettings)
 			{
+				_droneSettings = droneSettings;
 				_api = api;
 			}
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var data = GetData(context);
-				_api.Call<ServiceEndpoints.RegisterDrone>(x => x.Identifier = data.Identifier);
+				_api.Call<ServiceEndpoints.RegisterDrone>(x => x.Identifier = _droneSettings.Identifier);
 			}
 		}
 	}

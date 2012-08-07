@@ -14,7 +14,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 		public override void ExtraSetup()
 		{
-			_scheduledTaskManager = MasterResolve<IScheduledTaskManager>();
+			_scheduledTaskManager = DroneResolve<IScheduledTaskManager>();
 		}
 
 		[Test]
@@ -27,8 +27,15 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			                                          		x.Identifier = identifier;
 			                                          	});
 
+			DroneActions.EditSettings<ApiCallsSettings>(x =>
+			                                            	{
+			                                            		x.ApiBaseUri = DefaultBaseUrl;
+			                                            	});
+			
+			
+
 		    ListenToApiCall<ServiceEndpoints.RegisterDrone>();
-			var task = new BroadcastDroneToServiceTask(x=> x.Identifier = identifier);
+			var task = new BroadcastDroneToServiceTask();
 			_scheduledTaskManager.AddAndStart(task);
 
 			AssertApiCalled<ServiceEndpoints.RegisterDrone>(x => x.Identifier == identifier);

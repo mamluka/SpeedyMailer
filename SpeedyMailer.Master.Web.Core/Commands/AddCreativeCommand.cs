@@ -10,7 +10,7 @@ namespace SpeedyMailer.Master.Web.Core.Commands
 {
     public class AddCreativeCommand:Command<string>
     {
-        private IDocumentStore _store;
+        private readonly IDocumentStore _store;
 
         public AddCreativeCommand(IDocumentStore store)
         {

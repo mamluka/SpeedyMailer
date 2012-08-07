@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using Ninject;
 using Ploeh.AutoFixture;
 using Raven.Client;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
@@ -26,12 +28,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var documentStore = Kernel.Get<IDocumentStore>();
 			using (var session = documentStore.OpenSession())
 			{
-				var settings = Kernel.Get<T>();
+				var settings = new T();
 				action.Invoke(settings);
-				session.Store(settings);
-
+				session.Store(settings,"settings/" + typeof(T).Name.Replace("Settings",""));
 				session.SaveChanges();
 			}
+
+			ContainerBootstrapper.ReloadStoreSetting<T>(Kernel,documentStore);
 		}
 	}
 }

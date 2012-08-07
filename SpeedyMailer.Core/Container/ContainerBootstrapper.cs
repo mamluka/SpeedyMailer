@@ -73,7 +73,7 @@ namespace SpeedyMailer.Core.Container
 				catch (ActivationException)
 				{
 					throw new ContainerException(typeof(IDocumentStore),
-												 "When resolving the document store for settings binder no canidate was found");
+												 "When resolving the document store for settings binder no canidate were found");
 				}
 			}
 
@@ -87,6 +87,31 @@ namespace SpeedyMailer.Core.Container
 
 			return kernel;
 		}
+
+		public static void ReloadStoreSetting<T>(IKernel kernel, IDocumentStore documentStore)
+		{
+			kernel.Unbind<T>();
+			kernel.Bind(
+				from =>
+				from
+					.FromAssemblyContaining<T>()
+					.Select(x => x == typeof(T))
+					.BindWith(new DocumentStoreSettingsBinder(documentStore))
+				);
+		}
+
+		public static void ReloadJsonSetting<T>(IKernel kernel,string settingsFolder = "settings")
+		{
+			kernel.Unbind<T>();
+			kernel.Bind(
+				from =>
+				from
+					.FromAssemblyContaining<T>()
+					.Select(x => x == typeof(T))
+					.BindWith(new JsonFileSettingsBinder(settingsFolder))
+				);
+		}
+
 	}
 
 	public class ContainerException : Exception

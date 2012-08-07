@@ -45,12 +45,14 @@ namespace SpeedyMailer.Core.Apis
 		private TResponse ExecuteCall<TResponse>(ApiCall apiCall) where TResponse : new()
 		{
 			var restRequest = SetupApiCall(apiCall);
+
+			Trace.WriteLine("Endpoint url called is: " + restRequest.Resource);
+			Trace.WriteLine("Base url called is: " + _restClient.BaseUrl);
+
 			var result = _restClient.Execute<TResponse>(restRequest);
 
-			Trace.WriteLine(result.ResponseStatus);
-			Trace.WriteLine(result.StatusCode);
-			Trace.WriteLine(result.ErrorMessage);
-			Trace.WriteLine(result.Content);
+			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
+			Trace.WriteLine("Error message: " + result.ErrorMessage);
 
 			return result.Data;
 

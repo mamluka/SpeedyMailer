@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Mail;
 using Newtonsoft.Json;
@@ -22,6 +23,7 @@ namespace SpeedyMailer.Drones.Commands
 		{
 			var email = new MailMessage();
 			email.To.Add(Package.To);
+			email.Body = Package.Body;
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
@@ -35,6 +37,7 @@ namespace SpeedyMailer.Drones.Commands
 				using (var writer = new StreamWriter(Path.Combine(_emailingSettings.WritingEmailsToDiskPath, "email" + Guid.NewGuid() + ".persist")))
 				{
 					writer.Write(emailFile);
+					Trace.WriteLine("Email written to disk:\n\r" +  emailFile);
 					writer.Flush();
 				}
 			}

@@ -8,6 +8,7 @@ using Newtonsoft.Json.Converters;
 using Ninject;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
@@ -44,10 +45,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public override void EditSettings<T>(Action<T> action)
 		{
+			var settingsGuid = Guid.NewGuid();
 			var name = SettingsFileName<T>();
-			var settingsFolder = Directory.CreateDirectory("settings");
+			var settingsFolder = Directory.CreateDirectory("settings_" + settingsGuid);
 
-			using (var writter = new StreamWriter(Path.Combine(settingsFolder.FullName, name)))
+			var settingsFolderName = settingsFolder.FullName;
+			using (var writter = new StreamWriter(Path.Combine(settingsFolderName, name)))
 			{
 				dynamic settings = new T();
 				action(settings);
@@ -58,6 +61,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				                                              		NullValueHandling = NullValueHandling.Ignore
 				                                              	}));
 			}
+
+			ContainerBootstrapper.ReloadJsonSetting<T>(Kernel,settingsFolderName);
 		}
 
 		private static string SettingsFileName<T>()

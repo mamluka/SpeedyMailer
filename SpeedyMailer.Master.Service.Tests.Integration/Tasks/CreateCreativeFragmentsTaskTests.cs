@@ -30,15 +30,15 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
                                                           x.Lists = new List<string> {listId};
                                                       });
 
-        	var task = new CreateCreativeFragmentsTask
-        	           	{
-        	           		CreativeId = creativeId,
-        	           		RecipientsPerFragment = 1000
-        	           	};
+            var task = new CreateCreativeFragmentsTask
+                        {
+                            CreativeId = creativeId,
+                            RecipientsPerFragment = 1000
+                        };
 
-			ServiceActions.ExecuteTask(task);
+            ServiceActions.ExecuteTask(task);
 
-            var result = Query<CreativeFragment>(x => x.Creative.Id == creativeId);
+            var result = Query<CreativeFragment>(x => x.CreativeId == creativeId);
 
             result.Should().HaveCount(2);
             result.First().Recipients.Should().HaveCount(1000);

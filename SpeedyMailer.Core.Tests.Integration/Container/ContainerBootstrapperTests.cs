@@ -1,24 +1,16 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
 using Newtonsoft.Json;
 using Ninject;
 using Ninject.Activation;
 using Ninject.Modules;
-using Ploeh.AutoFixture;
 using Raven.Client;
 using Raven.Client.Embedded;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Master.Service;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
-using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Core.IntegrationTests.Container
 {
@@ -301,8 +293,73 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 			secondResolve.State.Should().Be(0);
 		}
 
+		[Test]
+		public void RefreshStoreSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
+		{
+			var entity = new TestingSettings
+			{
+				JustSomeTextProperty = "from-store",
+				JustSomeIntegerProperty = 10
+			};
+
+			Store(entity, "settings/Testing");
+
+
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
+				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
+				.Settings(x => x.UseDocumentDatabase())
+				.Done();
+
+			entity.JustSomeTextProperty = "reload-me";
+			Store(entity, "settings/Testing");
+
+			ContainerBootstrapper.ReloadStoreSetting<TestingSettings>(kernel, DocumentStore);
+
+			var setting = kernel.Get<TestingSettings>();
+
+			setting.JustSomeTextProperty.Should().Be("reload-me");
+		}
+
+		[Test]
+		public void RefreshJsonSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
+		{
+			var entity = new TestingSettings
+			{
+				JustSomeTextProperty = "from-json",
+				JustSomeIntegerProperty = 10
+			};
+
+			CreateJsonSettingsFile(entity);
+
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
+
+
+			entity.JustSomeTextProperty = "reload-me";
+			CreateJsonSettingsFile(entity);
+
+			ContainerBootstrapper.ReloadJsonSetting<TestingSettings>(kernel);
+
+			var setting = kernel.Get<TestingSettings>();
+
+			setting.JustSomeTextProperty.Should().Be("reload-me");
+		}
+
 		private void CreateJsonSettingsFile(dynamic setting)
 		{
+			if (!Directory.Exists("settings"))
+				Directory.CreateDirectory("settings");
+
 			using (var writter = new StreamWriter("settings/Testing.settings"))
 			{
 				writter.WriteLine(JsonConvert.SerializeObject(setting));

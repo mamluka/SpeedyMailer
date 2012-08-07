@@ -8,9 +8,16 @@ namespace SpeedyMailer.Core.Container
 {
     public class JsonFileSettingsBinder : SettingsBinderBase
     {
-        protected override object ReadPresistantSettings(string settingsName)
+    	private readonly string _settingFoldername;
+
+    	public JsonFileSettingsBinder(string settingFoldername="settings")
+    	{
+    		_settingFoldername = settingFoldername;
+    	}
+
+    	protected override object ReadPresistantSettings(string settingsName)
         {
-            var filename = string.Format("settings/{0}.settings", settingsName);
+            var filename = string.Format("{0}/{1}.settings",_settingFoldername, settingsName);
             if (!File.Exists(filename)) return null;
 
             using (var reader = new StreamReader(filename))

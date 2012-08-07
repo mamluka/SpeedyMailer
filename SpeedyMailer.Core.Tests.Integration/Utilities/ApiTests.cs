@@ -21,13 +21,14 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 
 		public override void ExtraSetup()
 		{
+			ServiceActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
 			_target = MasterResolve<Api>();
 		}
 
 		[Test]
 		public void Call_WhenCalled_ShouldCallTheEndpoint()
 		{
-			ServiceActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			ListenToApiCall<PostTestApi>();
 
 			_target.Call<PostTestApi>(x => x.CallId = "testing call");
