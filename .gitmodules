@@ -1,3 +1,6 @@
 [submodule "Nancy.Bootstrappers.Ninject"]
 	path = Nancy.Bootstrappers.Ninject
 	url = git@github.com:mamluka/Nancy.Bootstrappers.Ninject.git
+[submodule "Ninject.Extensions.Conventions"]
+	path = Ninject.Extensions.Conventions
+	url = git@github.com:mamluka/ninject.extensions.conventions.git
