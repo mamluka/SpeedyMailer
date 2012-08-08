@@ -55,6 +55,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Drones.Tests.U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Drones.Tests.Integration", "SpeedyMailer.Drones.Tests.Integration\SpeedyMailer.Drones.Tests.Integration.csproj", "{69B34FBC-A9AD-4EE7-B450-E868BB4CF373}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ninject.Extensions.Conventions", "Ninject.Extensions.Conventions\src\Ninject.Extensions.Conventions\Ninject.Extensions.Conventions.csproj", "{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = SpeedyMailer.vsmdi
@@ -434,6 +436,26 @@ Global
 		{69B34FBC-A9AD-4EE7-B450-E868BB4CF373}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{69B34FBC-A9AD-4EE7-B450-E868BB4CF373}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{69B34FBC-A9AD-4EE7-B450-E868BB4CF373}.Release|x86.ActiveCfg = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoDebug|Any CPU.Build.0 = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoDebug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoDebug|x86.ActiveCfg = Debug|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoRelease|Mixed Platforms.Build.0 = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.MonoRelease|x86.ActiveCfg = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -461,5 +483,6 @@ Global
 		{69B34FBC-A9AD-4EE7-B450-E868BB4CF373} = {403DB2FF-5FE3-4A27-9F13-F10F46DF9990}
 		{760A88F1-7CEA-47FE-86AC-4F75609100F2} = {39A26361-D007-4FF7-9697-5B48D9B5482A}
 		{34576216-0DCA-4B0F-A0DC-9075E75A676F} = {39A26361-D007-4FF7-9697-5B48D9B5482A}
+		{C9016F7B-68CE-46A7-80A7-A4592B6F0EAC} = {39A26361-D007-4FF7-9697-5B48D9B5482A}
 	EndGlobalSection
 EndGlobal
