@@ -27,3 +27,5 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 [We]eb.config
 *crunch*
+*.pidb
+
