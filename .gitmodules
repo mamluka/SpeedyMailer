@@ -4,3 +4,6 @@
 [submodule "Ninject.Extensions.Conventions"]
 	path = Ninject.Extensions.Conventions
 	url = git@github.com:mamluka/ninject.extensions.conventions.git
+[submodule "Ninject"]
+	path = Ninject
+	url = git@github.com:mamluka/ninject.git
