@@ -12,16 +12,13 @@ namespace SpeedyMailer.Drones.Bootstrappers
 
 		static DroneContainerBootstrapper()
 		{
-			Kernel = ApplyBindLogic(ContainerBootstrapper.Bootstrap());
-		}
-
-		public static IKernel ApplyBindLogic(AssemblyGatherer assemblyGatherer)
-		{
-			return assemblyGatherer.Analyze(x => x.AssembiesContaining(new[]
-			                                                           	{
-			                                                           		typeof (DroneAssemblyMarker),
-			                                                           		typeof (ISchedulerFactory)
-			                                                           	}))
+			Kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[]
+				                                    	{
+				                                    		typeof (DroneAssemblyMarker),
+				                                    		typeof (ISchedulerFactory)
+				                                    	}))
 				.BindInterfaceToDefaultImplementation()
 				.DefaultConfiguration()
 				.NoDatabase()
@@ -36,8 +33,16 @@ namespace SpeedyMailer.Drones.Bootstrappers
 		{
 			Kernel.Bind<INancyBootstrapper>().ToProvider(new NancyBootstrapperProvider(
 			                                             	kernel =>
-			                                             	DroneContainerBootstrapper
-			                                             		.ApplyBindLogic(ContainerBootstrapper.Bootstrap(kernel)))
+			                                             	ContainerBootstrapper.Bootstrap(kernel).Analyze(x => x.AssembiesContaining(new[]
+			                                             	                                                                                                	{
+			                                             	                                                                                                		typeof (DroneAssemblyMarker),
+			                                             	                                                                                                		typeof (ISchedulerFactory)
+			                                             	                                                                                                	}))
+			                                             		.BindInterfaceToDefaultImplementation()
+			                                             		.DefaultConfiguration()
+			                                             		.NoDatabase()
+			                                             		.Settings(x => x.UseJsonFiles())
+			                                             		.Done())
 				);
 		}
 	}

@@ -1,8 +1,11 @@
 ﻿using System;
 using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
+using Newtonsoft.Json;
 using Ninject;
+using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Drones.Bootstrappers;
 
 namespace SpeedyMailer.Drones
@@ -11,7 +14,20 @@ namespace SpeedyMailer.Drones
     {
         public static void Main(string[] args)
         {
-        	var kernel = DroneContainerBootstrapper.Kernel;
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[]
+				                                    	{
+				                                    		typeof (DroneAssemblyMarker),
+				                                    		typeof (ISchedulerFactory)
+				                                    	}))
+				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
+
+
         	var drone = kernel.Get<TopDrone>();
 			drone.Start();
 			Console.WriteLine("Starting drone...");
