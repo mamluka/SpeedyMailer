@@ -1,12 +1,8 @@
 using System;
-using System.Dynamic;
 using System.IO;
-using ImpromptuInterface;
 using Nancy.Bootstrapper;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using Ninject;
-using Rhino.Mocks;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Domain.Drones;
