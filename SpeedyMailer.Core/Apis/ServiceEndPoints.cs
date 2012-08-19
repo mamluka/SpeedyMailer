@@ -1,4 +1,5 @@
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -24,6 +25,19 @@ namespace SpeedyMailer.Core.Apis
 			public class Response
 			{
 				public CreativeFragment CreativeFragment { get; set; }
+			}
+		}
+
+		public class FetchServiceSettings:ApiCall
+		{
+			public FetchServiceSettings() : base("admin/settings/get")
+			{
+				CallMethod = RestMethod.Get;
+			}
+
+			public class Response
+			{
+				public string ServiceBaseUrl { get; set; }
 			}
 		}
 	}

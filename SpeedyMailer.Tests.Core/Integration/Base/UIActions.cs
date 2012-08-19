@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using Nancy.Bootstrapper;
@@ -10,6 +11,7 @@ using Raven.Client;
 using Raven.Client.Document;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Web.Core.Commands;
@@ -54,19 +56,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	{
 		private TopService _topService;
 
-		public string Hostname { get; set; }
-
 		public ServiceActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor,IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor,scheduledTaskManager)
 		{ }
 
-		public void Initialize(string hostname="")
+		public void Initialize()
 		{
-			if (String.IsNullOrEmpty(hostname))
-				hostname = Hostname;
-
-			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = hostname);
 			var documentStore = Kernel.Get<IDocumentStore>();
+
 			Kernel.Rebind<INancyBootstrapper>().ToConstant(new ServiceNancyNinjectBootstrapperForTesting(documentStore) as INancyBootstrapper);
 			_topService = Kernel.Get<TopService>();
 		}

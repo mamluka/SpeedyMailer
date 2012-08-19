@@ -29,3 +29,5 @@ _ReSharper*/
 *crunch*
 *.pidb
 
+.idea/**
+Out/**

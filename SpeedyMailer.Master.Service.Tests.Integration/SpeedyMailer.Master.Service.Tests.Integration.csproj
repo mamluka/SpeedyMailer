@@ -136,6 +136,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
+    <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

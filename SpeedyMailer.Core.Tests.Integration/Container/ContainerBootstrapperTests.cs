@@ -294,7 +294,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		}
 
 		[Test]
-		public void RefreshStoreSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
+		public void ReloadStoreSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
 		{
 			var entity = new TestingSettings
 			{
@@ -323,9 +323,40 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 
 			setting.JustSomeTextProperty.Should().Be("reload-me");
 		}
+		
+		[Test]
+		public void ReloadAllStoreSettings_WhenCalled_ShouldReloadTheSpecifiedSetting()
+		{
+			var entity = new TestingSettings
+			{
+				JustSomeTextProperty = "from-store",
+				JustSomeIntegerProperty = 10
+			};
+
+			Store(entity, "settings/Testing");
+
+
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
+				.Storage<IDocumentStore>(x => x.Constant(DocumentStore))
+				.Settings(x => x.UseDocumentDatabase())
+				.Done();
+
+			entity.JustSomeTextProperty = "reload-me";
+			Store(entity, "settings/Testing");
+
+			ContainerBootstrapper.ReloadAllStoreSettings(kernel);
+
+			var setting = kernel.Get<TestingSettings>();
+
+			setting.JustSomeTextProperty.Should().Be("reload-me");
+		}
 
 		[Test]
-		public void RefreshJsonSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
+		public void ReloadJsonSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
 		{
 			var entity = new TestingSettings
 			{
@@ -349,6 +380,36 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 			CreateJsonSettingsFile(entity);
 
 			ContainerBootstrapper.ReloadJsonSetting<TestingSettings>(kernel);
+
+			var setting = kernel.Get<TestingSettings>();
+
+			setting.JustSomeTextProperty.Should().Be("reload-me");
+		}
+		
+		public void ReloadAllJsonSetting_WhenCalled_ShouldReloadTheSpecifiedSetting()
+		{
+			var entity = new TestingSettings
+			{
+				JustSomeTextProperty = "from-json",
+				JustSomeIntegerProperty = 10
+			};
+
+			CreateJsonSettingsFile(entity);
+
+			var kernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[] { typeof(TestAssemblyMarkerType) }))
+				.BindInterfaceToDefaultImplementation()
+				.DefaultConfiguration()
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
+
+
+			entity.JustSomeTextProperty = "reload-me";
+			CreateJsonSettingsFile(entity);
+
+			ContainerBootstrapper.ReloadAllJsonSetting(kernel);
 
 			var setting = kernel.Get<TestingSettings>();
 

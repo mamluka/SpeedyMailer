@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Web.Tests.Unit.Helpers
         {
             var urlHelper = CreateFakeUrlHelper();
             var settings = MockRepository.GenerateStub<ServiceSettings>();
-            settings.ServiceBaseUrl = "http://www.domain.com";
+            settings.BaseUrl = "http://www.domain.com";
 
             var urlCreator = new UrlCreator(urlHelper, settings);
 
@@ -49,7 +49,7 @@ namespace SpeedyMailer.Master.Web.Tests.Unit.Helpers
 
             var urlHelper = CreateFakeUrlHelper();
             var settings = MockRepository.GenerateStub<ServiceSettings>();
-            settings.ServiceBaseUrl = "http://www.domain.com";
+            settings.BaseUrl = "http://www.domain.com";
 
 
             var urlCreator = new UrlCreator(urlHelper, settings);

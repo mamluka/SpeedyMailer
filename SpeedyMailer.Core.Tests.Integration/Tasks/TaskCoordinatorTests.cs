@@ -1,3 +1,4 @@
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Tasks;
@@ -69,7 +70,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		}
 
 		[Test]
-		public void BeginExecuting_WhenAJobWasTriggeredAndWasOverAndBeginExecutingWasCaleedAgain_ShouldStartNewJob()
+		public void BeginExecuting_WhenAJobWasTriggeredAndWasOverAndBeginExecutingWasCalledAgain_ShouldStartNewJob()
 		{
 			const string resultId1 = "addition/1";
 			const string resultId2 = "addition/2";

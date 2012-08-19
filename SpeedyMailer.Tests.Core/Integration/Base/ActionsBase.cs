@@ -26,6 +26,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			command.Execute();
 		}
 
+		public TResult ExecuteCommand<T, TResult>() where T : Command<TResult>
+		{
+			var command = _kernel.Get<T>();
+			return command.Execute();
+		}
+
 		public void ExecuteCommand<T>(Action<T> action) where T : Command
 		{
 			var command = _kernel.Get<T>();

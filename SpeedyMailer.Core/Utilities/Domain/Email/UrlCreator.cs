@@ -28,18 +28,18 @@ namespace SpeedyMailer.Core.Utilities.Domain.Email
 
 		public string UrlByRoute(string routeName)
 		{
-			return _serviceSettings.ServiceBaseUrl +
+			return _serviceSettings.BaseUrl +
 				   _urlHelper.RouteUrl(routeName, new RouteValueDictionary());
 		}
 
 		public string UrlByRouteWithParameters(string routeName, RouteValueDictionary dictionary)
 		{
-			return _serviceSettings.ServiceBaseUrl + _urlHelper.RouteUrl(routeName, dictionary);
+			return _serviceSettings.BaseUrl + _urlHelper.RouteUrl(routeName, dictionary);
 		}
 
 		public string UrlByRouteWithJsonObject(string routeName, dynamic jsonObject)
 		{
-			return _serviceSettings.ServiceBaseUrl +
+			return _serviceSettings.BaseUrl +
 				   _urlHelper.RouteUrl(routeName, new RouteValueDictionary
                                                      {
                                                          {"JsonObject", SerializeToBase64(jsonObject)}

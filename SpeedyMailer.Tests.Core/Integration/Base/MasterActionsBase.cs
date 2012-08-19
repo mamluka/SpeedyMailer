@@ -1,10 +1,7 @@
 using System;
-using System.Diagnostics;
-using System.Linq.Expressions;
 using Ninject;
 using Ploeh.AutoFixture;
 using Raven.Client;
-using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
 

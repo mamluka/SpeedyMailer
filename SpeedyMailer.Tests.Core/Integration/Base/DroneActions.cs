@@ -8,6 +8,7 @@ using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
+using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -25,7 +26,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var apiBaseUri = RandomHostname();
 			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = apiBaseUri);
-			new TopDrone(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper, Kernel.Get<ApiCallsSettings>());
+			new TopDrone(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper,Kernel.Get<DroneSettings>(), Kernel.Get<ApiCallsSettings>());
 			return new Drone
 					{
 						Hostname = apiBaseUri,

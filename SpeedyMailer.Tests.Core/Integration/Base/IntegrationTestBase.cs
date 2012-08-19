@@ -99,58 +99,58 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             DefaultBaseUrl = "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
         }
 
-    	[SetUp]
-    	public void Setup()
-    	{
-    		var embeddableDocumentStore = new EmbeddableDocumentStore
-    		                              	{
-    		                              		RunInMemory = true,
-    		                              		Conventions =
-    		                              			{
-    		                              				CustomizeJsonSerializer =
-    		                              					serializer =>
-    		                              						{
-    		                              							serializer.TypeNameHandling = TypeNameHandling.All;
-    		                              						},
-    		                              				FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
-    		                              				DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
-    		                              			}
-    		                              	};
+        [SetUp]
+        public void Setup()
+        {
+            var embeddableDocumentStore = new EmbeddableDocumentStore
+                                            {
+                                                RunInMemory = true,
+                                                Conventions =
+                                                    {
+                                                        CustomizeJsonSerializer =
+                                                            serializer =>
+                                                                {
+                                                                    serializer.TypeNameHandling = TypeNameHandling.All;
+                                                                },
+                                                        FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
+                                                        DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
+                                                    }
+                                            };
 
-    		DocumentStore = embeddableDocumentStore.Initialize();
-    		MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
-    		DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
+            DocumentStore = embeddableDocumentStore.Initialize();
+            MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
+            DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
 
-    		RegisterActions();
-    		ExtraSetup();
-    	}
+            RegisterActions();
+            ExtraSetup();
+        }
 
-    	[TestFixtureTearDown]
-    	public void FixtureTearDown()
-    	{
-    		StopSchedulers();
-    		DeleteJsonSettingFiles();
-    	}
+        [TestFixtureTearDown]
+        public void FixtureTearDown()
+        {
+            StopSchedulers();
+            DeleteJsonSettingFiles();
+        }
 
-    	[TearDown]
-    	public void Teardown()
-    	{
-    		DeleteEmails();
-			StopSchedulers();
-			StopListeningToApiCalls();
-    		ExtraTeardown();
-    	}
+        [TearDown]
+        public void Teardown()
+        {
+            DeleteEmails();
+            StopSchedulers();
+            StopListeningToApiCalls();
+            ExtraTeardown();
+        }
 
-    	private void StopSchedulers()
-    	{
-    		var masterScheduler = MasterResolve<IScheduler>();
-    		WaitForSchedulerToShutdown(masterScheduler);
+        private void StopSchedulers()
+        {
+            var masterScheduler = MasterResolve<IScheduler>();
+            WaitForSchedulerToShutdown(masterScheduler);
 
-    		var droneScheduler = MasterResolve<IScheduler>();
-    		WaitForSchedulerToShutdown(droneScheduler);
-    	}
+            var droneScheduler = MasterResolve<IScheduler>();
+            WaitForSchedulerToShutdown(droneScheduler);
+        }
 
-    	private void DeleteJsonSettingFiles()
+        private void DeleteJsonSettingFiles()
         {
             var settingFolders = Directory.GetDirectories(AssemblyDirectory).Where(x => x.StartsWith("settings_"));
             foreach (var settingFolder in settingFolders)
@@ -159,7 +159,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             }
         }
 
-    	private static void WaitForSchedulerToShutdown(IScheduler scheduler)
+        private static void WaitForSchedulerToShutdown(IScheduler scheduler)
         {
             if (scheduler.IsStarted)
             {
@@ -172,16 +172,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             }
         }
 
-    	private void RegisterActions()
+        private void RegisterActions()
         {
             UIActions = MasterKernel.Get<UIActions>();
             ServiceActions = MasterKernel.Get<ServiceActions>();
             DroneActions = DroneKernel.Get<DroneActions>();
-
-            ServiceActions.Hostname = DefaultBaseUrl;
         }
 
-    	public virtual void ExtraSetup()
+        public virtual void ExtraSetup()
         { }
 
         public virtual void ExtraTeardown()
@@ -324,9 +322,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
             var restCallTestingBootstrapper = new RestCallTestingBootstrapper<TEndpoint, TResponse>(endpoint, response);
             _nancy = new NancyHost(new Uri(uri), restCallTestingBootstrapper);
-        	_nancy.Start();
+            _nancy.Start();
 
-        	Trace.WriteLine("Nancy started on: " + uri);
+            Trace.WriteLine("Nancy started on: " + uri);
         }
 
         protected void PrepareApiResponse<TEndpoint, TResponse>(Action<TResponse> action, string endpointBaseUrl = "")
@@ -385,12 +383,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
         public void StopListeningToApiCalls()
         {
-			if (_nancy == null)
-				return;
+            if (_nancy == null)
+                return;
 
-        	_nancy.Stop();
+            _nancy.Stop();
 
-        	Trace.WriteLine("Nancy stopped on: " + DefaultBaseUrl);
+            Trace.WriteLine("Nancy stopped on: " + DefaultBaseUrl);
         }
 
         protected void AssertEmailSent(Func<FakeEmailMessage, bool> func,int waitFor=30)

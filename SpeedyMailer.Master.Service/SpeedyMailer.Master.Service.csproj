@@ -110,9 +110,9 @@
     <Reference Include="Raven.Storage.Managed, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <HintPath>..\packages\RavenDB.Database.1.0.960\lib\net40\Raven.Storage.Managed.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp, Version=103.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="RestSharp, Version=103.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RestSharp.103.1\lib\net4\RestSharp.dll</HintPath>
+      <HintPath>..\packages\RestSharp.103.4\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="Spatial4n.Core">
       <HintPath>..\packages\RavenDB.Database.1.0.960\lib\net40\Spatial4n.Core.dll</HintPath>
@@ -127,9 +127,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Apis\CreativeModule.cs" />
     <Compile Include="Apis\DroneEndpoints.cs" />
     <Compile Include="Commands\UpdateDroneCommand.cs" />
+    <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\CreativeModule.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />
