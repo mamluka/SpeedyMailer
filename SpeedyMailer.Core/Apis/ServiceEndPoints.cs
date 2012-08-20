@@ -28,9 +28,9 @@ namespace SpeedyMailer.Core.Apis
 			}
 		}
 
-		public class FetchServiceSettings:ApiCall
+		public class GetRemoteServiceSettings:ApiCall
 		{
-			public FetchServiceSettings() : base("admin/settings/get")
+			public GetRemoteServiceSettings() : base("admin/settings/get")
 			{
 				CallMethod = RestMethod.Get;
 			}

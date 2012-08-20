@@ -14,7 +14,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 	public class AdminModuleTests:IntegrationTestBase
 	{
 		[Test]
-		public void FetchServiceSettings_WhenCalled_ShouldReturnTheBaseUrl()
+		public void FetchRemoteServiceSettings_WhenCalled_ShouldReturnTheBaseUrl()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 
@@ -24,7 +24,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			DroneActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
 			var api = DroneResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.FetchServiceSettings, ServiceEndpoints.FetchServiceSettings.Response>();
+			var result = api.Call<ServiceEndpoints.GetRemoteServiceSettings, ServiceEndpoints.GetRemoteServiceSettings.Response>();
 
 			result.ServiceBaseUrl.Should().Be(DefaultBaseUrl);
 		}

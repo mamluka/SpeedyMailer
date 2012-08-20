@@ -60,12 +60,16 @@ namespace SpeedyMailer.Core.Apis
 
 		private void ExecuteCall(ApiCall apiCall)
 		{
+			
 			var restRequest = SetupApiCall(apiCall);
+
+			Trace.WriteLine("Endpoint url called is: " + restRequest.Resource);
+			Trace.WriteLine("Base url called is: " + _restClient.BaseUrl);
+
 			var result = _restClient.Execute(restRequest);
 
-			Trace.WriteLine(result.ResponseStatus);
-			Trace.WriteLine(result.StatusCode);
-			Trace.WriteLine(result.ErrorMessage);
+			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
+			Trace.WriteLine("Error message: " + result.ErrorMessage);
 		}
 
 		private RestRequest SetupApiCall(ApiCall apiCall)

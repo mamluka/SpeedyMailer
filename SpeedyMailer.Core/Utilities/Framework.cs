@@ -1,6 +1,10 @@
 using System;
+using System.IO;
+using Newtonsoft.Json;
+using Ninject;
 using Raven.Client;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Core.Utilities
@@ -10,9 +14,11 @@ namespace SpeedyMailer.Core.Utilities
 		private readonly ITaskManager _taskManager;
 		private readonly IDocumentStore _documentStore;
 		private readonly ITaskCoordinator _taskCoordinator;
+		private readonly IKernel _kernel;
 
-		public Framework(IDocumentStore documentStore, ITaskManager taskManager,ITaskCoordinator taskCoordinator)
+		public Framework(IDocumentStore documentStore, ITaskManager taskManager, ITaskCoordinator taskCoordinator,IKernel kernel)
 		{
+			_kernel = kernel;
 			_taskCoordinator = taskCoordinator;
 			_documentStore = documentStore;
 			_taskManager = taskManager;
@@ -49,6 +55,33 @@ namespace SpeedyMailer.Core.Utilities
 			{
 				return session.Load<T>(entityId);
 			}
+		}
+
+		public void EditJsonSettings<T>(Action<T> action) where T : new()
+		{
+			const string settingsFolderName = "settings";
+
+			if (!Directory.Exists(settingsFolderName))
+				Directory.CreateDirectory(settingsFolderName);
+
+			using (var writter = new StreamWriter(Path.Combine(settingsFolderName, SettingsFileName<T>())))
+			{
+				dynamic settings = new T();
+				action(settings);
+				writter.WriteLine(JsonConvert.SerializeObject(settings,
+															  Formatting.Indented,
+															  new JsonSerializerSettings
+															  {
+																  NullValueHandling = NullValueHandling.Ignore
+															  }));
+			}
+
+			ContainerBootstrapper.ReloadJsonSetting<T>(_kernel);
+		}
+
+		private static string SettingsFileName<T>()
+		{
+			return typeof(T).Name.Replace("Settings", "") + ".settings";
 		}
 	}
 }

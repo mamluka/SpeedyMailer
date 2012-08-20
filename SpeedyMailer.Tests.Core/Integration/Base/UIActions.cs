@@ -20,8 +20,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class UIActions : MasterActionsBase
 	{
-		public UIActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor,IScheduledTaskManager scheduledTaskManager)
-			: base(kernel, taskManager, taskExecutor,scheduledTaskManager)
+		public UIActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
+			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
 		{ }
 
 		public string CreateListWithRandomContacts(string listName, int contactsCount)
@@ -56,8 +56,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	{
 		private TopService _topService;
 
-		public ServiceActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor,IScheduledTaskManager scheduledTaskManager)
-			: base(kernel, taskManager, taskExecutor,scheduledTaskManager)
+		public ServiceActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
+			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
 		{ }
 
 		public void Initialize()
@@ -74,7 +74,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void Stop()
 		{
-			_topService.Stop();
+			if (_topService != null)
+				_topService.Stop();
 		}
 	}
 }

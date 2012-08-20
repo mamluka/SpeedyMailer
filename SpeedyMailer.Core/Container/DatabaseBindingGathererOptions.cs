@@ -1,5 +1,6 @@
 using Ninject;
 using Ninject.Activation;
+using Raven.Client;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -24,7 +25,7 @@ namespace SpeedyMailer.Core.Container
 
         public void NoDatabase()
         {
-            
+			_options.DatabaseBindingFunction = kernel => kernel.Bind<IDocumentStore>().ToConstant(new NoRavenSupport());
         }
     }
 }

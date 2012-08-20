@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Modules
 													  RecipientsPerFragment = creativeFragmentSettings.RecipientsPerFragment
 												  });
 
-								  return null;
+								  return Response.AsText("OK");
 							  };
 		}
 	}

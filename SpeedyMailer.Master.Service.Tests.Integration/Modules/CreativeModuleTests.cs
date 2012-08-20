@@ -17,6 +17,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 		public void Add_WhenGivenACreativeId_ShouldCreateAnCreativeFragments()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
 
 			ServiceActions.Initialize();
 			ServiceActions.Start();

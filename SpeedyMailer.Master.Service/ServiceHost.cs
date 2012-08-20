@@ -31,7 +31,7 @@ namespace SpeedyMailer.Master.Service
 
         public TopService(INancyBootstrapper ninjectNancyBootstrapper,ServiceSettings serviceSettings)
         {
-            Trace.WriteLine(serviceSettings.BaseUrl);
+            Console.WriteLine(serviceSettings.BaseUrl);
 
             _nancyHost = new NancyHost(new Uri(serviceSettings.BaseUrl), ninjectNancyBootstrapper);
         }

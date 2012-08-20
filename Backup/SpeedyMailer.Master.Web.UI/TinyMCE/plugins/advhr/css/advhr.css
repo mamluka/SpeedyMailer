@@ -1,0 +1,19 @@
+input.radio {
+    background: transparent;
+    border: 1px none #000;
+    vertical-align: middle;
+}
+
+.panel_wrapper div.current { height: 80px; }
+
+#width {
+    vertical-align: middle;
+    width: 50px;
+}
+
+#width2 {
+    vertical-align: middle;
+    width: 50px;
+}
+
+#size { width: 100px; }

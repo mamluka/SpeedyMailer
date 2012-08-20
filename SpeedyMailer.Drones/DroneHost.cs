@@ -6,6 +6,8 @@ using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Drones.Bootstrappers;
+using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Drones
@@ -14,13 +16,16 @@ namespace SpeedyMailer.Drones
     {
         public static void Main(string[] args)
         {
-        	var kernel = ContainerBootstrapper.Kernel;
+        	var kernel = DroneContainerBootstrapper.Kernel;
 
-
-				
+	        var initializeDroneSettingsCommand = kernel.Get<InitializeDroneSettingsCommand>();
+	        initializeDroneSettingsCommand.RemoteConfigurationServiceBaseUrl = "http://localhost:12345";
+			initializeDroneSettingsCommand.Execute();
 
         	var drone = kernel.Get<TopDrone>();
+
 			drone.Start();
+
 			Console.WriteLine("Starting drone...");
         	Console.ReadKey();
         }
@@ -30,19 +35,17 @@ namespace SpeedyMailer.Drones
 	{
 		private NancyHost _nancy;
 		private readonly INancyBootstrapper _nancyBootstrapper;
-		private readonly ApiCallsSettings _apiCallsSettings;
-		private DroneSettings _droneSettings;
+		private readonly DroneSettings _droneSettings;
 
-		public TopDrone(INancyBootstrapper nancyBootstrapper,DroneSettings droneSettings,ApiCallsSettings apiCallsSettings)
+		public TopDrone(INancyBootstrapper nancyBootstrapper,DroneSettings droneSettings)
 		{
 			_droneSettings = droneSettings;
-			_apiCallsSettings = apiCallsSettings;
 			_nancyBootstrapper = nancyBootstrapper;
 		}
 
 		public void Initialize()
 		{
-			_nancy = new NancyHost(new Uri(_apiCallsSettings.ApiBaseUri), _nancyBootstrapper);
+			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
 		}
 
 		public void Start()

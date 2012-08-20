@@ -2,6 +2,9 @@
 using Ninject;
 using Ninject.Modules;
 using Quartz;
+using Raven.Client;
+using RestSharp;
+using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 
 namespace SpeedyMailer.Drones.Bootstrappers
@@ -15,10 +18,13 @@ namespace SpeedyMailer.Drones.Bootstrappers
 			Kernel = ContainerBootstrapper
 				.Bootstrap()
 				.Analyze(x => x.AssembiesContaining(new[]
-				                                    	{
-				                                    		typeof (DroneAssemblyMarker),
-				                                    		typeof (ISchedulerFactory)
-				                                    	}))
+					{
+						typeof (DroneAssemblyMarker),
+						typeof (CoreAssemblyMarker),
+						typeof (ISchedulerFactory),
+						typeof (IRestClient),
+						typeof (IDocumentStore)
+					}))
 				.BindInterfaceToDefaultImplementation()
 				.DefaultConfiguration()
 				.NoDatabase()
@@ -31,18 +37,24 @@ namespace SpeedyMailer.Drones.Bootstrappers
 	{
 		public override void Load()
 		{
-			Kernel.Bind<INancyBootstrapper>().ToProvider(new NancyBootstrapperProvider(
-			                                             	kernel =>
-			                                             	ContainerBootstrapper.Bootstrap(kernel).Analyze(x => x.AssembiesContaining(new[]
-			                                             	                                                                                                	{
-			                                             	                                                                                                		typeof (DroneAssemblyMarker),
-			                                             	                                                                                                		typeof (ISchedulerFactory)
-			                                             	                                                                                                	}))
-			                                             		.BindInterfaceToDefaultImplementation()
-			                                             		.DefaultConfiguration()
-			                                             		.NoDatabase()
-			                                             		.Settings(x => x.UseJsonFiles())
-			                                             		.Done())
+			Kernel
+				.Bind<INancyBootstrapper>()
+				.ToProvider(new NancyBootstrapperProvider(
+					            kernel =>
+					            ContainerBootstrapper.Bootstrap(kernel).Analyze(
+						            x => x.AssembiesContaining(new[]
+							            {
+								            typeof (DroneAssemblyMarker),
+								            typeof (CoreAssemblyMarker),
+								            typeof (ISchedulerFactory),
+								            typeof (IRestClient),
+								            typeof (IDocumentStore)
+							            }))
+						            .BindInterfaceToDefaultImplementation()
+						            .DefaultConfiguration()
+						            .NoDatabase()
+						            .Settings(x => x.UseJsonFiles())
+						            .Done())
 				);
 		}
 	}

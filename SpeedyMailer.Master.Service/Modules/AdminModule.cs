@@ -16,7 +16,7 @@ namespace SpeedyMailer.Master.Service.Modules
 		{
 			_serviceSettings = serviceSettings;
 
-			Get["/settings/get"] = x => Response.AsJson(new ServiceEndpoints.FetchServiceSettings.Response
+			Get["/settings/get"] = x => Response.AsJson(new ServiceEndpoints.GetRemoteServiceSettings.Response
 			                                            	{
 			                                            		ServiceBaseUrl = _serviceSettings.BaseUrl
 			                                            	});

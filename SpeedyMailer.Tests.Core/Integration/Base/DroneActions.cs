@@ -26,7 +26,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var apiBaseUri = RandomHostname();
 			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = apiBaseUri);
-			new TopDrone(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper,Kernel.Get<DroneSettings>(), Kernel.Get<ApiCallsSettings>());
+			new TopDrone(new DroneNancyNinjectBootstrapperForTesting(),Kernel.Get<DroneSettings>());
 			return new Drone
 					{
 						Hostname = apiBaseUri,

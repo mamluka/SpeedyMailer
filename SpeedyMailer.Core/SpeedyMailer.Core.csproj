@@ -142,6 +142,7 @@
     <Compile Include="Container\JsonSettingsInterceptor.cs" />
     <Compile Include="Container\NancyBootstrapperProvider.cs" />
     <Compile Include="Container\NancyContainerBootstrapper.cs" />
+    <Compile Include="Container\NoRavenSupport.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
     <Compile Include="Container\SettingsInterceptor.cs" />

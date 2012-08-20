@@ -125,23 +125,24 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             ExtraSetup();
         }
 
-        [TestFixtureTearDown]
+    	[TearDown]
+    	public void Teardown()
+    	{
+			ServiceActions.Stop();
+    		DeleteEmails();
+    		StopSchedulers();
+    		StopListeningToApiCalls();
+    		ExtraTeardown();
+    	}
+
+    	[TestFixtureTearDown]
         public void FixtureTearDown()
         {
             StopSchedulers();
             DeleteJsonSettingFiles();
         }
 
-        [TearDown]
-        public void Teardown()
-        {
-            DeleteEmails();
-            StopSchedulers();
-            StopListeningToApiCalls();
-            ExtraTeardown();
-        }
-
-        private void StopSchedulers()
+    	private void StopSchedulers()
         {
             var masterScheduler = MasterResolve<IScheduler>();
             WaitForSchedulerToShutdown(masterScheduler);
