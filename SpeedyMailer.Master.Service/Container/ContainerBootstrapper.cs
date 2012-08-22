@@ -1,14 +1,24 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Ninject;
-using Ninject.Extensions.Conventions;
+using Ninject.Activation;
+#if MONO
+using Ninject.Mono.Extensions.Conventions.Syntax;
+#else
 using Ninject.Extensions.Conventions.Syntax;
+#endif
 using Ninject.Syntax;
 using Raven.Client;
+using SpeedyMailer.Core.Container;
+#if MONO
+using Ninject.Mono.Extensions.Conventions;
+#else
+using Ninject.Extensions.Conventions;
+#endif
 
-namespace SpeedyMailer.Core.Container
+namespace SpeedyMailer.Master.Service.Container
 {
 	public class ContainerBootstrapper
 	{
@@ -209,6 +219,214 @@ namespace SpeedyMailer.Core.Container
 		{
 			_type = type;
 			_message = message;
+		}
+	}
+
+	public class ContainerStrapperOptions
+	{
+		public BindingStrategy BindingStratery { get; set; }
+		public AnalyzeStrategy AnalyzeStrategy { get; set; }
+		public IEnumerable<Type> TypesToAnalyze { get; set; }
+		public SettingsType Settings { get; set; }
+		public SelectingStrategy SelectingStrategy { get; set; }
+		public Action<IKernel> DatabaseBindingFunction { get; set; }
+		public Action<IKernel> SettingsResolverFunction { get; set; }
+		public bool NoDatabase { get; set; }
+		public ConfigurationAction ConfigurationAction { get; set; }
+	}
+
+	public interface IDoneBootstrapping
+	{
+		IKernel Done();
+	}
+
+	public class DoneBootstrapping : IDoneBootstrapping
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public DoneBootstrapping(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public IKernel Done()
+		{
+			if (ContainerBootstrapper.Kernel != null)
+			{
+				return ContainerBootstrapper.Execute(_options, ContainerBootstrapper.Kernel);
+			}
+			return ContainerBootstrapper.Execute(_options);
+		}
+	}
+
+	public class DatabaseBindingGatherer : IDoneBootstrapping
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public DatabaseBindingGatherer(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public SettingsResolverGatherer Storage<T>(Action<DatabaseBindingGathererOptions<T>> storageAction)
+		{
+			var databaseBindingGathererOptions = new DatabaseBindingGathererOptions<T>(_options);
+			storageAction.Invoke(databaseBindingGathererOptions);
+			return new SettingsResolverGatherer(_options);
+		}
+
+		public IKernel Done()
+		{
+			return ContainerBootstrapper.Execute(_options);
+		}
+
+
+		public SettingsResolverGatherer NoDatabase()
+		{
+			_options.NoDatabase = true;
+			return new SettingsResolverGatherer(_options);
+		}
+	}
+
+	public class SettingsResolverGatherer : IDoneBootstrapping
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public SettingsResolverGatherer(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public IDoneBootstrapping Settings(Action<SettingsResolverGathererOptions> settingsAction)
+		{
+			var settingsResolverGathererOptions = new SettingsResolverGathererOptions(_options);
+			settingsAction.Invoke(settingsResolverGathererOptions);
+			return new DoneBootstrapping(_options);
+		}
+
+		public IKernel Done()
+		{
+			return ContainerBootstrapper.Execute(_options);
+		}
+	}
+
+	public class AssemblyGatherer
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public AssemblyGatherer(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public BindingStrategyGatherer Analyze(Action<AssemblyGathererOptions> gatherAction)
+		{
+			var assemblyGathererOptions = new AssemblyGathererOptions(_options);
+			gatherAction.Invoke(assemblyGathererOptions);
+			return new BindingStrategyGatherer(_options);
+		}
+
+
+	}
+
+	public class ConfigurationsGatherer
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public ConfigurationsGatherer(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public DatabaseBindingGatherer Configure(ConfigurationAction action)
+		{
+			_options.ConfigurationAction = action;
+			return new DatabaseBindingGatherer(_options);
+		}
+
+		public DatabaseBindingGatherer DefaultConfiguration()
+		{
+			_options.ConfigurationAction = opt => opt.InSingletonScope();
+			return new DatabaseBindingGatherer(_options);
+		}
+	}
+
+	public class AssemblyGathererOptions
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public AssemblyGathererOptions(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public void AssembiesContaining(IEnumerable<Type> types)
+		{
+			_options.AnalyzeStrategy = AnalyzeStrategy.ByTypes;
+			_options.TypesToAnalyze = types;
+		}
+	}
+
+	public class BindingStrategyGatherer
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public BindingStrategyGatherer(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public ConfigurationsGatherer BindInterfaceToDefaultImplementation()
+		{
+			_options.BindingStratery = BindingStrategy.BindInterfaceToDefaultImplementation;
+			return new ConfigurationsGatherer(_options);
+		}
+
+
+	}
+
+	public class DatabaseBindingGathererOptions<T>
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public DatabaseBindingGathererOptions(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public void Provider<TProvider>() where TProvider : IProvider
+		{
+			_options.DatabaseBindingFunction = kernel => kernel.Bind<T>().ToProvider<TProvider>();
+		}
+
+		public void Constant(T constant)
+		{
+			_options.DatabaseBindingFunction = kernel => kernel.Bind<T>().ToConstant(constant);
+		}
+
+		public void NoDatabase()
+		{
+			_options.DatabaseBindingFunction = kernel => kernel.Bind<IDocumentStore>().ToConstant(new NoRavenSupport());
+		}
+	}
+
+	public class SettingsResolverGathererOptions
+	{
+		private readonly ContainerStrapperOptions _options;
+
+		public SettingsResolverGathererOptions(ContainerStrapperOptions options)
+		{
+			_options = options;
+		}
+
+		public void UseDocumentDatabase()
+		{
+			_options.Settings = SettingsType.DocumentDatabase;
+		}
+
+		public void UseJsonFiles()
+		{
+			_options.Settings = SettingsType.JsonFiles;
 		}
 	}
 

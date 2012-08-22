@@ -9,6 +9,7 @@ using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Drones.Settings;
+using SpeedyMailer.Master.Service.Container;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {

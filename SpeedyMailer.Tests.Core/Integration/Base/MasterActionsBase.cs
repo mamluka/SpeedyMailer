@@ -4,6 +4,7 @@ using Ploeh.AutoFixture;
 using Raven.Client;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Master.Service.Container;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {

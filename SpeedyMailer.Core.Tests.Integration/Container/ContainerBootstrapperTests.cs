@@ -10,6 +10,7 @@ using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Master.Service;
 using FluentAssertions;
+using SpeedyMailer.Master.Service.Container;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Core.IntegrationTests.Container

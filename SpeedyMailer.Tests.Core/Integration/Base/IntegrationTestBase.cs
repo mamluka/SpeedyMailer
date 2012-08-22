@@ -26,11 +26,13 @@ using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Master.Service;
+using SpeedyMailer.Master.Service.Container;
 using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Tests.Core.Integration.Emails;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using Raven.Client.Linq;
 using Nancy.ModelBinding;
+using NancyModule = Nancy.NancyModule;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {

@@ -6,8 +6,8 @@ using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Drones.Bootstrappers;
 using SpeedyMailer.Drones.Commands;
+using SpeedyMailer.Drones.Container;
 using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Drones
@@ -24,6 +24,7 @@ namespace SpeedyMailer.Drones
 
         	var drone = kernel.Get<TopDrone>();
 
+			drone.Initialize();
 			drone.Start();
 
 			Console.WriteLine("Starting drone...");

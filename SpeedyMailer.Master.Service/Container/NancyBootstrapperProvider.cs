@@ -3,7 +3,7 @@ using Nancy.Bootstrapper;
 using Ninject;
 using Ninject.Activation;
 
-namespace SpeedyMailer.Core.Container
+namespace SpeedyMailer.Master.Service.Container
 {
 	public class NancyBootstrapperProvider : Provider<INancyBootstrapper>
 	{

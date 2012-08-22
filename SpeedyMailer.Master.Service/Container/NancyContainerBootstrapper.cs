@@ -1,8 +1,8 @@
 using System;
-using Nancy.Bootstrappers.Ninject;
+using Nancy.Bootstrappers.Ninject.Mono;
 using Ninject;
 
-namespace SpeedyMailer.Core.Container
+namespace SpeedyMailer.Master.Service.Container
 {
     public class NancyContainerBootstrapper : NinjectNancyBootstrapper
     {

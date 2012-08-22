@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using Ninject;
 using Raven.Client;
 using SpeedyMailer.Core.Commands;
-using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Core.Utilities

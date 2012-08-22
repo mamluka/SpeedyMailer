@@ -6,8 +6,9 @@ using Raven.Client;
 using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Master.Service.Container;
 
-namespace SpeedyMailer.Drones.Bootstrappers
+namespace SpeedyMailer.Drones.Container
 {
 	public static class DroneContainerBootstrapper
 	{

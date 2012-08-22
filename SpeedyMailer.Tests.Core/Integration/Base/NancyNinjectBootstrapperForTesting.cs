@@ -8,6 +8,7 @@ using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Master.Service;
+using SpeedyMailer.Master.Service.Container;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
