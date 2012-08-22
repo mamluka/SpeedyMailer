@@ -5,6 +5,7 @@ using System.Reflection;
 using Ninject;
 using Ninject.Activation;
 #if MONO
+using Ninject.Extensions.Conventions.Syntax;
 using Ninject.Mono.Extensions.Conventions.Syntax;
 #else
 using Ninject.Extensions.Conventions.Syntax;
