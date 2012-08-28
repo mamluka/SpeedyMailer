@@ -8,7 +8,10 @@ namespace SpeedyMailer.Core.Container
     {
         protected override IDocumentStore CreateInstance(IContext context)
         {
-            var store = new DocumentStore {ConnectionStringName = "RavenDB"};
+            var store = new DocumentStore
+	            {
+					Url = "http://localhost:8080"
+	            };
             store.Initialize();
             return store;
         }

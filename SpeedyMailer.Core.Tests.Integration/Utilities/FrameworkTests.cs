@@ -1,19 +1,13 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
 using Raven.Client;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.IntegrationTests.Tasks;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Tasks.Testing;
 using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
 using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
-using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Core.IntegrationTests.Utilities
 {
@@ -84,8 +78,24 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		}
 
 		[Test]
-		public void ExecuteScheduledTask_WhenATaskIsGiven_ShouldExecuteIt()
+		public void StartTasks_WhenScheduledTasksArePresentInAssembly_ShouldStartThem()
 		{
+			var tasks = new List<ScheduledTask>
+				{
+					new TestScheduledTask(x => x.ResultId = "result/1"),
+					new SecondTestScheduledTask(x => x.ResultId = "result/2")
+				};
+
+			_target.StartTasks(tasks);
+
+			WaitForEntityToExist("result/1");
+			WaitForEntityToExist("result/2");
+
+			var result1 = Load<ComputationResult<string>>("result/1");
+			var result2 = Load<ComputationResult<string>>("result/1");
+
+			result1.Result.Should().Be("done");
+			result2.Result.Should().Be("done");
 
 		}
 	}

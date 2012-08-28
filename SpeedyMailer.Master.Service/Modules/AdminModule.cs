@@ -20,6 +20,7 @@ namespace SpeedyMailer.Master.Service.Modules
 			                                            	{
 			                                            		ServiceBaseUrl = _serviceSettings.BaseUrl
 			                                            	});
+			Get["/info"] = x => Response.AsJson("OK");
 		}
 	}
 }
