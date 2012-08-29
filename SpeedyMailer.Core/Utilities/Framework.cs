@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Ninject;
@@ -14,9 +15,11 @@ namespace SpeedyMailer.Core.Utilities
 		private readonly IDocumentStore _documentStore;
 		private readonly ITaskCoordinator _taskCoordinator;
 		private readonly IKernel _kernel;
+		private readonly IScheduledTaskManager _scheduledTaskManager;
 
-		public Framework(IDocumentStore documentStore, ITaskManager taskManager, ITaskCoordinator taskCoordinator,IKernel kernel)
+		public Framework(IDocumentStore documentStore, ITaskManager taskManager, ITaskCoordinator taskCoordinator,IScheduledTaskManager scheduledTaskManager,IKernel kernel)
 		{
+			_scheduledTaskManager = scheduledTaskManager;
 			_kernel = kernel;
 			_taskCoordinator = taskCoordinator;
 			_documentStore = documentStore;
@@ -78,9 +81,28 @@ namespace SpeedyMailer.Core.Utilities
 			ContainerBootstrapper.ReloadJsonSetting<T>(_kernel);
 		}
 
+		public void EditStoreSettings<T>(Action<T> action) where T : new()
+		{
+			var documentStore = _kernel.Get<IDocumentStore>();
+			using (var session = documentStore.OpenSession())
+			{
+				var settings = new T();
+				action.Invoke(settings);
+				session.Store(settings, "settings/" + typeof(T).Name.Replace("Settings", ""));
+				session.SaveChanges();
+			}
+
+			ContainerBootstrapper.ReloadStoreSetting<T>(_kernel, documentStore);
+		}
+
 		private static string SettingsFileName<T>()
 		{
 			return typeof(T).Name.Replace("Settings", "") + ".settings";
+		}
+
+		public void StartTasks(IEnumerable<ScheduledTask> tasks)
+		{
+			_scheduledTaskManager.AddAndStart(tasks);
 		}
 	}
 }

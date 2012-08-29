@@ -1,34 +1,49 @@
 ﻿using System;
+using System.Collections.Generic;
+using CommandLine;
 using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
 using Ninject;
 using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Drones.Bootstrappers;
 using SpeedyMailer.Drones.Commands;
-using SpeedyMailer.Drones.Container;
 using SpeedyMailer.Drones.Settings;
+using SpeedyMailer.Drones.Tasks;
 
 namespace SpeedyMailer.Drones
 {
+	public class DroneCommandOptions:CommandLineOptionsBase
+	{
+		[Option("s","service-base-url", DefaultValue  = @"http://localhost:2589",HelpText = "The base url of the service to register the drone with")]
+		public string ServiceBaseUrl { get; set; }
+	}
     public class DroneHost
     {
         public static void Main(string[] args)
         {
-        	var kernel = DroneContainerBootstrapper.Kernel;
+	        var options = new DroneCommandOptions();
 
-	        var initializeDroneSettingsCommand = kernel.Get<InitializeDroneSettingsCommand>();
-	        initializeDroneSettingsCommand.RemoteConfigurationServiceBaseUrl = "http://localhost:12345";
-			initializeDroneSettingsCommand.Execute();
+			if (CommandLineParser.Default.ParseArguments(args, options))
+			{
+				var kernel = DroneContainerBootstrapper.Kernel;
 
-        	var drone = kernel.Get<TopDrone>();
+				var initializeDroneSettingsCommand = kernel.Get<InitializeDroneSettingsCommand>();
+				initializeDroneSettingsCommand.RemoteConfigurationServiceBaseUrl = "http://localhost:12345";
+				initializeDroneSettingsCommand.Execute();
 
-			drone.Initialize();
-			drone.Start();
+				var drone = kernel.Get<TopDrone>();
 
-			Console.WriteLine("Starting drone...");
-        	Console.ReadKey();
+				drone.Start();
+
+				Console.WriteLine("Starting drone...");
+				
+			}
+
+			Console.ReadKey();
         }
     }
 
@@ -37,20 +52,31 @@ namespace SpeedyMailer.Drones
 		private NancyHost _nancy;
 		private readonly INancyBootstrapper _nancyBootstrapper;
 		private readonly DroneSettings _droneSettings;
+		private readonly Framework _framework;
 
-		public TopDrone(INancyBootstrapper nancyBootstrapper,DroneSettings droneSettings)
+		public TopDrone(INancyBootstrapper nancyBootstrapper,Framework framework,DroneSettings droneSettings)
 		{
+			_framework = framework;
 			_droneSettings = droneSettings;
 			_nancyBootstrapper = nancyBootstrapper;
 		}
 
 		public void Initialize()
 		{
+			var tasks = new List<ScheduledTask>
+				{
+					new BroadcastDroneToServiceTask(),
+					new FetchCreativeFragmentsTask()
+				};
+
+			_framework.StartTasks(tasks);
+
 			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
 		}
 
 		public void Start()
 		{
+
 			_nancy.Start();
 		}
 

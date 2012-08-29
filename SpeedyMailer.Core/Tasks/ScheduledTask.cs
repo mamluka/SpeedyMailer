@@ -51,9 +51,7 @@ namespace SpeedyMailer.Core.Tasks
 		}
 
 		protected ScheduledTaskWithData()
-		{
-			
-		}
+		{ }
 
 		public override IJobDetail GetJob()
 		{

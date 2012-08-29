@@ -23,24 +23,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Kernel = kernel;
 		}
 
-		public Drone CreateDrone(string droneId)
-		{
-			var apiBaseUri = RandomHostname();
-			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = apiBaseUri);
-			new TopDrone(new DroneNancyNinjectBootstrapperForTesting(),Kernel.Get<DroneSettings>());
-			return new Drone
-					{
-						Hostname = apiBaseUri,
-						Id = droneId,
-					};
-		}
-
-		private string RandomHostname()
-		{
-			var randomizer = new Random();
-			return "http://localhost:" + randomizer.Next(2000, 99999);
-		}
-
 		public override void EditSettings<T>(Action<T> action)
 		{
 			var settingsGuid = Guid.NewGuid();

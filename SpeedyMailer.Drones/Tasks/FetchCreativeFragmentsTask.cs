@@ -84,12 +84,12 @@ namespace SpeedyMailer.Drones.Tasks
 
 				var dealUrl = _urlBuilder
 					.Base(ServiceEndpoint(service,x=> x.DealsEndpoint))
-					.AddObject(GetDealUrl(fragment, contact))
+					.AddObject(GetDealUrlData(fragment, contact))
 					.AppendAsSlashes();
 				
 				var unsubsribeUrl = _urlBuilder
 					.Base(ServiceEndpoint(service,x=> x.UnsubscribeEndpoint))
-					.AddObject(GetDealUrl(fragment, contact))
+					.AddObject(GetDealUrlData(fragment, contact))
 					.AppendAsSlashes();
 
 				var deal =  _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
@@ -100,7 +100,7 @@ namespace SpeedyMailer.Drones.Tasks
 				return deal + unsubscribeTemplate.Render();
 			}
 
-			private static DealUrlData GetDealUrl(CreativeFragment fragment, Contact contact)
+			private static DealUrlData GetDealUrlData(CreativeFragment fragment, Contact contact)
 			{
 				return new DealUrlData
 						{

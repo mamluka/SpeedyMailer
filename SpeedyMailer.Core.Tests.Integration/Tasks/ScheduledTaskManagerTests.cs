@@ -45,6 +45,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		{
 			const string resultId1 = "result/1";
 			const string resultId2 = "result/2";
+
 			var firstTask = new TestScheduledTask(x =>
 			{
 				x.ResultId = resultId1;
@@ -84,6 +85,49 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 	public class TestScheduledTask : ScheduledTaskWithData<TestScheduledTask.Data>
 	{
 		public TestScheduledTask(Action<Data> action)
+			: base(action)
+		{ }
+
+		public override IJobDetail ConfigureJob()
+		{
+			return SimpleJob<Job>();
+		}
+
+		public override ITrigger ConfigureTrigger()
+		{
+			return TriggerWithTimeCondition(x => x.WithIntervalInSeconds(5).WithRepeatCount(1));
+		}
+
+		public class Data : ScheduledTaskData
+		{
+			public string ResultId { get; set; }
+		}
+
+		public class Job : JobBase<Data>, IJob
+		{
+			private readonly Framework _framework;
+
+			public Job(Framework framework)
+			{
+				_framework = framework;
+			}
+
+			public void Execute(IJobExecutionContext context)
+			{
+				var data = GetData(context);
+
+				_framework.Store(new ComputationResult<string>
+									{
+										Id = data.ResultId,
+										Result = "done"
+									});
+			}
+		}
+	}
+	
+	public class SecondTestScheduledTask : ScheduledTaskWithData<SecondTestScheduledTask.Data>
+	{
+		public SecondTestScheduledTask(Action<Data> action)
 			: base(action)
 		{ }
 

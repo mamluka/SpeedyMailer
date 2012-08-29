@@ -31,3 +31,5 @@ _ReSharper*/
 
 .idea/**
 Out/**
+RavenDB/Server/Data/**
+RavenDB/Server/*.xml
