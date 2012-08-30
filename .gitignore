@@ -1,6 +1,5 @@
 Thumbs.db
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
@@ -33,3 +32,4 @@ _ReSharper*/
 Out/**
 RavenDB/Server/Data/**
 RavenDB/Server/*.xml
+packages/*.exe
