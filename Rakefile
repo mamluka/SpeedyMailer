@@ -45,9 +45,13 @@ namespace :run do
     desc "Run ravendb server on the pre-configured url and port"
 
     exec :raven do |cmd|
-      cmd.command="start"
-      # cmd.parameters =  ["cmd" ,"/c","RavenDB\\Server\\Raven.Server.exe"]
-      cmd.parameters = "cmd"
+      cmd.command="RavenDB\\run.bat"
+      cmd.parameters=BASE_FOLDER
+    end
+
+    exec :test do |cmd|
+      cmd.command="cmd.exe"
+      cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
     end
 end
 
