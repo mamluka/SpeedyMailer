@@ -131,6 +131,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />

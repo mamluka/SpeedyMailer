@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using CommandLine;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
@@ -13,6 +14,15 @@ using Ninject;
 
 namespace SpeedyMailer.Master.Service
 {
+    public class DroneCommandOptions : CommandLineOptionsBase
+    {
+        [Option("b", "base-url", DefaultValue = @"http://localhost:9852", HelpText = "The base url of the service to register the drone with")]
+        public string BaseUrl { get; set; }
+        
+        [Option("d", "database-url", DefaultValue = @"http://localhost:4253", HelpText = "The base url of the service to register the drone with")]
+        public string DatabaseUrl { get; set; }
+    }
+
     public class ServiceHost
     {
         public static void Main(string[] args)
