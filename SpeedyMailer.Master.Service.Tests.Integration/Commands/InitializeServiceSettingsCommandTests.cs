@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
+using FluentAssertions;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 {
@@ -14,16 +17,15 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
         [Test]
         public void Execute_WhenCalled_ShouldSetTheSettings()
         {
-            ServiceActions.ExecuteCommand<InitializeServiceSettingsCommand>();
-        }
-    }
+            ServiceActions.ExecuteCommand<InitializeServiceSettingsCommand>(x=>
+	            {
+		            x.BaseUrl = "baseurl";
+		            x.DatabaseUrl = "databaseUrl";
+	            });
 
-    public class InitializeServiceSettingsCommand:Command
-    {
-        public string BaseUrl { get; set; }
-        public override void Execute()
-        {
-            
+	        var serviceSettings = MasterResolve<ServiceSettings>();
+
+	        serviceSettings.BaseUrl.Should().Be("baseurl");
         }
     }
 }

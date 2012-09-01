@@ -10,7 +10,7 @@ namespace SpeedyMailer.Core.Container
         {
             var store = new DocumentStore
 	            {
-					Url = "http://localhost:8080"
+					ConnectionStringName = "RavenDb"
 	            };
             store.Initialize();
             return store;

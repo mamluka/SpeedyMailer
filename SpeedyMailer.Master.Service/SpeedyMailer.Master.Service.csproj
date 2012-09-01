@@ -133,6 +133,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Apis\DroneEndpoints.cs" />
+    <Compile Include="Commands\InitializeServiceSettingsCommand.cs" />
     <Compile Include="Commands\UpdateDroneCommand.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\CreativeModule.cs" />

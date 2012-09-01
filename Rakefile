@@ -1,21 +1,29 @@
 require 'albacore'
+require 'nokogiri'
+require 'open-uri'
 
 namespace :windows do
 
-  SOLUTION_FILE = "SpeedyMailer.Drones\\SpeedyMailer.Drones.csproj"
-  OUTPUT_FOLDER = "..\\Out\\Drone"
+  DRONE_SOLUTION_FILE = "SpeedyMailer.Drones\\SpeedyMailer.Drones.csproj"
+  DRONE_OUTPUT_FOLDER = "..\\Out\\Drone"
 
-  desc "clean the solution"
-  msbuild :clean do |msb|
+  desc "Clean solution"
+  msbuild :clean, [:solution] do |msb,args|
     msb.targets :Clean
-    msb.solution  = SOLUTION_FILE
+    msb.solution  = args[:solution]
   end
 
-  desc "Build the solution"
-  msbuild :build => :clean do |msb|
-    msb.properties :configurations => :Release,:OutputPath => OUTPUT_FOLDER
+  desc "Build solution"
+  msbuild :build, [:solution,:output_folder] do |msb,args|
+    msb.properties :configurations => :Release,:OutputPath => args[:output_folder]
     msb.targets :Rebuild
-    msb.solution  = SOLUTION_FILE
+    msb.solution  = args[:solution]
+  end
+
+  desc "Build drone from project file"
+  task :build_drone do
+    puts "Start building..."
+    Rake::Task[windows:build].invoke(DRONE_SOLUTION_FILE,DRONE_OUTPUT_FOLDER)
   end
 end
 
@@ -38,21 +46,36 @@ namespace :mono do
   end
 end
 
-namespace :run do
+namespace :winrun do
 
     BASE_FOLDER =  File.dirname(__FILE__)
 
     desc "Run ravendb server on the pre-configured url and port"
 
     exec :raven do |cmd|
-      cmd.command="RavenDB\\run.bat"
-      cmd.parameters=BASE_FOLDER
-    end
-
-    exec :test do |cmd|
       cmd.command="cmd.exe"
       cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
     end
+
+    task :update_raven_url,[:url] do |t,args|
+      puts "Opening app.config file for writing..."
+
+      f = File.open("SpeedyMailer.Master.Service\\app.config")
+      xml = Nokogiri::XML(f)
+      f.close()
+
+      connString = xml.xpath("//configuration/connectionStrings/add").first()
+      connString["connectionString"] =  "Url = #{args[:url]}"
+
+      puts "Updating app.config with the new raven url"
+      File.open("SpeedyMailer.Master.Service\\app.config",'w') {|f| xml.write_xml_to f}
+    end
+
+
+
+
+
+
 end
 
 
