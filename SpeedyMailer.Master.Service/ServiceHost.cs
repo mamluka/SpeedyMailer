@@ -25,27 +25,28 @@ namespace SpeedyMailer.Master.Service
     {
         public static void Main(string[] args)
         {
-			var options = new ServiceCommandOptions();
+            var options = new ServiceCommandOptions();
 
-			if (CommandLineParser.Default.ParseArguments(args, options))
-			{
-				var kernel = ServiceContainerBootstrapper.Kernel;
+            if (CommandLineParser.Default.ParseArguments(args, options))
+            {
+                var kernel = ServiceContainerBootstrapper.Kernel;
 
-				var initializeServiceSettingsCommand = kernel.Get<InitializeServiceSettingsCommand>();
-				initializeServiceSettingsCommand.BaseUrl = options.BaseUrl;
-				initializeServiceSettingsCommand.Execute();
+                var initializeServiceSettingsCommand = kernel.Get<InitializeServiceSettingsCommand>();
+                initializeServiceSettingsCommand.BaseUrl = options.BaseUrl;
+                initializeServiceSettingsCommand.Execute();
 
-				var service = kernel.Get<TopService>();
+                var service = kernel.Get<TopService>();
 
-				service.Start();
-				Console.WriteLine("To stop press any key");
-				Console.ReadKey();
-				service.Stop();
+                service.Start();
+                Console.WriteLine("To stop press any key");
+                Console.ReadKey();
+                service.Stop();
 
-				var a = kernel.Get<IScheduler>();
-				a.Shutdown();
-			}
+                var a = kernel.Get<IScheduler>();
+                a.Shutdown();
+            }
         }
+    }
 
     public class TopService
     {

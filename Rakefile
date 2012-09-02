@@ -1,11 +1,16 @@
 require 'albacore'
 require 'nokogiri'
 require 'open-uri'
+require 'socket'
 
 namespace :windows do
 
   DRONE_SOLUTION_FILE = "SpeedyMailer.Drones\\SpeedyMailer.Drones.csproj"
   DRONE_OUTPUT_FOLDER = "..\\Out\\Drone"
+
+  SERVICE_SOLUTION_FILE = "SpeedyMailer.Master.Service\\SpeedyMailer.Master.Service.csproj"
+  SERVICE_OUTPUT_FOLDER = "..\\Out\\Service"
+
 
   desc "Clean solution"
   msbuild :clean, [:solution] do |msb,args|
@@ -22,8 +27,14 @@ namespace :windows do
 
   desc "Build drone from project file"
   task :build_drone do
-    puts "Start building..."
-    Rake::Task[windows:build].invoke(DRONE_SOLUTION_FILE,DRONE_OUTPUT_FOLDER)
+    puts "Start building drone..."
+    Rake::Task["windows:build"].invoke(DRONE_SOLUTION_FILE,DRONE_OUTPUT_FOLDER)
+    end
+
+  desc "Build service from project file"
+  task :build_service do
+    puts "Start building service..."
+    Rake::Task["windows:build"].invoke(SERVICE_SOLUTION_FILE,SERVICE_OUTPUT_FOLDER)
   end
 end
 
@@ -52,7 +63,7 @@ namespace :winrun do
 
     desc "Run ravendb server on the pre-configured url and port"
 
-    exec :raven do |cmd|
+    exec :run_raven do |cmd|
       cmd.command="cmd.exe"
       cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
     end
@@ -71,7 +82,13 @@ namespace :winrun do
       File.open("SpeedyMailer.Master.Service\\app.config",'w') {|f| xml.write_xml_to f}
     end
 
+    desc "Run service with database"
 
+    exec :run_service => [:run_raven] do |cmd|
+      Rake::Task["winrun:update_raven_url"].invoke("http://10.0.0.3:4253")
+      cmd.command="cmd,exe"
+      cmd.parameters=["start","/c","Out/Service/SpeedyMailer.Master.Service.exe","-b","http://10.0.0.3:9852"]
+    end
 
 
 
