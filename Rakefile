@@ -68,7 +68,7 @@ namespace :winrun do
       cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
     end
 
-    task :update_raven_url,[:url] do |t,args|
+    task :update_raven_url do |t|
       puts "Opening app.config file for writing..."
 
       f = File.open("SpeedyMailer.Master.Service\\app.config")
@@ -76,7 +76,7 @@ namespace :winrun do
       f.close()
 
       connString = xml.xpath("//configuration/connectionStrings/add").first()
-      connString["connectionString"] =  "Url = #{args[:url]}"
+      connString["connectionString"] =  "Url = http://localhost:4253"
 
       puts "Updating app.config with the new raven url"
       File.open("SpeedyMailer.Master.Service\\app.config",'w') {|f| xml.write_xml_to f}
@@ -84,11 +84,17 @@ namespace :winrun do
 
     desc "Run service with database"
 
-    exec :run_service => [:run_raven] do |cmd|
-      Rake::Task["winrun:update_raven_url"].invoke("http://10.0.0.3:4253")
-      cmd.command="cmd,exe"
-      cmd.parameters=["start","/c","Out/Service/SpeedyMailer.Master.Service.exe","-b","http://10.0.0.3:9852"]
+    exec :run_service,[:host] => [:update_raven_url,"windows:build_service",:run_raven] do |cmd,args|
+      cmd.command="cmd.exe"
+      cmd.parameters=["/c","start","Out\\Service\\SpeedyMailer.Master.Service.exe","-b",args[:host]]
+      cmd.log_level = :verbose
     end
+
+  desc "Run default service"
+
+  task :run_default_service do
+    Rake::Task["winrun:run_service"].invoke("http://10.0.0.3:9852")
+  end
 
 
 
