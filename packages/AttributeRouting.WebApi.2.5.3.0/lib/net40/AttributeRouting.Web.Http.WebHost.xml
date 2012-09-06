@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AttributeRouting.Web.Http.WebHost</name>
+    </assembly>
+    <members>
+        <member name="T:AttributeRouting.Web.Http.WebHost.Framework.HttpWebAttributeRoute">
+            <summary>
+            Route to use for Web API web-hosted routes.
+            </summary>
+            <remarks>
+            This class is intended to mimic the functionality of System.Web.Http.WebHost.Routing.HttpWebRoute,
+            which is internal to the framework. Ideally, both HttpWebRoute and HostedHttpRoute would be public
+            so I could simply use them and not recreate the wheel.
+            </remarks>
+        </member>
+        <member name="F:AttributeRouting.Web.Http.WebHost.Framework.HttpWebAttributeRoute.HttpRouteKey">
+            <summary>
+            Key used to signify that a route URL generation request should include HTTP routes (e.g. Web API).
+            If this key is not specified then no HTTP routes will match.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.Framework.HttpWebAttributeRoute.#ctor(System.String,System.Web.Routing.RouteValueDictionary,System.Web.Routing.RouteValueDictionary,System.Web.Routing.RouteValueDictionary,AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration)">
+            <summary>
+            Route used by the AttributeRouting framework in web projects.
+            </summary>
+        </member>
+        <member name="P:AttributeRouting.Web.Http.WebHost.Framework.HttpWebAttributeRoute.HttpRoute">
+            <summary>
+            Gets the <see cref="T:System.Web.Http.Routing.IHttpRoute"/> associated with this <see cref="T:AttributeRouting.Web.Http.WebHost.Framework.HttpWebAttributeRoute"/>.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration.ScanAssemblyOf``1">
+            <summary>
+            Scans the assembly of the specified controller for routes to register.
+            </summary>
+            <typeparam name="T">The type of the controller used to specify the assembly</typeparam>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration.AddRoutesFromController``1">
+            <summary>
+            Adds all the routes for the specified controller type to the end of the route collection.
+            </summary>
+            <typeparam name="T"> </typeparam>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration.AddRoutesFromControllersOfType``1">
+            <summary>
+            Adds all the routes for all the controllers that derive from the specified controller
+            to the end of the route collection.
+            </summary>
+            <typeparam name="T">The base controller type</typeparam>
+        </member>
+        <member name="P:AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration.AttributeFactory">
+            <summary>
+            Attribute factory
+            </summary>
+        </member>
+        <member name="P:AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration.ParameterFactory">
+            <summary>
+            Parameter factory
+            </summary>
+        </member>
+        <member name="P:AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration.RouteConstraintFactory">
+            <summary>
+            Constraint factory
+            </summary>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.WebHost.RouteCollectionExtensions">
+            <summary>
+            Extensions to the System.Web.Routing.RouteCollection.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.RouteCollectionExtensions.MapHttpAttributeRoutes(System.Web.Routing.RouteCollection)">
+            <summary>
+            Scans the calling assembly for all routes defined with AttributeRouting attributes,
+            using the default conventions.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.RouteCollectionExtensions.MapHttpAttributeRoutes(System.Web.Routing.RouteCollection,System.Action{AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration})">
+            <summary>
+            Scans the specified assemblies for all routes defined with AttributeRouting attributes,
+            and applies configuration options against the routes found.
+            </summary>
+            <param name="routes"> </param>
+            <param name="configurationAction">The initialization action that builds the configuration object</param>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.RouteCollectionExtensions.MapHttpAttributeRoutes(System.Web.Routing.RouteCollection,AttributeRouting.Web.Http.WebHost.HttpWebAttributeRoutingConfiguration)">
+            <summary>
+            Scans the specified assemblies for all routes defined with AttributeRouting attributes,
+            and applies configuration options against the routes found.
+            </summary>
+            <param name="routes"> </param>
+            <param name="configuration">The configuration object</param>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.WebHost.Routing.HttpMethodHelper">
+            <summary>
+            Various helper methods for the static members of <see cref="T:System.Net.Http.HttpMethod"/>. 
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.WebHost.Routing.HttpMethodHelper.GetHttpMethod(System.String)">
+            <summary>
+            Gets the static <see cref="T:System.Net.Http.HttpMethod"/> instance for any given HTTP method name.
+            </summary>
+            <param name="method">The HTTP request method.</param>
+            <returns>An existing static <see cref="T:System.Net.Http.HttpMethod"/> or a new instance if the method was not found.</returns>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.WebHost.Routing.RouteBypassingHandler">
+            <summary>
+            see Issue #90 - https://github.com/mccalltd/AttributeRouting/issues/90
+            Workaround for a bug in System.Web.Http.Dispatcher.HttpRoutingDispatcher.
+            Thanks HongMei Ge!
+            </summary>
+        </member>
+    </members>
+</doc>

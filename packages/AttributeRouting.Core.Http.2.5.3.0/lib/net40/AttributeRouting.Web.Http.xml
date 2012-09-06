@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>AttributeRouting.Web.Http</name>
+    </assembly>
+    <members>
+        <member name="T:AttributeRouting.Web.Http.DefaultHttpRouteConventionAttribute">
+            <summary>
+            Sets up the default Web API route convention
+            See: http://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-in-aspnet-web-api
+            </summary>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.DELETEAttribute">
+            <summary>
+            Defines a route for an action constrained to requests providing an httpMethod value of DELETE.
+            </summary>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.HttpRouteAttribute">
+            <summary>
+            The route information for an action.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.HttpRouteAttribute.#ctor(System.String)">
+            <summary>
+            Specify the route information for an action.
+            </summary>
+            <param name="routeUrl">The url that is associated with this action</param>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.HttpRouteAttribute.#ctor(System.String,System.Net.Http.HttpMethod[])">
+            <summary>
+            Specify the route information for an action.
+            </summary>
+            <param name="routeUrl">The url that is associated with this action</param>
+            <param name="allowedMethods">The httpMethods against which to constrain the route</param>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.DELETEAttribute.#ctor(System.String)">
+            <summary>
+            Specify a route for a DELETE request.
+            </summary>
+            <param name="routeUrl">The url that is associated with this action</param>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.GETAttribute">
+            <summary>
+            Defines a route for an action constrained to requests providing an httpMethod value of GET.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.GETAttribute.#ctor(System.String)">
+            <summary>
+            Specify a route for a GET request.
+            </summary>
+            <param name="routeUrl">The url that is associated with this action</param>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.POSTAttribute">
+            <summary>
+            Defines a route for an action constrained to requests providing an httpMethod value of POST.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.POSTAttribute.#ctor(System.String)">
+            <summary>
+            Specify a route for a POST request.
+            </summary>
+            <param name="routeUrl">The url that is associated with this action</param>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.PUTAttribute">
+            <summary>
+            Defines a route for an action constrained to requests providing an httpMethod value of PUT.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.PUTAttribute.#ctor(System.String)">
+            <summary>
+            Specify a route for a PUT request.
+            </summary>
+            <param name="routeUrl">The url that is associated with this action</param>
+        </member>
+        <member name="T:AttributeRouting.Web.Http.RegexRouteConstraintAttribute">
+            <summary>
+            Constrains a url parameter by a regex pattern.
+            </summary>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.RegexRouteConstraintAttribute.#ctor(System.String,System.String)">
+            <summary>
+            Specify a regex constraint for a url parameter defined in a RouteAttribute applied to this action.
+            </summary>
+            <param name="key">The key of the url parameter</param>
+            <param name="pattern">The regex pattern used to constrain the url parameter</param>
+        </member>
+        <member name="M:AttributeRouting.Web.Http.RegexRouteConstraintAttribute.#ctor(System.String,System.String,System.Text.RegularExpressions.RegexOptions)">
+            <summary>
+            Specify a regex constraint for a url parameter defined in a RouteAttribute applied to this action.
+            </summary>
+            <param name="key">The key of the url parameter</param>
+            <param name="pattern">The regex pattern used to constrain the url parameter</param>
+            <param name="options">The RegexOptions used when testing the url parameter value</param>
+        </member>
+        <member name="P:AttributeRouting.Web.Http.RegexRouteConstraintAttribute.Pattern">
+            <summary>
+            The regex pattern used to constrain the url parameter.
+            </summary>
+        </member>
+        <member name="P:AttributeRouting.Web.Http.RegexRouteConstraintAttribute.Options">
+            <summary>
+            The RegexOptions used when testing the url parameter value
+            </summary>
+        </member>
+    </members>
+</doc>

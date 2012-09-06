@@ -25,7 +25,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			ServiceActions.ExecuteCommand<UpdateDroneCommand>(x => x.Drone = new Drone
 			                                                                 	{
 																					Status = DroneStatus.Asleep,
-																					Hostname = DefaultBaseUrl
+																					BaseUrl = DefaultBaseUrl
 			                                                                 	});
 			Store(new CreativeFragment
 			      	{
@@ -73,7 +73,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			ServiceActions.ExecuteCommand<UpdateDroneCommand>(x => x.Drone = new Drone
 			{
 				Status = DroneStatus.Online,
-				Hostname = DefaultBaseUrl
+				BaseUrl = DefaultBaseUrl
 			});
 			Store(new CreativeFragment
 			{

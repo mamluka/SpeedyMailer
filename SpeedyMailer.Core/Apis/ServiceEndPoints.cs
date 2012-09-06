@@ -1,3 +1,6 @@
+using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Settings;
 
@@ -13,6 +16,10 @@ namespace SpeedyMailer.Core.Apis
 			}
 
 			public string Identifier { get; set; }
+
+			public string BaseUrl { get; set; }
+
+			public string LastUpdate { get; set; }
 		}
 
 		public class FetchFragment : ApiCall

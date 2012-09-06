@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
@@ -24,12 +22,19 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
             DroneActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
             var api = DroneResolve<Api>();
 
-            api.Call<ServiceEndpoints.RegisterDrone>(x=> x.Identifier = "droneBaseUrl");
+            api.Call<ServiceEndpoints.RegisterDrone>(x=>
+	            {
+		            x.Identifier = "droneip";
+		            x.BaseUrl = "baseurl";
+		            x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
+	            });
 
             WaitForEntitiesToExist<Drone>(1);
             var result = Query<Drone>().First();
 
-            result.Hostname.Should().Be("droneBaseUrl");
+            result.BaseUrl.Should().Be("baseurl");
+            result.Id.Should().Be("droneip");
+	        result.LastUpdated.Should().BeAfter(DateTime.UtcNow.AddSeconds(-30));
         }
     }
 }

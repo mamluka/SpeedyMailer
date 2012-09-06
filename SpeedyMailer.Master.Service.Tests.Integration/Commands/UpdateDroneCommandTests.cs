@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 		{
 			var drone = new Drone
 			            	{
-									Hostname = "localhost:88888",
+									BaseUrl = "localhost:88888",
 									Id = "drone/1",
 									Status = DroneStatus.Online
 			            	};
@@ -30,7 +30,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 
 			var result = Load<Drone>(drone.Id);
 
-			result.Hostname.Should().Be(drone.Hostname);
+			result.BaseUrl.Should().Be(drone.BaseUrl);
 			result.Status.Should().Be(drone.Status);
 		}
 	}

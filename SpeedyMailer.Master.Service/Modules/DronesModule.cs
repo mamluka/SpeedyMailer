@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Nancy;
+using Nancy.ModelBinding;
 using Raven.Client;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Drones;
 
 namespace SpeedyMailer.Master.Service.Modules
@@ -17,17 +19,21 @@ namespace SpeedyMailer.Master.Service.Modules
         {
             _documentStore = documentStore;
 
-            Post["/register"] = x =>
-                                    {
-                                        using (var session = _documentStore.OpenSession())
-                                        {
-                                            session.Store(new Drone
-                                                              {
-                                                                  Hostname = ""
-                                                              });
-                                        }
-                                        return Response.AsText("OK");
-                                    };
+	        Post["/register"] = x =>
+		        {
+			        var model = this.Bind<ServiceEndpoints.RegisterDrone>();
+			        using (var session = _documentStore.OpenSession())
+			        {
+				        session.Store(new Drone
+					        {
+						        BaseUrl = model.BaseUrl,
+								Id = model.Identifier,
+								LastUpdated = DateTime.Parse(model.LastUpdate)
+					        });
+						session.SaveChanges();
+			        }
+			        return Response.AsText("OK");
+		        };
         }
     }
 }
