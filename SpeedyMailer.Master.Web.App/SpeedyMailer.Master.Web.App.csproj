@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>dd29cd8d-4a26-4172-a68a-344b11fb5dd2</ProjectGuid>
+    <ProjectGuid>{0369672A-FA69-4B5F-84C6-3A710BDBCE8D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SpeedyMailer.Master.Web.App</RootNamespace>
