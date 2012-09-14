@@ -60,6 +60,19 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.4.5.9\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\packages\Ninject.3.0.1.10\lib\net45-full\Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.Common">
+      <HintPath>..\packages\Ninject.Web.Common.3.0.0.7\lib\net45-full\Ninject.Web.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject.Web.WebApi">
+      <HintPath>..\packages\Ninject.Web.WebApi.3.0.0.2\lib\net45-full\Ninject.Web.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -122,9 +135,9 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.2.0.20710.0\lib\net40\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="WebActivator, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="WebActivator, Version=1.5.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WebActivator.1.0.0.0\lib\WebActivator.dll</HintPath>
+      <HintPath>..\packages\WebActivator.1.5.1\lib\net40\WebActivator.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease">
       <Private>True</Private>
@@ -139,6 +152,7 @@
     <Compile Include="App_Start\AttributeRoutingHttp.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\UploadContactListController.cs" />
@@ -251,6 +265,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
+      <Project>{5cf80bbc-a484-4339-ade6-f6c902b961b1}</Project>
+      <Name>SpeedyMailer.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
+      <Project>{646adab1-e048-4ab5-b7b7-1f61f3151e04}</Project>
+      <Name>SpeedyMailer.Master.Web.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

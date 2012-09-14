@@ -6,13 +6,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using AttributeRouting.Web.Http;
+using RestSharp;
 
 namespace SpeedyMailer.Master.Web.Api.Controllers
 {
-    public class UploadContactListController : ApiController
-    {
-        [POST("/lists/upload"), HttpPost]
-        public Task<IEnumerable<string>> Upload()
+	public class UploadContactListController : ApiController
+	{
+		[POST("/lists/upload"), HttpPost]
+		public IList<string> Upload()
         {
             if (!Request.Content.IsMimeMultipartContent())
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
@@ -21,19 +22,10 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
             var provider = new MultipartFormDataStreamProvider("c:/Users/cookie/Documents/SpeedyMailer/SpeedyMailer.Master.Web.Api/");
 
             // Read using the stream
-            return Request.Content.ReadAsMultipartAsync(provider).ContinueWith(t =>
-                                                                                            {
-                                                                                                if (t.IsFaulted || t.IsCanceled)
-                                                                                                    throw new HttpResponseException(HttpStatusCode.InternalServerError);
+			var task = Request.Content.ReadAsMultipartAsync(provider);
+			task.Wait();
 
-                                                                                                return
-                                                                                                    provider.FileData.
-                                                                                                        Select(
-                                                                                                            x =>
-                                                                                                            x.
-                                                                                                                LocalFileName);
-                                                                                            });
-
+			return task.Result.FileData.Select(x => x.LocalFileName).ToList();
         }
-    }
+	}
 }
