@@ -33,6 +33,65 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="static\config\jsTestDriver.conf" />
+    <None Include="static\README.md" />
+    <None Include="static\scripts\e2e-test.bat" />
+    <None Include="static\scripts\e2e-test.sh" />
+    <None Include="static\scripts\test-server.bat" />
+    <None Include="static\scripts\test-server.sh" />
+    <None Include="static\scripts\test.bat" />
+    <None Include="static\scripts\test.sh" />
+    <None Include="static\scripts\watchr.rb" />
+    <None Include="static\test\lib\jasmine\MIT.LICENSE" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="static\.gitignore" />
+    <Content Include="static\app\css\.gitignore" />
+    <Content Include="static\app\css\app.css" />
+    <Content Include="static\app\img\.gitignore" />
+    <Content Include="static\app\index-async.html" />
+    <Content Include="static\app\index.html" />
+    <Content Include="static\app\js\app.js" />
+    <Content Include="static\app\js\controllers.js" />
+    <Content Include="static\app\js\directives.js" />
+    <Content Include="static\app\js\filters.js" />
+    <Content Include="static\app\js\services.js" />
+    <Content Include="static\app\lib\angular\angular-cookies.js" />
+    <Content Include="static\app\lib\angular\angular-cookies.min.js" />
+    <Content Include="static\app\lib\angular\angular-loader.js" />
+    <Content Include="static\app\lib\angular\angular-loader.min.js" />
+    <Content Include="static\app\lib\angular\angular-resource.js" />
+    <Content Include="static\app\lib\angular\angular-resource.min.js" />
+    <Content Include="static\app\lib\angular\angular-sanitize.js" />
+    <Content Include="static\app\lib\angular\angular-sanitize.min.js" />
+    <Content Include="static\app\lib\angular\angular.js" />
+    <Content Include="static\app\lib\angular\angular.min.js" />
+    <Content Include="static\app\lib\angular\version.txt" />
+    <Content Include="static\app\partials\.gitignore" />
+    <Content Include="static\app\partials\upload-contact-list.html" />
+    <Content Include="static\app\partials\not-supported.html" />
+    <Content Include="static\config\testacular-e2e.conf.js" />
+    <Content Include="static\logs\.gitignore" />
+    <Content Include="static\scripts\web-server.js" />
+    <Content Include="static\test\e2e\runner.html" />
+    <Content Include="static\test\e2e\scenarios.js" />
+    <Content Include="static\test\lib\angular\angular-mocks.js" />
+    <Content Include="static\test\lib\angular\angular-scenario.js" />
+    <Content Include="static\test\lib\angular\version.txt" />
+    <Content Include="static\test\lib\jasmine-jstd-adapter\JasmineAdapter.js" />
+    <Content Include="static\test\lib\jasmine-jstd-adapter\version.txt" />
+    <Content Include="static\test\lib\jasmine\index.js" />
+    <Content Include="static\test\lib\jasmine\jasmine-html.js" />
+    <Content Include="static\test\lib\jasmine\jasmine.css" />
+    <Content Include="static\test\lib\jasmine\jasmine.js" />
+    <Content Include="static\test\lib\jasmine\jasmine_favicon.png" />
+    <Content Include="static\test\lib\jasmine\version.txt" />
+    <Content Include="static\test\lib\jstestdriver\JsTestDriver.jar" />
+    <Content Include="static\test\lib\jstestdriver\version.txt" />
+    <Content Include="static\test\unit\controllersSpec.js" />
+    <Content Include="static\test\unit\directivesSpec.js" />
+    <Content Include="static\test\unit\filtersSpec.js" />
+    <Content Include="static\test\unit\servicesSpec.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

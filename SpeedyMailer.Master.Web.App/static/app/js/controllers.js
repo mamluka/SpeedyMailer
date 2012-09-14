@@ -3,10 +3,12 @@
 /* Controllers */
 
 
-function MyCtrl1() {}
-MyCtrl1.$inject = [];
-
-
-function MyCtrl2() {
+function UploadListController($scope) {
+    $scope.number = 100;
 }
-MyCtrl2.$inject = [];
+UploadListController.$inject = ['$scope'];
+
+
+function AppController() {
+}
+AppController.$inject = [];
