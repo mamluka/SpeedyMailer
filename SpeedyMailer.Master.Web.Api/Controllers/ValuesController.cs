@@ -11,13 +11,14 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 	public class ValuesController : ApiController
 	{
 		// GET api/values
-		public IEnumerable<string> Get()
+        [GET("/api/get-value")]
+		public IEnumerable<string> Getthis()
 		{
 			return new string[] { "value1", "value2" };
 		}
 
 		// GET api/values/5
-		public string Get(int id)
+		public string Getthis(int id)
 		{
 			return "value";
 		}

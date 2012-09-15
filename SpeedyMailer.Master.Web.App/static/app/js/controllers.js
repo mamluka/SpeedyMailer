@@ -4,8 +4,8 @@
 
 
 function UploadListController($scope,$http) {
-    $scope.uploadContactList = function () {
-        $http.post('http://localhost:88/lists/upload', $scope.listFile);
+    $scope.upload = function (data) {
+        $http.post('http://api.speedymailer/lists/upload', data);
     };
 }
 UploadListController.$inject = ['$scope','$http'];

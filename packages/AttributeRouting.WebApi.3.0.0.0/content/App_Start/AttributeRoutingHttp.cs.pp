@@ -1,9 +1,9 @@
-using System.Web.Http;
+﻿using System.Web.Http;
 using AttributeRouting.Web.Http.WebHost;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(SpeedyMailer.Master.Web.Api.App_Start.AttributeRoutingHttp), "Start")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof($rootnamespace$.App_Start.AttributeRoutingHttp), "Start")]
 
-namespace SpeedyMailer.Master.Web.Api.App_Start {
+namespace $rootnamespace$.App_Start {
     public static class AttributeRoutingHttp {
 		public static void RegisterRoutes(HttpRouteCollection routes) {
             
