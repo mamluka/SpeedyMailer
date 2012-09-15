@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
@@ -9,6 +12,7 @@ namespace SpeedyMailer.Core.Apis
 		private readonly IRestClient _restClient;
 		private readonly ApiCallsSettings _apiCallsSettings;
 		private string _apiBaseUrl;
+		private IList<string> _requestFiles;
 
 		public Api(IRestClient restClient, ApiCallsSettings apiCallsSettings)
 		{
@@ -29,13 +33,17 @@ namespace SpeedyMailer.Core.Apis
 			ExecuteCall(apiCall);
 		}
 
-		public TResponse Call<TEndpoint, TResponse>() where TEndpoint : ApiCall, new() where TResponse : new()
+		public TResponse Call<TEndpoint, TResponse>()
+			where TEndpoint : ApiCall, new()
+			where TResponse : new()
 		{
 			var apiCall = new TEndpoint();
 			return ExecuteCall<TResponse>(apiCall);
 		}
 
-		public TResponse Call<TEndpoint, TResponse>(Action<TEndpoint> action) where TEndpoint : ApiCall, new() where TResponse : new()
+		public TResponse Call<TEndpoint, TResponse>(Action<TEndpoint> action)
+			where TEndpoint : ApiCall, new()
+			where TResponse : new()
 		{
 			var apiCall = new TEndpoint();
 			action(apiCall);
@@ -60,7 +68,7 @@ namespace SpeedyMailer.Core.Apis
 
 		private void ExecuteCall(ApiCall apiCall)
 		{
-			
+
 			var restRequest = SetupApiCall(apiCall);
 
 			Trace.WriteLine("Endpoint url called is: " + restRequest.Resource);
@@ -75,10 +83,18 @@ namespace SpeedyMailer.Core.Apis
 		private RestRequest SetupApiCall(ApiCall apiCall)
 		{
 			var restRequest = new RestRequest(apiCall.Endpoint);
-			var method = Translate(apiCall);
-			HandleRequestBody(apiCall, restRequest);
 
+			var method = Translate(apiCall);
 			restRequest.Method = method;
+
+			if (_requestFiles != null)
+			{
+				_requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
+			}
+			else
+			{
+				HandleRequestBody(apiCall, restRequest);
+			}
 
 			_restClient.BaseUrl = GetBaseUrl();
 			return restRequest;
@@ -123,6 +139,12 @@ namespace SpeedyMailer.Core.Apis
 		public Api SetBaseUrl(string baseUrl)
 		{
 			_apiBaseUrl = baseUrl;
+			return this;
+		}
+
+		public Api AddFiles(IEnumerable<string> files)
+		{
+			_requestFiles = files.ToList();
 			return this;
 		}
 	}
