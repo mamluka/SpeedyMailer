@@ -48,7 +48,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 				.AddFiles(new[] { "for-api-send.text" })
 				.Call<PutFileApi>(x => x.CallId = "testing file upload");
 
-			AssertFilesUploaded<PostTestApi>(new[] {"for-api-send.text"});
+            AssertApiCalled<PutFileApi>(x => x.CallId == "testing file upload");
+			AssertFilesUploaded<PutFileApi>(new[] {"for-api-send.text"});
 		}
 
 		private void CreateFile(string fileName)

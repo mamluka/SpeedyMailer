@@ -10,6 +10,7 @@ using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Master.Web.Core.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
+using SpeedyMailer.Tests.Core.Integration.Utils;
 
 namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 {
@@ -21,8 +22,8 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 		{
 			var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
-			var filename = GenerateFileName("sample", "csv");
-			CreateContactsCSV(filename);
+			var filename = CsvTestingExtentions.GenerateFileName("sample");
+			Fixture.CreateMany<ContactFromCSVRow>(10).ToCsvFile(filename);
 
 			var task = new ImportContactsFromCsvTask
 						{
@@ -44,8 +45,12 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 		{
 			var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
-			var filename = GenerateFileName("sample", "csv");
-			CreateContactsCSVWithDuplicate(filename);
+			var filename = CsvTestingExtentions.GenerateFileName("sample");
+
+			var list = Fixture.CreateMany<ContactFromCSVRow>(10).ToList();
+			list.Add(list.Last());
+
+			list.ToCsvFile(filename);
 
 			var task = new ImportContactsFromCsvTask
 			{
@@ -60,34 +65,5 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 			result.TaskResults.NumberOfContacts.Should().Be(10);
 			result.TaskResults.Filename.Should().Be(filename);
 		}
-
-		private string GenerateFileName(string seed, string extention)
-		{
-			return string.Format("{0}-{1}.{2}", seed, Guid.NewGuid(), extention);
-		}
-
-		private void CreateContactsCSVWithDuplicate(string filename)
-		{
-			var list = Fixture.CreateMany<ContactFromCSVRow>(10).ToList();
-			list.Add(list.Last());
-
-			CreateCSVFile(filename, list);
-		}
-
-		public void CreateCSVFile<T>(string filename, IEnumerable<T> list) where T : class
-		{
-			using (var textWriter = new StreamWriter(filename))
-			{
-				var csvWriter = new CsvWriter(textWriter);
-				csvWriter.WriteRecords(list);
-			}
-		}
-
-		private void CreateContactsCSV(string filename)
-		{
-			var list = Fixture.CreateMany<ContactFromCSVRow>(10);
-			CreateCSVFile(filename, list);
-		}
-
 	}
 }

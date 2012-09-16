@@ -80,27 +80,23 @@ namespace SpeedyMailer.Core.Apis
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
 		}
 
-		private RestRequest SetupApiCall(ApiCall apiCall)
-		{
-			var restRequest = new RestRequest(apiCall.Endpoint);
+        private RestRequest SetupApiCall(ApiCall apiCall)
+        {
+            var restRequest = new RestRequest(apiCall.Endpoint);
 
-			var method = Translate(apiCall);
-			restRequest.Method = method;
+            var method = Translate(apiCall);
+            restRequest.Method = method;
 
-			if (_requestFiles != null)
-			{
-				_requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
-			}
-			else
-			{
-				HandleRequestBody(apiCall, restRequest);
-			}
+            if (_requestFiles != null)
+                _requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
 
-			_restClient.BaseUrl = GetBaseUrl();
-			return restRequest;
-		}
+            HandleRequestBody(apiCall, restRequest);
 
-		private static Method Translate(ApiCall apiCall)
+            _restClient.BaseUrl = GetBaseUrl();
+            return restRequest;
+        }
+
+	    private static Method Translate(ApiCall apiCall)
 		{
 			switch (apiCall.CallMethod)
 			{
@@ -119,19 +115,19 @@ namespace SpeedyMailer.Core.Apis
 
 		private void HandleRequestBody(ApiCall apiCall, IRestRequest restRequest)
 		{
-			if (apiCall.CallMethod == RestMethod.Get)
-			{
-				restRequest.AddObject(apiCall);
-			}
-			else
-			{
-				restRequest.AddBody(apiCall);
-			}
+		    if (apiCall.CallMethod == RestMethod.Post)
+		    {
+		        restRequest.AddBody(apiCall);
+		    }
+		    else
+		    {
+		        restRequest.AddObject(apiCall);
+		    }
 
-			restRequest.RequestFormat = DataFormat.Json;
+		    restRequest.RequestFormat = DataFormat.Json;
 		}
 
-		private string GetBaseUrl()
+	    private string GetBaseUrl()
 		{
 			return _apiBaseUrl ?? _apiCallsSettings.ApiBaseUri;
 		}

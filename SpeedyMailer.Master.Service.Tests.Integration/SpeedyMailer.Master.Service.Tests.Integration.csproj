@@ -135,6 +135,7 @@
     <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
+    <Compile Include="Modules\ContactsModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Modules\DronesModuleTests.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTaskTests.cs" />
