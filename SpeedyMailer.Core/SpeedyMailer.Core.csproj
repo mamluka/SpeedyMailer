@@ -146,7 +146,7 @@
     <Compile Include="Container\SettingsResolverGathererOptions.cs" />
     <Compile Include="CoreAssemblyMarker.cs" />
     <Compile Include="Domain\Contacts\Contact.cs" />
-    <Compile Include="Domain\Contacts\ContactFromCSVRow.cs" />
+    <Compile Include="Domain\Contacts\ContactsListCsvRow.cs" />
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativePackage.cs" />

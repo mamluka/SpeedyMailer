@@ -23,7 +23,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 			var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
 			var filename = CsvTestingExtentions.GenerateFileName("sample");
-			Fixture.CreateMany<ContactFromCSVRow>(10).ToCsvFile(filename);
+			Fixture.CreateMany<ContactsListCsvRow>(10).ToCsvFile(filename);
 
 			var task = new ImportContactsFromCsvTask
 						{
@@ -47,7 +47,7 @@ namespace SpeedyMailer.Master.Web.Tests.Integration.Tasks
 
 			var filename = CsvTestingExtentions.GenerateFileName("sample");
 
-			var list = Fixture.CreateMany<ContactFromCSVRow>(10).ToList();
+			var list = Fixture.CreateMany<ContactsListCsvRow>(10).ToList();
 			list.Add(list.Last());
 
 			list.ToCsvFile(filename);

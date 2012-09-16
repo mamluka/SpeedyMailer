@@ -17,7 +17,7 @@ namespace SpeedyMailer.Mapping
 
         public void CreateMap(IProfileExpression mapper)
         {
-            Mapper.CreateMap<ContactFromCSVRow, Contact>()
+            Mapper.CreateMap<ContactsListCsvRow, Contact>()
                 .ForMember(x => x.Email, opt => opt.MapFrom(x => x.Email));
             ;
 

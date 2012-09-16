@@ -36,7 +36,7 @@ namespace SpeedyMailer.Master.Web.Core.Tasks
 		{
 			var csvSource = File.OpenRead(task.File);
 			var csvReader = new CsvReader(new StreamReader(csvSource));
-			var rows = csvReader.GetRecords<ContactFromCSVRow>().ToList();
+			var rows = csvReader.GetRecords<ContactsListCsvRow>().ToList();
 
 			var contacts = rows.Select(x => new Contact
 												{

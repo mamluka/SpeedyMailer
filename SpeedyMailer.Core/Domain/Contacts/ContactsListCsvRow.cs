@@ -2,7 +2,7 @@ using CsvHelper.Configuration;
 
 namespace SpeedyMailer.Core.Domain.Contacts
 {
-    public class ContactFromCSVRow
+    public class ContactsListCsvRow
     {
         [CsvField(Index = 0)]
         public string Email { get; set; }
