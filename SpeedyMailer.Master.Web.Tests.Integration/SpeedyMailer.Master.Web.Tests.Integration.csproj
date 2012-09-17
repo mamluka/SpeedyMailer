@@ -130,11 +130,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\AddContactsCommandTests.cs" />
     <Compile Include="Commands\AddCreativeCommandTests.cs" />
     <Compile Include="Commands\CreateListCommandTests.cs" />
     <Compile Include="Commands\CreateTemplateCommandTests.cs" />
-    <Compile Include="Tasks\ImportContactsFromCsvTaskTests.cs" />
     <Compile Include="Commands\SendCreativeCommandTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -165,6 +163,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Raven.Studio.xap" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,12 +1,12 @@
-﻿using System.IO;
+using System.IO;
 using System.Linq;
 using CsvHelper;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Master.Web.Core.Commands;
+using SpeedyMailer.Master.Service.Commands;
 
-namespace SpeedyMailer.Master.Web.Core.Tasks
+namespace SpeedyMailer.Master.Service.Tasks
 {
 	public class ImportContactsFromCsvTask : PersistentTask
 	{
@@ -48,7 +48,7 @@ namespace SpeedyMailer.Master.Web.Core.Tasks
 			_addContactsCommand.Contacts = contacts;
 			_addContactsCommand.ListId = task.ListId;
 
-			var counter = _framework.ExecuteCommand(_addContactsCommand);
+			var counter = _framework.ExecuteCommand<long>(_addContactsCommand);
 
 			var result = new ImportContactsFromCsvTask.Results
 					   {

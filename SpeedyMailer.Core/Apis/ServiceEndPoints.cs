@@ -47,5 +47,15 @@ namespace SpeedyMailer.Core.Apis
 				public string ServiceBaseUrl { get; set; }
 			}
 		}
+
+	    public class UploadContacts:ApiCall
+	    {
+	        public string ListName { get; set; }
+
+	        public UploadContacts() : base("/contacts/upload-list")
+	        {
+                CallMethod = RestMethod.Put;
+	        }
+	    }
 	}
 }

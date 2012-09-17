@@ -1,7 +1,6 @@
-﻿using System.Web;
-using System.Web.Optimization;
+﻿using System.Web.Optimization;
 
-namespace SpeedyMailer.Master.Web.Api
+namespace SpeedyMailer.Master.Web.Api.App_Start
 {
 	public class BundleConfig
 	{

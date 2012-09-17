@@ -1,13 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Raven.Client;
 using Raven.Client.Exceptions;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Contacts;
-using SpeedyMailer.Master.Web.Core.Tasks;
+using SpeedyMailer.Master.Service.Tasks;
 
-namespace SpeedyMailer.Master.Web.Core.Commands
+namespace SpeedyMailer.Master.Service.Commands
 {
     public class AddContactsCommand:Command<long>
     {
