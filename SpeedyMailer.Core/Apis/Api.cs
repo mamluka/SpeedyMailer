@@ -35,7 +35,7 @@ namespace SpeedyMailer.Core.Apis
 
 		public TResponse Call<TEndpoint, TResponse>()
 			where TEndpoint : ApiCall, new()
-			where TResponse : new()
+			where TResponse :  new()
 		{
 			var apiCall = new TEndpoint();
 			return ExecuteCall<TResponse>(apiCall);

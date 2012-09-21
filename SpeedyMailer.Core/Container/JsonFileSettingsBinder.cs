@@ -17,8 +17,9 @@ namespace SpeedyMailer.Core.Container
 
     	protected override object ReadPresistantSettings(string settingsName)
         {
-            var filename = string.Format("{0}/{1}.settings",_settingFoldername, settingsName);
-            if (!File.Exists(filename)) return null;
+			var filename = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, _settingFoldername,string.Format("{0}.settings", settingsName));
+            
+			if (!File.Exists(filename)) return null;
 
             using (var reader = new StreamReader(filename))
             {

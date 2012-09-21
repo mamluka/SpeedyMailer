@@ -71,6 +71,8 @@
     <Content Include="static\app\lib\angular\angular.min.js" />
     <Content Include="static\app\lib\angular\version.txt" />
     <Content Include="static\app\partials\.gitignore" />
+    <Content Include="static\app\partials\create-list.html" />
+    <Content Include="static\app\partials\create-creative.html" />
     <Content Include="static\app\partials\upload-contact-list.html" />
     <Content Include="static\app\partials\not-supported.html" />
     <Content Include="static\config\testacular-e2e.conf.js" />

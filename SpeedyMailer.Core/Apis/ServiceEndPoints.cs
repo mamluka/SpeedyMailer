@@ -52,10 +52,28 @@ namespace SpeedyMailer.Core.Apis
 	    {
 	        public string ListName { get; set; }
 
-	        public UploadContacts() : base("/contacts/upload-list")
+	        public UploadContacts() : base("/lists/upload-list")
 	        {
                 CallMethod = RestMethod.Put;
 	        }
 	    }
+
+		public class GetLists:ApiCall
+		{
+			public GetLists() : base("/lists/get")
+			{
+				CallMethod = RestMethod.Get;
+			}
+		}
+
+		public class CreateList:ApiCall
+		{
+			public string Name { get; set; }
+
+			public CreateList() : base("/lists/create")
+			{
+				CallMethod = RestMethod.Post;
+			}
+		}
 	}
 }

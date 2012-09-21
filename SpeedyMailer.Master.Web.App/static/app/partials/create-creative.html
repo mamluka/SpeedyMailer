@@ -1,0 +1,16 @@
+<div>
+    <form>
+         <select ng-model="list" ng-options="list.Name for list in lists"></select>
+            <input type="hidden" name="listId" value="{{list.Id}}"/>
+        <div style="clear: both"></div>
+        <label for="subject">Subject:</label>
+        <input type="text" name="subject"/>
+        <div style="clear: both"></div>
+        
+        <textarea name="body"></textarea>
+        <div style="clear: both"></div>
+        
+        <label>Deal url</label>
+        <input type="text" name="dealUrl"/>
+    </form>
+</div>

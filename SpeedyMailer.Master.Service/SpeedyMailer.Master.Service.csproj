@@ -138,12 +138,13 @@
   <ItemGroup>
     <Compile Include="Apis\DroneEndpoints.cs" />
     <Compile Include="Commands\AddContactsCommand.cs" />
+    <Compile Include="Commands\CreateListCommand.cs" />
     <Compile Include="Commands\InitializeServiceSettingsCommand.cs" />
     <Compile Include="Commands\UpdateDroneCommand.cs" />
     <Compile Include="Modules\AdminModule.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Modules\ContactsModule.cs" />
+    <Compile Include="Modules\ListsModule.cs" />
     <Compile Include="Modules\CreativeModule.cs" />
     <Compile Include="Modules\DronesModule.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />

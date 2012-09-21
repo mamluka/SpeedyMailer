@@ -7,3 +7,6 @@
 // In this case it is a simple value service.
 angular.module('SpeedyMailer.services', []).
   value('version', '0.1');
+
+angular.module('SpeedyMailer.services', []).
+  value('apiSettings', { baseUrl: "http://speedymailer.api" });

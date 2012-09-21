@@ -15,12 +15,12 @@ namespace SpeedyMailer.Core.Container
 
         public void Provider<TProvider>() where TProvider : IProvider
         {
-            _options.DatabaseBindingFunction = kernel => kernel.Bind<T>().ToProvider<TProvider>();
+            _options.DatabaseBindingFunction = kernel => kernel.Bind<T>().ToProvider<TProvider>().InSingletonScope();
         }
 
         public void Constant(T constant)
         {
-            _options.DatabaseBindingFunction = kernel => kernel.Bind<T>().ToConstant(constant);
+            _options.DatabaseBindingFunction = kernel => kernel.Bind<T>().ToConstant(constant).InSingletonScope();
         }
 
         public void NoDatabase()

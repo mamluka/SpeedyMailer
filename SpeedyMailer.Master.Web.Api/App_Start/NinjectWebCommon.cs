@@ -1,3 +1,4 @@
+using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Master.Web.Core;
@@ -17,7 +18,7 @@ namespace SpeedyMailer.Master.Web.Api.App_Start
 
     public static class NinjectWebCommon 
     {
-        private static readonly Bootstrapper bootstrapper = new Bootstrapper();
+        private static readonly Bootstrapper Bootstrapper = new Bootstrapper();
 
         /// <summary>
         /// Starts the application
@@ -26,7 +27,7 @@ namespace SpeedyMailer.Master.Web.Api.App_Start
         {
             DynamicModuleUtility.RegisterModule(typeof(OnePerRequestHttpModule));
             DynamicModuleUtility.RegisterModule(typeof(NinjectHttpModule));
-            bootstrapper.Initialize(CreateKernel);
+            Bootstrapper.Initialize(CreateKernel);
         }
         
         /// <summary>
@@ -34,7 +35,7 @@ namespace SpeedyMailer.Master.Web.Api.App_Start
         /// </summary>
         public static void Stop()
         {
-            bootstrapper.ShutDown();
+            Bootstrapper.ShutDown();
         }
         
         /// <summary>
@@ -46,12 +47,13 @@ namespace SpeedyMailer.Master.Web.Api.App_Start
             var kernel = new StandardKernel();
             kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
             kernel.Bind<IHttpModule>().To<HttpApplicationInitializationHttpModule>();
+	        kernel.Bind<SettingsProvider>().ToConstant(new SettingsProvider(kernel));
             
             RegisterServices(kernel);
             return kernel;
         }
 
-        /// <summary>
+	    /// <summary>
         /// Load your modules or register your services here!
         /// </summary>
         /// <param name="kernel">The kernel.</param>
@@ -61,7 +63,9 @@ namespace SpeedyMailer.Master.Web.Api.App_Start
 		        .Analyze(x => x.AssembiesContaining(new[]
 			        {
 				        typeof (CoreAssemblyMarker),
-				        typeof (WebCoreAssemblyMarker)
+				        typeof (WebCoreAssemblyMarker),
+						typeof(WebApiMarker),
+						typeof(IRestClient),
 			        }))
 					.BindInterfaceToDefaultImplementation()
 					.DefaultConfiguration()

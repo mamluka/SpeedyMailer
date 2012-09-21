@@ -30,8 +30,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bootstrapper.AutoMapper">
-      <HintPath>..\packages\Bootstrapper.AutoMapper.2.0.2.0\lib\Bootstrapper.AutoMapper.dll</HintPath>
+    <Reference Include="Bootstrapper, Version=2.0.3.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Bootstrapper.2.0.3.2\lib\Bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Bootstrapper.AutoMapper, Version=2.0.3.22233, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Bootstrapper.AutoMapper.2.0.3.0\lib\Bootstrapper.AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=1.8.0.22497, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -40,7 +45,12 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\libs\HTMLAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.Bootstrappers.Ninject">
+    <Reference Include="Nancy, Version=0.11.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Nancy.0.11.0\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Bootstrappers.Ninject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\SpeedyMailer.Nancy.Bootstrappers.Ninject.Mono.0.6.1\lib\net40\Nancy.Bootstrappers.Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -50,10 +60,12 @@
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.ChildKernel">
+    <Reference Include="Ninject.Extensions.ChildKernel, Version=3.0.0.9, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Mono.Extensions.ChildKernel.3.0.0.9\lib\net40\Ninject.Extensions.ChildKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Conventions">
+    <Reference Include="Ninject.Extensions.Conventions, Version=3.0.0.10, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Mono.Extensions.Conventions.3.0.0.10\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Factory">
@@ -84,9 +96,6 @@
     <Reference Include="AutoMapper">
       <HintPath>..\packages\AutoMapper.2.1.267\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="Bootstrapper">
-      <HintPath>..\packages\Bootstrapper.2.0.3.1\lib\Bootstrapper.dll</HintPath>
-    </Reference>
     <Reference Include="C5, Version=1.1.0.0, Culture=neutral, PublicKeyToken=06a1b38866503b69">
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\C5.dll</HintPath>
     </Reference>
@@ -95,9 +104,6 @@
     </Reference>
     <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
       <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="Nancy">
-      <HintPath>..\packages\Nancy.0.11.0\lib\net40\Nancy.dll</HintPath>
     </Reference>
     <Reference Include="NConfig">
       <HintPath>..\packages\NConfig.1.0.12\lib\Net40\NConfig.dll</HintPath>
@@ -118,6 +124,7 @@
     <Compile Include="Apis\ApiResult.cs" />
     <Compile Include="Apis\ApiCallsSettings.cs" />
     <Compile Include="Apis\IApiHost.cs" />
+    <Compile Include="Apis\ListsModuleTests.cs" />
     <Compile Include="Apis\Status.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />
@@ -142,6 +149,7 @@
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
     <Compile Include="Container\SettingsInterceptor.cs" />
     <Compile Include="Container\SettingsInterceptorBase.cs" />
+    <Compile Include="Container\SettingsProvider.cs" />
     <Compile Include="Container\SettingsResolverGatherer.cs" />
     <Compile Include="Container\SettingsResolverGathererOptions.cs" />
     <Compile Include="CoreAssemblyMarker.cs" />

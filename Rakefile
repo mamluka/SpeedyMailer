@@ -1,6 +1,7 @@
 require 'albacore'
 require 'nokogiri'
 require 'open-uri'
+require 'FileUtils'
 require 'socket'
 
 namespace :windows do
@@ -64,6 +65,9 @@ namespace :winrun do
     desc "Run ravendb server on the pre-configured url and port"
 
     exec :run_raven do |cmd|
+	  puts "All data will be deleted..."
+	  FileUtils.rm_rf 'RavenDb\\Server\\Data'
+	
       cmd.command="cmd.exe"
       cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
     end
@@ -93,7 +97,7 @@ namespace :winrun do
   desc "Run default service"
 
   task :run_default_service do
-    Rake::Task["winrun:run_service"].invoke("http://10.0.0.3:9852")
+    Rake::Task["winrun:run_service"].invoke("http://192.168.129.131:9852")
   end
 
 

@@ -1,12 +1,13 @@
 <div>
     <h2>You can upload your list here</h2>
     <div>
-        <form action="http://api.speedymailer/lists/upload" method="post"
-            enctype="multipart/form-data">
+        <form action="http://speedymailer.api/lists/start-upload" enctype="multipart/form-data" method="POST">
+            <label>Select Lists:</label>
+            <select ng-model="list" ng-options="list.Name for list in lists"></select>
+            <input type="hidden" name="listId" value="{{list.Id}}"/>
             <label for="file">Filename:</label>
-            <input type="file" name="file" id="file" ng-model="data.file" />
-            <button ng-click="upload(data)"></button>
-            <br />
+            <input type="file" name="file" id="file"/>
+            <button>Upload the list</button>
         </form>
     </div>
 </div>
