@@ -1,16 +1,16 @@
 <div>
     <form>
-         <select ng-model="list" ng-options="list.Name for list in lists"></select>
-            <input type="hidden" name="listId" value="{{list.Id}}"/>
+        <select ng-model="creativeModel.list" ng-options="list.Name for list in lists"></select>
         <div style="clear: both"></div>
         <label for="subject">Subject:</label>
-        <input type="text" name="subject"/>
+        <input type="text" name="subject" ng-model="creativeModel.subject" />
         <div style="clear: both"></div>
-        
-        <textarea name="body"></textarea>
+
+        <textarea name="body" ng-model="creativeModel.body"></textarea>
         <div style="clear: both"></div>
-        
+
         <label>Deal url</label>
-        <input type="text" name="dealUrl"/>
+        <input type="text" name="dealUrl" ng-model="creativeModel.dealUrl" />
+        <button ng-click="save(creativeModel)"></button>
     </form>
 </div>

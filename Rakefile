@@ -70,6 +70,8 @@ namespace :winrun do
 	
       cmd.command="cmd.exe"
       cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
+	  
+	  sleep 5
     end
 
     task :update_raven_url do |t|

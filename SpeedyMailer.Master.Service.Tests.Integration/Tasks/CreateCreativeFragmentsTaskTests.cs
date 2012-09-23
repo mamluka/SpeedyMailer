@@ -3,8 +3,8 @@ using System.Linq;
 using NUnit.Framework;
 using FluentAssertions;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Tasks;
-using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Integration.Base;
 

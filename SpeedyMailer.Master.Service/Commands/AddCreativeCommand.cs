@@ -1,12 +1,10 @@
-﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Raven.Client;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
 
-namespace SpeedyMailer.Master.Web.Core.Commands
+namespace SpeedyMailer.Master.Service.Commands
 {
     public class AddCreativeCommand:Command<string>
     {
@@ -26,7 +24,8 @@ namespace SpeedyMailer.Master.Web.Core.Commands
                                        Body = Body,
                                        Lists = Lists.ToList(),
                                        Subject = Subject,
-                                       UnsubscribeTemplateId = UnsubscribeTemplateId
+                                       UnsubscribeTemplateId = UnsubscribeTemplateId,
+									   DealUrl = DealUrl
                                    };
                 session.Store(creative);
                 session.SaveChanges();
@@ -39,5 +38,6 @@ namespace SpeedyMailer.Master.Web.Core.Commands
         public string Subject { get; set; }
         public IList<string> Lists { get; set; }
         public string UnsubscribeTemplateId { get; set; }
+	    public string DealUrl { get; set; }
     }
 }

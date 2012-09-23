@@ -4,7 +4,6 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Master.Service.Commands;
-using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Commands

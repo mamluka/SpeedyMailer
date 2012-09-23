@@ -5,7 +5,6 @@ using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Tasks;
-using SpeedyMailer.Master.Web.Core.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 using SpeedyMailer.Tests.Core.Integration.Utils;
 

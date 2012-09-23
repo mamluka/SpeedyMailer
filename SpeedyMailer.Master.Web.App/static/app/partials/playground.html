@@ -1,0 +1,9 @@
+<div>
+    <ul ng-repeat="list in lists">
+        <li>{{list.Name}}</li>
+    </ul>
+    
+    <select ng-model="listMe" ng-options="list.Name for list in lists"></select>
+    
+    {{listMe}}
+</div>

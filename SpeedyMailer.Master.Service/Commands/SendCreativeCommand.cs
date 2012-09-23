@@ -1,11 +1,8 @@
-using RestSharp;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
-using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;
-using SpeedyMailer.Core.Settings;
 
-namespace SpeedyMailer.Master.Web.Core.Commands
+namespace SpeedyMailer.Master.Service.Commands
 {
 	public class SendCreativeCommand : ApiCommand
 	{

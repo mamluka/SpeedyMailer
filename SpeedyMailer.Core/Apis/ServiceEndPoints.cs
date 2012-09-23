@@ -10,7 +10,8 @@ namespace SpeedyMailer.Core.Apis
 	{
 		public class RegisterDrone : ApiCall
 		{
-			public RegisterDrone():base("drones/register")
+			public RegisterDrone()
+				: base("drones/register")
 			{
 				CallMethod = RestMethod.Post;
 			}
@@ -24,7 +25,8 @@ namespace SpeedyMailer.Core.Apis
 
 		public class FetchFragment : ApiCall
 		{
-			public FetchFragment() : base("fragments/fetch")
+			public FetchFragment()
+				: base("fragments/fetch")
 			{
 				CallMethod = RestMethod.Get;
 			}
@@ -35,9 +37,10 @@ namespace SpeedyMailer.Core.Apis
 			}
 		}
 
-		public class GetRemoteServiceSettings:ApiCall
+		public class GetRemoteServiceSettings : ApiCall
 		{
-			public GetRemoteServiceSettings() : base("admin/settings/get")
+			public GetRemoteServiceSettings()
+				: base("admin/settings/get")
 			{
 				CallMethod = RestMethod.Get;
 			}
@@ -48,29 +51,47 @@ namespace SpeedyMailer.Core.Apis
 			}
 		}
 
-	    public class UploadContacts:ApiCall
-	    {
-	        public string ListName { get; set; }
-
-	        public UploadContacts() : base("/lists/upload-list")
-	        {
-                CallMethod = RestMethod.Put;
-	        }
-	    }
-
-		public class GetLists:ApiCall
+		public class UploadContacts : ApiCall
 		{
-			public GetLists() : base("/lists/get")
+			public string ListName { get; set; }
+
+			public UploadContacts()
+				: base("/lists/upload-list")
+			{
+				CallMethod = RestMethod.Put;
+			}
+		}
+
+		public class GetLists : ApiCall
+		{
+			public GetLists()
+				: base("/lists/get")
 			{
 				CallMethod = RestMethod.Get;
 			}
 		}
 
-		public class CreateList:ApiCall
+		public class CreateList : ApiCall
 		{
 			public string Name { get; set; }
 
-			public CreateList() : base("/lists/create")
+			public CreateList()
+				: base("/lists/create")
+			{
+				CallMethod = RestMethod.Post;
+			}
+		}
+
+		public class SaveCreative : ApiCall
+		{
+			public string Body { get; set; }
+			public string ListId { get; set; }
+			public string Subject { get; set; }
+			public string DealUrl { get; set; }
+			public string UnsubscribeTemplateId { get; set; }
+
+			public SaveCreative()
+				: base("/creative/save")
 			{
 				CallMethod = RestMethod.Post;
 			}

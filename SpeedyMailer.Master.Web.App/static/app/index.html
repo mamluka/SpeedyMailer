@@ -1,27 +1,30 @@
 <!doctype html>
 <html lang="en" ng-app="SpeedyMailer">
 <head>
-  <meta charset="utf-8">
-  <title>My AngularJS App</title>
-  <link rel="stylesheet" href="css/app.css"/>
+    <meta charset="utf-8">
+    <title>My AngularJS App</title>
+    <link rel="stylesheet" href="css/app.css" />
 </head>
 <body>
-  <ul class="menu">
-    <li><a href="#/upload-contact-list">Upload a contact list</a></li>
-    <li><a href="#/create-creative">create creative</a></li>
-    <li><a href="#/create-list">create a new list</a></li>
-  </ul>
+    <ul class="menu">
+        <li><a href="#/upload-contact-list">Upload a contact list</a></li>
+        <li><a href="#/create-creative">create creative</a></li>
+        <li><a href="#/create-list">create a new list</a></li>
+        <li><a href="#/playground">playground</a></li>
+    </ul>
 
-  <div ng-view></div>
+    <div ng-view></div>
 
-  <!-- In production use:
+    <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.2/angular.min.js"></script>
   -->
-  <script src="lib/angular/angular.js"></script>
-  <script src="js/app.js"></script>
-  <script src="js/services.js"></script>
-  <script src="js/controllers.js"></script>
-  <script src="js/filters.js"></script>
-  <script src="js/directives.js"></script>
+    <script src="lib/angular/angular.js"></script>
+    <script src="lib/angular/angular-resource.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/resources.js"></script>
+    <script src="js/services.js"></script>
+    <script src="js/controllers.js"></script>
+    <script src="js/filters.js"></script>
+    <script src="js/directives.js"></script>
 </body>
 </html>

@@ -58,6 +58,7 @@
     <Content Include="static\app\js\controllers.js" />
     <Content Include="static\app\js\directives.js" />
     <Content Include="static\app\js\filters.js" />
+    <Content Include="static\app\js\resources.js" />
     <Content Include="static\app\js\services.js" />
     <Content Include="static\app\lib\angular\angular-cookies.js" />
     <Content Include="static\app\lib\angular\angular-cookies.min.js" />
@@ -71,6 +72,7 @@
     <Content Include="static\app\lib\angular\angular.min.js" />
     <Content Include="static\app\lib\angular\version.txt" />
     <Content Include="static\app\partials\.gitignore" />
+    <Content Include="static\app\partials\playground.html" />
     <Content Include="static\app\partials\create-list.html" />
     <Content Include="static\app\partials\create-creative.html" />
     <Content Include="static\app\partials\upload-contact-list.html" />

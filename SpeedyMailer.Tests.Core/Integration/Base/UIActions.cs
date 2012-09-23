@@ -15,7 +15,6 @@ using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Master.Service.Commands;
-using SpeedyMailer.Master.Web.Core.Commands;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {

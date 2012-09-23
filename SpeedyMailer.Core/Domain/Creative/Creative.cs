@@ -7,6 +7,7 @@ namespace SpeedyMailer.Core.Domain.Creative
         public string Id { get; set; }
         public string Body { get; set; }
         public string Subject { get; set; }
+	    public string DealUrl { get; set; }
         public List<string> Lists { get; set; }
         public string UnsubscribeTemplateId { get; set; }
     }

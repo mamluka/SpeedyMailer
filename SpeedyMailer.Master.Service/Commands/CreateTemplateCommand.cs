@@ -1,9 +1,8 @@
 using Raven.Client;
-using Raven.Client.Connection;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
 
-namespace SpeedyMailer.Master.Web.Core.Commands
+namespace SpeedyMailer.Master.Service.Commands
 {
     public class CreateTemplateCommand:Command<string>
     {

@@ -4,14 +4,14 @@ using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Core.Settings;
-using SpeedyMailer.Master.Web.Core.Commands;
 using FluentAssertions;
+using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 {
 	[TestFixture]
-	public class CreativeModuleTests :IntegrationTestBase
+	public class CreativeModuleTests : IntegrationTestBase
 	{
 		[Test]
 		public void Add_WhenGivenACreativeId_ShouldCreateAnCreativeFragments()
@@ -34,11 +34,42 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.CreativeId.Should().Be(creativeId);
 		}
 
+		[Test]
+		public void Save_WhenCalledWithParameters_ShouldSaveTheCreative()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var api = MasterResolve<Api>();
+
+			var creativeId = api.Call<ServiceEndpoints.SaveCreative,ApiStringResult>(x=>
+				                                        {
+					                                        x.Body = "body";
+					                                        x.DealUrl = "dealUrl";
+					                                        x.ListId = "list/1";
+					                                        x.Subject = "subject";
+					                                        x.UnsubscribeTemplateId = "templateId";
+				                                        }).Result;
+
+			WaitForEntityToExist(creativeId);
+
+			var result = Load<Creative>(creativeId);
+
+			result.Body.Should().Be("body");
+			result.DealUrl.Should().Be("dealUrl");
+			result.Lists.Should().Contain("list/1");
+			result.Subject.Should().Be("subject");
+			result.UnsubscribeTemplateId.Should().Be("templateId");
+		}
+
 		private string CreateCreative()
 		{
 			var listId = UIActions.CreateListWithRandomContacts("MyList", 100);
 			var unsubscribeTenplateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x => x.Body = "body");
-			var creativeId = UIActions.CreateSimpleCreative(new[] {listId}, unsubscribeTenplateId);
+			var creativeId = UIActions.CreateSimpleCreative(new[] { listId }, unsubscribeTenplateId);
 			return creativeId;
 		}
 	}

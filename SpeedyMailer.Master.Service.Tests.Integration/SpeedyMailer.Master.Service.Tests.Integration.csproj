@@ -133,8 +133,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\AddContactsCommandTests.cs" />
+    <Compile Include="Commands\AddCreativeCommandTests.cs" />
     <Compile Include="Commands\CreateListCommandTests.cs" />
+    <Compile Include="Commands\CreateTemplateCommandTests.cs" />
     <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
+    <Compile Include="Commands\SendCreativeCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\ContactsModuleTests.cs" />

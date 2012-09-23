@@ -23,7 +23,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 			_api = api;
 		}
 
-		[POST("lists/start-upload"), HttpPost]
+		[POST("/lists/upload"), HttpPost]
 		public Task<string> Upload()
         {
             if (!Request.Content.IsMimeMultipartContent())
@@ -53,13 +53,13 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 			
         }
 
-		[POST("/lists/create"),HttpPost]
+		[POST("/lists/list"),HttpPost]
 		public void CreateList(CreateListModel createListModel)
 		{
 			_api.Call<ServiceEndpoints.CreateList>(x => x.Name = createListModel.Name);
 		}
 
-		[GET("lists/get"),HttpGet]
+		[GET("/lists/list"),HttpGet]
 		public IList<ListDescriptor> GetLists()
 		{
 			return _api.Call<ServiceEndpoints.GetLists,List<ListDescriptor>>();
