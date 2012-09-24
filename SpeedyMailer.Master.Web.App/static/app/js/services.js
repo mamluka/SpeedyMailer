@@ -13,4 +13,5 @@ angular.module('SpeedyMailer.settings', []).
 
 angular.module('SpeedyMailer.services', ['ngResource']).
     factory('List', function ($resource) { return $resource('http://speedymailer.api/lists/list/:listId', { listId: '@id' }); }).
-    factory('Creative', function ($resource) { return $resource('http://speedymailer.api/creatives/creative/:creativeId', { listId: '@id' }); });
+    factory('Creative', function ($resource) { return $resource('http://speedymailer.api/creatives/creative/:creativeId', { creativeId: '@id' }); }).
+    factory('Template', function ($resource) { return $resource('http://speedymailer.api/templates/:templateType/:templateId', { templateId: '@id', templateType: '@type' }); });

@@ -33,7 +33,7 @@ namespace SpeedyMailer.Drones.Bootstrappers
 		}
 	}
 
-	public class NancyModule : NinjectModule
+	public class NancyFxModule : NinjectModule
 	{
 		public override void Load()
 		{

@@ -470,8 +470,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         public static bool WasCalled;
         public static IList<string> Files;
 
-        public RestCallTestingModule(string baseBaseUrl, string endpoint, TResponse response)
-            : base(baseBaseUrl)
+        public RestCallTestingModule(string endpoint, TResponse response)
+            
         {
             Get[endpoint] = x => RecordResponse(response);
 
@@ -503,11 +503,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
         protected override void RegisterRequestContainerModules(IKernel container, IEnumerable<ModuleRegistration> moduleRegistrationTypes)
         {
-            var endpoint = "/" + _baseAndEndpoint.Split('/').Last();
-            var baseUrl = _baseAndEndpoint.Substring(0, _baseAndEndpoint.Length - endpoint.Length);
-
             container.Bind<NancyModule>()
-                .ToConstant(new RestCallTestingModule<TEndpoint, TResponse>(baseUrl, endpoint, _response))
+                .ToConstant(new RestCallTestingModule<TEndpoint, TResponse>(_baseAndEndpoint, _response))
                 .Named(GetModuleKeyGenerator().GetKeyForModuleType(typeof(RestCallTestingModule<TEndpoint, TResponse>)));
         }
     }

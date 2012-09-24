@@ -27,7 +27,7 @@ namespace SpeedyMailer.Master.Service.Tasks
             using (var session = _documentStore.OpenSession())
             {
                 var creative = session.Load<Creative>(task.CreativeId);
-                var unsubscribeTempalte = session.Load<CreativeTemplate>(creative.UnsubscribeTemplateId);
+                var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
 
                 foreach (var listId in creative.Lists)
                 {

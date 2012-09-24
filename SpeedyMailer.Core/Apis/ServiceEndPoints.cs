@@ -11,7 +11,7 @@ namespace SpeedyMailer.Core.Apis
 		public class RegisterDrone : ApiCall
 		{
 			public RegisterDrone()
-				: base("drones/register")
+				: base("drones")
 			{
 				CallMethod = RestMethod.Post;
 			}
@@ -26,7 +26,7 @@ namespace SpeedyMailer.Core.Apis
 		public class FetchFragment : ApiCall
 		{
 			public FetchFragment()
-				: base("fragments/fetch")
+				: base("fragments")
 			{
 				CallMethod = RestMethod.Get;
 			}
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Core.Apis
 		public class GetRemoteServiceSettings : ApiCall
 		{
 			public GetRemoteServiceSettings()
-				: base("admin/settings/get")
+				: base("admin/settings")
 			{
 				CallMethod = RestMethod.Get;
 			}
@@ -65,7 +65,7 @@ namespace SpeedyMailer.Core.Apis
 		public class GetLists : ApiCall
 		{
 			public GetLists()
-				: base("/lists/get")
+				: base("/lists")
 			{
 				CallMethod = RestMethod.Get;
 			}
@@ -76,7 +76,7 @@ namespace SpeedyMailer.Core.Apis
 			public string Name { get; set; }
 
 			public CreateList()
-				: base("/lists/create")
+				: base("/lists")
 			{
 				CallMethod = RestMethod.Post;
 			}
@@ -94,6 +94,28 @@ namespace SpeedyMailer.Core.Apis
 				: base("/creative/save")
 			{
 				CallMethod = RestMethod.Post;
+			}
+		}
+
+		public class CreateUnsubscribeTemplate : ApiCall
+		{
+			public string Body { get; set; }
+
+			public CreateUnsubscribeTemplate()
+				: base("/templates/unsubscribe")
+			{
+				CallMethod = RestMethod.Post;
+			}
+		}
+
+		public class GetTemplates : ApiCall
+		{
+			public TemplateType Type { get; set; }
+
+			public GetTemplates()
+				: base("/templates/{type}")
+			{
+				CallMethod = RestMethod.Get;
 			}
 		}
 	}

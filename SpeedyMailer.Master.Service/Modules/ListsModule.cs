@@ -48,7 +48,7 @@ namespace SpeedyMailer.Master.Service.Modules
                                           return importContactsFromCsvTask.Id;
                                       };
 
-		    Get["/get"] = api =>
+		    Get["/"] = api =>
 			                  {
 				                  using (var session = _documentStore.OpenSession())
 				                  {
@@ -56,7 +56,7 @@ namespace SpeedyMailer.Master.Service.Modules
 				                  }
 			                  };
 
-			Post["/create"] = api =>
+			Post["/"] = api =>
 				                  {
 					                  var model = this.Bind<ServiceEndpoints.CreateList>();
 					                  _createListCommand.Name = model.Name;

@@ -19,7 +19,7 @@ namespace SpeedyMailer.Master.Service.Modules
         {
             _documentStore = documentStore;
 
-	        Post["/register"] = x =>
+	        Post["/"] = x =>
 		        {
 			        var model = this.Bind<ServiceEndpoints.RegisterDrone>();
 			        using (var session = _documentStore.OpenSession())

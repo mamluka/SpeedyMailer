@@ -16,11 +16,13 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
             var templateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x =>
                                                                  {
                                                                      x.Body = templateBody;
+																	 x.Type = TemplateType.Unsubscribe;
                                                                  });
 
-            var result = Load<CreativeTemplate>(templateId);
+            var result = Load<Template>(templateId);
 
             result.Body.Should().Be(templateBody);
+            result.Type.Should().Be(TemplateType.Unsubscribe);
         }
     }
 }

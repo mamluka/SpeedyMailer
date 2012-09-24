@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Tests.Core.Integration.Base;

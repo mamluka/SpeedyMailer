@@ -158,8 +158,9 @@
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativePackage.cs" />
-    <Compile Include="Domain\Creative\CreativeTemplate.cs" />
+    <Compile Include="Domain\Creative\Template.cs" />
     <Compile Include="Domain\Creative\DealUrlData.cs" />
+    <Compile Include="Domain\Creative\TemplateType.cs" />
     <Compile Include="Domain\Drones\Drone.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
     <Compile Include="Domain\Emails\Email.cs" />

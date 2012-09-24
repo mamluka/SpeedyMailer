@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
@@ -82,7 +83,8 @@ namespace SpeedyMailer.Core.Apis
 
         private RestRequest SetupApiCall(ApiCall apiCall)
         {
-            var restRequest = new RestRequest(apiCall.Endpoint);
+	        var endpoint = ParseArguments(apiCall);
+            var restRequest = new RestRequest(endpoint);
 
             var method = Translate(apiCall);
             restRequest.Method = method;
@@ -96,7 +98,20 @@ namespace SpeedyMailer.Core.Apis
             return restRequest;
         }
 
-	    private static Method Translate(ApiCall apiCall)
+		private string ParseArguments(ApiCall apiCall)
+		{
+			var endpoint = apiCall.Endpoint;
+			var groups = Regex.Match(endpoint, "{(.+?)}").Groups.Skip(1).ToList();
+
+			foreach (var match in groups)
+			{
+				
+			}
+
+			return endpoint;
+		}
+
+		private static Method Translate(ApiCall apiCall)
 		{
 			switch (apiCall.CallMethod)
 			{

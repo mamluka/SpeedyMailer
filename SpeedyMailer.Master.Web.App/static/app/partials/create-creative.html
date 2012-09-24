@@ -11,6 +11,8 @@
 
         <label>Deal url</label>
         <input type="text" name="dealUrl" ng-model="creativeModel.dealUrl" />
+        <select ng-model="creativeModel.unsubscribeTemplate" ng-options="unsubscribeTemplate.Name for unsubscribeTemplate in unsubscribeTemplates"></select>
+
         <button ng-click="save(creativeModel)"></button>
     </form>
 </div>

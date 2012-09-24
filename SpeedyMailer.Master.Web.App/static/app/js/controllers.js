@@ -12,8 +12,9 @@ function UploadListController($scope, $http, apiSettings) {
 }
 UploadListController.$inject = ['$scope', '$http', 'apiSettings'];
 
-function CreativeController($scope, $http, listResource, creativeResource) {
+function CreativeController($scope, $http, listResource, creativeResource, templateResource) {
     $scope.lists = listResource.query();
+    $scope.unsubscribeTemplate = templateResource.query({ templateType: 'unsubscribe' });
 
     $scope.save = function (creativeModel) {
         var creative = new creativeResource({
@@ -21,13 +22,14 @@ function CreativeController($scope, $http, listResource, creativeResource) {
             subject: creativeModel.subject,
             daelUrl: creativeModel.dealUrl,
             body: creativeModel.body,
+            templateId: creativeModel.unsubscribeTemplate.Id
         });
 
         creative.$save();
     };
 
 }
-CreativeController.$inject = ["$scope", "$http", 'List', 'Creative'];
+CreativeController.$inject = ["$scope", "$http", 'List', 'Creative', 'Template'];
 
 function ListsController($scope, listResource) {
     $scope.save = function (listModel) {

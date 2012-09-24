@@ -13,6 +13,7 @@ using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Commands;
 using Antlr4.StringTemplate;
+using Template = Antlr4.StringTemplate.Template;
 
 
 namespace SpeedyMailer.Drones.Tasks

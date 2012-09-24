@@ -1,8 +1,9 @@
 namespace SpeedyMailer.Core.Domain.Creative
 {
-    public class CreativeTemplate
+    public class Template
     {
         public string Id { get; set; }
         public string Body { get; set; }
+	    public TemplateType Type { get; set; }
     }
 }
