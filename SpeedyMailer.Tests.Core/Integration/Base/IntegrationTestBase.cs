@@ -45,7 +45,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
         public IDocumentStore DocumentStore { get; private set; }
         public DroneActions DroneActions { get; set; }
-        public UIActions UIActions { get; set; }
+        public UiActions UIActions { get; set; }
         public ServiceActions ServiceActions { get; set; }
 
         public string AssemblyDirectory
@@ -175,7 +175,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
         private void RegisterActions()
         {
-            UIActions = MasterKernel.Get<UIActions>();
+            UIActions = MasterKernel.Get<UiActions>();
             ServiceActions = MasterKernel.Get<ServiceActions>();
             DroneActions = DroneKernel.Get<DroneActions>();
         }

@@ -42,8 +42,8 @@ namespace SpeedyMailer.Master.Service
                 Console.ReadKey();
                 service.Stop();
 
-                var a = kernel.Get<IScheduler>();
-                a.Shutdown();
+                var scheduler = kernel.Get<IScheduler>();
+                scheduler.Shutdown();
             }
         }
     }

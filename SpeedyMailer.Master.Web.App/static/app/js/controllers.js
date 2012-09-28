@@ -3,24 +3,20 @@
 /* Controllers */
 
 
-function UploadListController($scope, $http, apiSettings) {
-    $http
-        .get(apiSettings.baseUrl + '/lists/get')
-        .success(function (data) {
-            $scope.lists = data;
-        });
+function UploadListController($scope, $http, listResource) {
+    $scope.lists = listResource.query();
 }
-UploadListController.$inject = ['$scope', '$http', 'apiSettings'];
+UploadListController.$inject = ['$scope', '$http', 'List'];
 
 function CreativeController($scope, $http, listResource, creativeResource, templateResource) {
     $scope.lists = listResource.query();
-    $scope.unsubscribeTemplate = templateResource.query({ templateType: 'unsubscribe' });
+    $scope.unsubscribeTemplates = templateResource.query({ templateType: 'unsubscribe' });
 
     $scope.save = function (creativeModel) {
         var creative = new creativeResource({
             listId: creativeModel.list.Id,
             subject: creativeModel.subject,
-            daelUrl: creativeModel.dealUrl,
+            dealUrl: creativeModel.dealUrl,
             body: creativeModel.body,
             templateId: creativeModel.unsubscribeTemplate.Id
         });
@@ -39,6 +35,20 @@ function ListsController($scope, listResource) {
 }
 ListsController.$inject = ['$scope', 'List'];
 
+function TemplatesController($scope, $http, templateResource, templateTypeResource) {
+    $scope.types = templateTypeResource.query();
+
+    $scope.save = function (templateModel) {
+        var list = new templateResource({
+            type: templateModel.type.name
+        });
+
+        list.body = templateModel.body;
+
+        list.$save();
+    };
+}
+TemplatesController.$inject = ['$scope', '$http', 'Template', 'TemplateType'];
 
 function AppController() {
 }

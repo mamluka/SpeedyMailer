@@ -4,7 +4,7 @@ namespace SpeedyMailer.Core.Container
 {
     public class SettingsResolverGathererOptions
     {
-        private ContainerStrapperOptions _options;
+        private readonly ContainerStrapperOptions _options;
 
         public SettingsResolverGathererOptions(ContainerStrapperOptions options)
         {

@@ -1,5 +1,3 @@
-using Nancy;
-using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
 using Raven.Client;
@@ -48,7 +46,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				                                    	{
 				                                    		typeof(CoreAssemblyMarker),
 				                                    		typeof(DroneAssemblyMarker),
-				                                    		typeof(IRestClient)
+				                                    		typeof(IRestClient),
+				                                    		typeof(IDocumentStore)
 				                                    	}))
 				.BindInterfaceToDefaultImplementation()
 				.Configure(x => x.InTransientScope())

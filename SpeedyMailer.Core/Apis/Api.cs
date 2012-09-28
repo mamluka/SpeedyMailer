@@ -36,7 +36,7 @@ namespace SpeedyMailer.Core.Apis
 
 		public TResponse Call<TEndpoint, TResponse>()
 			where TEndpoint : ApiCall, new()
-			where TResponse :  new()
+			where TResponse : new()
 		{
 			var apiCall = new TEndpoint();
 			return ExecuteCall<TResponse>(apiCall);
@@ -81,31 +81,41 @@ namespace SpeedyMailer.Core.Apis
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
 		}
 
-        private RestRequest SetupApiCall(ApiCall apiCall)
-        {
-	        var endpoint = ParseArguments(apiCall);
-            var restRequest = new RestRequest(endpoint);
+		private RestRequest SetupApiCall(ApiCall apiCall)
+		{
+			var endpoint = ParseArguments(apiCall);
+			var restRequest = new RestRequest(endpoint);
 
-            var method = Translate(apiCall);
-            restRequest.Method = method;
+			var method = Translate(apiCall);
+			restRequest.Method = method;
 
-            if (_requestFiles != null)
-                _requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
+			if (_requestFiles != null)
+				_requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
 
-            HandleRequestBody(apiCall, restRequest);
+			HandleRequestBody(apiCall, restRequest);
 
-            _restClient.BaseUrl = GetBaseUrl();
-            return restRequest;
-        }
+			_restClient.BaseUrl = GetBaseUrl();
+			return restRequest;
+		}
 
 		private string ParseArguments(ApiCall apiCall)
 		{
 			var endpoint = apiCall.Endpoint;
-			var groups = Regex.Match(endpoint, "{(.+?)}").Groups.Skip(1).ToList();
+			var groups = Regex.Match(endpoint, "{(.+?)}").Groups[1];
 
-			foreach (var match in groups)
+			foreach (var capture in groups.Captures)
 			{
-				
+				var parameter = capture.ToString();
+
+				var value = apiCall
+					.GetType()
+					.GetProperties()
+					.Single(x => x.Name.ToLower() == parameter)
+					.GetValue(apiCall, null)
+					.ToString()
+					.ToLower();
+
+				endpoint = endpoint.Replace("{" + parameter + "}", value);
 			}
 
 			return endpoint;
@@ -130,19 +140,19 @@ namespace SpeedyMailer.Core.Apis
 
 		private void HandleRequestBody(ApiCall apiCall, IRestRequest restRequest)
 		{
-		    if (apiCall.CallMethod == RestMethod.Post)
-		    {
-		        restRequest.AddBody(apiCall);
-		    }
-		    else
-		    {
-		        restRequest.AddObject(apiCall);
-		    }
+			if (apiCall.CallMethod == RestMethod.Post)
+			{
+				restRequest.AddBody(apiCall);
+			}
+			else
+			{
+				restRequest.AddObject(apiCall);
+			}
 
-		    restRequest.RequestFormat = DataFormat.Json;
+			restRequest.RequestFormat = DataFormat.Json;
 		}
 
-	    private string GetBaseUrl()
+		private string GetBaseUrl()
 		{
 			return _apiBaseUrl ?? _apiCallsSettings.ApiBaseUri;
 		}

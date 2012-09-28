@@ -38,6 +38,7 @@ namespace SpeedyMailer.Drones.Tasks
 					{
 						x.Identifier = _droneSettings.Identifier;
 						x.BaseUrl = _droneSettings.BaseUrl;
+						x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 					});
 			}
 		}

@@ -10,20 +10,39 @@ using SpeedyMailer.Core.Domain.Creative;
 
 namespace SpeedyMailer.Master.Web.Api.Controllers
 {
-    public class TemplatesController : ApiController
-    {
-	    private SpeedyMailer.Core.Apis.Api _api;
+	public class TemplatesController : ApiController
+	{
+		private readonly SpeedyMailer.Core.Apis.Api _api;
 
-	    public TemplatesController(SpeedyMailer.Core.Apis.Api api)
-	    {
-		    _api = api;
-	    }
+		public TemplatesController(SpeedyMailer.Core.Apis.Api api)
+		{
+			_api = api;
+		}
 
-	    [GET("/templates/{templateType}/")]
-		public IList<Template> GetTemplates()
-	    {
-		    return null;
-		    //return _api.Call<ServiceEndpoints.CreateUnsubscribeTemplate>()
-	    }
-    }
+		[GET("/templates/{templateType}"), HttpGet]
+		public IList<Template> GetTemplates(string templateType)
+		{
+			return _api.Call<ServiceEndpoints.GetTemplates, List<Template>>(x => x.Type = (TemplateType)Enum.Parse(typeof(TemplateType), templateType, true));
+		}
+
+		[POST("/templates/{templateType}"), HttpPost]
+		public void CreateTemplates(string templateType, CreateTempalteModel createTempalteModel)
+		{
+			_api.Call<ServiceEndpoints.CreateUnsubscribeTemplate>(x => x.Body = createTempalteModel.Body);
+		}
+
+		[GET("/templates/types/list"), HttpGet]
+		public dynamic GetTemplatesTypes()
+		{
+			return Enum.GetNames(typeof(TemplateType)).Select(x => new
+																	   {
+																		   name = x
+																	   }).ToList();
+		}
+	}
+
+	public class CreateTempalteModel
+	{
+		public string Body { get; set; }
+	}
 }

@@ -1,0 +1,5 @@
+<div>
+    <select ng-model="templateModel.type" ng-options="type.name for type in types" ></select>
+    <textarea ng-model="templateModel.body"></textarea>
+    <button ng-click="save(templateModel)">Create template</button>
+</div>

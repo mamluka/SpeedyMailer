@@ -6,6 +6,7 @@ using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Core.Settings;
 using FluentAssertions;
 using SpeedyMailer.Master.Service.Commands;
+using SpeedyMailer.Master.Service.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
@@ -45,14 +46,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var creativeId = api.Call<ServiceEndpoints.SaveCreative,ApiStringResult>(x=>
-				                                        {
-					                                        x.Body = "body";
-					                                        x.DealUrl = "dealUrl";
-					                                        x.ListId = "list/1";
-					                                        x.Subject = "subject";
-					                                        x.UnsubscribeTemplateId = "templateId";
-				                                        }).Result;
+			var creativeId = api.Call<ServiceEndpoints.SaveCreative, ApiStringResult>(x =>
+														{
+															x.Body = "body";
+															x.DealUrl = "dealUrl";
+															x.ListId = "list/1";
+															x.Subject = "subject";
+															x.UnsubscribeTemplateId = "templateId";
+														}).Result;
 
 			WaitForEntityToExist(creativeId);
 
@@ -63,6 +64,41 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Lists.Should().Contain("list/1");
 			result.Subject.Should().Be("subject");
 			result.UnsubscribeTemplateId.Should().Be("templateId");
+		}
+
+		[Test]
+		public void Fragments_WhenCalledByDrone_ShouldSendBackAFragment()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var creativeId = CreateCreative();
+			CreateFragment(creativeId);
+
+			var api = MasterResolve<Api>();
+
+			var result = api.Call<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>();
+
+			result.CreativeFragment.Body.Should().Be("body");
+			result.CreativeFragment.CreativeId.Should().Be(creativeId);
+			result.CreativeFragment.Recipients.Should().HaveCount(1000);
+			result.CreativeFragment.Service.BaseUrl.Should().Be(DefaultBaseUrl);
+			result.CreativeFragment.Service.DealsEndpoint.Should().Be("deals");
+			result.CreativeFragment.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");
+		}
+
+		private void CreateFragment(string creativeId)
+		{
+			var taskId = ServiceActions.ExecuteTask(new CreateCreativeFragmentsTask
+										   {
+											   CreativeId = creativeId,
+											   RecipientsPerFragment = 100
+										   });
+
+			WaitForTaskToComplete(taskId);
 		}
 
 		private string CreateCreative()

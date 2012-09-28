@@ -1,7 +1,11 @@
 using System.Collections.Generic;
+using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
+using Raven.Client;
+using Raven.Client.Linq;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
@@ -12,7 +16,7 @@ namespace SpeedyMailer.Master.Service.Modules
 {
 	public class CreativeModule : NancyModule
 	{
-		public CreativeModule(Framework framework, CreativeFragmentSettings creativeFragmentSettings, AddCreativeCommand addCreativeCommand)
+		public CreativeModule(Framework framework, IDocumentStore documentStore, CreativeFragmentSettings creativeFragmentSettings, AddCreativeCommand addCreativeCommand)
 			: base("/creative")
 		{
 			Post["/add"] = call =>
@@ -39,6 +43,19 @@ namespace SpeedyMailer.Master.Service.Modules
 
 									return Response.AsJson(new ApiStringResult { Result = addCreativeCommand.Execute() });
 								};
+
+			Get["/fragments"] = call =>
+									{
+										using (var session = documentStore.OpenSession())
+										{
+											var creativeFragment = session.Query<CreativeFragment>()
+												.Where(x => x.Status == FragmentStatus.Pending)
+												.ToList()
+												.FirstOrDefault();
+
+											return Response.AsJson(creativeFragment);
+										}
+									};
 		}
 	}
 }

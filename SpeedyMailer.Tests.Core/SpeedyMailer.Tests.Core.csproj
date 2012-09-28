@@ -189,7 +189,7 @@
     <Compile Include="Integration\Base\UIActions.cs" />
     <Compile Include="Integration\Base\MasterActionsBase.cs" />
     <Compile Include="Integration\Base\DroneActions.cs" />
-    <Compile Include="Integration\Base\NancyNinjectBootstrapperForTesting.cs" />
+    <Compile Include="Integration\Base\NinjectBootstrapperForTesting.cs" />
     <Compile Include="Integration\Base\IntegrationTestBase.cs" />
     <Compile Include="Integration\Datebase\InMemoryRavenDocumentStoreProvider.cs" />
     <Compile Include="Integration\Emails\FakeEmailMessage.cs" />

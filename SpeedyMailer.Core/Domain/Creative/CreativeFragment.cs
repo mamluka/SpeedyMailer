@@ -13,5 +13,6 @@ namespace SpeedyMailer.Core.Domain.Creative
     	public string Subject { get; set; }
     	public Service Service { get; set; }
     	public string CreativeId { get; set; }
+	    public FragmentStatus Status { get; set; }
     }
 }

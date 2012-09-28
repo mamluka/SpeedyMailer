@@ -34,7 +34,7 @@ namespace SpeedyMailer.Master.Service.Modules
 						   {
 							   using (var session = _documentStore.OpenSession())
 							   {
-								   var type = Enum.Parse(typeof (TemplateType), call.type, true);
+								   var type = (TemplateType)Enum.Parse(typeof(TemplateType), call.type, true);
 								   return Response.AsJson(session.Query<Template>().Where(q => q.Type == type).ToList());
 							   }
 						   };

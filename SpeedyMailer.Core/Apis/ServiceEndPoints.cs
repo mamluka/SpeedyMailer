@@ -11,7 +11,7 @@ namespace SpeedyMailer.Core.Apis
 		public class RegisterDrone : ApiCall
 		{
 			public RegisterDrone()
-				: base("drones")
+				: base("/drones")
 			{
 				CallMethod = RestMethod.Post;
 			}
@@ -26,7 +26,7 @@ namespace SpeedyMailer.Core.Apis
 		public class FetchFragment : ApiCall
 		{
 			public FetchFragment()
-				: base("fragments")
+				: base("/creative/fragments")
 			{
 				CallMethod = RestMethod.Get;
 			}
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Core.Apis
 		public class GetRemoteServiceSettings : ApiCall
 		{
 			public GetRemoteServiceSettings()
-				: base("admin/settings")
+				: base("/admin/settings")
 			{
 				CallMethod = RestMethod.Get;
 			}
