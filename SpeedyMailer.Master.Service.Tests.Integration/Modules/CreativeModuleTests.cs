@@ -80,14 +80,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>();
+			var result = api.Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
 
-			result.CreativeFragment.Body.Should().Be("body");
-			result.CreativeFragment.CreativeId.Should().Be(creativeId);
-			result.CreativeFragment.Recipients.Should().HaveCount(1000);
-			result.CreativeFragment.Service.BaseUrl.Should().Be(DefaultBaseUrl);
-			result.CreativeFragment.Service.DealsEndpoint.Should().Be("deals");
-			result.CreativeFragment.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");
+			result.Body.Should().Be("body");
+			result.CreativeId.Should().Be(creativeId);
+			result.Recipients.Should().HaveCount(1000);
+			result.Service.BaseUrl.Should().Be(DefaultBaseUrl);
+			result.Service.DealsEndpoint.Should().Be("deals");
+			result.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");
 		}
 
 		private void CreateFragment(string creativeId)

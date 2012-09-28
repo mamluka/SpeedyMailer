@@ -53,7 +53,7 @@ namespace SpeedyMailer.Master.Service.Modules
 												.ToList()
 												.FirstOrDefault();
 
-											return Response.AsJson(creativeFragment);
+										    return Response.AsJson(creativeFragment);
 										}
 									};
 		}
