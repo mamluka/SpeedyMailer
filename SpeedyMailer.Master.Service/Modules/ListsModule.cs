@@ -4,7 +4,6 @@ using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
 using Raven.Client;
-using Raven.Database.Exceptions;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Lists;
 using SpeedyMailer.Core.Utilities;
@@ -31,7 +30,7 @@ namespace SpeedyMailer.Master.Service.Modules
                                           var model = this.Bind<ServiceEndpoints.UploadContacts>();
                                           var file = Request.Files.FirstOrDefault();
                                           if (file == null)
-                                              throw new BadRequestException("no files was provided");
+                                              throw new ArgumentNullException("no files was provided");
 
                                           var path = Guid.NewGuid().ToString();
                                           using (var diskFile = File.OpenWrite(path))
