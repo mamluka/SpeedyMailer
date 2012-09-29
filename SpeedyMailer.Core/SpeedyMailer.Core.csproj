@@ -179,6 +179,7 @@
     <Compile Include="Helpers\IConfigurationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Protocol\CreativeEndpoint.cs" />
+    <Compile Include="Settings\CreativeEndpointsSettings.cs" />
     <Compile Include="Settings\DefaultAttribute.cs" />
     <Compile Include="Settings\BaseApiSettings.cs" />
     <Compile Include="Settings\CreativeApisSettings.cs" />

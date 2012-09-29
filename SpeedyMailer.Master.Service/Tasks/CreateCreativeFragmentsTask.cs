@@ -18,9 +18,11 @@ namespace SpeedyMailer.Master.Service.Tasks
     {
         private readonly IDocumentStore _documentStore;
 	    private CreativeEndpointsSettings _creativeEndpointsSettings;
+	    private ServiceSettings _serviceSettings;
 
-	    public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore,CreativeEndpointsSettings creativeEndpointsSettings )
+	    public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore,CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings)
 	    {
+		    _serviceSettings = serviceSettings;
 		    _creativeEndpointsSettings = creativeEndpointsSettings;
 		    _documentStore = documentStore;
 	    }
@@ -58,7 +60,13 @@ namespace SpeedyMailer.Master.Service.Tasks
                             CreativeId = creative.Id,
                             Subject = creative.Subject,
                             Recipients = contacts,
-                            UnsubscribeTemplate = unsubscribeTempalte.Body
+                            UnsubscribeTemplate = unsubscribeTempalte.Body,
+							Service = new Core.Domain.Master.Service
+								          {
+									          BaseUrl = _serviceSettings.BaseUrl,
+											  DealsEndpoint = _creativeEndpointsSettings.Deal,
+											  UnsubscribeEndpoint = _creativeEndpointsSettings.Unsubscribe
+								          }
                         };
                         session.Store(fragment);
                         session.SaveChanges();
@@ -68,12 +76,4 @@ namespace SpeedyMailer.Master.Service.Tasks
             }
         }
     }
-
-	public class CreativeEndpointsSettings
-	{
-		[Default("deals")]
-		public string Deal { get; set; }
-		[Default("lists/unsubscribe")]
-		public string Unsubscribe { get; set; }
-	}
 }
