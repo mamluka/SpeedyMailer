@@ -84,7 +84,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			result.Body.Should().Be("body");
 			result.CreativeId.Should().Be(creativeId);
-			result.Recipients.Should().HaveCount(1000);
+			result.Recipients.Should().HaveCount(100);
 			result.Service.BaseUrl.Should().Be(DefaultBaseUrl);
 			result.Service.DealsEndpoint.Should().Be("deals");
 			result.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");

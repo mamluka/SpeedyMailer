@@ -2,6 +2,7 @@ using Raven.Client;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using System.Linq;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 
@@ -16,13 +17,15 @@ namespace SpeedyMailer.Master.Service.Tasks
     public class CreateCreativeFragmentsTaskExecutor : PersistentTaskExecutor<CreateCreativeFragmentsTask>
     {
         private readonly IDocumentStore _documentStore;
+	    private CreativeEndpointsSettings _creativeEndpointsSettings;
 
-        public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore)
-        {
-            _documentStore = documentStore;
-        }
+	    public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore,CreativeEndpointsSettings creativeEndpointsSettings )
+	    {
+		    _creativeEndpointsSettings = creativeEndpointsSettings;
+		    _documentStore = documentStore;
+	    }
 
-        public override void Execute(CreateCreativeFragmentsTask task)
+	    public override void Execute(CreateCreativeFragmentsTask task)
         {
             using (var session = _documentStore.OpenSession())
             {
@@ -65,4 +68,12 @@ namespace SpeedyMailer.Master.Service.Tasks
             }
         }
     }
+
+	public class CreativeEndpointsSettings
+	{
+		[Default("deals")]
+		public string Deal { get; set; }
+		[Default("lists/unsubscribe")]
+		public string Unsubscribe { get; set; }
+	}
 }

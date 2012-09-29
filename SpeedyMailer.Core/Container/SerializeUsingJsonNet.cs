@@ -1,15 +1,15 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using Nancy;
+using Nancy.Bootstrapper;
 using Nancy.IO;
 using Nancy.ModelBinding;
 using Newtonsoft.Json;
 
-namespace SpeedyMailer.Master.Service.Modules
+namespace SpeedyMailer.Core.Container
 {
 	public class JsonNetSerializer : ISerializer
 	{
@@ -166,6 +166,19 @@ namespace SpeedyMailer.Master.Service.Modules
 				   contentMimeType.Equals("text/json", StringComparison.InvariantCultureIgnoreCase) ||
 				  (contentMimeType.StartsWith("application/vnd", StringComparison.InvariantCultureIgnoreCase) &&
 				   contentMimeType.EndsWith("+json", StringComparison.InvariantCultureIgnoreCase));
+		}
+	}
+
+	public class DemoBootstrapper : DefaultNancyBootstrapper
+	{
+		protected override NancyInternalConfiguration InternalConfiguration
+		{
+			get
+			{
+				// Insert at position 0 so it takes precedence over the built in one.
+				return NancyInternalConfiguration.WithOverrides(
+						c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+			}
 		}
 	}
 }

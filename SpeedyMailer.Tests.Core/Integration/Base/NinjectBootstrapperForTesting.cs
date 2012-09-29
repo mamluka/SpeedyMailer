@@ -1,3 +1,4 @@
+using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
 using Raven.Client;
@@ -34,6 +35,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
 		}
+
+		protected override NancyInternalConfiguration InternalConfiguration
+		{
+			get
+			{
+				return NancyInternalConfiguration.WithOverrides(
+					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+			}
+		}
 	}
 
 	public class DroneNancyNinjectBootstrapperForTesting : NinjectNancyBootstrapper
@@ -54,6 +64,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
+		}
+
+		protected override NancyInternalConfiguration InternalConfiguration
+		{
+			get
+			{
+				return NancyInternalConfiguration.WithOverrides(
+					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+			}
 		}
 	}
 }

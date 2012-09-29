@@ -147,6 +147,7 @@
     <Compile Include="Container\NoRavenSupport.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
+    <Compile Include="Container\SerializeUsingJsonNet.cs" />
     <Compile Include="Container\SettingsInterceptor.cs" />
     <Compile Include="Container\SettingsInterceptorBase.cs" />
     <Compile Include="Container\SettingsProvider.cs" />

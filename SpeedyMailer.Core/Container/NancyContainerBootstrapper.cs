@@ -1,4 +1,5 @@
 using System;
+using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
 
@@ -17,5 +18,14 @@ namespace SpeedyMailer.Core.Container
     	{
     		_action(existingContainer);
     	}
+
+		protected override NancyInternalConfiguration InternalConfiguration
+		{
+			get
+			{
+				return NancyInternalConfiguration.WithOverrides(
+					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+			}
+		}
     }
 }

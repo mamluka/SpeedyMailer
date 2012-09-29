@@ -13,7 +13,7 @@ namespace SpeedyMailer.Master.Service.Modules
 {
 	public class TemplatesModule : NancyModule
 	{
-		private IDocumentStore _documentStore;
+		private readonly IDocumentStore _documentStore;
 
 		public TemplatesModule(IDocumentStore documentStore, CreateTemplateCommand createTemplateCommand)
 			: base("templates/{type}")
