@@ -87,7 +87,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Recipients.Should().HaveCount(100);
 			result.Service.BaseUrl.Should().Be(DefaultBaseUrl);
 			result.Service.DealsEndpoint.Should().Be("deals");
-			result.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");
+			result.Service.UnsubscribeEndpoint.Should().Be("lists/unsubscribe");
 		}
 
 		private void CreateFragment(string creativeId)
