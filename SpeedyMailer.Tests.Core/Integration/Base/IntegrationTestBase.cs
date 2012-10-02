@@ -507,6 +507,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                 .ToConstant(new RestCallTestingModule<TEndpoint, TResponse>(_baseAndEndpoint, _response))
                 .Named(GetModuleKeyGenerator().GetKeyForModuleType(typeof(RestCallTestingModule<TEndpoint, TResponse>)));
         }
+
+		protected override NancyInternalConfiguration InternalConfiguration
+		{
+			get
+			{
+				return NancyInternalConfiguration.WithOverrides(
+					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+			}
+		}
     }
 
     public class NoRequest

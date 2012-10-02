@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
+using Raven.Abstractions.Exceptions;
 using Raven.Client;
 using Raven.Client.Linq;
 using SpeedyMailer.Core.Apis;
@@ -48,12 +50,34 @@ namespace SpeedyMailer.Master.Service.Modules
 									{
 										using (var session = documentStore.OpenSession())
 										{
-											var creativeFragment = session.Query<CreativeFragment>()
-												.Where(x => x.Status == FragmentStatus.Pending)
-												.ToList()
-												.FirstOrDefault();
 
-										    return Response.AsJson(creativeFragment);
+											session.Advanced.UseOptimisticConcurrency = true;
+
+											while (true)
+											{
+												try
+												{
+													var creativeFragment = session.Query<CreativeFragment>()
+													.Customize(x => x.WaitForNonStaleResults())
+													.Where(x => x.Status == FragmentStatus.Pending)
+													.ToList()
+													.FirstOrDefault();
+
+													if (creativeFragment == null)
+														return null;
+
+													creativeFragment.Status = FragmentStatus.Sending;
+
+													session.Store(creativeFragment);
+													session.SaveChanges();
+													return Response.AsJson(creativeFragment);
+
+												}
+												catch (ConcurrencyException ex)
+												{
+													return null;
+												}
+											}
 										}
 									};
 		}

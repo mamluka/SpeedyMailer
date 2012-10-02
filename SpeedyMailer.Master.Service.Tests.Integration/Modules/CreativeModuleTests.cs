@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
@@ -23,7 +25,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			var creativeId = CreateCreative();
+			var creativeId = CreateCreative(1000);
 
 			var api = MasterResolve<Api>();
 			api.Call<CreativeEndpoint.Add>(x => x.CreativeId = creativeId);
@@ -75,8 +77,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			var creativeId = CreateCreative();
-			CreateFragment(creativeId);
+			var creativeId = CreateCreative(100);
+			CreateFragment(creativeId, 100);
 
 			var api = MasterResolve<Api>();
 
@@ -90,20 +92,66 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Service.UnsubscribeEndpoint.Should().Be("lists/unsubscribe");
 		}
 
-		private void CreateFragment(string creativeId)
+		[Test]
+		public void Fragments_WhenCalledCuncurrently_ShouldNotGiveTheSameFragmentToTwoDrones()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var creativeId = CreateCreative(100);
+			CreateFragment(creativeId, 10);
+
+			var fragmentList = new List<string>();
+
+			var drone1 = new Thread(x => Enumerable.Range(1, 50).ToList().ForEach(i =>
+																					  {
+																						  var api = MasterResolve<Api>();
+																						  var result = api.Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
+
+																						  if (result == null)
+																							  return;
+
+																						  fragmentList.Add(result.Id);
+																					  }));
+
+			var drone2 = new Thread(x => Enumerable.Range(1, 50).ToList().ForEach(i =>
+																					  {
+																						  var api = MasterResolve<Api>();
+																						  var result = api.Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
+
+																						  if (result == null)
+																							  return;
+
+																						  fragmentList.Add(result.Id);
+																					  }));
+
+			drone1.Start();
+			drone2.Start();
+
+			drone1.Join();
+			drone2.Join();
+
+			fragmentList.Should().OnlyHaveUniqueItems();
+			fragmentList.Should().HaveCount(10);
+		}
+
+		private void CreateFragment(string creativeId, int recipientsPerFragment)
 		{
 			var taskId = ServiceActions.ExecuteTask(new CreateCreativeFragmentsTask
 										   {
 											   CreativeId = creativeId,
-											   RecipientsPerFragment = 100
+											   RecipientsPerFragment = recipientsPerFragment
 										   });
 
 			WaitForTaskToComplete(taskId);
 		}
 
-		private string CreateCreative()
+		private string CreateCreative(int contactsCount)
 		{
-			var listId = UIActions.CreateListWithRandomContacts("MyList", 100);
+			var listId = UIActions.CreateListWithRandomContacts("MyList", contactsCount);
 			var unsubscribeTenplateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x => x.Body = "body");
 			var creativeId = UIActions.CreateSimpleCreative(new[] { listId }, unsubscribeTenplateId);
 			return creativeId;
