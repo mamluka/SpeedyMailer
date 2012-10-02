@@ -49,9 +49,8 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var creativeFragment = _api
-					.Call<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>()
-					.CreativeFragment;
+			    var creativeFragment = _api
+			        .Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
 
 				var recipiens = creativeFragment.Recipients;
 
