@@ -70,8 +70,6 @@ namespace :winrun do
 	
       cmd.command="cmd.exe"
       cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
-	  
-	  sleep 5
     end
 
     task :update_raven_url do |t|
@@ -99,12 +97,21 @@ namespace :winrun do
   desc "Run default service"
 
   task :run_default_service do
-    Rake::Task["winrun:run_service"].invoke("http://192.168.129.131:9852")
+    puts local_ip
+	
+    Rake::Task["winrun:run_service"].invoke("http://"+local_ip + ":9852")
   end
+  
+  def local_ip
+    orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  # turn off reverse DNS resolution temporarily
 
-
-
-
+    UDPSocket.open do |s|
+      s.connect '64.233.187.99', 1
+      s.addr.last
+    end
+  ensure
+    Socket.do_not_reverse_lookup = orig
+  end
 end
 
 
