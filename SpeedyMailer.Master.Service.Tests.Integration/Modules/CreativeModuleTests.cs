@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var creativeId = CreateCreative(1000);
 
 			var api = MasterResolve<Api>();
-			api.Call<CreativeEndpoint.Add>(x => x.CreativeId = creativeId);
+			api.Call<CreativeEndpoint.Send>(x => x.CreativeId = creativeId);
 
 			WaitForEntitiesToExist<CreativeFragment>(1);
 			var result = Query<CreativeFragment>().First();
