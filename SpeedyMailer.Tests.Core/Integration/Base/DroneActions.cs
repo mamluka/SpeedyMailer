@@ -50,10 +50,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return typeof(T).Name.Replace("Settings", "") + ".settings";
 		}
 
-		public TopDrone CreateDrone(string baseUrl, string serviceBaseUrl)
+		public TopDrone CreateDrone(string droneId, string baseUrl, string serviceBaseUrl)
 		{
 			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = serviceBaseUrl);
-			EditSettings<DroneSettings>(x => x.BaseUrl = baseUrl);
+			EditSettings<DroneSettings>(x =>
+				                            {
+					                            x.BaseUrl = baseUrl;
+					                            x.Identifier = droneId;
+				                            });
+
 			Kernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
 
 		    var topDrone = Kernel.Get<TopDrone>();

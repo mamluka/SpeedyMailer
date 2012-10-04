@@ -159,6 +159,8 @@
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativePackage.cs" />
+    <Compile Include="Domain\Creative\FakeEmailMessage.cs" />
+    <Compile Include="Domain\Creative\FakeMailAddress.cs" />
     <Compile Include="Domain\Creative\FragmentStatus.cs" />
     <Compile Include="Domain\Creative\Template.cs" />
     <Compile Include="Domain\Creative\DealUrlData.cs" />

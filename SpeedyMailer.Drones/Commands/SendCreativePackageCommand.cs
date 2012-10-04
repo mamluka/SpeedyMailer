@@ -12,10 +12,12 @@ namespace SpeedyMailer.Drones.Commands
 	public class SendCreativePackageCommand : Command
 	{
 		private readonly EmailingSettings _emailingSettings;
+		private DroneSettings _droneSettings;
 		public CreativePackage Package { get; set; }
 
-		public SendCreativePackageCommand(EmailingSettings emailingSettings)
+		public SendCreativePackageCommand(EmailingSettings emailingSettings,DroneSettings droneSettings)
 		{
+			_droneSettings = droneSettings;
 			_emailingSettings = emailingSettings;
 		}
 
@@ -28,12 +30,11 @@ namespace SpeedyMailer.Drones.Commands
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
-				var emailFile = JsonConvert.SerializeObject(email,
-															Formatting.Indented,
-															new JsonSerializerSettings
-																{
-																	NullValueHandling = NullValueHandling.Ignore
-																});
+				var tmpEmailFile = SerializeObject(email);
+				var fakeEmailFile = JsonConvert.DeserializeObject<FakeEmailMessage>(tmpEmailFile);
+				fakeEmailFile.DroneId = _droneSettings.Identifier;
+
+				var emailFile = SerializeObject(fakeEmailFile);
 
 				using (var writer = new StreamWriter(Path.Combine(_emailingSettings.WritingEmailsToDiskPath, "email" + Guid.NewGuid() + ".persist")))
 				{
@@ -47,6 +48,16 @@ namespace SpeedyMailer.Drones.Commands
 				var client = new SmtpClient();
 				client.Send(email);
 			}
+		}
+
+		private static string SerializeObject(object email)
+		{
+			return JsonConvert.SerializeObject(email,
+			                                   Formatting.Indented,
+			                                   new JsonSerializerSettings
+				                                   {
+					                                   NullValueHandling = NullValueHandling.Ignore
+				                                   });
 		}
 	}
 }
