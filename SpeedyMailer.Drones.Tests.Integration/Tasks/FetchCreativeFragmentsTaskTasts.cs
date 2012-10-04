@@ -43,6 +43,21 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
             AssertEmailSent(x => x.To.Any(email => email.Address == "test@test.com"));
             AssertEmailSent(x => x.Subject == "hello world subject");
         }
+        
+        [Test]
+        public void Execute_WhenThereAreNoFragments_ShouldDoNothing()
+        {
+            DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
+            DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+            PrepareApiResponse<ServiceEndpoints.FetchFragment,CreativeFragment>(default(CreativeFragment));
+
+            var task = new FetchCreativeFragmentsTask();
+
+            DroneActions.StartScheduledTask(task);
+
+            AssertEmailNotSent();
+        }
 
         [Test]
         public void Execute_WhenWeObtainAFragment_ShouldReplaceTheDealLinksWithRediractableServiceLinks()

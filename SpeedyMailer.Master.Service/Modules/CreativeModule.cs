@@ -8,7 +8,6 @@ using Raven.Client;
 using Raven.Client.Linq;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Master.Service.Commands;
@@ -21,9 +20,9 @@ namespace SpeedyMailer.Master.Service.Modules
 		public CreativeModule(Framework framework, IDocumentStore documentStore, CreativeFragmentSettings creativeFragmentSettings, AddCreativeCommand addCreativeCommand)
 			: base("/creative")
 		{
-			Post["/add"] = call =>
+			Post["/send"] = call =>
 							  {
-								  var model = this.Bind<CreativeEndpoint.Add>();
+								  var model = this.Bind<ServiceEndpoints.Send>();
 								  framework.ExecuteTask(new CreateCreativeFragmentsTask
 												  {
 													  CreativeId = model.CreativeId,
@@ -43,7 +42,9 @@ namespace SpeedyMailer.Master.Service.Modules
 									addCreativeCommand.UnsubscribeTemplateId = model.UnsubscribeTemplateId;
 									addCreativeCommand.DealUrl = model.DealUrl;
 
-									return Response.AsJson(new ApiStringResult { Result = addCreativeCommand.Execute() });
+								    var creativeId = addCreativeCommand.Execute();
+
+								    return Response.AsJson(new ApiStringResult { Result = creativeId });
 								};
 
 			Get["/fragments"] = call =>

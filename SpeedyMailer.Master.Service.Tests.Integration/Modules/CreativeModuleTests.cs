@@ -4,7 +4,6 @@ using System.Threading;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Core.Settings;
 using FluentAssertions;
 using SpeedyMailer.Master.Service.Commands;
@@ -17,7 +16,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 	public class CreativeModuleTests : IntegrationTestBase
 	{
 		[Test]
-		public void Add_WhenGivenACreativeId_ShouldCreateAnCreativeFragments()
+		public void Send_WhenGivenACreativeId_ShouldCreateAnCreativeFragments()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
@@ -28,12 +27,12 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var creativeId = CreateCreative(1000);
 
 			var api = MasterResolve<Api>();
-			api.Call<CreativeEndpoint.Send>(x => x.CreativeId = creativeId);
+			api.Call<ServiceEndpoints.Send>(x => x.CreativeId = creativeId);
 
 			WaitForEntitiesToExist<CreativeFragment>(1);
 			var result = Query<CreativeFragment>().First();
 
-			result.Recipients.Should().HaveCount(100);
+			result.Recipients.Should().HaveCount(1000);
 			result.CreativeId.Should().Be(creativeId);
 		}
 

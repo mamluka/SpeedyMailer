@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -15,14 +14,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
             ServiceActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
             const string creativeId = "creative/1";
-            ListenToApiCall<CreativeEndpoint.Send>();
+            ListenToApiCall<ServiceEndpoints.Send>();
 
             UIActions.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
                                                                 {
                                                                     x.CreativeId = creativeId;
                                                                 });
 
-            AssertApiCalled<CreativeEndpoint.Send>(x=> x.CreativeId == creativeId);
+            AssertApiCalled<ServiceEndpoints.Send>(x=> x.CreativeId == creativeId);
         }
     }
 }

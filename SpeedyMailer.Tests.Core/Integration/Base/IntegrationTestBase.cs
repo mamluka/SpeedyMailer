@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Linq;
 using EqualityComparer;
+using FluentAssertions;
 using NUnit.Framework;
 using Nancy;
 using Nancy.Bootstrapper;
@@ -96,7 +97,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                 .Settings(x => x.UseJsonFiles())
                 .Done();
 
-            DefaultBaseUrl = "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
+            DefaultBaseUrl = GenerateRandomLocalhostAddress();
+        }
+
+        public static string GenerateRandomLocalhostAddress()
+        {
+            return "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
         }
 
         [SetUp]
@@ -147,7 +153,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             var masterScheduler = MasterResolve<IScheduler>();
             WaitForSchedulerToShutdown(masterScheduler);
 
-            var droneScheduler = MasterResolve<IScheduler>();
+            var droneScheduler = DroneResolve<IScheduler>();
             WaitForSchedulerToShutdown(droneScheduler);
         }
 
@@ -337,6 +343,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             action(response);
             StartGeneticEndpoint<TEndpoint, TResponse>(endpointBaseUrl, response);
         }
+        
+        protected void PrepareApiResponse<TEndpoint, TResponse>(TResponse response, string endpointBaseUrl = "")
+            where TResponse : class, new()
+            where TEndpoint : ApiCall, new()
+        {
+            StartGeneticEndpoint<TEndpoint, TResponse>(endpointBaseUrl, response);
+        }
 
         public void AssertApiCalled<TEndpoint>(Func<TEndpoint, bool> func, int seconds = 30) where TEndpoint : class
         {
@@ -407,25 +420,40 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
         protected void AssertEmailSent(Func<FakeEmailMessage, bool> func, int waitFor = 30)
         {
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
+            var email = GetEmailFromDisk(waitFor);
+            Assert.That(func(email));
+        }
 
-            var files = new List<string>();
+        protected void AssertEmailSent(Action<FakeEmailMessage> action, int waitFor = 30)
+        {
+            var email = GetEmailFromDisk(waitFor);
+            action(email);
+        }
 
-            while (!files.Any() && stopwatch.ElapsedMilliseconds < waitFor * 1000)
-            {
-                files = GetEmailFiles().ToList();
-                Thread.Sleep(500);
-            }
+        public void AssertEmailsSentTo(IEnumerable<string> contacts, int waitFor = 30)
+        {
+            var files = WaitForEmailFiles(waitFor);
+
+            if (!files.Any())
+                Assert.Fail("No emails were found");
+
+            var emails = files.Select(x => JsonConvert.DeserializeObject<FakeEmailMessage>(File.ReadAllText(x)));
+
+            emails.Should().Contain(x => x.To.Any(p => contacts.Contains(p.Address)));
+        }
+
+        private FakeEmailMessage GetEmailFromDisk(int waitFor)
+        {
+            var files = WaitForEmailFiles(waitFor);
 
             if (!files.Any())
                 Assert.Fail("No emails were found");
 
             var email = JsonConvert.DeserializeObject<FakeEmailMessage>(File.ReadAllText(files.First()));
-            Assert.That(func(email));
+            return email;
         }
 
-        protected void AssertEmailSent(Action<FakeEmailMessage> action, int waitFor = 30)
+        private List<string> WaitForEmailFiles(int waitFor)
         {
             var stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -438,11 +466,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                 Thread.Sleep(500);
             }
 
-            if (!files.Any())
-                Assert.Fail("No emails were found");
-
-            var email = JsonConvert.DeserializeObject<FakeEmailMessage>(File.ReadAllText(files.First()));
-            action(email);
+            
+            return files;
         }
 
         protected void DeleteEmails()
@@ -462,6 +487,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                                                                            filename.EndsWith(".persist");
                                                                 });
         }
+
+        protected void AssertEmailNotSent(int waitFor = 30)
+        {
+            var files = WaitForEmailFiles(waitFor);
+
+            if (files.Any())
+            {
+                Assert.Fail("Emails were found");
+            }
+
+        }
     }
 
     public class RestCallTestingModule<TEndpoint, TResponse> : NancyModule, IDoNotResolveModule where TResponse : class
@@ -471,7 +507,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         public static IList<string> Files;
 
         public RestCallTestingModule(string endpoint, TResponse response)
-            
         {
             Get[endpoint] = x => RecordResponse(response);
 
@@ -508,14 +543,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
                 .Named(GetModuleKeyGenerator().GetKeyForModuleType(typeof(RestCallTestingModule<TEndpoint, TResponse>)));
         }
 
-		protected override NancyInternalConfiguration InternalConfiguration
-		{
-			get
-			{
-				return NancyInternalConfiguration.WithOverrides(
-					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
-			}
-		}
+        protected override NancyInternalConfiguration InternalConfiguration
+        {
+            get
+            {
+                return NancyInternalConfiguration.WithOverrides(
+                       c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+            }
+        }
     }
 
     public class NoRequest

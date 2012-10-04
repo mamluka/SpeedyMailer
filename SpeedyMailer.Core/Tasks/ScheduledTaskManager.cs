@@ -44,7 +44,7 @@ namespace SpeedyMailer.Core.Tasks
 				_scheduler.ScheduleJob(job, task.GetTrigger());
 			}
 
-			if (!_scheduler.IsStarted)
+			if (!_scheduler.IsStarted || _scheduler.InStandbyMode || _scheduler.IsShutdown)
 				_scheduler.Start();
 		}
 	}

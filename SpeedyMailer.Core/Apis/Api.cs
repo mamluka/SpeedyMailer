@@ -63,11 +63,18 @@ namespace SpeedyMailer.Core.Apis
 			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
 
+		    CleanUp();
+
 			return result.Data;
 
 		}
 
-		private void ExecuteCall(ApiCall apiCall)
+	    private void CleanUp()
+	    {
+	        _requestFiles = new List<string>();
+	    }
+
+	    private void ExecuteCall(ApiCall apiCall)
 		{
 
 			var restRequest = SetupApiCall(apiCall);
@@ -79,6 +86,8 @@ namespace SpeedyMailer.Core.Apis
 
 			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
+
+            CleanUp();
 		}
 
 		private RestRequest SetupApiCall(ApiCall apiCall)

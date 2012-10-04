@@ -1,6 +1,5 @@
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
-using SpeedyMailer.Core.Protocol;
 
 namespace SpeedyMailer.Master.Service.Commands
 {
@@ -16,7 +15,7 @@ namespace SpeedyMailer.Master.Service.Commands
 
 		public override ApiResult Execute()
 		{
-			_api.Call<CreativeEndpoint.Send>(x => x.CreativeId = CreativeId);
+			_api.Call<ServiceEndpoints.Send>(x => x.CreativeId = CreativeId);
 
 			return new ApiResult();
 		}

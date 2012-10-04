@@ -15,8 +15,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class DroneActions : ActionsBase
 	{
-		private TopDrone _topDrone;
-		public IKernel Kernel { get; set; }
+	    public IKernel Kernel { get; set; }
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
@@ -51,20 +50,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return typeof(T).Name.Replace("Settings", "") + ".settings";
 		}
 
-		public void Initialize(string baseUrl, string serviceBaseUrl)
+		public TopDrone CreateDrone(string baseUrl, string serviceBaseUrl)
 		{
 			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = serviceBaseUrl);
 			EditSettings<DroneSettings>(x => x.BaseUrl = baseUrl);
 			Kernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
 
-			_topDrone = Kernel.Get<TopDrone>();
-
-			_topDrone.Initialize();
-		}
-
-		public void Start()
-		{
-			_topDrone.Start();
+		    var topDrone = Kernel.Get<TopDrone>();
+		   
+		    return topDrone;
 		}
 	}
 }

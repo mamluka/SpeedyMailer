@@ -7,7 +7,6 @@ using NUnit.Framework;
 using Ploeh.AutoFixture;
 using RestSharp;
 using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Core.Protocol;
 using SpeedyMailer.Tests.Core;
 using Rhino.Mocks;
 using FluentAssertions;
@@ -51,7 +50,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
             AssertApiCalled<PutFileApi>(x => x.CallId == "testing file upload");
 			AssertFilesUploaded<PutFileApi>(new[] {"for-api-send.text"});
 		}
-
+        
 		private void CreateFile(string fileName)
 		{
 			using (var stream = new StreamWriter(fileName))

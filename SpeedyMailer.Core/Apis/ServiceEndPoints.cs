@@ -118,5 +118,21 @@ namespace SpeedyMailer.Core.Apis
 				CallMethod = RestMethod.Get;
 			}
 		}
+
+        public class Send : ApiCall
+        {
+            public Send()
+                : base("/creative/send")
+            {
+                CallMethod = RestMethod.Post;
+            }
+
+            public string CreativeId { get; set; }
+
+            public class Response
+            {
+
+            }
+        }
 	}
 }
