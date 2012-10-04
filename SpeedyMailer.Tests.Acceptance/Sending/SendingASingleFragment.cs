@@ -59,6 +59,12 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
         }
 
+	    [Test]
+	    public void SendingUsingTwoDrones()
+	    {
+		    
+	    }
+        
         private void SendCreative(string creativeId)
         {
             _api.Call<ServiceEndpoints.Send>(x => x.CreativeId = creativeId);

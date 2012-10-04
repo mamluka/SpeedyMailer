@@ -136,6 +136,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
         {
             ServiceActions.Stop();
             DeleteEmails();
+            DeleteJsonSettingFiles();
             StopSchedulers();
             StopListeningToApiCalls();
             ExtraTeardown();
@@ -159,10 +160,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
         private void DeleteJsonSettingFiles()
         {
-            var settingFolders = Directory.GetDirectories(AssemblyDirectory).Where(x => x.StartsWith("settings_"));
+            var settingFolders = Directory.GetDirectories(AssemblyDirectory).Where(x => x.Contains("settings_"));
             foreach (var settingFolder in settingFolders)
             {
-                Directory.Delete(settingFolder);
+                Directory.Delete(settingFolder,true);
             }
         }
 
