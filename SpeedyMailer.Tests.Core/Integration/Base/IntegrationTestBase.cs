@@ -467,9 +467,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var files = new List<string>();
 
 			if (filesAction == null)
-				filesAction = list => !list.Any();
+				filesAction = list => list.Any();
 
-			while (filesAction(files) && stopwatch.ElapsedMilliseconds < waitFor * 1000)
+			while (!filesAction(files) && stopwatch.ElapsedMilliseconds < waitFor * 1000)
 			{
 				files = GetEmailFiles().ToList();
 				Thread.Sleep(500);

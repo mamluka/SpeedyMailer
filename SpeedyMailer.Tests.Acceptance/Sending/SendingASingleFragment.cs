@@ -90,12 +90,12 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone1.Initialize();
 			drone1.Start();
 
-			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
-			drone2.Initialize();
-			drone2.Start();
+//			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+//			drone2.Initialize();
+//			drone2.Start();
 
 			AssertEmailsSentBy("drone1", 100, 120);
-			AssertEmailsSentBy("drone1", 100, 120);
+//			AssertEmailsSentBy("drone2", 100, 120);
 		}
 
 		private void SendCreative(string creativeId)
