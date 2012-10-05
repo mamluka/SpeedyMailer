@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -30,26 +30,58 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Bootstrapper.AutoMapper">
-      <HintPath>..\packages\Bootstrapper.AutoMapper.2.0.2.0\lib\Bootstrapper.AutoMapper.dll</HintPath>
+    <Reference Include="Bootstrapper, Version=2.0.3.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Bootstrapper.2.0.3.2\lib\Bootstrapper.dll</HintPath>
+    </Reference>
+    <Reference Include="Bootstrapper.AutoMapper, Version=2.0.3.22233, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Bootstrapper.AutoMapper.2.0.3.0\lib\Bootstrapper.AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=1.8.0.22497, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\CsvHelper.1.8.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\libs\HTMLAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
-    <Reference Include="Nancy.Bootstrappers.Ninject">
-      <HintPath>..\packages\SpeedyMailer.Nancy.Bootstrappers.Ninject.Mono.0.6.1\lib\net40\Nancy.Bootstrappers.Ninject.dll</HintPath>
+    <Reference Include="Nancy, Version=0.12.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Nancy.0.12.1\lib\net40\Nancy.dll</HintPath>
+    </Reference>
+    <Reference Include="Nancy.Bootstrappers.Ninject, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\SpeedyMailer.Nancy.Bootstrappers.Ninject.Mono.0.6.2\lib\net40\Nancy.Bootstrappers.Ninject.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.ChildKernel">
+    <Reference Include="Ninject.Extensions.ChildKernel, Version=3.0.0.9, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Mono.Extensions.ChildKernel.3.0.0.9\lib\net40\Ninject.Extensions.ChildKernel.dll</HintPath>
     </Reference>
-    <Reference Include="Ninject.Extensions.Conventions">
+    <Reference Include="Ninject.Extensions.Conventions, Version=3.0.0.10, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Mono.Extensions.Conventions.3.0.0.10\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Factory">
       <HintPath>..\packages\Ninject.Mono.Extensions.Factory.2.1.0.15\lib\net40\Ninject.Extensions.Factory.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.960\lib\net40\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.960\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -64,9 +96,6 @@
     <Reference Include="AutoMapper">
       <HintPath>..\packages\AutoMapper.2.1.267\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="Bootstrapper">
-      <HintPath>..\packages\Bootstrapper.2.0.3.1\lib\Bootstrapper.dll</HintPath>
-    </Reference>
     <Reference Include="C5, Version=1.1.0.0, Culture=neutral, PublicKeyToken=06a1b38866503b69">
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\C5.dll</HintPath>
     </Reference>
@@ -76,29 +105,11 @@
     <Reference Include="Common.Logging, Version=2.0.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
       <HintPath>..\packages\Common.Logging.2.0.0\lib\2.0\Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="CsvHelper">
-      <HintPath>..\packages\CsvHelper.1.4.0\lib\net40-client\CsvHelper.dll</HintPath>
-    </Reference>
-    <Reference Include="Nancy">
-      <HintPath>..\packages\Nancy.0.11.0\lib\net40\Nancy.dll</HintPath>
-    </Reference>
     <Reference Include="NConfig">
       <HintPath>..\packages\NConfig.1.0.12\lib\Net40\NConfig.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c">
-      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="Quartz, Version=2.0.1.100, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4">
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593">
-      <HintPath>..\packages\RavenDB.Client.1.0.960\lib\net40\Raven.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593">
-      <HintPath>..\packages\RavenDB.Client.1.0.960\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.103.4\lib\net4\RestSharp.dll</HintPath>
@@ -113,26 +124,47 @@
     <Compile Include="Apis\ApiResult.cs" />
     <Compile Include="Apis\ApiCallsSettings.cs" />
     <Compile Include="Apis\IApiHost.cs" />
+    <Compile Include="Apis\ListsModuleTests.cs" />
     <Compile Include="Apis\Status.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />
+    <Compile Include="Container\AssemblyGatherer.cs" />
+    <Compile Include="Container\AssemblyGathererOptions.cs" />
     <Compile Include="Container\BindingStrategy.cs" />
+    <Compile Include="Container\BindingStrategyGatherer.cs" />
+    <Compile Include="Container\ConfigurationsGatherer.cs" />
+    <Compile Include="Container\ContainerBootstrapper.cs" />
+    <Compile Include="Container\ContainerStrapperOptions.cs" />
+    <Compile Include="Container\DatabaseBindingGatherer.cs" />
+    <Compile Include="Container\DatabaseBindingGathererOptions.cs" />
     <Compile Include="Container\DocumentStoreSettingsBinder.cs" />
+    <Compile Include="Container\Extentions.cs" />
+    <Compile Include="Container\IDoneBootstrapping.cs" />
     <Compile Include="Container\JsonFileSettingsBinder.cs" />
     <Compile Include="Container\JsonSettingsInterceptor.cs" />
+    <Compile Include="Container\NancyBootstrapperProvider.cs" />
+    <Compile Include="Container\NancyContainerBootstrapper.cs" />
     <Compile Include="Container\NoRavenSupport.cs" />
     <Compile Include="Container\RavenDocumentStoreProvider.cs" />
     <Compile Include="Container\DocumentStoreSettingBinder.cs" />
+    <Compile Include="Container\SerializeUsingJsonNet.cs" />
     <Compile Include="Container\SettingsInterceptor.cs" />
     <Compile Include="Container\SettingsInterceptorBase.cs" />
+    <Compile Include="Container\SettingsProvider.cs" />
+    <Compile Include="Container\SettingsResolverGatherer.cs" />
+    <Compile Include="Container\SettingsResolverGathererOptions.cs" />
     <Compile Include="CoreAssemblyMarker.cs" />
     <Compile Include="Domain\Contacts\Contact.cs" />
-    <Compile Include="Domain\Contacts\ContactFromCSVRow.cs" />
+    <Compile Include="Domain\Contacts\ContactsListCsvRow.cs" />
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativePackage.cs" />
-    <Compile Include="Domain\Creative\CreativeTemplate.cs" />
+    <Compile Include="Domain\Creative\FakeEmailMessage.cs" />
+    <Compile Include="Domain\Creative\FakeMailAddress.cs" />
+    <Compile Include="Domain\Creative\FragmentStatus.cs" />
+    <Compile Include="Domain\Creative\Template.cs" />
     <Compile Include="Domain\Creative\DealUrlData.cs" />
+    <Compile Include="Domain\Creative\TemplateType.cs" />
     <Compile Include="Domain\Drones\Drone.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
@@ -148,7 +180,7 @@
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Protocol\CreativeEndpoint.cs" />
+    <Compile Include="Settings\CreativeEndpointsSettings.cs" />
     <Compile Include="Settings\DefaultAttribute.cs" />
     <Compile Include="Settings\BaseApiSettings.cs" />
     <Compile Include="Settings\CreativeApisSettings.cs" />
@@ -158,6 +190,7 @@
     <Compile Include="Tasks\ComputationResult.cs" />
     <Compile Include="Tasks\ContainerJobFactory.cs" />
     <Compile Include="Tasks\ITaskData.cs" />
+    <Compile Include="Tasks\SchedulerExtentions.cs" />
     <Compile Include="Tasks\TaskExecutionSettings.cs" />
     <Compile Include="Tasks\JobBase.cs" />
     <Compile Include="Tasks\QuartzSchedulerProvider.cs" />
@@ -192,6 +225,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Exceptions\" />
+    <Folder Include="Protocol\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

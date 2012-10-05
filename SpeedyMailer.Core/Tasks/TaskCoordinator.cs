@@ -19,13 +19,13 @@ namespace SpeedyMailer.Core.Tasks
 
 		public void BeginExecuting()
 		{
-			if (!_scheduler.InStandbyMode) return;
-
 			var jobDetail = JobBuilder.Create<StartTaskExecutionJob>()
 				.WithIdentity("StartTaskExecution")
 				.RequestRecovery()
 				.StoreDurably()
 				.Build();
+
+			_scheduler.StartIfNeeded();
 
 			if (!_scheduler.CheckExists(jobDetail.Key))
 			{
@@ -33,10 +33,10 @@ namespace SpeedyMailer.Core.Tasks
 			}
 			
 			_scheduler.TriggerJob(jobDetail.Key);
-			_scheduler.Start();
 		}
 	}
 
+	[DisallowConcurrentExecution]
 	public class StartTaskExecutionJob:IJob
 	{
 		private readonly ITaskExecutor _taskExecutor;
@@ -49,7 +49,6 @@ namespace SpeedyMailer.Core.Tasks
 		public void Execute(IJobExecutionContext context)
 		{
 			_taskExecutor.Start();
-			context.Scheduler.Standby();
 		}
 	}
 }

@@ -7,7 +7,7 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		public override void Load()
 		{
-			Kernel.Bind<IScheduler>().ToProvider<QuartzSchedulerProvider>();
+			Kernel.Bind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InSingletonScope();
 		}
 	}
 }

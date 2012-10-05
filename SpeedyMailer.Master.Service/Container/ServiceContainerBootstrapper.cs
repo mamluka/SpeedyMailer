@@ -35,7 +35,7 @@ namespace SpeedyMailer.Master.Service.Container
         }
     }
 
-    public class NancyModule : NinjectModule
+    public class NancyFxModule : NinjectModule
     {
         public override void Load()
         {

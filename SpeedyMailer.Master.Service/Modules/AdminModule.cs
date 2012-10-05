@@ -8,19 +8,20 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
-	public class AdminModule:NancyModule
-	{
-		private readonly ServiceSettings _serviceSettings;
+    public class AdminModule : NancyModule
+    {
+        private readonly ServiceSettings _serviceSettings;
 
-		public AdminModule(ServiceSettings serviceSettings):base("/admin")
-		{
-			_serviceSettings = serviceSettings;
+        public AdminModule(ServiceSettings serviceSettings)
+            : base("/admin")
+        {
+            _serviceSettings = serviceSettings;
 
-			Get["/settings/get"] = x => Response.AsJson(new ServiceEndpoints.GetRemoteServiceSettings.Response
-			                                            	{
-			                                            		ServiceBaseUrl = _serviceSettings.BaseUrl
-			                                            	});
-			Get["/info"] = x => Response.AsJson("OK");
-		}
-	}
+            Get["/settings"] = x => Response.AsJson(new ServiceEndpoints.GetRemoteServiceSettings.Response
+                                                            {
+                                                                ServiceBaseUrl = _serviceSettings.BaseUrl
+                                                            });
+            Get["/info"] = x => Response.AsJson("OK");
+        }
+    }
 }

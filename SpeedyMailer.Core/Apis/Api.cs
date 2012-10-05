@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
@@ -9,6 +13,7 @@ namespace SpeedyMailer.Core.Apis
 		private readonly IRestClient _restClient;
 		private readonly ApiCallsSettings _apiCallsSettings;
 		private string _apiBaseUrl;
+		private IList<string> _requestFiles;
 
 		public Api(IRestClient restClient, ApiCallsSettings apiCallsSettings)
 		{
@@ -29,13 +34,17 @@ namespace SpeedyMailer.Core.Apis
 			ExecuteCall(apiCall);
 		}
 
-		public TResponse Call<TEndpoint, TResponse>() where TEndpoint : ApiCall, new() where TResponse : new()
+		public TResponse Call<TEndpoint, TResponse>()
+			where TEndpoint : ApiCall, new()
+			where TResponse : new()
 		{
 			var apiCall = new TEndpoint();
 			return ExecuteCall<TResponse>(apiCall);
 		}
 
-		public TResponse Call<TEndpoint, TResponse>(Action<TEndpoint> action) where TEndpoint : ApiCall, new() where TResponse : new()
+		public TResponse Call<TEndpoint, TResponse>(Action<TEndpoint> action)
+			where TEndpoint : ApiCall, new()
+			where TResponse : new()
 		{
 			var apiCall = new TEndpoint();
 			action(apiCall);
@@ -54,13 +63,20 @@ namespace SpeedyMailer.Core.Apis
 			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
 
+		    CleanUp();
+
 			return result.Data;
 
 		}
 
-		private void ExecuteCall(ApiCall apiCall)
+	    private void CleanUp()
+	    {
+	        _requestFiles = new List<string>();
+	    }
+
+	    private void ExecuteCall(ApiCall apiCall)
 		{
-			
+
 			var restRequest = SetupApiCall(apiCall);
 
 			Trace.WriteLine("Endpoint url called is: " + restRequest.Resource);
@@ -70,18 +86,48 @@ namespace SpeedyMailer.Core.Apis
 
 			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
+
+            CleanUp();
 		}
 
 		private RestRequest SetupApiCall(ApiCall apiCall)
 		{
-			var restRequest = new RestRequest(apiCall.Endpoint);
-			var method = Translate(apiCall);
-			HandleRequestBody(apiCall, restRequest);
+			var endpoint = ParseArguments(apiCall);
+			var restRequest = new RestRequest(endpoint);
 
+			var method = Translate(apiCall);
 			restRequest.Method = method;
+
+			if (_requestFiles != null)
+				_requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
+
+			HandleRequestBody(apiCall, restRequest);
 
 			_restClient.BaseUrl = GetBaseUrl();
 			return restRequest;
+		}
+
+		private string ParseArguments(ApiCall apiCall)
+		{
+			var endpoint = apiCall.Endpoint;
+			var groups = Regex.Match(endpoint, "{(.+?)}").Groups[1];
+
+			foreach (var capture in groups.Captures)
+			{
+				var parameter = capture.ToString();
+
+				var value = apiCall
+					.GetType()
+					.GetProperties()
+					.Single(x => x.Name.ToLower() == parameter)
+					.GetValue(apiCall, null)
+					.ToString()
+					.ToLower();
+
+				endpoint = endpoint.Replace("{" + parameter + "}", value);
+			}
+
+			return endpoint;
 		}
 
 		private static Method Translate(ApiCall apiCall)
@@ -103,13 +149,13 @@ namespace SpeedyMailer.Core.Apis
 
 		private void HandleRequestBody(ApiCall apiCall, IRestRequest restRequest)
 		{
-			if (apiCall.CallMethod == RestMethod.Get)
+			if (apiCall.CallMethod == RestMethod.Post)
 			{
-				restRequest.AddObject(apiCall);
+				restRequest.AddBody(apiCall);
 			}
 			else
 			{
-				restRequest.AddBody(apiCall);
+				restRequest.AddObject(apiCall);
 			}
 
 			restRequest.RequestFormat = DataFormat.Json;
@@ -123,6 +169,12 @@ namespace SpeedyMailer.Core.Apis
 		public Api SetBaseUrl(string baseUrl)
 		{
 			_apiBaseUrl = baseUrl;
+			return this;
+		}
+
+		public Api AddFiles(IEnumerable<string> files)
+		{
+			_requestFiles = files.ToList();
 			return this;
 		}
 	}

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
 using Quartz;
@@ -13,6 +14,7 @@ using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Commands;
 using Antlr4.StringTemplate;
+using Template = Antlr4.StringTemplate.Template;
 
 
 namespace SpeedyMailer.Drones.Tasks
@@ -26,7 +28,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 		public override ITrigger ConfigureTrigger()
 		{
-			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(1).WithRepeatCount(1));
+			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(1).RepeatForever());
 		}
 
 		[DisallowConcurrentExecution]
@@ -48,16 +50,16 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var creativeFragment = _api
-					.Call<ServiceEndpoints.FetchFragment, ServiceEndpoints.FetchFragment.Response>()
-					.CreativeFragment;
+			    var creativeFragment = _api
+			        .Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
+
+                if (creativeFragment == null)
+                    return;
 
 				var recipiens = creativeFragment.Recipients;
 
-				foreach (var recipient in recipiens)
+				foreach (var package in recipiens.Select(recipient => ToPackage(recipient, creativeFragment)))
 				{
-					var package = ToPackage(recipient, creativeFragment);
-
 					_sendCreativePackageCommand.Package = package;
 					_sendCreativePackageCommand.Execute();
 				}

@@ -12,10 +12,12 @@ namespace SpeedyMailer.Drones.Commands
 	public class SendCreativePackageCommand : Command
 	{
 		private readonly EmailingSettings _emailingSettings;
+		private readonly DroneSettings _droneSettings;
 		public CreativePackage Package { get; set; }
 
-		public SendCreativePackageCommand(EmailingSettings emailingSettings)
+		public SendCreativePackageCommand(EmailingSettings emailingSettings, DroneSettings droneSettings)
 		{
+			_droneSettings = droneSettings;
 			_emailingSettings = emailingSettings;
 		}
 
@@ -28,17 +30,16 @@ namespace SpeedyMailer.Drones.Commands
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
-				var emailFile = JsonConvert.SerializeObject(email,
-															Formatting.Indented,
-															new JsonSerializerSettings
-																{
-																	NullValueHandling = NullValueHandling.Ignore
-																});
+				var tmpEmailFile = SerializeObject(email);
+				var fakeEmailFile = JsonConvert.DeserializeObject<FakeEmailMessage>(tmpEmailFile);
+				fakeEmailFile.DroneId = _droneSettings.Identifier;
 
-				using (var writer = new StreamWriter(Path.Combine(_emailingSettings.WritingEmailsToDiskPath, "email" + Guid.NewGuid() + ".persist")))
+				var emailFile = SerializeObject(fakeEmailFile);
+
+				using (var writer = new StreamWriter(CreateEmailFilePath()))
 				{
 					writer.Write(emailFile);
-					Trace.WriteLine("Email written to disk:\n\r" + emailFile);
+					Trace.WriteLine("Email sent to :" + Package.To);
 					writer.Flush();
 				}
 			}
@@ -47,6 +48,22 @@ namespace SpeedyMailer.Drones.Commands
 				var client = new SmtpClient();
 				client.Send(email);
 			}
+		}
+
+		private string CreateEmailFilePath()
+		{
+			string filename = string.Format("email_{0}_{1}.persist", _droneSettings.Identifier, Guid.NewGuid());
+			return Path.Combine(_emailingSettings.WritingEmailsToDiskPath, filename);
+		}
+
+		private static string SerializeObject(object email)
+		{
+			return JsonConvert.SerializeObject(email,
+											   Formatting.Indented,
+											   new JsonSerializerSettings
+												   {
+													   NullValueHandling = NullValueHandling.Ignore
+												   });
 		}
 	}
 }

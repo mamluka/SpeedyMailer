@@ -1,6 +1,8 @@
+using Newtonsoft.Json;
 using Ninject.Activation;
 using Raven.Client;
 using Raven.Client.Document;
+using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -10,8 +12,19 @@ namespace SpeedyMailer.Core.Container
         {
             var store = new DocumentStore
 	            {
-					Url = "http://localhost:8080"
+					ConnectionStringName = "RavenDb",
+					Conventions =
+					{
+						CustomizeJsonSerializer =
+							serializer =>
+							{
+								serializer.TypeNameHandling = TypeNameHandling.All;
+							},
+						FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
+						DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
+					}
 	            };
+
             store.Initialize();
             return store;
         }

@@ -14,13 +14,13 @@ using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
-using SpeedyMailer.Master.Web.Core.Commands;
+using SpeedyMailer.Master.Service.Commands;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
-	public class UIActions : MasterActionsBase
+	public class UiActions : MasterActionsBase
 	{
-		public UIActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
+		public UiActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
 		{ }
 

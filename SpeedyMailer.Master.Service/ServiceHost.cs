@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using CommandLine;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
@@ -8,32 +9,42 @@ using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Container;
 using Ninject;
 
 namespace SpeedyMailer.Master.Service
 {
+    public class ServiceCommandOptions : CommandLineOptionsBase
+    {
+        [Option("b", "base-url", DefaultValue = @"http://localhost:9852", HelpText = "The base url of the service to register the drone with")]
+        public string BaseUrl { get; set; }
+    }
+
     public class ServiceHost
     {
         public static void Main(string[] args)
         {
-            var kernel = ServiceContainerBootstrapper.Kernel;
+            var options = new ServiceCommandOptions();
 
-	        var framework = kernel.Get<Framework>();
-			framework.EditStoreSettings<ServiceSettings>(x=>
-				{
-					x.BaseUrl = "http://10.0.0.1:9852";
-				});
+            if (CommandLineParser.Default.ParseArguments(args, options))
+            {
+                var kernel = ServiceContainerBootstrapper.Kernel;
 
-            var service = kernel.Get<TopService>();
+                var initializeServiceSettingsCommand = kernel.Get<InitializeServiceSettingsCommand>();
+                initializeServiceSettingsCommand.BaseUrl = options.BaseUrl;
+                initializeServiceSettingsCommand.Execute();
 
-            service.Start();
-            Console.WriteLine("To stop press any key");
-            Console.ReadKey();
-            service.Stop();
+                var service = kernel.Get<TopService>();
 
-	        var a = kernel.Get<IScheduler>();
-			a.Shutdown();
+                service.Start();
+                Console.WriteLine("To stop press any key");
+                Console.ReadKey();
+                service.Stop();
+
+                var scheduler = kernel.Get<IScheduler>();
+                scheduler.Shutdown();
+            }
         }
     }
 

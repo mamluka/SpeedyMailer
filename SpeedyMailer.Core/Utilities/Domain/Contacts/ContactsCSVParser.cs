@@ -39,7 +39,7 @@ namespace SpeedyMailer.Core.Utilities.Domain.Contacts
                 files.Add(httpContextBase.Request.Files[i]);
             }
 
-            var emails = new List<ContactFromCSVRow>();
+            var emails = new List<ContactsListCsvRow>();
 
             foreach (HttpPostedFileBase file in files)
             {
@@ -57,7 +57,7 @@ namespace SpeedyMailer.Core.Utilities.Domain.Contacts
                 var csvParser = new CsvParser(new StreamReader(mStream));
                 var csvReader = new CsvReader(csvParser);
 
-                emails.AddRange(csvReader.GetRecords<ContactFromCSVRow>());
+                emails.AddRange(csvReader.GetRecords<ContactsListCsvRow>());
             }
 
 //            List<Contact> emailsDTO = mapper.Map<List<ContactFromCSVRow>, List<Contact>>(emails);

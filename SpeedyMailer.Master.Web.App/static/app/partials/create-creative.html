@@ -1,0 +1,18 @@
+<div>
+    <form>
+        <select ng-model="creativeModel.list" ng-options="list.Name for list in lists"></select>
+        <select ng-model="creativeModel.unsubscribeTemplate" ng-options="template.Id for template in unsubscribeTemplates"></select>
+        <div style="clear: both"></div>
+        <label for="subject">Subject:</label>
+        <input type="text" name="subject" ng-model="creativeModel.subject" />
+        <div style="clear: both"></div>
+
+        <textarea name="body" ng-model="creativeModel.body"></textarea>
+        <div style="clear: both"></div>
+
+        <label>Deal url</label>
+        <input type="text" name="dealUrl" ng-model="creativeModel.dealUrl" />
+
+        <button ng-click="save(creativeModel)"></button>
+    </form>
+</div>

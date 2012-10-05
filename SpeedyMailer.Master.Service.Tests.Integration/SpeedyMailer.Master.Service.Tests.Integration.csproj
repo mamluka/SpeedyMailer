@@ -68,23 +68,16 @@
     <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.framework, Version=2.6.0.12051, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NUnit.2.6.0.12054\lib\nunit.framework.dll</HintPath>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
     </Reference>
-    <Reference Include="nunit.mocks, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.5.10.11092\lib\nunit.mocks.dll</HintPath>
+    <Reference Include="Ploeh.AutoFixture">
+      <HintPath>..\packages\AutoFixture.2.12.0\lib\Ploeh.AutoFixture.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Ploeh.AutoFixture, Version=2.11.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.2.11.1\lib\Ploeh.AutoFixture.dll</HintPath>
-    </Reference>
-    <Reference Include="Ploeh.SemanticComparison, Version=2.11.1.0, Culture=neutral, PublicKeyToken=b24654c590009d4f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\AutoFixture.2.11.1\lib\Ploeh.SemanticComparison.dll</HintPath>
-    </Reference>
-    <Reference Include="pnunit.framework, Version=1.0.4109.34242, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
+    <Reference Include="Ploeh.SemanticComparison">
+      <HintPath>..\packages\AutoFixture.2.12.0\lib\Ploeh.SemanticComparison.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Quartz, Version=2.0.1.100, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
@@ -124,6 +117,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -132,11 +126,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\AddContactsCommandTests.cs" />
+    <Compile Include="Commands\AddCreativeCommandTests.cs" />
+    <Compile Include="Commands\CreateListCommandTests.cs" />
+    <Compile Include="Commands\CreateTemplateCommandTests.cs" />
+    <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
+    <Compile Include="Commands\SendCreativeCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
+    <Compile Include="Modules\DronesModuleTests.cs" />
+    <Compile Include="Modules\ListsModuleTests.cs" />
+    <Compile Include="Modules\TemplatesModuleTests.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\ImportContactsFromCsvTaskTests.cs" />
     <Compile Include="Tasks\WakeupSleepingDronesTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -2,6 +2,7 @@ using Raven.Client;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using System.Linq;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 
@@ -16,18 +17,22 @@ namespace SpeedyMailer.Master.Service.Tasks
     public class CreateCreativeFragmentsTaskExecutor : PersistentTaskExecutor<CreateCreativeFragmentsTask>
     {
         private readonly IDocumentStore _documentStore;
+	    private CreativeEndpointsSettings _creativeEndpointsSettings;
+	    private ServiceSettings _serviceSettings;
 
-        public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore)
-        {
-            _documentStore = documentStore;
-        }
+	    public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore,CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings)
+	    {
+		    _serviceSettings = serviceSettings;
+		    _creativeEndpointsSettings = creativeEndpointsSettings;
+		    _documentStore = documentStore;
+	    }
 
-        public override void Execute(CreateCreativeFragmentsTask task)
+	    public override void Execute(CreateCreativeFragmentsTask task)
         {
             using (var session = _documentStore.OpenSession())
             {
                 var creative = session.Load<Creative>(task.CreativeId);
-                var unsubscribeTempalte = session.Load<CreativeTemplate>(creative.UnsubscribeTemplateId);
+                var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
 
                 foreach (var listId in creative.Lists)
                 {
@@ -55,7 +60,13 @@ namespace SpeedyMailer.Master.Service.Tasks
                             CreativeId = creative.Id,
                             Subject = creative.Subject,
                             Recipients = contacts,
-                            UnsubscribeTemplate = unsubscribeTempalte.Body
+                            UnsubscribeTemplate = unsubscribeTempalte.Body,
+							Service = new Core.Domain.Master.Service
+								          {
+									          BaseUrl = _serviceSettings.BaseUrl,
+											  DealsEndpoint = _creativeEndpointsSettings.Deal,
+											  UnsubscribeEndpoint = _creativeEndpointsSettings.Unsubscribe
+								          }
                         };
                         session.Store(fragment);
                         session.SaveChanges();

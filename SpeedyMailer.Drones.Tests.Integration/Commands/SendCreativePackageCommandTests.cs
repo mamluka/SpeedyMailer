@@ -10,7 +10,6 @@ using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Tests.Core.Integration.Base;
-using SpeedyMailer.Tests.Core.Integration.Emails;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Commands
 {

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using CommandLine;
 using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
 using Ninject;
-using Quartz;
-using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Bootstrappers;
@@ -16,16 +14,16 @@ using SpeedyMailer.Drones.Tasks;
 
 namespace SpeedyMailer.Drones
 {
-	public class DroneCommandOptions:CommandLineOptionsBase
+	public class DroneCommandOptions : CommandLineOptionsBase
 	{
-		[Option("s","service-base-url", DefaultValue  = @"http://localhost:2589",HelpText = "The base url of the service to register the drone with")]
+		[Option("s", "service-base-url", DefaultValue = @"http://localhost:2589", HelpText = "The base url of the service to register the drone with")]
 		public string ServiceBaseUrl { get; set; }
 	}
-    public class DroneHost
-    {
-        public static void Main(string[] args)
-        {
-	        var options = new DroneCommandOptions();
+	public class DroneHost
+	{
+		public static void Main(string[] args)
+		{
+			var options = new DroneCommandOptions();
 
 			if (CommandLineParser.Default.ParseArguments(args, options))
 			{
@@ -40,12 +38,12 @@ namespace SpeedyMailer.Drones
 				drone.Start();
 
 				Console.WriteLine("Starting drone...");
-				
+
 			}
 
 			Console.ReadKey();
-        }
-    }
+		}
+	}
 
 	public class TopDrone
 	{
@@ -54,7 +52,7 @@ namespace SpeedyMailer.Drones
 		private readonly DroneSettings _droneSettings;
 		private readonly Framework _framework;
 
-		public TopDrone(INancyBootstrapper nancyBootstrapper,Framework framework,DroneSettings droneSettings)
+		public TopDrone(INancyBootstrapper nancyBootstrapper, Framework framework, DroneSettings droneSettings)
 		{
 			_framework = framework;
 			_droneSettings = droneSettings;
@@ -76,7 +74,7 @@ namespace SpeedyMailer.Drones
 
 		public void Start()
 		{
-
+			Trace.WriteLine("Drone started:" + _droneSettings.BaseUrl);
 			_nancy.Start();
 		}
 
@@ -84,10 +82,5 @@ namespace SpeedyMailer.Drones
 		{
 			_nancy.Stop();
 		}
-	}
-
-	public class TransportSettings
-	{
-		public string Host { get; set; }
 	}
 }

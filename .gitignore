@@ -1,6 +1,5 @@
 Thumbs.db
 *.obj
-*.exe
 *.pdb
 *.user
 *.aps
@@ -25,7 +24,6 @@ obj/
 [Rr]elease*/
 _ReSharper*/
 [Tt]est[Rr]esult*
-[We]eb.config
 *crunch*
 *.pidb
 
@@ -33,3 +31,4 @@ _ReSharper*/
 Out/**
 RavenDB/Server/Data/**
 RavenDB/Server/*.xml
+packages/*.exe
