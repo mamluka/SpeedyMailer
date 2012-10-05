@@ -190,6 +190,7 @@
     <Compile Include="Tasks\ComputationResult.cs" />
     <Compile Include="Tasks\ContainerJobFactory.cs" />
     <Compile Include="Tasks\ITaskData.cs" />
+    <Compile Include="Tasks\SchedulerExtentions.cs" />
     <Compile Include="Tasks\TaskExecutionSettings.cs" />
     <Compile Include="Tasks\JobBase.cs" />
     <Compile Include="Tasks\QuartzSchedulerProvider.cs" />

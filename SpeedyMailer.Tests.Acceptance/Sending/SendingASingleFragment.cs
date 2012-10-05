@@ -23,12 +23,10 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		private Api _api;
 
 		[Test]
-		public void WhenSendingTheCreativeShouldSendTheFragments()
+		public void SendingEmailsWithOneDrone()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
-
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
 
 			_api = MasterResolve<Api>();
 
@@ -48,8 +46,6 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			var creativeId = SaveCreative();
 			SendCreative(creativeId);
 
-			WaitForEntitiesToExist<CreativeFragment>(30);
-
 			var drone = DroneActions.CreateDrone("drone1", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone.Initialize();
 			drone.Start();
@@ -60,13 +56,11 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		}
 
 		[Test]
-		public void SendingUsingTwoDrones()
+		public void SendingEmailsUsingTwoDrones()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 50; });
-
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
 
 			_api = MasterResolve<Api>();
 
@@ -90,12 +84,64 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone1.Initialize();
 			drone1.Start();
 
-//			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
-//			drone2.Initialize();
-//			drone2.Start();
+			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone2.Initialize();
+			drone2.Start();
 
 			AssertEmailsSentBy("drone1", 100, 120);
-//			AssertEmailsSentBy("drone2", 100, 120);
+			AssertEmailsSentBy("drone2", 100, 120);
+		}
+
+		[Test]
+		public void SendingEmailsUsingFiveDrones()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 50; });
+
+			_api = MasterResolve<Api>();
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var csvRows = Fixture
+				.Build<ContactsListCsvRow>()
+				.With(x => x.Email, "email" + Guid.NewGuid() + "@domain.com")
+				.CreateMany(500)
+				.ToList();
+
+			CreateTemplate();
+			CreateList("my list");
+
+			AddContactsToList("my list", csvRows);
+			var creativeId = SaveCreative();
+			SendCreative(creativeId);
+
+			var drone1 = DroneActions.CreateDrone("drone1", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone1.Initialize();
+			drone1.Start();
+
+			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone2.Initialize();
+			drone2.Start();
+
+			var drone3 = DroneActions.CreateDrone("drone3", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone3.Initialize();
+			drone3.Start();
+
+			var drone4 = DroneActions.CreateDrone("drone4", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone4.Initialize();
+			drone4.Start();
+
+			var drone5 = DroneActions.CreateDrone("drone5", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone5.Initialize();
+			drone5.Start();
+
+			AssertEmailsSentBy("drone1", 100, 150);
+			AssertEmailsSentBy("drone2", 100, 150);
+			AssertEmailsSentBy("drone3", 100, 150);
+			AssertEmailsSentBy("drone4", 100, 150);
+			AssertEmailsSentBy("drone5", 100, 150);
 		}
 
 		private void SendCreative(string creativeId)

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Net.Mail;
 using Quartz;
@@ -57,10 +58,8 @@ namespace SpeedyMailer.Drones.Tasks
 
 				var recipiens = creativeFragment.Recipients;
 
-				foreach (var recipient in recipiens)
+				foreach (var package in recipiens.Select(recipient => ToPackage(recipient, creativeFragment)))
 				{
-					var package = ToPackage(recipient, creativeFragment);
-
 					_sendCreativePackageCommand.Package = package;
 					_sendCreativePackageCommand.Execute();
 				}

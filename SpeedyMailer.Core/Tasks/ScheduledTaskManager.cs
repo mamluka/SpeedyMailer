@@ -20,19 +20,22 @@ namespace SpeedyMailer.Core.Tasks
 
 		public void AddAndStart(ScheduledTask task)
 		{
+			_scheduler.StartIfNeeded();
+
 			var job = task.GetJob();
 
 			if (_scheduler.CheckExists(job.Key))
 			{
 				_scheduler.DeleteJob(job.Key);
 			}
+
 			_scheduler.ScheduleJob(job, task.GetTrigger());
-			if (!_scheduler.IsStarted)
-				_scheduler.Start();
 		}
 
 		public void AddAndStart(IEnumerable<ScheduledTask> tasks)
 		{
+			_scheduler.StartIfNeeded();
+
 			foreach (var task in tasks)
 			{
 				var job = task.GetJob();
@@ -43,9 +46,6 @@ namespace SpeedyMailer.Core.Tasks
 				}
 				_scheduler.ScheduleJob(job, task.GetTrigger());
 			}
-
-			if (!_scheduler.IsStarted || _scheduler.InStandbyMode || _scheduler.IsShutdown)
-				_scheduler.Start();
 		}
 	}
 }

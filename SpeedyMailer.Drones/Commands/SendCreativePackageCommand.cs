@@ -12,10 +12,10 @@ namespace SpeedyMailer.Drones.Commands
 	public class SendCreativePackageCommand : Command
 	{
 		private readonly EmailingSettings _emailingSettings;
-		private DroneSettings _droneSettings;
+		private readonly DroneSettings _droneSettings;
 		public CreativePackage Package { get; set; }
 
-		public SendCreativePackageCommand(EmailingSettings emailingSettings,DroneSettings droneSettings)
+		public SendCreativePackageCommand(EmailingSettings emailingSettings, DroneSettings droneSettings)
 		{
 			_droneSettings = droneSettings;
 			_emailingSettings = emailingSettings;
@@ -36,10 +36,10 @@ namespace SpeedyMailer.Drones.Commands
 
 				var emailFile = SerializeObject(fakeEmailFile);
 
-				using (var writer = new StreamWriter(Path.Combine(_emailingSettings.WritingEmailsToDiskPath, "email" + Guid.NewGuid() + ".persist")))
+				using (var writer = new StreamWriter(CreateEmailFilePath()))
 				{
 					writer.Write(emailFile);
-					Trace.WriteLine("Email written to disk:\n\r" + emailFile);
+					Trace.WriteLine("Email sent to :" + Package.To);
 					writer.Flush();
 				}
 			}
@@ -50,14 +50,20 @@ namespace SpeedyMailer.Drones.Commands
 			}
 		}
 
+		private string CreateEmailFilePath()
+		{
+			string filename = string.Format("email_{0}_{1}.persist", _droneSettings.Identifier, Guid.NewGuid());
+			return Path.Combine(_emailingSettings.WritingEmailsToDiskPath, filename);
+		}
+
 		private static string SerializeObject(object email)
 		{
 			return JsonConvert.SerializeObject(email,
-			                                   Formatting.Indented,
-			                                   new JsonSerializerSettings
-				                                   {
-					                                   NullValueHandling = NullValueHandling.Ignore
-				                                   });
+											   Formatting.Indented,
+											   new JsonSerializerSettings
+												   {
+													   NullValueHandling = NullValueHandling.Ignore
+												   });
 		}
 	}
 }

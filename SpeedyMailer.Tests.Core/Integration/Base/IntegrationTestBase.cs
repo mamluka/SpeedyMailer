@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
@@ -15,7 +16,9 @@ using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
 using Newtonsoft.Json;
 using Ninject;
+using Ninject.Activation;
 using Quartz;
+using Quartz.Impl;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
@@ -49,7 +52,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public UiActions UIActions { get; set; }
 		public ServiceActions ServiceActions { get; set; }
 
-		public string AssemblyDirectory
+		public static string AssemblyDirectory
 		{
 			get
 			{
@@ -97,6 +100,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
+			MasterKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
+			DroneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
+
 			DefaultBaseUrl = GenerateRandomLocalhostAddress();
 		}
 
@@ -125,7 +131,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			DocumentStore = embeddableDocumentStore.Initialize();
 			MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
-			DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
+			DroneKernel.Rebind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
 
 			RegisterActions();
 			ExtraSetup();
@@ -440,7 +446,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			var emails = files.Select(x => JsonConvert.DeserializeObject<FakeEmailMessage>(File.ReadAllText(x)));
 
-			emails.Should().Contain(x => x.To.Any(p => contacts.Contains(p.Address)));
+			emails.Should().OnlyContain(x => x.To.Any(p => contacts.Contains(p.Address)));
 		}
 
 		private FakeEmailMessage GetEmailFromDisk(int waitFor)
@@ -479,6 +485,22 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return files;
 		}
 
+		private List<FakeEmailMessage> WaitForEmailsWithCondition(int waitFor, Func<List<FakeEmailMessage>, bool> filesAction, Func<FakeEmailMessage, bool> condition)
+		{
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			var emails = new List<FakeEmailMessage>();
+
+			while (!filesAction(emails) && stopwatch.ElapsedMilliseconds < waitFor * 1000)
+			{
+				emails = GetEmailFiles().Select(DeserializeEmailFile).Where(condition).ToList();
+				Thread.Sleep(500);
+			}
+
+			return emails;
+		}
+		
 		protected void DeleteEmails()
 		{
 			GetEmailFiles().ToList().ForEach(File.Delete);
@@ -510,14 +532,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		protected void AssertEmailsSentBy(string droneId, int numberOfEmails, int waitFor = 30)
 		{
-			var files = WaitForEmailFiles(waitFor, list => list.Count == numberOfEmails);
+			var files = WaitForEmailsWithCondition(waitFor, list => list.Count == numberOfEmails, message => message.DroneId == droneId);
 
 			if (files.Count != numberOfEmails)
 			{
 				Assert.Fail("The expected number of emails {0} was not sent, found {1}", numberOfEmails, files.Count);
 			}
-
-			files.Select(DeserializeEmailFile).Should().Contain(x => x.DroneId == droneId);
 		}
 	}
 

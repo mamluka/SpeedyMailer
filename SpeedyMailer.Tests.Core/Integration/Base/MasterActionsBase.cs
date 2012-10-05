@@ -14,24 +14,24 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public Fixture Fixture { get; private set; }
 
 		protected MasterActionsBase(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
-			: base(kernel,taskManager,taskExecutor,scheduledTaskManager)
+			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
 		{
 			Kernel = kernel;
 			Fixture = new Fixture();
 		}
 
-		public override void EditSettings<T>(Action<T> action)
+		public override void EditSettings<T>(Action<T> action, IKernel kernel = null)
 		{
 			var documentStore = Kernel.Get<IDocumentStore>();
 			using (var session = documentStore.OpenSession())
 			{
 				var settings = new T();
 				action.Invoke(settings);
-				session.Store(settings,"settings/" + typeof(T).Name.Replace("Settings",""));
+				session.Store(settings, "settings/" + typeof(T).Name.Replace("Settings", ""));
 				session.SaveChanges();
 			}
 
-			ContainerBootstrapper.ReloadStoreSetting<T>(Kernel,documentStore);
+			ContainerBootstrapper.ReloadStoreSetting<T>(kernel ?? Kernel, documentStore);
 		}
 	}
 }

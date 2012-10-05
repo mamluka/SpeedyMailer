@@ -1,10 +1,12 @@
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
+using Quartz;
 using Raven.Client;
 using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Master.Service;
 
@@ -34,6 +36,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Storage<IDocumentStore>(x => x.Constant(_documentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
+
+			existingContainer.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
 		}
 
 		protected override NancyInternalConfiguration InternalConfiguration
@@ -64,6 +68,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
+
+			existingContainer.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
 		}
 
 		protected override NancyInternalConfiguration InternalConfiguration

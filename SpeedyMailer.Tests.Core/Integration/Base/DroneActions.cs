@@ -1,9 +1,15 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Nancy.Bootstrapper;
 using Newtonsoft.Json;
 using Ninject;
+using Ninject.Extensions.ChildKernel;
+using Quartz;
 using Raven.Client;
+using RestSharp;
+using Rhino.Mocks;
+using SpeedyMailer.Core;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Tasks;
@@ -15,7 +21,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class DroneActions : ActionsBase
 	{
-	    public IKernel Kernel { get; set; }
+		public IKernel Kernel { get; set; }
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
@@ -23,7 +29,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Kernel = kernel;
 		}
 
-		public override void EditSettings<T>(Action<T> action)
+		public override void EditSettings<T>(Action<T> action, IKernel kernel = null)
 		{
 			var settingsGuid = Guid.NewGuid();
 			var name = SettingsFileName<T>();
@@ -42,7 +48,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 																}));
 			}
 
-			ContainerBootstrapper.ReloadJsonSetting<T>(Kernel, settingsFolderName);
+			ContainerBootstrapper.ReloadJsonSetting<T>(kernel ?? Kernel, settingsFolderName);
 		}
 
 		private static string SettingsFileName<T>()
@@ -52,18 +58,41 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public TopDrone CreateDrone(string droneId, string baseUrl, string serviceBaseUrl)
 		{
-			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = serviceBaseUrl);
+			var droneKernel = ContainerBootstrapper
+				.Bootstrap()
+				.Analyze(x => x.AssembiesContaining(new[]
+                                                        {
+                                                            typeof (DroneAssemblyMarker),
+                                                            typeof (ISchedulerFactory),
+                                                            typeof (CoreAssemblyMarker),
+                                                            typeof(IRestClient)
+                                                        }))
+				.BindInterfaceToDefaultImplementation()
+				.Configure(x => x.InTransientScope())
+				.NoDatabase()
+				.Settings(x => x.UseJsonFiles())
+				.Done();
+
+			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
+			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
+
+			EditSettings<ApiCallsSettings>(x =>
+											   {
+												   x.ApiBaseUri = serviceBaseUrl;
+											   }, droneKernel);
 			EditSettings<DroneSettings>(x =>
-				                            {
-					                            x.BaseUrl = baseUrl;
-					                            x.Identifier = droneId;
-				                            });
+											{
+												x.BaseUrl = baseUrl;
+												x.Identifier = droneId;
+											}, droneKernel);
 
-			Kernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
+			EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntegrationTestBase.AssemblyDirectory, droneKernel);
 
-		    var topDrone = Kernel.Get<TopDrone>();
-		   
-		    return topDrone;
+			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
+
+			var topDrone = droneKernel.Get<TopDrone>();
+
+			return topDrone;
 		}
 	}
 }
