@@ -1,6 +1,8 @@
+using System.Diagnostics;
 using Ninject.Activation;
 using Quartz;
 using Quartz.Impl;
+using System.Linq;
 
 namespace SpeedyMailer.Core.Tasks
 {
@@ -11,6 +13,7 @@ namespace SpeedyMailer.Core.Tasks
 			var schedulerFactory = new StdSchedulerFactory();
 			var scheduler = schedulerFactory.GetScheduler();
 			scheduler.JobFactory = new ContainerJobFactory(context.Kernel);
+			scheduler.Start();
 			return scheduler;
 		}
 	}

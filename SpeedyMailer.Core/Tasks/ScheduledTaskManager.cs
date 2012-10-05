@@ -27,8 +27,6 @@ namespace SpeedyMailer.Core.Tasks
 				_scheduler.DeleteJob(job.Key);
 			}
 			_scheduler.ScheduleJob(job, task.GetTrigger());
-			if (!_scheduler.IsStarted)
-				_scheduler.Start();
 		}
 
 		public void AddAndStart(IEnumerable<ScheduledTask> tasks)
@@ -43,9 +41,6 @@ namespace SpeedyMailer.Core.Tasks
 				}
 				_scheduler.ScheduleJob(job, task.GetTrigger());
 			}
-
-			if (!_scheduler.IsStarted || _scheduler.InStandbyMode || _scheduler.IsShutdown)
-				_scheduler.Start();
 		}
 	}
 }
