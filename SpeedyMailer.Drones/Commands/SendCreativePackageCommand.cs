@@ -5,6 +5,7 @@ using System.Net.Mail;
 using Newtonsoft.Json;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Drones.Commands
@@ -12,7 +13,7 @@ namespace SpeedyMailer.Drones.Commands
 	public class SendCreativePackageCommand : Command
 	{
 		private readonly EmailingSettings _emailingSettings;
-		private DroneSettings _droneSettings;
+		private readonly DroneSettings _droneSettings;
 		public CreativePackage Package { get; set; }
 
 		public SendCreativePackageCommand(EmailingSettings emailingSettings,DroneSettings droneSettings)
@@ -28,6 +29,9 @@ namespace SpeedyMailer.Drones.Commands
 			email.Body = Package.Body;
 			email.Subject = Package.Subject;
 
+			Trace.WriteLine("Emails settings folder: " + _emailingSettings.WritingEmailsToDiskPath);
+			Trace.WriteLine("Drone settings: " + _droneSettings.BaseUrl);
+
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
 				var tmpEmailFile = SerializeObject(email);
@@ -39,6 +43,7 @@ namespace SpeedyMailer.Drones.Commands
 				using (var writer = new StreamWriter(Path.Combine(_emailingSettings.WritingEmailsToDiskPath, "email" + Guid.NewGuid() + ".persist")))
 				{
 					writer.Write(emailFile);
+					Trace.WriteLine("Email written to disk for " + Package.To);
 					writer.Flush();
 				}
 			}

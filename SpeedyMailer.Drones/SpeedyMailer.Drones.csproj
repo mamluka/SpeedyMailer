@@ -122,7 +122,6 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Settings\DroneSettings.cs" />
-    <Compile Include="Settings\EmailingSettings.cs" />
     <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

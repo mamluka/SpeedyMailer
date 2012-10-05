@@ -7,6 +7,7 @@ using System.Runtime;
 using NUnit.Framework;
 using Newtonsoft.Json;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Tests.Core.Integration.Base;

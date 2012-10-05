@@ -14,25 +14,25 @@ namespace SpeedyMailer.Core.Container
 	{
 		public static IKernel Kernel;
 
-		private static ContainerStrapperOptions currentOptions;
+		private static ContainerStrapperOptions _currentOptions;
 
 		public static AssemblyGatherer Bootstrap(IKernel kernel = null)
 		{
-			currentOptions = new ContainerStrapperOptions();
+			_currentOptions = new ContainerStrapperOptions();
 			Kernel = kernel;
-			return new AssemblyGatherer(currentOptions);
+			return new AssemblyGatherer(_currentOptions);
 		}
 
 		public static IKernel Execute(ContainerStrapperOptions containerStrapperOptions, IKernel kernel)
 		{
-			currentOptions = containerStrapperOptions;
+			_currentOptions = containerStrapperOptions;
 			return ExecuteOptions(kernel);
 		}
 
 		public static IKernel Execute(ContainerStrapperOptions containerStrapperOptions)
 		{
 			var kernel = new StandardKernel();
-			currentOptions = containerStrapperOptions;
+			_currentOptions = containerStrapperOptions;
 			return ExecuteOptions(kernel);
 		}
 
@@ -42,7 +42,7 @@ namespace SpeedyMailer.Core.Container
 			var fromFunction = FromFunction();
 			var selectFunction = SelectFunction();
 
-			kernel.Bind(x => ApplyBindFunction(x, fromFunction, bindFunction, selectFunction).Configure(currentOptions.ConfigurationAction));
+			kernel.Bind(x => ApplyBindFunction(x, fromFunction, bindFunction, selectFunction).Configure(_currentOptions.ConfigurationAction));
 			kernel.Load(GetAssembliesToAnalyze());
 
 			BindDatabase(kernel);
@@ -53,7 +53,7 @@ namespace SpeedyMailer.Core.Container
 
 		private static void BindSettings(IKernel kernel)
 		{
-			if (currentOptions.Settings == SettingsType.DocumentDatabase)
+			if (_currentOptions.Settings == SettingsType.DocumentDatabase)
 			{
 				try
 				{
@@ -68,7 +68,7 @@ namespace SpeedyMailer.Core.Container
 				}
 			}
 
-			if (currentOptions.Settings == SettingsType.JsonFiles)
+			if (_currentOptions.Settings == SettingsType.JsonFiles)
 			{
 				BindJsonSettings(kernel);
 			}
@@ -90,9 +90,9 @@ namespace SpeedyMailer.Core.Container
 
 		private static void BindDatabase(IKernel kernel)
 		{
-			if (currentOptions.DatabaseBindingFunction != null)
+			if (_currentOptions.DatabaseBindingFunction != null)
 			{
-				currentOptions.DatabaseBindingFunction(kernel);
+				_currentOptions.DatabaseBindingFunction(kernel);
 			}
 		}
 
@@ -106,7 +106,7 @@ namespace SpeedyMailer.Core.Container
 			Func<IIncludingNonePublicTypesSelectSyntax, IJoinExcludeIncludeBindSyntax> selectFunction =
 				selectSyntax => selectSyntax.SelectAllClasses();
 
-			if (currentOptions.SelectingStrategy == SelectingStrategy.All)
+			if (_currentOptions.SelectingStrategy == SelectingStrategy.All)
 			{
 				selectFunction = selectSyntax => selectSyntax.SelectAllTypes();
 			}
@@ -117,7 +117,7 @@ namespace SpeedyMailer.Core.Container
 		{
 			Func<IJoinExcludeIncludeBindSyntax, IConfigureSyntax> bindFunction = bindSyntax => bindSyntax.BindDefaultInterface();
 
-			if (currentOptions.BindingStratery == BindingStrategy.BindInterfaceToDefaultImplementation)
+			if (_currentOptions.BindingStratery == BindingStrategy.BindInterfaceToDefaultImplementation)
 			{
 				bindFunction = bindSyntax => bindSyntax.BindDefaultInterface();
 			}
@@ -127,7 +127,7 @@ namespace SpeedyMailer.Core.Container
 		private static Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> FromFunction()
 		{
 			Func<IFromSyntax, IIncludingNonePublicTypesSelectSyntax> fromFunction = fromSyntax => fromSyntax.FromThisAssembly();
-			if (currentOptions.AnalyzeStrategy == AnalyzeStrategy.ByTypes)
+			if (_currentOptions.AnalyzeStrategy == AnalyzeStrategy.ByTypes)
 			{
 				fromFunction = fromSyntax => fromSyntax.From(GetAssembliesToAnalyze());
 			}
@@ -136,7 +136,7 @@ namespace SpeedyMailer.Core.Container
 
 		private static IEnumerable<Assembly> GetAssembliesToAnalyze()
 		{
-			return currentOptions.TypesToAnalyze.Select(type => type.Assembly);
+			return _currentOptions.TypesToAnalyze.Select(type => type.Assembly);
 		}
 
 		private static IJoinExcludeIncludeBindSyntax SelectSettingsTypes(IFromSyntax x)

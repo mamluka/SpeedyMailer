@@ -4,6 +4,7 @@ using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Master;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Drones.Tasks;

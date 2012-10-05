@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Nancy;
 using Nancy.ModelBinding;
@@ -42,13 +43,14 @@ namespace SpeedyMailer.Master.Service.Modules
 									addCreativeCommand.UnsubscribeTemplateId = model.UnsubscribeTemplateId;
 									addCreativeCommand.DealUrl = model.DealUrl;
 
-								    var creativeId = addCreativeCommand.Execute();
+									var creativeId = addCreativeCommand.Execute();
 
-								    return Response.AsJson(new ApiStringResult { Result = creativeId });
+									return Response.AsJson(new ApiStringResult { Result = creativeId });
 								};
 
 			Get["/fragments"] = call =>
 									{
+										Trace.WriteLine("Database used is " + documentStore.Identifier);
 										using (var session = documentStore.OpenSession())
 										{
 

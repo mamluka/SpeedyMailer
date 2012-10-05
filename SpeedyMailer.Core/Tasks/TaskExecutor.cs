@@ -59,6 +59,8 @@ namespace SpeedyMailer.Core.Tasks
 						var executeMethod = executor.GetType().GetMethod("Execute");
 						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] { task }, null);
 
+						Trace.WriteLine("Persistent task exdcuted:" + task.GetType().Name);
+
 						MarkAs(task, session, PersistentTaskStatus.Executed);
 					}
 					catch (Exception)

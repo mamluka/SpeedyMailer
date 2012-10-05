@@ -27,7 +27,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 		public override ITrigger ConfigureTrigger()
 		{
-			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(1).RepeatForever());
+			return TriggerWithTimeCondition(x => x.WithIntervalInSeconds(10).RepeatForever());
 		}
 
 		[DisallowConcurrentExecution]
@@ -56,6 +56,7 @@ namespace SpeedyMailer.Drones.Tasks
                     return;
 
 				var recipiens = creativeFragment.Recipients;
+				Trace.WriteLine("receipents in the fragment: " + recipiens.Count);
 
 				foreach (var recipient in recipiens)
 				{

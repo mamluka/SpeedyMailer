@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq.Expressions;
@@ -16,6 +17,7 @@ using Nancy.Hosting.Self;
 using Newtonsoft.Json;
 using Ninject;
 using Quartz;
+using Quartz.Impl;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
@@ -25,6 +27,7 @@ using SpeedyMailer.Core;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Master.Service;
@@ -124,8 +127,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											};
 
 			DocumentStore = embeddableDocumentStore.Initialize();
+			DocumentStore.Identifier = "master-raven-db";
+
 			MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
-			DroneKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
+			DroneKernel.Rebind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
+
+			MasterKernel.Bind<IScheduler>().ToConstant(new TestingSchedulerBuilder(MasterKernel, "master").Build()).InSingletonScope();
+			DroneKernel.Bind<IScheduler>().ToConstant(new TestingSchedulerBuilder(DroneKernel, "drone").Build()).InSingletonScope();
 
 			RegisterActions();
 			ExtraSetup();
@@ -518,6 +526,29 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 
 			files.Select(DeserializeEmailFile).Should().Contain(x => x.DroneId == droneId);
+		}
+	}
+
+	public class TestingSchedulerBuilder
+	{
+		private readonly IKernel _kernel;
+		private string _instanceName;
+
+		public TestingSchedulerBuilder(IKernel kernel, string instanceName)
+		{
+			_instanceName = instanceName;
+			_kernel = kernel;
+		}
+
+		public IScheduler Build()
+		{
+			var schedulerFactory = new StdSchedulerFactory(new NameValueCollection
+				                                               {
+					                                               {"quartz.scheduler.instanceName",_instanceName}
+				                                               });
+			var scheduler = schedulerFactory.GetScheduler();
+			scheduler.JobFactory = new ContainerJobFactory(_kernel);
+			return scheduler;
 		}
 	}
 

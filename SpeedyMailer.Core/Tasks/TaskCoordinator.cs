@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Quartz;
 
 namespace SpeedyMailer.Core.Tasks
@@ -19,8 +20,6 @@ namespace SpeedyMailer.Core.Tasks
 
 		public void BeginExecuting()
 		{
-			if (!_scheduler.InStandbyMode) return;
-
 			var jobDetail = JobBuilder.Create<StartTaskExecutionJob>()
 				.WithIdentity("StartTaskExecution")
 				.RequestRecovery()
@@ -37,6 +36,7 @@ namespace SpeedyMailer.Core.Tasks
 		}
 	}
 
+	[DisallowConcurrentExecution]
 	public class StartTaskExecutionJob:IJob
 	{
 		private readonly ITaskExecutor _taskExecutor;
@@ -48,8 +48,8 @@ namespace SpeedyMailer.Core.Tasks
 
 		public void Execute(IJobExecutionContext context)
 		{
+			Trace.WriteLine("TaskCoordinator job was executed");
 			_taskExecutor.Start();
-			context.Scheduler.Standby();
 		}
 	}
 }

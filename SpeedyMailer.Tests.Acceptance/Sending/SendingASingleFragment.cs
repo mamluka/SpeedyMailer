@@ -60,13 +60,16 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		}
 
 		[Test]
+		[Ignore]
 		public void SendingUsingTwoDrones()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 50; });
+			ServiceActions.EditSettings<NinjectIdentitySettings>(x => { x.KernelName = "Master"; });
 
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
+			DroneActions.EditSettings<NinjectIdentitySettings>(x => { x.KernelName = "Drone"; });
 
 			_api = MasterResolve<Api>();
 

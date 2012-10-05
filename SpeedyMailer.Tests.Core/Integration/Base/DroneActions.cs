@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using Nancy.Bootstrapper;
 using Newtonsoft.Json;
@@ -6,6 +7,7 @@ using Ninject;
 using Raven.Client;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Drones.Settings;
@@ -15,7 +17,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class DroneActions : ActionsBase
 	{
-	    public IKernel Kernel { get; set; }
+		public IKernel Kernel { get; set; }
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
@@ -27,7 +29,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var settingsGuid = Guid.NewGuid();
 			var name = SettingsFileName<T>();
-			var settingsFolder = Directory.CreateDirectory("settings_" + settingsGuid);
+			var settingsFolder = Directory.CreateDirectory("settings");
 
 			var settingsFolderName = settingsFolder.FullName;
 			using (var writter = new StreamWriter(Path.Combine(settingsFolderName, name)))
@@ -54,16 +56,19 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = serviceBaseUrl);
 			EditSettings<DroneSettings>(x =>
-				                            {
-					                            x.BaseUrl = baseUrl;
-					                            x.Identifier = droneId;
-				                            });
+											{
+												x.BaseUrl = baseUrl;
+												x.Identifier = droneId;
+											});
+
+			var a = Kernel.Get<NinjectIdentitySettings>();
+			Trace.WriteLine("The kernel who started the drone is: " + a.KernelName);
 
 			Kernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
 
-		    var topDrone = Kernel.Get<TopDrone>();
-		   
-		    return topDrone;
+			var topDrone = Kernel.Get<TopDrone>();
+
+			return topDrone;
 		}
 	}
 }

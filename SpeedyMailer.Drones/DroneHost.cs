@@ -69,18 +69,18 @@ namespace SpeedyMailer.Drones
 
 			_framework.StartTasks(tasks);
 
-			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
+//			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
 		}
 
 		public void Start()
 		{
 			Trace.WriteLine("Drone started:" + _droneSettings.BaseUrl);
-			_nancy.Start();
+//			_nancy.Start();
 		}
 
 		public void Stop()
 		{
-			_nancy.Stop();
+//			_nancy.Stop();
 		}
 	}
 }
