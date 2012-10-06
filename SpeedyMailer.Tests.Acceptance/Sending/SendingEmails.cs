@@ -146,15 +146,15 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 		private void SendCreative(string creativeId)
 		{
-			_api.Call<ServiceEndpoints.Send>(x => x.CreativeId = creativeId);
+			_api.Call<ServiceEndpoints.Creative.Send>(x => x.CreativeId = creativeId);
 		}
 
 		private string SaveCreative()
 		{
-			var lists = _api.Call<ServiceEndpoints.GetLists, List<ListDescriptor>>();
-			var templates = _api.Call<ServiceEndpoints.GetTemplates, List<Template>>(x => x.Type = TemplateType.Unsubscribe);
+			var lists = _api.Call<ServiceEndpoints.Lists.GetLists, List<ListDescriptor>>();
+			var templates = _api.Call<ServiceEndpoints.Templates.GetTemplates, List<Template>>(x => x.Type = TemplateType.Unsubscribe);
 
-			var result = _api.Call<ServiceEndpoints.SaveCreative, ApiStringResult>(x =>
+			var result = _api.Call<ServiceEndpoints.Creative.SaveCreative, ApiStringResult>(x =>
 														 {
 															 x.ListId = lists[0].Id;
 															 x.UnsubscribeTemplateId = templates[0].Id;
@@ -172,13 +172,13 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 		private void AddContactsToList(string listName, IEnumerable<ContactsListCsvRow> csvRows)
 		{
-			var lists = _api.Call<ServiceEndpoints.GetLists, List<ListDescriptor>>();
+			var lists = _api.Call<ServiceEndpoints.Lists.GetLists, List<ListDescriptor>>();
 
 			var fileName = CsvTestingExtentions.GenerateFileName("sample");
 
 			csvRows.ToCsvFile(fileName);
 
-			_api.AddFiles(new[] { fileName }).Call<ServiceEndpoints.UploadContacts>(x =>
+			_api.AddFiles(new[] { fileName }).Call<ServiceEndpoints.Lists.UploadContacts>(x =>
 																					  {
 																						  x.ListName = lists[0].Id;
 																					  });
@@ -187,7 +187,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 		private void CreateList(string listName)
 		{
-			_api.Call<ServiceEndpoints.CreateList>(x =>
+			_api.Call<ServiceEndpoints.Lists.CreateList>(x =>
 													   {
 														   x.Name = listName;
 													   });
@@ -195,7 +195,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 		private void CreateTemplate()
 		{
-			_api.Call<ServiceEndpoints.CreateUnsubscribeTemplate>(x =>
+			_api.Call<ServiceEndpoints.Templates.CreateUnsubscribeTemplate>(x =>
 																	  {
 																		  x.Body = "here is my template <url>";
 																	  });

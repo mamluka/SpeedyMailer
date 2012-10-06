@@ -125,6 +125,12 @@
     <Compile Include="Apis\ApiCallsSettings.cs" />
     <Compile Include="Apis\IApiHost.cs" />
     <Compile Include="Apis\ListsModuleTests.cs" />
+    <Compile Include="Apis\ServiceAdminEndpoints.cs" />
+    <Compile Include="Apis\ServiceCreativeEndpoints.cs" />
+    <Compile Include="Apis\ServiceDronesEndpoints.cs" />
+    <Compile Include="Apis\ServiceListsEndpoints.cs" />
+    <Compile Include="Apis\ServiceRulesEndpoints.cs" />
+    <Compile Include="Apis\ServiceTemplatesEndpoints.cs" />
     <Compile Include="Apis\Status.cs" />
     <Compile Include="Commands\Command.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />
@@ -218,7 +224,6 @@
     <Compile Include="Utilities\Framework.cs" />
     <Compile Include="Utilities\General\IReportResults.cs" />
     <Compile Include="Utilities\UrlBuilder.cs" />
-    <Compile Include="Apis\ServiceEndPoints.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -24,7 +24,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			api.Call<ServiceEndpoints.CreateUnsubscribeTemplate>(x =>
+			api.Call<ServiceEndpoints.Templates.CreateUnsubscribeTemplate>(x =>
 																	 {
 																		 x.Body = "body";
 																	 });
@@ -51,7 +51,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.GetTemplates, List<Template>>(x =>
+			var result = api.Call<ServiceEndpoints.Templates.GetTemplates, List<Template>>(x =>
 														{
 															x.Type = TemplateType.Unsubscribe;
 														});

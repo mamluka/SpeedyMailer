@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 	    [POST("/creatives/creative"),HttpPost]
 		public void SaveCreative(CreativeModel creativeModel)
 	    {
-		    _api.Call<ServiceEndpoints.SaveCreative>(x =>
+		    _api.Call<ServiceEndpoints.Creative.SaveCreative>(x =>
 			                                             {
 				                                             x.Body = creativeModel.Body;
 				                                             x.DealUrl = creativeModel.DealUrl;

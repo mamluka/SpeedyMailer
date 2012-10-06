@@ -22,7 +22,7 @@ namespace SpeedyMailer.Master.Service.Modules
 		{
 			Post["/send"] = call =>
 							  {
-								  var model = this.Bind<ServiceEndpoints.Send>();
+								  var model = this.Bind<ServiceEndpoints.Creative.Send>();
 								  framework.ExecuteTask(new CreateCreativeFragmentsTask
 												  {
 													  CreativeId = model.CreativeId,
@@ -34,7 +34,7 @@ namespace SpeedyMailer.Master.Service.Modules
 
 			Post["/save"] = call =>
 								{
-									var model = this.Bind<ServiceEndpoints.SaveCreative>();
+									var model = this.Bind<ServiceEndpoints.Creative.SaveCreative>();
 
 									addCreativeCommand.Body = model.Body;
 									addCreativeCommand.Lists = new List<string> { model.ListId };

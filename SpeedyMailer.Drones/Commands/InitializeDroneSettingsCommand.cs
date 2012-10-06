@@ -21,7 +21,7 @@ namespace SpeedyMailer.Drones.Commands
 
 		public override void Execute()
 		{
-			var response = _api.SetBaseUrl(RemoteConfigurationServiceBaseUrl).Call<ServiceEndpoints.GetRemoteServiceSettings, ServiceEndpoints.GetRemoteServiceSettings.Response>();
+			var response = _api.SetBaseUrl(RemoteConfigurationServiceBaseUrl).Call<ServiceEndpoints.Admin.GetRemoteServiceSettings, ServiceEndpoints.Admin.GetRemoteServiceSettings.Response>();
 
 			_framework.EditJsonSettings<ApiCallsSettings>(x => x.ApiBaseUri = response.ServiceBaseUrl);
 			_framework.EditJsonSettings<DroneSettings>(x =>

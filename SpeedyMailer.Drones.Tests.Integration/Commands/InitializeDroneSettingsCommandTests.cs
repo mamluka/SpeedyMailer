@@ -13,7 +13,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		[Test]
 		public void Execute_WhenCalledWithServiceBaseUrl_ShouldInitializeTheJsonSettings()
 		{
-			PrepareApiResponse<ServiceEndpoints.GetRemoteServiceSettings, ServiceEndpoints.GetRemoteServiceSettings.Response>(
+			PrepareApiResponse<ServiceEndpoints.Admin.GetRemoteServiceSettings, ServiceEndpoints.Admin.GetRemoteServiceSettings.Response>(
 				x => x.ServiceBaseUrl = DefaultBaseUrl
 				);
 

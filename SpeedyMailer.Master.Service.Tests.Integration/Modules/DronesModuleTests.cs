@@ -22,7 +22,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
             DroneActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
             var api = DroneResolve<Api>();
 
-            api.Call<ServiceEndpoints.RegisterDrone>(x=>
+            api.Call<ServiceEndpoints.Drones.RegisterDrone>(x=>
 	            {
 		            x.Identifier = "droneip";
 		            x.BaseUrl = "baseurl";

@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Modules
 
 	        Post["/"] = x =>
 		        {
-			        var model = this.Bind<ServiceEndpoints.RegisterDrone>();
+			        var model = this.Bind<ServiceEndpoints.Drones.RegisterDrone>();
 			        using (var session = _documentStore.OpenSession())
 			        {
 				        session.Store(new Drone

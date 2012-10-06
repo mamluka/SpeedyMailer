@@ -27,7 +27,7 @@ namespace SpeedyMailer.Master.Service.Modules
 
             Put["/upload-list"] = api =>
                                       {
-                                          var model = this.Bind<ServiceEndpoints.UploadContacts>();
+                                          var model = this.Bind<ServiceEndpoints.Lists.UploadContacts>();
                                           var file = Request.Files.FirstOrDefault();
                                           if (file == null)
                                               throw new ArgumentNullException("no files was provided");
@@ -57,7 +57,7 @@ namespace SpeedyMailer.Master.Service.Modules
 
 			Post["/"] = api =>
 				                  {
-					                  var model = this.Bind<ServiceEndpoints.CreateList>();
+					                  var model = this.Bind<ServiceEndpoints.Lists.CreateList>();
 					                  _createListCommand.Name = model.Name;
 					                  var listId = _framework.ExecuteCommand(_createListCommand);
 

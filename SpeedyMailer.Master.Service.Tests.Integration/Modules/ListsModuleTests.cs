@@ -19,7 +19,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 	public class ListsModuleTests:IntegrationTestBase
 	{
 		[Test]
-		public void Ids_WhenCalled_ShouldGetAllListIds()
+		public void GetLists_WhenCalled_ShouldGetAllListIds()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
@@ -31,7 +31,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var lists = api.Call<ServiceEndpoints.GetLists, List<ListDescriptor>>();
+			var lists = api.Call<ServiceEndpoints.Lists.GetLists, List<ListDescriptor>>();
 
 			lists.Should().Contain(x=> x.Id == listId && x.Name == "myList");
 		}
@@ -47,7 +47,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.CreateList,ApiStringResult>(x=> x.Name = "myName");
+			var result = api.Call<ServiceEndpoints.Lists.CreateList,ApiStringResult>(x=> x.Name = "myName");
 
 			var list = Load<ListDescriptor>(result.Result);
 
@@ -72,7 +72,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 			api.AddFiles(new[] { fileName })
-				.Call<ServiceEndpoints.UploadContacts>(x => x.ListName = "list/1");
+				.Call<ServiceEndpoints.Lists.UploadContacts>(x => x.ListName = "list/1");
 
 			WaitForEntitiesToExist<Contact>(1000);
 
@@ -82,6 +82,21 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.MemberOf.Should().Contain("list/1");
 			result.Email.Should().Be(firstContact.Email);
 			result.Country.Should().Be(firstContact.Country);
+		}
+
+		[Test]
+		public void Rules_WhenAddingARule_ShouldSaveTheRule()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var api = MasterResolve<Api>();
+
+			api.Call<ServiceEndpoints.Rules.Save>();
+
 		}
 	}
 }

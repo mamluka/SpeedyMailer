@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Modules
 			_documentStore = documentStore;
 			Post["/"] = call =>
 							{
-								var model = this.Bind<ServiceEndpoints.CreateUnsubscribeTemplate>();
+								var model = this.Bind<ServiceEndpoints.Templates.CreateUnsubscribeTemplate>();
 
 								createTemplateCommand.Body = model.Body;
 								createTemplateCommand.Type = Enum.Parse(typeof(TemplateType), call.type, true);

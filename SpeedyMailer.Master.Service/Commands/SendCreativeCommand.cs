@@ -15,7 +15,7 @@ namespace SpeedyMailer.Master.Service.Commands
 
 		public override ApiResult Execute()
 		{
-			_api.Call<ServiceEndpoints.Send>(x => x.CreativeId = CreativeId);
+			_api.Call<ServiceEndpoints.Creative.Send>(x => x.CreativeId = CreativeId);
 
 			return new ApiResult();
 		}

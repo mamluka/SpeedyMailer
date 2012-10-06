@@ -19,13 +19,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		public void Execute_WhenStarted_ShouldFetchACreativeFragmentFromServer()
 		{
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-			ListenToApiCall<ServiceEndpoints.FetchFragment>();
+			ListenToApiCall<ServiceEndpoints.Creative.FetchFragment>();
 
 			var task = new FetchCreativeFragmentsTask();
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertApiCalled<ServiceEndpoints.FetchFragment>();
+			AssertApiCalled<ServiceEndpoints.Creative.FetchFragment>();
 		}
 
 		[Test]
@@ -35,7 +35,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
 
-			PrepareApiResponse<ServiceEndpoints.FetchFragment, CreativeFragment>(CreateFragmetResponse);
+			PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(CreateFragmetResponse);
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -52,7 +52,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			PrepareApiResponse<ServiceEndpoints.FetchFragment, CreativeFragment>(default(CreativeFragment));
+			PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(default(CreativeFragment));
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -67,7 +67,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			PrepareApiResponse<ServiceEndpoints.FetchFragment, CreativeFragment>(CreateFragmetResponse);
+			PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(CreateFragmetResponse);
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -86,7 +86,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = AssemblyDirectory);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			PrepareApiResponse<ServiceEndpoints.FetchFragment, CreativeFragment>(CreateFragmetResponse);
+			PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(CreateFragmetResponse);
 
 			var task = new FetchCreativeFragmentsTask();
 

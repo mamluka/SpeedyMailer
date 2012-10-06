@@ -22,13 +22,13 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[GET("/templates/{templateType}"), HttpGet]
 		public IList<Template> GetTemplates(string templateType)
 		{
-			return _api.Call<ServiceEndpoints.GetTemplates, List<Template>>(x => x.Type = (TemplateType)Enum.Parse(typeof(TemplateType), templateType, true));
+			return _api.Call<ServiceEndpoints.Templates.GetTemplates, List<Template>>(x => x.Type = (TemplateType)Enum.Parse(typeof(TemplateType), templateType, true));
 		}
 
 		[POST("/templates/{templateType}"), HttpPost]
 		public void CreateTemplates(string templateType, CreateTempalteModel createTempalteModel)
 		{
-			_api.Call<ServiceEndpoints.CreateUnsubscribeTemplate>(x => x.Body = createTempalteModel.Body);
+			_api.Call<ServiceEndpoints.Templates.CreateUnsubscribeTemplate>(x => x.Body = createTempalteModel.Body);
 		}
 
 		[GET("/templates/types/list"), HttpGet]

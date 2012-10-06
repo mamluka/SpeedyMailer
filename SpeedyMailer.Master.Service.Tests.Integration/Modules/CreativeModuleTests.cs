@@ -27,7 +27,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var creativeId = CreateCreative(1000);
 
 			var api = MasterResolve<Api>();
-			api.Call<ServiceEndpoints.Send>(x => x.CreativeId = creativeId);
+			api.Call<ServiceEndpoints.Creative.Send>(x => x.CreativeId = creativeId);
 
 			WaitForEntitiesToExist<CreativeFragment>(1);
 			var result = Query<CreativeFragment>().First();
@@ -47,7 +47,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var creativeId = api.Call<ServiceEndpoints.SaveCreative, ApiStringResult>(x =>
+			var creativeId = api.Call<ServiceEndpoints.Creative.SaveCreative, ApiStringResult>(x =>
 														{
 															x.Body = "body";
 															x.DealUrl = "dealUrl";
@@ -81,7 +81,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
+			var result = api.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
 			result.Body.Should().Be("body");
 			result.CreativeId.Should().Be(creativeId);
@@ -108,7 +108,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var drone1 = new Thread(x => Enumerable.Range(1, 50).ToList().ForEach(i =>
 																					  {
 																						  var api = MasterResolve<Api>();
-																						  var result = api.Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
+																						  var result = api.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
 																						  if (result == null)
 																							  return;
@@ -119,7 +119,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var drone2 = new Thread(x => Enumerable.Range(1, 50).ToList().ForEach(i =>
 																					  {
 																						  var api = MasterResolve<Api>();
-																						  var result = api.Call<ServiceEndpoints.FetchFragment, CreativeFragment>();
+																						  var result = api.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
 																						  if (result == null)
 																							  return;

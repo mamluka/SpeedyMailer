@@ -42,7 +42,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 
 													 _api
 														 .AddFiles(new[] { file })
-														 .Call<ServiceEndpoints.UploadContacts>(x =>
+														 .Call<ServiceEndpoints.Lists.UploadContacts>(x =>
 															                                        {
 																                                        x.ListName = t.Result.FormData["listName"];
 															                                        });
@@ -56,13 +56,13 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("/lists/list"),HttpPost]
 		public void CreateList(CreateListModel createListModel)
 		{
-			_api.Call<ServiceEndpoints.CreateList>(x => x.Name = createListModel.Name);
+			_api.Call<ServiceEndpoints.Lists.CreateList>(x => x.Name = createListModel.Name);
 		}
 
 		[GET("/lists/list"),HttpGet]
 		public IList<ListDescriptor> GetLists()
 		{
-			return _api.Call<ServiceEndpoints.GetLists,List<ListDescriptor>>();
+			return _api.Call<ServiceEndpoints.Lists.GetLists,List<ListDescriptor>>();
 		}
 	}
 
