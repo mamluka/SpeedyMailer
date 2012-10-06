@@ -539,6 +539,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				Assert.Fail("The expected number of emails {0} was not sent, found {1}", numberOfEmails, files.Count);
 			}
 		}
+
+		protected void AssertEmailsSentWithInterval(List<Recipient> recipients, int interval,int waitFor)
+		{
+			var emails = WaitForEmailsWithCondition(waitFor,x=> x.Count == recipients.Count,x=> x.)
+		}
 	}
 
 	public class RestCallTestingModule<TEndpoint, TResponse> : NancyModule, IDoNotResolveModule where TResponse : class
