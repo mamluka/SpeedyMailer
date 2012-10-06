@@ -1,10 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Net.Mail;
 using Quartz;
-using RestSharp;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
@@ -13,7 +9,6 @@ using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Commands;
-using Antlr4.StringTemplate;
 using Template = Antlr4.StringTemplate.Template;
 
 
