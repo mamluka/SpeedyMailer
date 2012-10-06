@@ -83,20 +83,5 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Email.Should().Be(firstContact.Email);
 			result.Country.Should().Be(firstContact.Country);
 		}
-
-		[Test]
-		public void Rules_WhenAddingARule_ShouldSaveTheRule()
-		{
-			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
-			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
-
-			ServiceActions.Initialize();
-			ServiceActions.Start();
-
-			var api = MasterResolve<Api>();
-
-			api.Call<ServiceEndpoints.Rules.Save>();
-
-		}
 	}
 }

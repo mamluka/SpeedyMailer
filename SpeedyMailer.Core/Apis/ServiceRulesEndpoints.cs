@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SpeedyMailer.Core.Rules;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -15,6 +16,9 @@ namespace SpeedyMailer.Core.Apis
 				{
 					CallMethod = RestMethod.Post;
 				}
+
+				public RuleAction Action { get; set; }
+				public What What { get; set; }
 			}
 		}
 	}

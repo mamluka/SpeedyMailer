@@ -137,6 +137,7 @@
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Modules\DronesModuleTests.cs" />
     <Compile Include="Modules\ListsModuleTests.cs" />
+    <Compile Include="Modules\RulesModuleTests.cs" />
     <Compile Include="Modules\TemplatesModuleTests.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
