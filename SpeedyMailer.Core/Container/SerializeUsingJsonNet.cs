@@ -11,23 +11,23 @@ using Newtonsoft.Json;
 
 namespace SpeedyMailer.Core.Container
 {
-	public class JsonNetSerializer : ISerializer
+	public class NancyJsonNetSerializer : ISerializer
 	{
 		private readonly JsonSerializer _serializer = new JsonSerializer();
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="JsonNetSerializer"/> class.
+		/// Initializes a new instance of the <see cref="NancyJsonNetSerializer"/> class.
 		/// </summary>
-		public JsonNetSerializer()
+		public NancyJsonNetSerializer()
 		{
 		}
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="JsonNetSerializer"/> class,
+		/// Initializes a new instance of the <see cref="NancyJsonNetSerializer"/> class,
 		/// with the provided <paramref name="converters"/>.
 		/// </summary>
 		/// <param name="converters">Json converters used when serializing.</param>
-		public JsonNetSerializer(IEnumerable<JsonConverter> converters)
+		public NancyJsonNetSerializer(IEnumerable<JsonConverter> converters)
 		{
 			foreach (var converter in converters)
 			{
@@ -177,7 +177,7 @@ namespace SpeedyMailer.Core.Container
 			{
 				// Insert at position 0 so it takes precedence over the built in one.
 				return NancyInternalConfiguration.WithOverrides(
-						c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+						c => c.Serializers.Insert(0, typeof(NancyJsonNetSerializer)));
 			}
 		}
 	}

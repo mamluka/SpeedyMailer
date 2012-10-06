@@ -589,7 +589,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			get
 			{
 				return NancyInternalConfiguration.WithOverrides(
-					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+					   c => c.Serializers.Insert(0, typeof(NancyJsonNetSerializer)));
 			}
 		}
 	}

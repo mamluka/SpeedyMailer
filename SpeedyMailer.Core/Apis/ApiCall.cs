@@ -1,6 +1,7 @@
 using System;
 using System.Web.UI.WebControls.WebParts;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
@@ -12,10 +13,12 @@ namespace SpeedyMailer.Core.Apis
 		{
 			Endpoint = endpoint;
 		}
+
 		[JsonIgnoreAttribute]
 		public string Endpoint { get; set; }
 
 		[JsonIgnoreAttribute]
+		[JsonConverter(typeof(StringEnumConverter))]
 		public RestMethod CallMethod { get; set; }
 	}
 

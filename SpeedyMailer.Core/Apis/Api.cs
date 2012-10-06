@@ -63,18 +63,18 @@ namespace SpeedyMailer.Core.Apis
 			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
 
-		    CleanUp();
+			CleanUp();
 
 			return result.Data;
 
 		}
 
-	    private void CleanUp()
-	    {
-	        _requestFiles = new List<string>();
-	    }
+		private void CleanUp()
+		{
+			_requestFiles = new List<string>();
+		}
 
-	    private void ExecuteCall(ApiCall apiCall)
+		private void ExecuteCall(ApiCall apiCall)
 		{
 
 			var restRequest = SetupApiCall(apiCall);
@@ -87,13 +87,14 @@ namespace SpeedyMailer.Core.Apis
 			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
 			Trace.WriteLine("Error message: " + result.ErrorMessage);
 
-            CleanUp();
+			CleanUp();
 		}
 
 		private RestRequest SetupApiCall(ApiCall apiCall)
 		{
 			var endpoint = ParseArguments(apiCall);
 			var restRequest = new RestRequest(endpoint);
+			restRequest.JsonSerializer = new RestSharpJsonNetSerializer();
 
 			var method = Translate(apiCall);
 			restRequest.Method = method;
@@ -149,6 +150,8 @@ namespace SpeedyMailer.Core.Apis
 
 		private void HandleRequestBody(ApiCall apiCall, IRestRequest restRequest)
 		{
+			restRequest.RequestFormat = DataFormat.Json;
+
 			if (apiCall.CallMethod == RestMethod.Post)
 			{
 				restRequest.AddBody(apiCall);
@@ -157,8 +160,6 @@ namespace SpeedyMailer.Core.Apis
 			{
 				restRequest.AddObject(apiCall);
 			}
-
-			restRequest.RequestFormat = DataFormat.Json;
 		}
 
 		private string GetBaseUrl()

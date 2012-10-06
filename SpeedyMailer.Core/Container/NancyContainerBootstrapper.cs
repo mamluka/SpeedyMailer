@@ -24,7 +24,7 @@ namespace SpeedyMailer.Core.Container
 			get
 			{
 				return NancyInternalConfiguration.WithOverrides(
-					   c => c.Serializers.Insert(0, typeof(JsonNetSerializer)));
+					   c => c.Serializers.Insert(0, typeof(NancyJsonNetSerializer)));
 			}
 		}
     }

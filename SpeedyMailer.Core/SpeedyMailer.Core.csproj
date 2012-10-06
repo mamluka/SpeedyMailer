@@ -125,6 +125,7 @@
     <Compile Include="Apis\ApiCallsSettings.cs" />
     <Compile Include="Apis\IApiHost.cs" />
     <Compile Include="Apis\ListsModuleTests.cs" />
+    <Compile Include="Apis\RestSharpJsonNetSerializer.cs" />
     <Compile Include="Apis\ServiceAdminEndpoints.cs" />
     <Compile Include="Apis\ServiceCreativeEndpoints.cs" />
     <Compile Include="Apis\ServiceDronesEndpoints.cs" />

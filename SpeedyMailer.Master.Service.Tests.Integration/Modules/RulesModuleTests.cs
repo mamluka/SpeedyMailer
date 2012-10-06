@@ -26,7 +26,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			api.Call<ServiceEndpoints.Rules.AddIntervalRules>(x =>
 																	 {
-																		 x.Rules = new List<IntervalRule>
+																		 x.IntervalRules = new List<IntervalRule>
 																			           {
 							                                                               new IntervalRule
 								                                                               {
@@ -44,7 +44,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var result = Query<IntervalRule>().First();
 
-			result.Conditon.Should().Contain(new[] {"gmail.com", "hotmail.com"});
+			result.Conditon.Should().Contain(new[] { "gmail.com", "hotmail.com" });
 			result.Interval.Should().Be(5);
 		}
 	}
