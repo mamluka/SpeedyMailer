@@ -8,33 +8,20 @@ using Nancy;
 using Nancy.ModelBinding;
 using Raven.Client;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Master.Service.Commands;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
 	public class RulesModule:NancyModule
 	{
-		public RulesModule(IDocumentStore documentStore):base("/rules")
+		public RulesModule(AddIntervalRulesCommand addIntervalRulesCommand):base("/rules")
 		{
 			Post["/interval"] = call =>
 				                    {
-//					                    var reader = new StreamReader(Request.Body);
-//					                    var line = "";
-//										while ((line = reader.ReadLine()) != null)
-//										{
-//											Trace.WriteLine(line); // Write to console.
-//										}
-
 					                    var model = this.Bind<ServiceEndpoints.Rules.AddIntervalRules>();
 
-					                    using (var session = documentStore.OpenSession())
-					                    {
-						                    foreach (var intervalRule in model.IntervalRules)
-						                    {
-							                    session.Store(intervalRule);
-						                    }
-
-											session.SaveChanges();
-					                    }
+					                    addIntervalRulesCommand.Rules = model.IntervalRules;
+										addIntervalRulesCommand.Execute();
 
 					                    return Response.AsText("OK");
 				                    };

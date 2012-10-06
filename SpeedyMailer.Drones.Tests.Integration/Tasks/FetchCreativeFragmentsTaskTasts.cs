@@ -118,7 +118,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			creativeFragment.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 			creativeFragment.Subject = "hello world subject";
 			creativeFragment.UnsubscribeTemplate = "here  is a template <url>";
-			creativeFragment.Recipients = AddContact("contact/1", "test@test.com");
+			creativeFragment.Recipients = AddRecipient("contact/1", "test@test.com");
 			creativeFragment.Service = new Service
 										   {
 											   BaseUrl = "http://www.topemail.com",
@@ -132,15 +132,15 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			return string.Format(@"<html><body>this email has a link inside of it <a href="" {0} "" >test link</as>""</body></html>", link);
 		}
 
-		private static List<Contact> AddContact(string contactId, string email)
+		private static List<Recipient> AddRecipient(string contactId, string email)
 		{
-			return new List<Contact>
+			return new List<Recipient>
 			       	{
-			       		new Contact
-			       			{
-								Id = contactId,
-			       				Email = email
-			       			}
+						new Recipient
+							{
+								Email = email,
+								ContactId = contactId
+							}
 			       	};
 		}
 	}

@@ -17,7 +17,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 		{
 			var rule = new IntervalRule
 						   {
-							   Conditon = new List<string> { "gmai.com" },
+							   Conditon = new List<string> { "gmail.com" },
 							   Interval = 20
 						   };
 			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });

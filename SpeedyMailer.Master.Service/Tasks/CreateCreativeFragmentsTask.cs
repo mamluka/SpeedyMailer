@@ -1,79 +1,112 @@
+using System;
+using System.Collections.Generic;
 using Raven.Client;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using System.Linq;
+using SpeedyMailer.Core.Rules;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 
 namespace SpeedyMailer.Master.Service.Tasks
 {
-    public class CreateCreativeFragmentsTask : PersistentTask
-    {
-        public string CreativeId { get; set; }
-        public int RecipientsPerFragment { get; set; }
-    }
+	public class CreateCreativeFragmentsTask : PersistentTask
+	{
+		public string CreativeId { get; set; }
+		public int RecipientsPerFragment { get; set; }
+	}
 
-    public class CreateCreativeFragmentsTaskExecutor : PersistentTaskExecutor<CreateCreativeFragmentsTask>
-    {
-        private readonly IDocumentStore _documentStore;
-	    private CreativeEndpointsSettings _creativeEndpointsSettings;
-	    private ServiceSettings _serviceSettings;
+	public class CreateCreativeFragmentsTaskExecutor : PersistentTaskExecutor<CreateCreativeFragmentsTask>
+	{
+		private readonly IDocumentStore _documentStore;
+		private readonly CreativeEndpointsSettings _creativeEndpointsSettings;
+		private readonly ServiceSettings _serviceSettings;
 
-	    public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore,CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings)
-	    {
-		    _serviceSettings = serviceSettings;
-		    _creativeEndpointsSettings = creativeEndpointsSettings;
-		    _documentStore = documentStore;
-	    }
+		public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore, CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings)
+		{
+			_serviceSettings = serviceSettings;
+			_creativeEndpointsSettings = creativeEndpointsSettings;
+			_documentStore = documentStore;
+		}
 
-	    public override void Execute(CreateCreativeFragmentsTask task)
-        {
-            using (var session = _documentStore.OpenSession())
-            {
-                var creative = session.Load<Creative>(task.CreativeId);
-                var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
+		public override void Execute(CreateCreativeFragmentsTask task)
+		{
+			using (var session = _documentStore.OpenSession())
+			{
+				var creative = session.Load<Creative>(task.CreativeId);
+				var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
 
-                foreach (var listId in creative.Lists)
-                {
-                    var counter = 0;
-                    var chunk = task.RecipientsPerFragment;
-                    var hasMoreContacts = true;
-                    while (hasMoreContacts)
-                    {
-                        var id = listId;
-                        var contacts = session.Query<Contact>()
-                            .Customize(x => x.WaitForNonStaleResults())
-                            .Where(contact => contact.MemberOf.Any(x => x == id))
-                            .Skip(counter * chunk).Take(chunk).ToList();
+				foreach (var listId in creative.Lists)
+				{
+					var counter = 0;
+					var chunk = task.RecipientsPerFragment;
+					var hasMoreContacts = true;
+					while (hasMoreContacts)
+					{
+						var id = listId;
+						var contacts = session.Query<Contact>()
+							.Customize(x => x.WaitForNonStaleResults())
+							.Where(contact => contact.MemberOf.Any(x => x == id))
+							.Skip(counter * chunk).Take(chunk).ToList();
 
-                        if (!contacts.Any())
-                        {
-                            hasMoreContacts = false;
-                            continue;
-                        }
-                        counter++;
+						if (!contacts.Any())
+						{
+							hasMoreContacts = false;
+							continue;
+						}
+						counter++;
 
-                        var fragment = new CreativeFragment
-                        {
-                            Body = creative.Body,
-                            CreativeId = creative.Id,
-                            Subject = creative.Subject,
-                            Recipients = contacts,
-                            UnsubscribeTemplate = unsubscribeTempalte.Body,
+						var recipients = contacts.Select(ToRecipient).ToList();
+						ApplyIntervalRules(recipients);
+
+						var fragment = new CreativeFragment
+						{
+							Body = creative.Body,
+							CreativeId = creative.Id,
+							Subject = creative.Subject,
+							Recipients = recipients,
+							UnsubscribeTemplate = unsubscribeTempalte.Body,
 							Service = new Core.Domain.Master.Service
-								          {
-									          BaseUrl = _serviceSettings.BaseUrl,
+										  {
+											  BaseUrl = _serviceSettings.BaseUrl,
 											  DealsEndpoint = _creativeEndpointsSettings.Deal,
 											  UnsubscribeEndpoint = _creativeEndpointsSettings.Unsubscribe
-								          }
-                        };
-                        session.Store(fragment);
-                        session.SaveChanges();
-                    }
-                }
+										  }
+						};
+						session.Store(fragment);
+						session.SaveChanges();
+					}
+				}
 
-            }
-        }
-    }
+			}
+		}
+
+		private Recipient ToRecipient(Contact contact)
+		{
+			return new Recipient
+						   {
+							   Email = contact.Email,
+							   Name = contact.Name
+						   };
+		}
+
+		private IList<Recipient> ApplyIntervalRules(IEnumerable<Recipient> recipients)
+		{
+			using (var session = _documentStore.OpenSession())
+			{
+				var rules = session.Query<IntervalRule>().ToList();
+				var matchingConditionsActions = rules.SelectMany(x => x.Conditon.Select(condition => new { Condition = condition, x.Interval })).ToList();
+
+				recipients
+					.ToList()
+					.ForEach(x => matchingConditionsActions
+									  .Where(condition => x.Email.Contains(condition.Condition))
+									  .ToList()
+									  .ForEach(action => x.Interval = action.Interval));
+
+				return recipients.ToList();
+			}
+		}
+	}
 }

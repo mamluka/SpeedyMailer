@@ -60,7 +60,7 @@ namespace SpeedyMailer.Drones.Tasks
 				}
 			}
 
-			private CreativePackage ToPackage(Contact recipient, CreativeFragment creativeFragment)
+			private CreativePackage ToPackage(Recipient recipient, CreativeFragment creativeFragment)
 			{
 				return new CreativePackage
 						{
@@ -75,7 +75,7 @@ namespace SpeedyMailer.Drones.Tasks
 				return string.Format("{0}/{1}", service.BaseUrl, endpointSelector(service));
 			}
 
-			private string PersonalizeBody(CreativeFragment fragment, Contact contact)
+			private string PersonalizeBody(CreativeFragment fragment, Recipient contact)
 			{
 				var service = fragment.Service;
 
@@ -97,12 +97,12 @@ namespace SpeedyMailer.Drones.Tasks
 				return deal + unsubscribeTemplate.Render();
 			}
 
-			private static DealUrlData GetDealUrlData(CreativeFragment fragment, Contact contact)
+			private static DealUrlData GetDealUrlData(CreativeFragment fragment, Recipient contact)
 			{
 				return new DealUrlData
 						{
 							CreativeId = fragment.CreativeId,
-							ContactId = contact.Id
+							ContactId = contact.ContactId
 						};
 			}
 		}

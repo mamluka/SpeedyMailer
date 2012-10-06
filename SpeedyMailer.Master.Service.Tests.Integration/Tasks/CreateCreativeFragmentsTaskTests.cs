@@ -88,16 +88,55 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervals()
 		{
-			var contacts = new List<Contact>
+			var contacts = AddRandomContacts(100);
+
+			var topDomainContacts = new List<Contact>
 			                   {
-				                   CreateContactWithEmailDomain("gmail.com"),
-				                   CreateContactWithEmailDomain("gmail.com"),
-				                   CreateContactWithEmailDomain("hotmail.com"),
-				                   CreateContactWithEmailDomain("hotmail.com"),
-				                   CreateContactWithEmailDomain("hotmail.com"),
+				                   CreateContactWithEmail("user1@gmail.com"),
+				                   CreateContactWithEmail("user2@gmail.com"),
+				                   CreateContactWithEmail("user3@hotmail.com"),
+				                   CreateContactWithEmail("user4@hotmail.com"),
+				                   CreateContactWithEmail("user5@hotmail.com"),
 			                   };
 
-			contacts.AddRange(AddRandomContacts(100));
+
+			var listId = CraeteListFromContacts("my list", contacts.Union(topDomainContacts));
+
+			var templateId = CreateTemplate("Body");
+
+			var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			{
+				x.Body = "Body";
+				x.Subject = "Subject";
+				x.UnsubscribeTemplateId = templateId;
+				x.Lists = new List<string> { listId };
+			});
+
+			var rule = new IntervalRule
+							{
+								Conditon = new List<string> { "gmail.com", "hotmail.com" },
+								Interval = 10
+							};
+
+			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
+
+			var task = new CreateCreativeFragmentsTask
+			{
+				CreativeId = creativeId,
+				RecipientsPerFragment = 200
+			};
+
+			ServiceActions.ExecuteTask(task);
+
+			var result = Query<CreativeFragment>().First();
+
+			result.Recipients.Should().Contain(x => topDomainContacts.Any(contact => contact.Email == x.Email) && x.Interval == 10);
+		}
+
+		[Test]
+		public void Execute_WhenThereAreNoIntervalRules_ShouldKeepTheIntervalsAtZero()
+		{
+			var contacts = AddRandomContacts(200);
 
 			var listId = CraeteListFromContacts("my list", contacts);
 
@@ -111,13 +150,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 				x.Lists = new List<string> { listId };
 			});
 
-			var rules = new IntervalRule
-				            {
-								Conditon = new List<string> { "gmail.com","hotmail.com"},
-								Interval = 10
-				            };
-
-
 			var task = new CreateCreativeFragmentsTask
 			{
 				CreativeId = creativeId,
@@ -126,14 +158,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			ServiceActions.ExecuteTask(task);
 
-			var result = Query<CreativeFragment>(x => x.CreativeId == creativeId);
+			var result = Query<CreativeFragment>().First();
 
-			result.Should().HaveCount(2);
-			result.First().Recipients.Should().HaveCount(1000);
-			result.Second().Recipients.Should().HaveCount(500);
-
-			result.First().UnsubscribeTemplate.Should().Be("Body");
-			result.Second().UnsubscribeTemplate.Should().Be("Body");
+			result.Recipients.Should().NotContain(x => x.Interval > 0);
 		}
 
 		private string CraeteListFromContacts(string listName, IEnumerable<Contact> contacts)
@@ -153,11 +180,11 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			return Fixture.Build<Contact>().Without(x => x.Id).CreateMany(numberOfContacts);
 		}
 
-		private Contact CreateContactWithEmailDomain(string domain)
+		private Contact CreateContactWithEmail(string email)
 		{
 			return new Contact
 					   {
-						   Email = Guid.NewGuid() + "@" + domain,
+						   Email = email,
 						   Name = Guid.NewGuid().ToString(),
 						   Country = Guid.NewGuid().ToString(),
 					   };
