@@ -114,6 +114,7 @@
     <Compile Include="Modules\ListsModule.cs" />
     <Compile Include="Modules\CreativeModule.cs" />
     <Compile Include="Modules\DronesModule.cs" />
+    <Compile Include="Modules\RulesModule.cs" />
     <Compile Include="Modules\TemplatesModule.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />

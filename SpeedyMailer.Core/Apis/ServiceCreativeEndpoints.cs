@@ -1,4 +1,6 @@
-﻿using SpeedyMailer.Core.Domain.Creative;
+﻿using System.Collections.Generic;
+using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Rules;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -49,6 +51,16 @@ namespace SpeedyMailer.Core.Apis
 				{
 
 				}
+			}
+
+			public class AddIntervalRules:ApiCall
+			{
+				public AddIntervalRules() : base("/creative/fragments/cyclerules")
+				{
+					CallMethod = RestMethod.Post;
+				}
+
+				public IList<IntervalRule> Rules { get; set; }
 			}
 		}
 	}

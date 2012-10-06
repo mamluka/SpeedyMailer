@@ -10,15 +10,14 @@ namespace SpeedyMailer.Core.Apis
 	{
 		public class Rules
 		{
-			public class Save:ApiCall
+			public class AddIntervalRules:ApiCall
 			{
-				public Save() : base("/rules")
+				public AddIntervalRules() : base("/rules/interval")
 				{
 					CallMethod = RestMethod.Post;
 				}
 
-				public RuleAction Action { get; set; }
-				public What What { get; set; }
+				public List<IntervalRule> Rules { get; set; }
 			}
 		}
 	}

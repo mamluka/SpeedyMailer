@@ -186,6 +186,9 @@
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Rules\How.cs" />
+    <Compile Include="Rules\HowType.cs" />
+    <Compile Include="Rules\IntervalRule.cs" />
     <Compile Include="Rules\RuleAction.cs" />
     <Compile Include="Rules\What.cs" />
     <Compile Include="Rules\WhatType.cs" />
