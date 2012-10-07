@@ -35,6 +35,7 @@ using SpeedyMailer.Master.Web.Core;
 using SpeedyMailer.Tests.Core.Unit.Base;
 using Raven.Client.Linq;
 using Nancy.ModelBinding;
+using System.Linq;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -485,8 +486,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return files;
 		}
 
-		private List<FakeEmailMessage> WaitForEmailsWithCondition(int waitFor, Func<List<FakeEmailMessage>, bool> filesAction, Func<FakeEmailMessage, bool> condition)
+		private List<FakeEmailMessage> WaitForEmailsWithCondition(int waitFor, Func<List<FakeEmailMessage>, bool> filesAction, Func<FakeEmailMessage, bool> condition = null)
 		{
+			if (condition == null)
+				condition = x => true;
+
 			var stopwatch = new Stopwatch();
 			stopwatch.Start();
 
@@ -500,7 +504,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			return emails;
 		}
-		
+
 		protected void DeleteEmails()
 		{
 			GetEmailFiles().ToList().ForEach(File.Delete);
@@ -540,9 +544,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		protected void AssertEmailsSentWithInterval(List<Recipient> recipients, int interval,int waitFor)
+		protected void AssertEmailsSentWithInterval(List<Recipient> recipients, int interval, int waitFor = 30)
 		{
-			var emails = WaitForEmailsWithCondition(waitFor,x=> x.Count == recipients.Count,x=> x.)
+			var emails = WaitForEmailsWithCondition(waitFor, messages => recipients.Join(messages, x => x.Email, y => y.To.First().Address, (x, y) => x).Count() == recipients.Count);
+
+			var deliveryTimes = emails
+				.Select(x => x.DeliveryDate)
+				.OrderBy(x => x.ToUniversalTime());
+
+			var deliveryDeltas = deliveryTimes.Zip(deliveryTimes.Skip(1), (current, next) => next - current).Select(x=> x.TotalMilliseconds).ToList();
 		}
 	}
 

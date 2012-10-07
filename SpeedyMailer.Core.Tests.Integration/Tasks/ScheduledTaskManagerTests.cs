@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
@@ -36,8 +37,34 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			var result = Load<ComputationResult<string>>(resultId);
 
 			result.Result.Should().Be("done");
+		}
 
+		[Test]
+		public void Start_WhenTaskHasDynamicRepeatTime_ShouldUseTheRepeatTimeGiven()
+		{
+			var task = new TestDynamicScheduledTask(x => x.WithIntervalInSeconds(5).WithRepeatCount(4));
 
+			_target.AddAndStart(task);
+
+			WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
+
+			var result = Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
+
+			result.AssertTimeDifferenceInRange(5,1);
+		}
+
+		[Test]
+		public void Start_WhenTaskWithDataHasDynamicRepeatTime_ShouldUseTheRepeatTimeGiven()
+		{
+			var task = new TestDynamicScheduledTaskWithData(x => x.TestData = "test data", x => x.WithIntervalInSeconds(5).WithRepeatCount(4));
+
+			_target.AddAndStart(task);
+
+			WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
+
+			var result = Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
+
+			result.AssertTimeDifferenceInRange(5, 1);
 		}
 
 		[Test]
@@ -124,7 +151,72 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			}
 		}
 	}
-	
+
+	public class TestDynamicScheduledTask : DynamiclyScheduledTaskWithData
+	{
+		public TestDynamicScheduledTask(Action<SimpleScheduleBuilder> triggerBuilder)
+			: base(triggerBuilder)
+		{ }
+
+		public override IJobDetail ConfigureJob()
+		{
+			return SimpleJob<Job>();
+		}
+
+		public class Job : IJob
+		{
+			private readonly Framework _framework;
+
+			public Job(Framework framework)
+			{
+				_framework = framework;
+			}
+
+			public void Execute(IJobExecutionContext context)
+			{
+				_framework.Store(new ComputationResult<DateTime>
+									{
+										Result = DateTime.UtcNow
+									});
+			}
+		}
+	}
+
+	public class TestDynamicScheduledTaskWithData : DynamiclyScheduledTaskWithData<TestDynamicScheduledTaskWithData.Data>
+	{
+		public TestDynamicScheduledTaskWithData(Action<Data> action, Action<SimpleScheduleBuilder> triggerBuilder)
+			: base(action, triggerBuilder)
+		{ }
+
+		public class Data : ScheduledTaskData
+		{
+			public string TestData { get; set; }
+		}
+
+		public override IJobDetail ConfigureJob()
+		{
+			return SimpleJob<Job>();
+		}
+
+		public class Job : IJob
+		{
+			private readonly Framework _framework;
+
+			public Job(Framework framework)
+			{
+				_framework = framework;
+			}
+
+			public void Execute(IJobExecutionContext context)
+			{
+				_framework.Store(new ComputationResult<DateTime>
+									{
+										Result = DateTime.UtcNow
+									});
+			}
+		}
+	}
+
 	public class SecondTestScheduledTask : ScheduledTaskWithData<SecondTestScheduledTask.Data>
 	{
 		public SecondTestScheduledTask(Action<Data> action)

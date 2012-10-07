@@ -55,7 +55,7 @@ namespace SpeedyMailer.Core.Tasks
 
 		public override IJobDetail GetJob()
 		{
-			var job =  base.GetJob();
+			var job = base.GetJob();
 			job.JobDataMap.Add("data", JsonConvert.SerializeObject(TaskData));
 			return job;
 		}
@@ -63,6 +63,43 @@ namespace SpeedyMailer.Core.Tasks
 		public ScheduledTaskData GetData()
 		{
 			return TaskData;
+		}
+	}
+
+	public abstract class DynamiclyScheduledTaskWithData<T> : ScheduledTaskWithData<T> where T : ScheduledTaskData, new()
+	{
+		private readonly Action<SimpleScheduleBuilder> _triggerBuilder;
+
+		protected DynamiclyScheduledTaskWithData(Action<T> action, Action<SimpleScheduleBuilder> triggerBuilder)
+			: base(action)
+		{
+			_triggerBuilder = triggerBuilder;
+		}
+
+		protected DynamiclyScheduledTaskWithData()
+		{ }
+
+		public override ITrigger ConfigureTrigger()
+		{
+			return TriggerWithTimeCondition(_triggerBuilder);
+		}
+	}
+	
+	public abstract class DynamiclyScheduledTaskWithData : ScheduledTask
+	{
+		private readonly Action<SimpleScheduleBuilder> _triggerBuilder;
+
+		protected DynamiclyScheduledTaskWithData(Action<SimpleScheduleBuilder> triggerBuilder)
+		{
+			_triggerBuilder = triggerBuilder;
+		}
+
+		protected DynamiclyScheduledTaskWithData()
+		{ }
+
+		public override ITrigger ConfigureTrigger()
+		{
+			return TriggerWithTimeCondition(_triggerBuilder);
 		}
 	}
 }

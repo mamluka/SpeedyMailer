@@ -45,11 +45,11 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-			    var creativeFragment = _api
-			        .Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
+				var creativeFragment = _api
+					.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
-                if (creativeFragment == null)
-                    return;
+				if (creativeFragment == null)
+					return;
 
 				var recipiens = creativeFragment.Recipients;
 
@@ -70,7 +70,7 @@ namespace SpeedyMailer.Drones.Tasks
 						};
 			}
 
-			private string ServiceEndpoint(Service service,Func<Service,string> endpointSelector)
+			private string ServiceEndpoint(Service service, Func<Service, string> endpointSelector)
 			{
 				return string.Format("{0}/{1}", service.BaseUrl, endpointSelector(service));
 			}
@@ -80,16 +80,16 @@ namespace SpeedyMailer.Drones.Tasks
 				var service = fragment.Service;
 
 				var dealUrl = _urlBuilder
-					.Base(ServiceEndpoint(service,x=> x.DealsEndpoint))
-					.AddObject(GetDealUrlData(fragment, contact))
-					.AppendAsSlashes();
-				
-				var unsubsribeUrl = _urlBuilder
-					.Base(ServiceEndpoint(service,x=> x.UnsubscribeEndpoint))
+					.Base(ServiceEndpoint(service, x => x.DealsEndpoint))
 					.AddObject(GetDealUrlData(fragment, contact))
 					.AppendAsSlashes();
 
-				var deal =  _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
+				var unsubsribeUrl = _urlBuilder
+					.Base(ServiceEndpoint(service, x => x.UnsubscribeEndpoint))
+					.AddObject(GetDealUrlData(fragment, contact))
+					.AppendAsSlashes();
+
+				var deal = _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
 
 				var unsubscribeTemplate = new Template(fragment.UnsubscribeTemplate);
 				unsubscribeTemplate.Add("url", unsubsribeUrl);

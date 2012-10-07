@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Mail;
+using System.Threading;
 using Newtonsoft.Json;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
@@ -28,11 +29,14 @@ namespace SpeedyMailer.Drones.Commands
 			email.Body = Package.Body;
 			email.Subject = Package.Subject;
 
+			Thread.Sleep(1*1000);
+
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
 				var tmpEmailFile = SerializeObject(email);
 				var fakeEmailFile = JsonConvert.DeserializeObject<FakeEmailMessage>(tmpEmailFile);
 				fakeEmailFile.DroneId = _droneSettings.Identifier;
+				fakeEmailFile.DeliveryDate = DateTime.UtcNow;
 
 				var emailFile = SerializeObject(fakeEmailFile);
 

@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Net.Mime;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace SpeedyMailer.Core.Domain.Creative
 {
@@ -22,5 +25,8 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public TransferEncoding BodyTransferEncoding { get; set; }
 		public bool IsBodyHtml { get; set; }
 		public string DroneId { get; set; }
+
+		[JsonConverter(typeof(IsoDateTimeConverter))]
+		public DateTime DeliveryDate { get; set; }
 	}
 }

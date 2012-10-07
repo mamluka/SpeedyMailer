@@ -190,6 +190,7 @@
   <ItemGroup>
     <Compile Include="Emails\EmailSourceFactory.cs" />
     <Compile Include="Integration\Base\ActionsBase.cs" />
+    <Compile Include="Integration\Base\TestsExtentions.cs" />
     <Compile Include="Integration\Base\UIActions.cs" />
     <Compile Include="Integration\Base\MasterActionsBase.cs" />
     <Compile Include="Integration\Base\DroneActions.cs" />

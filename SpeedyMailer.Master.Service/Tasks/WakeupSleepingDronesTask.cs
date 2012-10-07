@@ -1,3 +1,4 @@
+using System;
 using Quartz;
 using Raven.Client;
 using SpeedyMailer.Core.Apis;
