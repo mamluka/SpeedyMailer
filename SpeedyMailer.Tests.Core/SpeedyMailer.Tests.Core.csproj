@@ -211,6 +211,7 @@
   <ItemGroup>
     <Compile Include="Emails\EmailSourceFactory.cs" />
     <Compile Include="Integration\Base\ActionsBase.cs" />
+    <Compile Include="Integration\Base\GenericRecordManager.cs" />
     <Compile Include="Integration\Base\IntegrationApiHelpers.cs" />
     <Compile Include="Integration\Base\ContainersConfigurationsForTesting.cs" />
     <Compile Include="Integration\Base\IntegrationEmailHelpers.cs" />
@@ -222,6 +223,7 @@
     <Compile Include="Integration\Base\RestCallTestingBootstrapper.cs" />
     <Compile Include="Integration\Base\RestCallTestingModule.cs" />
     <Compile Include="Integration\Base\IntegrationTasksHelpers.cs" />
+    <Compile Include="Integration\Base\SocketCycling.cs" />
     <Compile Include="Integration\Base\TestsExtentions.cs" />
     <Compile Include="Integration\Base\UIActions.cs" />
     <Compile Include="Integration\Base\MasterActionsBase.cs" />

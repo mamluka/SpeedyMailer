@@ -230,6 +230,7 @@
     <Compile Include="Tasks\PersistentTask.cs" />
     <Compile Include="Tasks\PersistentTaskExecutor.cs" />
     <Compile Include="Tasks\TaskManager.cs" />
+    <Compile Include="Tasks\TasksExtentions.cs" />
     <Compile Include="Tasks\TasksNinjectModule.cs" />
     <Compile Include="Tasks\Testing\AdditionTask.cs" />
     <Compile Include="Tasks\Testing\FailingTask.cs" />

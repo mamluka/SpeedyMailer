@@ -40,8 +40,18 @@ namespace SpeedyMailer.Drones.Tasks
 			public void Execute(IJobExecutionContext context)
 			{
 				var data = GetData(context);
-				_sendCreativePackageCommand.Package = _creativePackagesStore.GetPackageForInterval(data.Interval);
+				var creativePackage = _creativePackagesStore.GetPackageForInterval(data.Interval);
+
+				if (creativePackage == null)
+				{
+					this.Stop(context);
+					return;
+				}
+
+				_sendCreativePackageCommand.Package = creativePackage;
 				_sendCreativePackageCommand.Execute();
+
+				_creativePackagesStore.DeleteById(creativePackage.Id);
 			}
 		}
 	}

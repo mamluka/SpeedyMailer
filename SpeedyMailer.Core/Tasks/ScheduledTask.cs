@@ -11,19 +11,24 @@ namespace SpeedyMailer.Core.Tasks
 		public abstract IJobDetail ConfigureJob();
 		public abstract ITrigger ConfigureTrigger();
 
-		protected ITrigger TriggerWithTimeCondition(Action<SimpleScheduleBuilder> condition)
+		protected virtual ITrigger TriggerWithTimeCondition(Action<SimpleScheduleBuilder> condition)
 		{
 			return TriggerBuilder.Create()
-				.WithIdentity(Name + "Trigger")
+				.WithIdentity(GetNamePrefix() + "Trigger")
 				.WithSimpleSchedule(condition)
 				.StartNow()
 				.Build();
 		}
 
-		protected IJobDetail SimpleJob<T>() where T : IJob
+		protected virtual string GetNamePrefix()
+		{
+			return Name;
+		}
+
+		protected virtual IJobDetail SimpleJob<T>() where T : IJob
 		{
 			return JobBuilder.Create<T>()
-				.WithIdentity(Name,"ScheduledTasks")
+				.WithIdentity(GetNamePrefix() + "Job", "ScheduledTasks")
 				.RequestRecovery()
 				.Build();
 		}
@@ -52,6 +57,11 @@ namespace SpeedyMailer.Core.Tasks
 
 		protected ScheduledTaskWithData()
 		{ }
+
+		protected override string GetNamePrefix()
+		{
+			return base.GetNamePrefix() + "_" + TaskData.GetHashCode() + "_";
+		}
 
 		public override IJobDetail GetJob()
 		{
@@ -82,16 +92,16 @@ namespace SpeedyMailer.Core.Tasks
 		}
 	}
 
-	public abstract class DynamiclyScheduledTaskWithData : ScheduledTask
+	public abstract class DynamiclyScheduledTask : ScheduledTask
 	{
 		private readonly Action<SimpleScheduleBuilder> _triggerBuilder;
 
-		protected DynamiclyScheduledTaskWithData(Action<SimpleScheduleBuilder> triggerBuilder)
+		protected DynamiclyScheduledTask(Action<SimpleScheduleBuilder> triggerBuilder)
 		{
 			_triggerBuilder = triggerBuilder;
 		}
 
-		protected DynamiclyScheduledTaskWithData()
+		protected DynamiclyScheduledTask()
 		{ }
 
 		public override ITrigger ConfigureTrigger()

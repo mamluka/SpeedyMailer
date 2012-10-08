@@ -26,16 +26,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			action(email);
 		}
 
-		public void AssertEmailsSentTo(IEnumerable<string> contacts, int waitFor = 30)
+		public void AssertEmailsSentTo(IEnumerable<string> recipients, int waitFor = 30)
 		{
-			var files = WaitForEmailFiles(waitFor);
+			var emails = WaitForEmailsWithCondition(waitFor,
+									   messages => recipients.Join(messages, x => x, y => y.To.First().Address, (x, y) => x)
+									   .Count() == recipients.Count());
 
-			if (!files.Any())
-				Assert.Fail("No emails were found");
-
-			var emails = files.Select(x => JsonConvert.DeserializeObject<FakeEmailMessage>(File.ReadAllText(x)));
-
-			emails.Should().OnlyContain(x => x.To.Any(p => contacts.Contains(p.Address)));
+			if (emails.Count != recipients.Count())
+				Assert.Fail("Emails were not sent to all recipients expected {0} but {1} were sent", recipients.Count(), emails.Count);
 		}
 
 		private FakeEmailMessage GetEmailFromDisk(int waitFor)
@@ -140,12 +138,21 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Select(x => x.DeliveryDate)
 				.OrderBy(x => x.ToUniversalTime());
 
+			emails.Should().HaveCount(recipients.Count, "Not all emails were sent expected {0} but was {1}", emails.Count, recipients.Count);
 			deliveryTimes.AssertTimeDifferenceInRange(interval, 2);
 		}
 
 		public void AssertEmailsSentWithInterval(List<string> recipients, int interval, int waitFor = 30)
 		{
 			AssertEmailsSentWithInterval(recipients.Select(x => new Recipient { Email = x }).ToList(), interval);
+		}
+
+		public void WaitForEmailsToBeSent(List<string> recipients, int waitFor = 30)
+		{
+			WaitForEmailsWithCondition(waitFor,
+									   messages => recipients.Join(messages, x => x, y => y.To.First().Address, (x, y) => x)
+									   .Count() == recipients.Count());
+
 		}
 	}
 }

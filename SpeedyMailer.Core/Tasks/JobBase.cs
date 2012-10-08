@@ -3,11 +3,11 @@ using Quartz;
 
 namespace SpeedyMailer.Core.Tasks
 {
-	public abstract class JobBase<T> : ITaskData<T>
+	public class JobBase<T> : ITaskData<T>
 	{
 		public T GetData(IJobExecutionContext context)
 		{
-			var data =  context.JobDetail.JobDataMap["data"] as string;
+			var data = context.JobDetail.JobDataMap["data"] as string;
 			return JsonConvert.DeserializeObject<T>(data);
 		}
 	}

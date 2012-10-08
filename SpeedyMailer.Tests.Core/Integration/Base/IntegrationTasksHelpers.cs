@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Ninject;
+using Quartz;
+using Quartz.Impl;
 using Raven.Client;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drones.Tasks;
+using NUnit;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -25,6 +30,22 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				stopwatch.ElapsedMilliseconds < secondsToWait * 1000;
 
 			_integrationStoreHelpers.WaitForStoreWithFunction(condition);
+		}
+
+		public void AssertTaskIsNotRunning(SendCreativePackagesWithIntervalTask task)
+		{
+			var schedulerFactory = new StdSchedulerFactory();
+			var schedulers = schedulerFactory.AllSchedulers;
+
+			foreach (var job in schedulers.Select(scheduler => JobExists(task, scheduler)).Where(job => job != null))
+			{
+				NUnit.Framework.Assert.Fail("The job still exist {0}", job.Key);
+			}
+		}
+
+		private static IJobDetail JobExists(SendCreativePackagesWithIntervalTask task, IScheduler scheduler)
+		{
+			return scheduler.GetJobDetail(task.GetJob().Key);
 		}
 	}
 }

@@ -51,7 +51,24 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			var result = Store.Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
 
-			result.AssertTimeDifferenceInRange(5,1);
+			result.AssertTimeDifferenceInRange(5, 1);
+		}
+
+		[Test]
+		public void Start_WhenTwoDynamicTasksAreStartedAtTheSameTime_ShouldEachUseTheGivenInterval()
+		{
+			var task1 = new TestDynamicScheduledTaskWithData(x => x.TestData = "first", x => x.WithIntervalInSeconds(3).WithRepeatCount(4));
+			var task2 = new TestDynamicScheduledTaskWithData(x => x.TestData = "second", x => x.WithIntervalInSeconds(5).WithRepeatCount(4));
+
+			_target.AddAndStart(new[] { task1, task2 });
+
+			Store.WaitForEntitiesToExist<DataForTestingDynamicTasks>(10);
+
+			var task1Results = Store.Query<DataForTestingDynamicTasks>(x => x.Data == "first").ToList();
+			var task2Results = Store.Query<DataForTestingDynamicTasks>(x => x.Data == "second").ToList();
+
+			task1Results.Select(x => x.Time).AssertTimeDifferenceInRange(3, 1);
+			task2Results.Select(x => x.Time).AssertTimeDifferenceInRange(5, 1);
 		}
 
 		[Test]
@@ -61,9 +78,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.AddAndStart(task);
 
-			Store.WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
+			Store.WaitForEntitiesToExist<DataForTestingDynamicTasks>(4);
 
-			var result = Store.Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
+			var result = Store.Query<DataForTestingDynamicTasks>().Select(x => x.Time).ToList();
 
 			result.AssertTimeDifferenceInRange(5, 1);
 		}
@@ -153,7 +170,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		}
 	}
 
-	public class TestDynamicScheduledTask : DynamiclyScheduledTaskWithData
+	public class TestDynamicScheduledTask : DynamiclyScheduledTask
 	{
 		public TestDynamicScheduledTask(Action<SimpleScheduleBuilder> triggerBuilder)
 			: base(triggerBuilder)
@@ -199,7 +216,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			return SimpleJob<Job>();
 		}
 
-		public class Job : IJob
+		public class Job : JobBase<Data>, IJob
 		{
 			private readonly Framework _framework;
 
@@ -210,12 +227,20 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				_framework.Store(new ComputationResult<DateTime>
-									{
-										Result = DateTime.UtcNow
-									});
+				var data = GetData(context);
+				_framework.Store(new DataForTestingDynamicTasks
+					                 {
+						                 Time = DateTime.UtcNow,
+						                 Data = data.TestData
+					                 });
 			}
 		}
+	}
+
+	public class DataForTestingDynamicTasks
+	{
+		public DateTime Time { get; set; }
+		public string Data { get; set; }
 	}
 
 	public class SecondTestScheduledTask : ScheduledTaskWithData<SecondTestScheduledTask.Data>

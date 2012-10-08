@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
 using MongoDB.Runner;
 using Mongol;
 using Nancy.Bootstrapper;
@@ -105,7 +108,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var manager = new RecordManager<T>();
 			manager.BatchInsert(new List<T> { entity });
 		}
-		
+
 		public void StorCollection<T>(IEnumerable<T> collection) where T : class
 		{
 			var manager = new RecordManager<T>();
@@ -115,11 +118,37 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public void StartMongo()
 		{
 			MongoRunner.Start();
+
+			try
+			{
+				var manager = new GenericRecordManager<SocketCycling>();
+				manager.BatchInsert(new[] { new SocketCycling(),  });
+			}
+			catch (Exception)
+			{
+				Trace.WriteLine("Mongo socket was garbage collected");
+			}
+
+			while (!Process.GetProcessesByName("mongod").Any())
+			{
+				Thread.Sleep(500);
+			}
 		}
 
 		public void ShutdownMongo()
 		{
 			MongoRunner.Shutdown();
+
+			while (Process.GetProcessesByName("mongod").Any())
+			{
+				Thread.Sleep(500);
+			}
+		}
+
+		public IList<T> FindAll<T>() where T : class
+		{
+			var manager = new GenericRecordManager<T>();
+			return manager.FindAll();
 		}
 	}
 }
