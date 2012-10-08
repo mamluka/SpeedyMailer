@@ -34,7 +34,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.Start();
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 			result.Result.Should().Be(4);
 		}
 
@@ -51,9 +51,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.Start();
 
-			var firstResult = Load<ComputationResult<int>>(resultId1);
-			var secondResult = Load<ComputationResult<int>>(resultId2);
-			var thirdResult = Load<ComputationResult<int>>(resultId3);
+			var firstResult = Store.Load<ComputationResult<int>>(resultId1);
+			var secondResult = Store.Load<ComputationResult<int>>(resultId2);
+			var thirdResult = Store.Load<ComputationResult<int>>(resultId3);
 
 			firstResult.Result.Should().Be(4);
 			secondResult.Result.Should().Be(6);
@@ -67,11 +67,11 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			CreateTask(resultId, 2, 2);
 
 			_target.Start();
-			Delete<ComputationResult<int>>(resultId);
+			Store.Delete<ComputationResult<int>>(resultId);
 
 			_target.Start();
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 			result.Should().BeNull();
 		}
 
@@ -90,7 +90,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.Start();
 
-			var fourhResult = Load<ComputationResult<int>>(resultId4);
+			var fourhResult = Store.Load<ComputationResult<int>>(resultId4);
 
 			fourhResult.Result.Should().Be(10);
 
@@ -103,7 +103,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.Start();
 
-			var result = Load<PersistentTask>(taskId);
+			var result = Store.Load<PersistentTask>(taskId);
 
 			result.Status.Should().Be(PersistentTaskStatus.Failed);
 		}
@@ -139,7 +139,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 				         		thread2.Join();
 				         	});
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 
 			result.Result.Should().Be(100);
 

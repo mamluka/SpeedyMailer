@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using FluentAssertions;
@@ -32,9 +33,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.AddAndStart(task);
 
-			WaitForEntityToExist(resultId);
+			Store.WaitForEntityToExist(resultId);
 
-			var result = Load<ComputationResult<string>>(resultId);
+			var result = Store.Load<ComputationResult<string>>(resultId);
 
 			result.Result.Should().Be("done");
 		}
@@ -46,9 +47,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.AddAndStart(task);
 
-			WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
+			Store.WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
 
-			var result = Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
+			var result = Store.Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
 
 			result.AssertTimeDifferenceInRange(5,1);
 		}
@@ -60,9 +61,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.AddAndStart(task);
 
-			WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
+			Store.WaitForEntitiesToExist<ComputationResult<DateTime>>(4);
 
-			var result = Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
+			var result = Store.Query<ComputationResult<DateTime>>().Select(x => x.Result).ToList();
 
 			result.AssertTimeDifferenceInRange(5, 1);
 		}
@@ -87,9 +88,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.AddAndStart(secondTask);
 
-			WaitForEntityToExist(resultId2);
+			Store.WaitForEntityToExist(resultId2);
 
-			var result = Load<ComputationResult<string>>(resultId2);
+			var result = Store.Load<ComputationResult<string>>(resultId2);
 			result.Result.Should().Be("done");
 		}
 
@@ -103,7 +104,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			Thread.Sleep(12 * 1000);
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 
 			result.Result.Should().Be(2);
 		}
@@ -174,6 +175,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
+				Trace.WriteLine("no data");
 				_framework.Store(new ComputationResult<DateTime>
 									{
 										Result = DateTime.UtcNow
@@ -209,6 +211,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
+				Trace.WriteLine("with data");
 				_framework.Store(new ComputationResult<DateTime>
 									{
 										Result = DateTime.UtcNow

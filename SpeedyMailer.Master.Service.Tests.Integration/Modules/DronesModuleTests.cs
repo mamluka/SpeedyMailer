@@ -29,8 +29,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 		            x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 	            });
 
-            WaitForEntitiesToExist<Drone>(1);
-            var result = Query<Drone>().First();
+            Store.WaitForEntitiesToExist<Drone>(1);
+            var result = Store.Query<Drone>().First();
 
             result.BaseUrl.Should().Be("baseurl");
             result.Id.Should().Be("droneip");

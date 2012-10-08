@@ -29,8 +29,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var api = MasterResolve<Api>();
 			api.Call<ServiceEndpoints.Creative.Send>(x => x.CreativeId = creativeId);
 
-			WaitForEntitiesToExist<CreativeFragment>(1);
-			var result = Query<CreativeFragment>().First();
+			Store.WaitForEntitiesToExist<CreativeFragment>(1);
+			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().HaveCount(1000);
 			result.CreativeId.Should().Be(creativeId);
@@ -56,9 +56,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 															x.UnsubscribeTemplateId = "templateId";
 														}).Result;
 
-			WaitForEntityToExist(creativeId);
+			Store.WaitForEntityToExist(creativeId);
 
-			var result = Load<Creative>(creativeId);
+			var result = Store.Load<Creative>(creativeId);
 
 			result.Body.Should().Be("body");
 			result.DealUrl.Should().Be("dealUrl");
@@ -145,14 +145,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 											   RecipientsPerFragment = recipientsPerFragment
 										   });
 
-			WaitForTaskToComplete(taskId);
+			Store.WaitForTaskToComplete(taskId);
 		}
 
 		private string CreateCreative(int contactsCount)
 		{
-			var listId = UIActions.CreateListWithRandomContacts("MyList", contactsCount);
-			var unsubscribeTenplateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x => x.Body = "body");
-			var creativeId = UIActions.CreateSimpleCreative(new[] { listId }, unsubscribeTenplateId);
+			var listId = UiActions.CreateListWithRandomContacts("MyList", contactsCount);
+			var unsubscribeTenplateId = UiActions.ExecuteCommand<CreateTemplateCommand, string>(x => x.Body = "body");
+			var creativeId = UiActions.CreateSimpleCreative(new[] { listId }, unsubscribeTenplateId);
 			return creativeId;
 		}
 	}

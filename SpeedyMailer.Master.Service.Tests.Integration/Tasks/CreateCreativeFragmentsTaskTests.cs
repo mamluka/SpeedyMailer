@@ -22,11 +22,11 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		public void Execute_WhenACreativeIsGiven_ShouldStoreTheFragmentsWithRecipientsDevidedBetweenTheFragments()
 		{
 
-			var listId = UIActions.CreateListWithRandomContacts("MyList", 1500);
+			var listId = UiActions.CreateListWithRandomContacts("MyList", 1500);
 
 			var templateId = CreateTemplate("Body");
 
-			var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 													  {
 														  x.Body = "Body";
 														  x.Subject = "Subject";
@@ -42,7 +42,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			ServiceActions.ExecuteTask(task);
 
-			var result = Query<CreativeFragment>(x => x.CreativeId == creativeId);
+			var result = Store.Query<CreativeFragment>(x => x.CreativeId == creativeId);
 
 			result.Should().HaveCount(2);
 			result.First().Recipients.Should().HaveCount(1000);
@@ -58,11 +58,11 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			ServiceActions.EditSettings<ServiceSettings>(x => x.BaseUrl = DefaultBaseUrl);
 
-			var listId = UIActions.CreateListWithRandomContacts("MyList", 700);
+			var listId = UiActions.CreateListWithRandomContacts("MyList", 700);
 
 			var templateId = CreateTemplate("Body");
 
-			var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 													  {
 														  x.Body = "Body";
 														  x.Subject = "Subject";
@@ -78,7 +78,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			ServiceActions.ExecuteTask(task);
 
-			var result = Query<CreativeFragment>().First();
+			var result = Store.Query<CreativeFragment>().First();
 
 			result.Service.BaseUrl.Should().Be(DefaultBaseUrl);
 			result.Service.DealsEndpoint.Should().Be("deals");
@@ -104,7 +104,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var templateId = CreateTemplate("Body");
 
-			var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
 				x.Body = "Body";
 				x.Subject = "Subject";
@@ -128,7 +128,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			ServiceActions.ExecuteTask(task);
 
-			var result = Query<CreativeFragment>().First();
+			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().Contain(x => topDomainContacts.Any(contact => contact.Email == x.Email) && x.Interval == 10);
 		}
@@ -142,7 +142,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var templateId = CreateTemplate("Body");
 
-			var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
 				x.Body = "Body";
 				x.Subject = "Subject";
@@ -158,7 +158,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			ServiceActions.ExecuteTask(task);
 
-			var result = Query<CreativeFragment>().First();
+			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().NotContain(x => x.Interval > 0);
 		}
@@ -192,7 +192,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 		private string CreateTemplate(string templateBody)
 		{
-			var templateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x => { x.Body = templateBody; });
+			var templateId = UiActions.ExecuteCommand<CreateTemplateCommand, string>(x => { x.Body = templateBody; });
 			return templateId;
 		}
 	}

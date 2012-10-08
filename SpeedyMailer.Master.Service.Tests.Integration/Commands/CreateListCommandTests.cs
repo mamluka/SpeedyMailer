@@ -12,12 +12,12 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
         [Test]
         public void Execute_WhenCalled_ShouldCreateAList()
         {
-            var id = UIActions.ExecuteCommand<CreateListCommand, string>(x =>
+            var id = UiActions.ExecuteCommand<CreateListCommand, string>(x =>
                                                                  {
                                                                      x.Name = "Default";
                                                                  });
 
-            var result = Load<ListDescriptor>(id);
+            var result = Store.Load<ListDescriptor>(id);
 
             result.Name.Should().Be("Default");
         }

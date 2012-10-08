@@ -13,13 +13,13 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
         public void Execute_WhenGivenATemplateBody_ShouldSaveTheTemplateInTheStore()
         {
             const string templateBody = "template body";
-            var templateId = UIActions.ExecuteCommand<CreateTemplateCommand, string>(x =>
+            var templateId = UiActions.ExecuteCommand<CreateTemplateCommand, string>(x =>
                                                                  {
                                                                      x.Body = templateBody;
 																	 x.Type = TemplateType.Unsubscribe;
                                                                  });
 
-            var result = Load<Template>(templateId);
+            var result = Store.Load<Template>(templateId);
 
             result.Body.Should().Be(templateBody);
             result.Type.Should().Be(TemplateType.Unsubscribe);

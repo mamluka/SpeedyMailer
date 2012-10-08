@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using MongoDB.Driver;
+using MongoDB.Runner;
+using Mongol;
 using Nancy.Bootstrapper;
 using Newtonsoft.Json;
 using Ninject;
@@ -12,6 +16,7 @@ using Rhino.Mocks;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Drones.Settings;
@@ -86,13 +91,35 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 												x.Identifier = droneId;
 											}, droneKernel);
 
-			EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntegrationTestBase.AssemblyDirectory, droneKernel);
+			EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory, droneKernel);
 
 			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
 
 			var topDrone = droneKernel.Get<TopDrone>();
 
 			return topDrone;
+		}
+
+		public void Store<T>(T entity) where T : class
+		{
+			var manager = new RecordManager<T>();
+			manager.BatchInsert(new List<T> { entity });
+		}
+		
+		public void StorCollection<T>(IEnumerable<T> collection) where T : class
+		{
+			var manager = new RecordManager<T>();
+			manager.BatchInsert(collection);
+		}
+
+		public void StartMongo()
+		{
+			MongoRunner.Start();
+		}
+
+		public void ShutdownMongo()
+		{
+			MongoRunner.Shutdown();
 		}
 	}
 }

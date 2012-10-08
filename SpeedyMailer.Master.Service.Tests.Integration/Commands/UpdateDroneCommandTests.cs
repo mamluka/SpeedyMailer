@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 
 			ServiceActions.ExecuteCommand<UpdateDroneCommand>(x=> x.Drone = drone);
 
-			var result = Load<Drone>(drone.Id);
+			var result = Store.Load<Drone>(drone.Id);
 
 			result.BaseUrl.Should().Be(drone.BaseUrl);
 			result.Status.Should().Be(drone.Status);

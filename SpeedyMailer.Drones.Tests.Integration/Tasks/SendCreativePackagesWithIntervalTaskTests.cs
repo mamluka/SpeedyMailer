@@ -1,26 +1,79 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using MongoDB.Runner;
 using NUnit.Framework;
+using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
-	public class SendCreativePackagesWithIntervalTaskTests:IntegrationTestBase
+	public class SendCreativePackagesWithIntervalTaskTests : IntegrationTestBase
 	{
+		public SendCreativePackagesWithIntervalTaskTests()
+			: base(x => x.UseMongo = true)
+		{
+
+		}
+
 		[Test]
 		public void Execute_WhenTaskHasAnInterval_ShouldSendThePackagesAccordingToTheIntervalSpecified()
 		{
-			MongoRunner.Start();
+			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
 
-			DroneActions.Store();
+			var creativePackages = new[]
+				                       {
+					                       CreatePackage("david@gmail.com", 5), 
+										   CreatePackage("david2@gmail.com", 5), 
+										   CreatePackage("david3@gmail.com", 5)
+				                       };
 
-			var task = new SendCreativePackagesWithIntervalTask();
+			DroneActions.StorCollection(creativePackages);
 
-			MongoRunner.Shutdown();
+			var task = new SendCreativePackagesWithIntervalTask(x => x.Interval = 5, x => x.WithIntervalInSeconds(5).RepeatForever());
+
+			DroneActions.StartScheduledTask(task);
+
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients,5);
+
+		}
+		
+		[Test]
+		public void Execute_WhenTaskHasAnIntervalAndNoPackagesWereFound_ShouldStopExecutingTheTaskAndRemoveIt()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+
+			var creativePackages = new[]
+				                       {
+					                       CreatePackage("david@gmail.com", 5), 
+										   CreatePackage("david2@gmail.com", 5), 
+										   CreatePackage("david3@gmail.com", 5)
+				                       };
+
+			DroneActions.StorCollection(creativePackages);
+
+			var task = new SendCreativePackagesWithIntervalTask(x => x.Interval = 5, x => x.WithIntervalInSeconds(5).RepeatForever());
+
+			DroneActions.StartScheduledTask(task);
+
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients, 5);
+		}
+
+		private static CreativePackage CreatePackage(string email, int interval)
+		{
+			return new CreativePackage
+					   {
+						   Body = "body",
+						   Interval = interval,
+						   Subject = "subject",
+						   To = email
+					   };
 		}
 	}
 }

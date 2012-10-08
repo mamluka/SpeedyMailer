@@ -32,12 +32,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																x.ApiBaseUri = DefaultBaseUrl;
 															});
 
-			ListenToApiCall<ServiceEndpoints.Drones.RegisterDrone>();
+			Api.ListenToApiCall<ServiceEndpoints.Drones.RegisterDrone>();
 
 			var task = new BroadcastDroneToServiceTask();
 			_scheduledTaskManager.AddAndStart(task);
 
-			AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x =>
+			Api.AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x =>
 															x.Identifier == "drone1" &&
 															x.BaseUrl == "http://192.168.1.1:2589" &&
 															DateTime.Parse(x.LastUpdate) > DateTime.UtcNow.AddSeconds(-30)

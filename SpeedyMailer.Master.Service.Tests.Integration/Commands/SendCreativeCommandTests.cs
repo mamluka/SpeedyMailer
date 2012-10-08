@@ -14,14 +14,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
             ServiceActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
             const string creativeId = "creative/1";
-            ListenToApiCall<ServiceEndpoints.Creative.Send>();
+            Api.ListenToApiCall<ServiceEndpoints.Creative.Send>();
 
-            UIActions.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
+            UiActions.ExecuteCommand<SendCreativeCommand,ApiResult>(x =>
                                                                 {
                                                                     x.CreativeId = creativeId;
                                                                 });
 
-            AssertApiCalled<ServiceEndpoints.Creative.Send>(x=> x.CreativeId == creativeId);
+            Api.AssertApiCalled<ServiceEndpoints.Creative.Send>(x=> x.CreativeId == creativeId);
         }
     }
 }

@@ -22,9 +22,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 						   };
 			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
 
-			WaitForEntitiesToExist<IntervalRule>(1);
+			Store.WaitForEntitiesToExist<IntervalRule>(1);
 
-			var result = Query<IntervalRule>().First();
+			var result = Store.Query<IntervalRule>().First();
 
 			result.Conditon.Should().Contain(new[] {"gmail.com"});
 			rule.Interval.Should().Be(20);

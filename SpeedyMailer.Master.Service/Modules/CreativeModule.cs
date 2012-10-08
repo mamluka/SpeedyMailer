@@ -74,7 +74,7 @@ namespace SpeedyMailer.Master.Service.Modules
 													return Response.AsJson(creativeFragment);
 
 												}
-												catch (ConcurrencyException ex)
+												catch (ConcurrencyException)
 												{
 													return null;
 												}

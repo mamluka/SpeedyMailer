@@ -29,9 +29,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																		 x.Body = "body";
 																	 });
 
-			WaitForEntitiesToExist<Template>(1);
+			Store.WaitForEntitiesToExist<Template>(1);
 
-			var result = Query<Template>().First();
+			var result = Store.Query<Template>().First();
 
 			result.Body.Should().Be("body");
 			result.Type.Should().Be(TemplateType.Unsubscribe);
@@ -46,8 +46,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			Store(CreateTemplate("body"));
-			Store(CreateTemplate("second body"));
+			Store.Store(CreateTemplate("body"));
+			Store.Store(CreateTemplate("second body"));
 
 			var api = MasterResolve<Api>();
 

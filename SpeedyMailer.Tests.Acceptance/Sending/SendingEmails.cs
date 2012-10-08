@@ -46,12 +46,12 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			var creativeId = SaveCreative();
 			SendCreative(creativeId);
 
-			var drone = DroneActions.CreateDrone("drone1", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone = DroneActions.CreateDrone("drone1", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone.Initialize();
 			drone.Start();
 
 			var contacts = csvRows.Select(x => x.Email);
-			AssertEmailsSentTo(contacts);
+			Email.AssertEmailsSentTo(contacts);
 
 		}
 
@@ -80,16 +80,16 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			var creativeId = SaveCreative();
 			SendCreative(creativeId);
 
-			var drone1 = DroneActions.CreateDrone("drone1", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone1 = DroneActions.CreateDrone("drone1", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone1.Initialize();
 			drone1.Start();
 
-			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone2.Initialize();
 			drone2.Start();
 
-			AssertEmailsSentBy("drone1", 100, 120);
-			AssertEmailsSentBy("drone2", 100, 120);
+			Email.AssertEmailsSentBy("drone1", 100, 120);
+			Email.AssertEmailsSentBy("drone2", 100, 120);
 		}
 
 		[Test]
@@ -117,31 +117,31 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			var creativeId = SaveCreative();
 			SendCreative(creativeId);
 
-			var drone1 = DroneActions.CreateDrone("drone1", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone1 = DroneActions.CreateDrone("drone1", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone1.Initialize();
 			drone1.Start();
 
-			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone2.Initialize();
 			drone2.Start();
 
-			var drone3 = DroneActions.CreateDrone("drone3", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone3 = DroneActions.CreateDrone("drone3", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone3.Initialize();
 			drone3.Start();
 
-			var drone4 = DroneActions.CreateDrone("drone4", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone4 = DroneActions.CreateDrone("drone4", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone4.Initialize();
 			drone4.Start();
 
-			var drone5 = DroneActions.CreateDrone("drone5", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone5 = DroneActions.CreateDrone("drone5", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone5.Initialize();
 			drone5.Start();
 
-			AssertEmailsSentBy("drone1", 100, 150);
-			AssertEmailsSentBy("drone2", 100, 150);
-			AssertEmailsSentBy("drone3", 100, 150);
-			AssertEmailsSentBy("drone4", 100, 150);
-			AssertEmailsSentBy("drone5", 100, 150);
+			Email.AssertEmailsSentBy("drone1", 100, 150);
+			Email.AssertEmailsSentBy("drone2", 100, 150);
+			Email.AssertEmailsSentBy("drone3", 100, 150);
+			Email.AssertEmailsSentBy("drone4", 100, 150);
+			Email.AssertEmailsSentBy("drone5", 100, 150);
 		}
 
 		private void SendCreative(string creativeId)

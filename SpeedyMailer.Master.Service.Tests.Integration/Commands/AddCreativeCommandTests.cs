@@ -13,7 +13,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 		[Test]
 		public void Execute_WhenAllCreateParametersAreValid_ShouldAddCreativeToStore()
         {
-	        var creativeId = UIActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+	        var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
                                                                                    {
                                                                                        x.Subject = "Subject";
                                                                                        x.Body = "Body";
@@ -25,7 +25,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 	                                                                                   x.DealUrl = "dealUrl";
                                                                                    });
 
-            var result = Load<Creative>(creativeId);
+            var result = Store.Load<Creative>(creativeId);
 
             result.Body.Should().Be("Body");
             result.Subject.Should().Be("Subject");

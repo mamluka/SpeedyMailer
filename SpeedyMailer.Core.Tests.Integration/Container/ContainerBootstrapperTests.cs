@@ -95,7 +95,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				JustSomeIntegerProperty = 10
 			};
 
-			Store(entity,"settings/Testing");
+			Store.Store(entity, "settings/Testing");
 
 
 			var kernel = ContainerBootstrapper
@@ -136,7 +136,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 		public void Bootstrap_WhenSettingsExistInStoreButThePropertyDoesnt_ShouldReturnDefaultValues()
 		{
 			var entity = new TestingSettings();
-			Store(entity);
+			Store.Store(entity);
 
 			var kernel = ContainerBootstrapper
 				.Bootstrap()
@@ -302,7 +302,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				JustSomeIntegerProperty = 10
 			};
 
-			Store(entity, "settings/Testing");
+			Store.Store(entity, "settings/Testing");
 
 
 			var kernel = ContainerBootstrapper
@@ -315,7 +315,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Done();
 
 			entity.JustSomeTextProperty = "reload-me";
-			Store(entity, "settings/Testing");
+			Store.Store(entity, "settings/Testing");
 
 			ContainerBootstrapper.ReloadStoreSetting<TestingSettings>(kernel, DocumentStore);
 
@@ -333,7 +333,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				JustSomeIntegerProperty = 10
 			};
 
-			Store(entity, "settings/Testing");
+			Store.Store(entity, "settings/Testing");
 
 
 			var kernel = ContainerBootstrapper
@@ -346,7 +346,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Container
 				.Done();
 
 			entity.JustSomeTextProperty = "reload-me";
-			Store(entity, "settings/Testing");
+			Store.Store(entity, "settings/Testing");
 
 			ContainerBootstrapper.ReloadAllStoreSettings(kernel);
 

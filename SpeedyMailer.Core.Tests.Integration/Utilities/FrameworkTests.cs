@@ -38,7 +38,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		{
 			_target.ExecuteCommand(new StoreInDatabaseCommand(DocumentStore));
 
-			var result = Load<ComputationResult<string>>("result/1");
+			var result = Store.Load<ComputationResult<string>>("result/1");
 
 			result.Result.Should().Be("saved");
 		}
@@ -54,7 +54,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 			           	};
 			_target.ExecuteTask(task);
 
-			var result = Load<ComputationResult<int>>("result/1");
+			var result = Store.Load<ComputationResult<int>>("result/1");
 
 			result.Should().BeNull();
 		}
@@ -71,8 +71,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 			};
 			_target.ExecuteTask(task);
 
-			WaitForEntityToExist(resultId,10);
-			var result = Load<ComputationResult<int>>(resultId);
+			Store.WaitForEntityToExist(resultId, 10);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 
 			result.Result.Should().Be(4);
 		}
@@ -88,11 +88,11 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 
 			_target.StartTasks(tasks);
 
-			WaitForEntityToExist("result/1");
-			WaitForEntityToExist("result/2");
+			Store.WaitForEntityToExist("result/1");
+			Store.WaitForEntityToExist("result/2");
 
-			var result1 = Load<ComputationResult<string>>("result/1");
-			var result2 = Load<ComputationResult<string>>("result/1");
+			var result1 = Store.Load<ComputationResult<string>>("result/1");
+			var result2 = Store.Load<ComputationResult<string>>("result/1");
 
 			result1.Result.Should().Be("done");
 			result2.Result.Should().Be("done");

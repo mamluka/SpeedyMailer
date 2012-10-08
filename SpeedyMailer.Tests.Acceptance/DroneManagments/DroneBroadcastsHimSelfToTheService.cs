@@ -21,17 +21,17 @@ namespace SpeedyMailer.Tests.Acceptance.DroneManagments
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			var drone1 = DroneActions.CreateDrone("drone1", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone1 = DroneActions.CreateDrone("drone1", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone1.Initialize();
 			drone1.Start();
 
-			var drone2 = DroneActions.CreateDrone("drone2", GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
 			drone2.Initialize();
 			drone2.Start();
 
-			WaitForEntitiesToExist<Drone>(2);
+			Store.WaitForEntitiesToExist<Drone>(2);
 
-			var result = Query<Drone>();
+			var result = Store.Query<Drone>();
 
 			result.Should().Contain(x => x.Id == "drone1");
 			result.Should().Contain(x => x.Id == "drone2");

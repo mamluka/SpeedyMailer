@@ -16,20 +16,20 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
         {
 
             const string listName = "MyList";
-            var listId = UIActions.ExecuteCommand<CreateListCommand,string>(x =>
+            var listId = UiActions.ExecuteCommand<CreateListCommand,string>(x =>
                                                                          {
                                                                              x.Name = listName;
                                                                          });
             var contacts = Fixture.CreateMany<Contact>(10).ToList();
 
-            UIActions.ExecuteCommand<AddContactsCommand,long>(x=>
+            UiActions.ExecuteCommand<AddContactsCommand,long>(x=>
                                                       {
                                                           x.Contacts = contacts;
                                                           x.ListId = listId;
 
                                                       });
 
-            var result = Query<Contact>(x => x.MemberOf.Any(list=> list == listId));
+            var result = Store.Query<Contact>(x => x.MemberOf.Any(list=> list == listId));
 
             var resultNames = result.Select(x => x.Name).ToList();
             var names = contacts.Select(x => x.Name).ToList();
@@ -41,7 +41,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
         public void Execute_WhenWeHaveDuplicates_ShouldRemovetheDuplicates()
         {
             const string listName = "MyList";
-            var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x =>
+            var listId = UiActions.ExecuteCommand<CreateListCommand, string>(x =>
             {
                 x.Name = listName;
             });
@@ -51,14 +51,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 
             contacts.Add(theDuplicate);
 
-            UIActions.ExecuteCommand<AddContactsCommand, long>(x =>
+            UiActions.ExecuteCommand<AddContactsCommand, long>(x =>
             {
                 x.Contacts = contacts;
                 x.ListId = listId;
 
             });
 
-            var result = Query<Contact>(x => x.MemberOf.Any(list => list == listId));
+            var result = Store.Query<Contact>(x => x.MemberOf.Any(list => list == listId));
 
             result.Should().HaveCount(10);
             result.Count(x => x.Name == theDuplicate.Name).Should().Be(1);

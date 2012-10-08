@@ -35,9 +35,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			_target.BeginExecuting();
 
-			WaitForEntityToExist(resultId);
+			Store.WaitForEntityToExist(resultId);
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 			result.Result.Should().Be(4);
 		}
 
@@ -63,9 +63,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			_taskManager.Save(task1);
 			_target.BeginExecuting();
 
-			WaitForEntityToExist(resultId,10);
+			Store.WaitForEntityToExist(resultId,10);
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 			result.Should().BeNull();
 		}
 
@@ -91,15 +91,15 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			_taskManager.Save(task1);
 			_target.BeginExecuting();
 
-			WaitForEntityToExist(resultId1, 5);
+			Store.WaitForEntityToExist(resultId1, 5);
 
 			_taskManager.Save(task2);
 			_target.BeginExecuting();
 
-			WaitForEntityToExist(resultId2, 5);
+			Store.WaitForEntityToExist(resultId2, 5);
 
-			var result1 = Load<ComputationResult<int>>(resultId1);
-			var result2 = Load<ComputationResult<int>>(resultId2);
+			var result1 = Store.Load<ComputationResult<int>>(resultId1);
+			var result2 = Store.Load<ComputationResult<int>>(resultId2);
 
 			result1.Result.Should().Be(4);
 			result2.Result.Should().Be(6);
@@ -132,9 +132,9 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			_target.BeginExecuting();
 
 
-			WaitForEntityToExist(resultId,10);
+			Store.WaitForEntityToExist(resultId, 10);
 
-			var result = Load<ComputationResult<int>>(resultId);
+			var result = Store.Load<ComputationResult<int>>(resultId);
 			result.Result.Should().Be(4);
 		}
 	}

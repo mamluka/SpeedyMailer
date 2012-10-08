@@ -49,7 +49,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var result = api.Call<ServiceEndpoints.Lists.CreateList,ApiStringResult>(x=> x.Name = "myName");
 
-			var list = Load<ListDescriptor>(result.Result);
+			var list = Store.Load<ListDescriptor>(result.Result);
 
 			list.Name.Should().Be("myName");
 		}
@@ -74,10 +74,10 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			api.AddFiles(new[] { fileName })
 				.Call<ServiceEndpoints.Lists.UploadContacts>(x => x.ListName = "list/1");
 
-			WaitForEntitiesToExist<Contact>(1000);
+			Store.WaitForEntitiesToExist<Contact>(1000);
 
 			var firstContact = list.First();
-			var result = Query<Contact>(x => x.Name == firstContact.Name).First();
+			var result = Store.Query<Contact>(x => x.Name == firstContact.Name).First();
 
 			result.MemberOf.Should().Contain("list/1");
 			result.Email.Should().Be(firstContact.Email);

@@ -24,12 +24,13 @@ namespace SpeedyMailer.Drones.Commands
 
 		public override void Execute()
 		{
+			if (Package == null)
+				return;
+
 			var email = new MailMessage();
 			email.To.Add(Package.To);
 			email.Body = Package.Body;
 			email.Subject = Package.Subject;
-
-			Thread.Sleep(1*1000);
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{

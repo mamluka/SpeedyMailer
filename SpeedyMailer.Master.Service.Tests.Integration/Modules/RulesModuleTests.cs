@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
@@ -40,9 +38,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 						                                                               };
 																	 });
 
-			WaitForEntitiesToExist<IntervalRule>(1);
+			Store.WaitForEntitiesToExist<IntervalRule>(1);
 
-			var result = Query<IntervalRule>().First();
+			var result = Store.Query<IntervalRule>().First();
 
 			result.Conditon.Should().Contain(new[] { "gmail.com", "hotmail.com" });
 			result.Interval.Should().Be(5);

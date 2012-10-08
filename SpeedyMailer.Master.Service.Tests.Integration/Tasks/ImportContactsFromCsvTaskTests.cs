@@ -16,7 +16,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenAPerfectCSVListIsGiven_ShouldParseItAndWriteToDataBase()
 		{
-			var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
+			var listId = UiActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
 			var filename = CsvTestingExtentions.GenerateFileName("sample");
 			Fixture.CreateMany<ContactsListCsvRow>(10).ToCsvFile(filename);
@@ -27,9 +27,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 							File = filename
 						};
 
-			UIActions.ExecuteTask(task);
+			UiActions.ExecuteTask(task);
 
-			var result = Load<ImportContactsFromCsvTask>(task.Id);
+			var result = Store.Load<ImportContactsFromCsvTask>(task.Id);
 
 			result.TaskResults.NumberOfContacts.Should().Be(10);
 			result.TaskResults.Filename.Should().Be(filename);
@@ -39,7 +39,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenListContainsDuplicates_ShouldIgnoreThem()
 		{
-			var listId = UIActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
+			var listId = UiActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
 
 			var filename = CsvTestingExtentions.GenerateFileName("sample");
 
@@ -54,9 +54,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 				File = filename
 			};
 
-			UIActions.ExecuteTask(task);
+			UiActions.ExecuteTask(task);
 
-			var result = Load<ImportContactsFromCsvTask>(task.Id);
+			var result = Store.Load<ImportContactsFromCsvTask>(task.Id);
 
 			result.TaskResults.NumberOfContacts.Should().Be(10);
 			result.TaskResults.Filename.Should().Be(filename);

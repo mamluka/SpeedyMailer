@@ -14,7 +14,7 @@ namespace SpeedyMailer.Core.Tasks
 		protected ITrigger TriggerWithTimeCondition(Action<SimpleScheduleBuilder> condition)
 		{
 			return TriggerBuilder.Create()
-				.WithIdentity(Name + "Trigger")
+				.WithIdentity(Name + "Trigger", "ScheduledTasks")
 				.WithSimpleSchedule(condition)
 				.StartNow()
 				.Build();
@@ -76,15 +76,12 @@ namespace SpeedyMailer.Core.Tasks
 			_triggerBuilder = triggerBuilder;
 		}
 
-		protected DynamiclyScheduledTaskWithData()
-		{ }
-
 		public override ITrigger ConfigureTrigger()
 		{
 			return TriggerWithTimeCondition(_triggerBuilder);
 		}
 	}
-	
+
 	public abstract class DynamiclyScheduledTaskWithData : ScheduledTask
 	{
 		private readonly Action<SimpleScheduleBuilder> _triggerBuilder;

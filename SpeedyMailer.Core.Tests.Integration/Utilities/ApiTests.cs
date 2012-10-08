@@ -1,15 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
-using RestSharp;
 using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Tests.Core;
-using Rhino.Mocks;
-using FluentAssertions;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Core.IntegrationTests.Utilities
@@ -29,17 +20,17 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 		[Test]
 		public void Call_WhenCalled_ShouldCallTheEndpoint()
 		{
-			ListenToApiCall<PostTestApi>();
+			Api.ListenToApiCall<PostTestApi>();
 
 			_target.Call<PostTestApi>(x => x.CallId = "testing call");
 
-			AssertApiCalled<PostTestApi>(x => x.CallId == "testing call");
+			Api.AssertApiCalled<PostTestApi>(x => x.CallId == "testing call");
 		}
 
 		[Test]
 		public void Call_WhenThereAreFiles_ShouldSendThem()
 		{
-			ListenToApiCall<PutFileApi>();
+			Api.ListenToApiCall<PutFileApi>();
 			CreateFile("for-api-send.text");
 
 
@@ -47,8 +38,8 @@ namespace SpeedyMailer.Core.IntegrationTests.Utilities
 				.AddFiles(new[] { "for-api-send.text" })
 				.Call<PutFileApi>(x => x.CallId = "testing file upload");
 
-            AssertApiCalled<PutFileApi>(x => x.CallId == "testing file upload");
-			AssertFilesUploaded<PutFileApi>(new[] {"for-api-send.text"});
+			Api.AssertApiCalled<PutFileApi>(x => x.CallId == "testing file upload");
+			Api.AssertFilesUploaded<PutFileApi>(new[] { "for-api-send.text" });
 		}
         
 		private void CreateFile(string fileName)
