@@ -175,7 +175,6 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				Trace.WriteLine("no data");
 				_framework.Store(new ComputationResult<DateTime>
 									{
 										Result = DateTime.UtcNow
@@ -211,7 +210,6 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				Trace.WriteLine("with data");
 				_framework.Store(new ComputationResult<DateTime>
 									{
 										Result = DateTime.UtcNow
