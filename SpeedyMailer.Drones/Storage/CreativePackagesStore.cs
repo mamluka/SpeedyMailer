@@ -14,5 +14,10 @@ namespace SpeedyMailer.Drones.Storage
 		{
 			return Find(Query.EQ(PropertyName(x => x.Interval), interval)).FirstOrDefault();
 		}
+
+		public bool AreThereAnyPackages()
+		{
+			return Count() > 0;
+		}
 	}
 }

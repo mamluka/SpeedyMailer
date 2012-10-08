@@ -15,6 +15,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
 	public class FetchCreativeFragmentsTaskTasts : IntegrationTestBase
 	{
+		public FetchCreativeFragmentsTaskTasts()
+			: base(x => x.UseMongo = true)
+		{
+
+		}
+
 		[Test]
 		public void Execute_WhenStarted_ShouldFetchACreativeFragmentFromServer()
 		{
@@ -29,6 +35,26 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenNotAllCreativePackagesAreSent_ShouldNotFetchANewFragment()
+		{
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			Api.ListenToApiCall<ServiceEndpoints.Creative.FetchFragment>();
+
+			var creativePackage = new CreativePackage
+									  {
+										  Id = "package/1"
+									  };
+
+			DroneActions.Store(creativePackage);
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			Api.AssertApiWasntCalled<ServiceEndpoints.Creative.FetchFragment>();
+		}
+
+		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStartSendTheEmail()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
@@ -38,7 +64,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
-				                                                                              {
+																							  {
 																								  x.Id = "fragment/1";
 																								  x.CreativeId = "creative/1";
 																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
@@ -51,7 +77,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																									  DealsEndpoint = "deal",
 																									  UnsubscribeEndpoint = "unsubscribe"
 																								  };
-				                                                                              });
+																							  });
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -78,23 +104,23 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 AddRecipient("contacts/5", "test5@gmail.com"),
 				                 };
 
-			recipients.ForEach(x=> x.Interval = 10);
+			recipients.ForEach(x => x.Interval = 10);
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
-				                                                                              {
-					                                                                              x.Id = "fragment/1";
-					                                                                              x.CreativeId = "creative/1";
-					                                                                              x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
-					                                                                              x.Subject = "hello world subject";
-					                                                                              x.UnsubscribeTemplate = "here  is a template <url>";
-					                                                                              x.Recipients = recipients;
-					                                                                              x.Service = new Service
-						                                                                                          {
-							                                                                                          BaseUrl = "http://www.topemail.com",
-							                                                                                          DealsEndpoint = "deal",
-							                                                                                          UnsubscribeEndpoint = "unsubscribe"
-						                                                                                          };
-				                                                                              });
+																							  {
+																								  x.Id = "fragment/1";
+																								  x.CreativeId = "creative/1";
+																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.Subject = "hello world subject";
+																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.Recipients = recipients;
+																								  x.Service = new Service
+																												  {
+																													  BaseUrl = "http://www.topemail.com",
+																													  DealsEndpoint = "deal",
+																													  UnsubscribeEndpoint = "unsubscribe"
+																												  };
+																							  });
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -127,20 +153,20 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
-				                                                                              {
-					                                                                              x.Id = "fragment/1";
-					                                                                              x.CreativeId = "creative/1";
-					                                                                              x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
-					                                                                              x.Subject = "hello world subject";
-					                                                                              x.UnsubscribeTemplate = "here  is a template <url>";
-					                                                                              x.Recipients = recipients;
-					                                                                              x.Service = new Service
-						                                                                                          {
-							                                                                                          BaseUrl = "http://www.topemail.com",
-							                                                                                          DealsEndpoint = "deal",
-							                                                                                          UnsubscribeEndpoint = "unsubscribe"
-						                                                                                          };
-				                                                                              });
+																							  {
+																								  x.Id = "fragment/1";
+																								  x.CreativeId = "creative/1";
+																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.Subject = "hello world subject";
+																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.Recipients = recipients;
+																								  x.Service = new Service
+																												  {
+																													  BaseUrl = "http://www.topemail.com",
+																													  DealsEndpoint = "deal",
+																													  UnsubscribeEndpoint = "unsubscribe"
+																												  };
+																							  });
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -162,20 +188,20 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
-				                                                                              {
-					                                                                              x.Id = "fragment/1";
-					                                                                              x.CreativeId = "creative/1";
-					                                                                              x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
-					                                                                              x.Subject = "hello world subject";
-					                                                                              x.UnsubscribeTemplate = "here  is a template <url>";
-					                                                                              x.Recipients = recipients;
-					                                                                              x.Service = new Service
-						                                                                                          {
-							                                                                                          BaseUrl = "http://www.topemail.com",
-							                                                                                          DealsEndpoint = "deal",
-							                                                                                          UnsubscribeEndpoint = "unsubscribe"
-						                                                                                          };
-				                                                                              });
+																							  {
+																								  x.Id = "fragment/1";
+																								  x.CreativeId = "creative/1";
+																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.Subject = "hello world subject";
+																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.Recipients = recipients;
+																								  x.Service = new Service
+																												  {
+																													  BaseUrl = "http://www.topemail.com",
+																													  DealsEndpoint = "deal",
+																													  UnsubscribeEndpoint = "unsubscribe"
+																												  };
+																							  });
 
 			var task = new FetchCreativeFragmentsTask();
 
@@ -202,7 +228,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		private void CreateFragmetResponse(CreativeFragment creativeFragment, IEnumerable<Recipient> recipients)
 		{
 
-			
+
 		}
 
 		private string CreateBodyWithLink(string link)

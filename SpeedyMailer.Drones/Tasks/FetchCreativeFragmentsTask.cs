@@ -9,6 +9,7 @@ using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Commands;
+using SpeedyMailer.Drones.Storage;
 using Template = Antlr4.StringTemplate.Template;
 
 
@@ -33,10 +34,12 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly SendCreativePackageCommand _sendCreativePackageCommand;
 			private readonly ICreativeBodySourceWeaver _creativeBodySourceWeaver;
 			private readonly UrlBuilder _urlBuilder;
+			private CreativePackagesStore _creativePackagesStore;
 
 			public Job(Api api, SendCreativePackageCommand sendCreativePackageCommand,
-					   ICreativeBodySourceWeaver creativeBodySourceWeaver, UrlBuilder urlBuilder)
+					   ICreativeBodySourceWeaver creativeBodySourceWeaver, UrlBuilder urlBuilder,CreativePackagesStore creativePackagesStore)
 			{
+				_creativePackagesStore = creativePackagesStore;
 				_urlBuilder = urlBuilder;
 				_creativeBodySourceWeaver = creativeBodySourceWeaver;
 				_sendCreativePackageCommand = sendCreativePackageCommand;
@@ -45,6 +48,9 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
+				if (_creativePackagesStore.AreThereAnyPackages())
+					return;
+
 				var creativeFragment = _api
 					.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
