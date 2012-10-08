@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Tasks
 		public void BeginExecuting()
 		{
 			var jobDetail = JobBuilder.Create<StartTaskExecutionJob>()
-				.WithIdentity("StartTaskExecution")
+				.WithIdentity("StartTaskExecution","Tasks")
 				.RequestRecovery()
 				.StoreDurably()
 				.Build();

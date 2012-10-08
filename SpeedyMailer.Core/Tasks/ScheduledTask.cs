@@ -14,7 +14,7 @@ namespace SpeedyMailer.Core.Tasks
 		protected ITrigger TriggerWithTimeCondition(Action<SimpleScheduleBuilder> condition)
 		{
 			return TriggerBuilder.Create()
-				.WithIdentity(Name + "Trigger", "ScheduledTasks")
+				.WithIdentity(Name + "Trigger")
 				.WithSimpleSchedule(condition)
 				.StartNow()
 				.Build();
@@ -23,7 +23,7 @@ namespace SpeedyMailer.Core.Tasks
 		protected IJobDetail SimpleJob<T>() where T : IJob
 		{
 			return JobBuilder.Create<T>()
-				.WithIdentity(Name)
+				.WithIdentity(Name,"ScheduledTasks")
 				.RequestRecovery()
 				.Build();
 		}

@@ -14,13 +14,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var orderTarget = target.OrderBy(x => x.ToUniversalTime());
 
 			var deltas = orderTarget.Zip(orderTarget.Skip(1), (current, next) => next - current);
-
-			Trace.WriteLine(string.Join(",", deltas.Select(x => x.TotalSeconds.ToString()).ToArray()));
-			Trace.WriteLine(string.Join(",", orderTarget.Select(x => x.ToLongTimeString()).ToArray()));
-
 			deltas.Should().OnlyContain(x => x.TotalSeconds > interval - tolorance && x.TotalSeconds < interval + tolorance);
-
-			
 		}
 	}
 }

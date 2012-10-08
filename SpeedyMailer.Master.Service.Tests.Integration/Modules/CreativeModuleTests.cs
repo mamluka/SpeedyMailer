@@ -145,7 +145,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 											   RecipientsPerFragment = recipientsPerFragment
 										   });
 
-			Store.WaitForTaskToComplete(taskId);
+			Tasks.WaitForTaskToComplete(taskId);
 		}
 
 		private string CreateCreative(int contactsCount)

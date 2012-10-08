@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Linq;
@@ -41,6 +42,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public IntegrationEmailHelpers Email { get; set; }
 
+		public IntegrationTasksHelpers Tasks { get; set; }
+
 		public IntegrationTestBase()
 		{
 
@@ -77,6 +80,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Api = new IntegrationApiHelpers(DefaultBaseUrl);
 			Store = new IntegrationStoreHelpers(DocumentStore);
 			Email = new IntegrationEmailHelpers();
+			Tasks = new IntegrationTasksHelpers(Store);
 
 			if (_options.UseMongo)
 				DroneActions.StartMongo();
@@ -113,7 +117,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			ServiceActions.Stop();
 			Email.DeleteEmails();
 			DeleteJsonSettingFiles();
-			StopSchedulers();
+			ClearJobsFromSchedulers();
 
 			Api.StopListeningToApiCalls();
 
@@ -126,11 +130,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
 		{
-			StopSchedulers();
+			ClearJobsFromSchedulers();
 			DeleteJsonSettingFiles();
 		}
 
-		private void StopSchedulers()
+		private void ClearJobsFromSchedulers()
 		{
 			var masterScheduler = MasterResolve<IScheduler>();
 			DeleteRunningJobs(masterScheduler);
@@ -142,6 +146,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		private static void DeleteRunningJobs(IScheduler masterScheduler)
 		{
 			var groups = masterScheduler.GetJobGroupNames();
+
 			var jobKeys = groups.SelectMany(x => masterScheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
 
 			foreach (var key in jobKeys)
