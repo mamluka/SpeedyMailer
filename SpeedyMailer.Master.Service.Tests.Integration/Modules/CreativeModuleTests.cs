@@ -139,10 +139,11 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 		private void CreateFragment(string creativeId, int recipientsPerFragment)
 		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = recipientsPerFragment);
+			;
 			var taskId = ServiceActions.ExecuteTask(new CreateCreativeFragmentsTask
 										   {
 											   CreativeId = creativeId,
-											   RecipientsPerFragment = recipientsPerFragment
 										   });
 
 			Tasks.WaitForTaskToComplete(taskId);

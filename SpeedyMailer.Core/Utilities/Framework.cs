@@ -18,7 +18,7 @@ namespace SpeedyMailer.Core.Utilities
 		private readonly IKernel _kernel;
 		private readonly IScheduledTaskManager _scheduledTaskManager;
 
-		public Framework(IDocumentStore documentStore, ITaskManager taskManager, ITaskCoordinator taskCoordinator,IScheduledTaskManager scheduledTaskManager,IKernel kernel)
+		public Framework(IDocumentStore documentStore, ITaskManager taskManager, ITaskCoordinator taskCoordinator, IScheduledTaskManager scheduledTaskManager, IKernel kernel)
 		{
 			_scheduledTaskManager = scheduledTaskManager;
 			_kernel = kernel;
@@ -104,6 +104,14 @@ namespace SpeedyMailer.Core.Utilities
 		public void StartTasks(IEnumerable<ScheduledTask> tasks)
 		{
 			_scheduledTaskManager.AddAndStart(tasks);
+		}
+	}
+
+	public static class FrameworkExtentions
+	{
+		public static void StartTasks(this Framework target, ScheduledTask scheduledTask)
+		{
+			target.StartTasks(new[] { scheduledTask });
 		}
 	}
 }

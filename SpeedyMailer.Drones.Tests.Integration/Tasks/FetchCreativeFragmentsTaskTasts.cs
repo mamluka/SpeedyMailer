@@ -17,9 +17,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 	{
 		public FetchCreativeFragmentsTaskTasts()
 			: base(x => x.UseMongo = true)
-		{
-
-		}
+		{ }
 
 		[Test]
 		public void Execute_WhenStarted_ShouldFetchACreativeFragmentFromServer()
@@ -61,7 +59,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
 
-			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test") };
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																							  {
@@ -104,7 +102,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 AddRecipient("contacts/5", "test5@gmail.com"),
 				                 };
 
-			recipients.ForEach(x => x.Interval = 10);
+			recipients.ForEach(x => x.Interval = 3);
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																							  {
@@ -126,7 +124,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Email.AssertEmailsSentWithInterval(recipients, 10);
+			Email.AssertEmailsSentWithInterval(recipients, 3,10000);
 		}
 
 		[Test]
@@ -150,7 +148,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test") };
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																							  {
@@ -174,7 +172,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			AssertBodyContains("http://www.topemail.com/deal/" + Encode(new DealUrlData
 																			{
-																				ContactId = "contact/1",
+																				ContactId = "contacts/1",
 																				CreativeId = "creative/1"
 																			}));
 		}
@@ -185,7 +183,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test") };
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																							  {
@@ -211,7 +209,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			AssertBodyContains("http://www.topemail.com/unsubscribe/" + Encode(new UnsubscribeUrlData
 										{
 											CreativeId = "creative/1",
-											ContactId = "contact/1"
+											ContactId = "contacts/1"
 										}));
 		}
 
@@ -223,12 +221,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		private void AssertBodyContains(string text)
 		{
 			Email.AssertEmailSent(x => x.Body.Should().Contain(text));
-		}
-
-		private void CreateFragmetResponse(CreativeFragment creativeFragment, IEnumerable<Recipient> recipients)
-		{
-
-
 		}
 
 		private string CreateBodyWithLink(string link)

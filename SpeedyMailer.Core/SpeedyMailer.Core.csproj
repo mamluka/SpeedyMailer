@@ -210,10 +210,8 @@
     <Compile Include="Rules\WhatType.cs" />
     <Compile Include="Settings\CreativeEndpointsSettings.cs" />
     <Compile Include="Settings\DefaultAttribute.cs" />
-    <Compile Include="Settings\BaseApiSettings.cs" />
     <Compile Include="Settings\CreativeApisSettings.cs" />
     <Compile Include="Settings\CreativeFragmentSettings.cs" />
-    <Compile Include="Settings\RemoteServiceSettings.cs" />
     <Compile Include="Settings\ServiceSettings.cs" />
     <Compile Include="Tasks\ComputationResult.cs" />
     <Compile Include="Tasks\ContainerJobFactory.cs" />

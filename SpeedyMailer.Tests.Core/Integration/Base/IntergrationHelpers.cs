@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using SpeedyMailer.Core;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -23,6 +24,23 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public static string GenerateRandomLocalhostAddress()
 		{
 			return "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
+		}
+
+		public static void ValidateSettingClasses()
+		{
+			var settings = typeof (CoreAssemblyMarker)
+				.Assembly.GetExportedTypes()
+				.Where(x => x.Name.EndsWith("Settings"))
+				.SelectMany(x => x.GetProperties())
+				.Where(x => !x.GetGetMethod().IsVirtual)
+				.Select(x => new { x.DeclaringType, x.Name })
+				.ToList();
+
+			if (settings.Any())
+			{
+				var setting = settings.First();
+				NUnit.Framework.Assert.Fail("You have a settings class {0} with method {1} that is not virtual", setting.DeclaringType, setting.Name);
+			}
 		}
 	}
 }

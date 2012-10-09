@@ -14,7 +14,6 @@ namespace SpeedyMailer.Master.Service.Tasks
 	public class CreateCreativeFragmentsTask : PersistentTask
 	{
 		public string CreativeId { get; set; }
-		public int RecipientsPerFragment { get; set; }
 	}
 
 	public class CreateCreativeFragmentsTaskExecutor : PersistentTaskExecutor<CreateCreativeFragmentsTask>
@@ -22,9 +21,11 @@ namespace SpeedyMailer.Master.Service.Tasks
 		private readonly IDocumentStore _documentStore;
 		private readonly CreativeEndpointsSettings _creativeEndpointsSettings;
 		private readonly ServiceSettings _serviceSettings;
+		private readonly CreativeFragmentSettings _creativeFragmentSettings;
 
-		public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore, CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings)
+		public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore, CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings, CreativeFragmentSettings creativeFragmentSettings)
 		{
+			_creativeFragmentSettings = creativeFragmentSettings;
 			_serviceSettings = serviceSettings;
 			_creativeEndpointsSettings = creativeEndpointsSettings;
 			_documentStore = documentStore;
@@ -40,7 +41,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 				foreach (var listId in creative.Lists)
 				{
 					var counter = 0;
-					var chunk = task.RecipientsPerFragment;
+					var chunk = _creativeFragmentSettings.RecipientsPerFragment;
 					var hasMoreContacts = true;
 					while (hasMoreContacts)
 					{
@@ -58,6 +59,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 						counter++;
 
 						var recipients = contacts.Select(ToRecipient).ToList();
+						ApplyDefaultRules(recipients);
 						ApplyIntervalRules(recipients);
 
 						var fragment = new CreativeFragment
@@ -91,7 +93,14 @@ namespace SpeedyMailer.Master.Service.Tasks
 						   };
 		}
 
-		private IList<Recipient> ApplyIntervalRules(IEnumerable<Recipient> recipients)
+		private void ApplyDefaultRules(IEnumerable<Recipient> recipients)
+		{
+			recipients
+				.ToList()
+				.ForEach(x => x.Interval = _creativeFragmentSettings.DefaultInterval);
+		}
+
+		private void ApplyIntervalRules(IEnumerable<Recipient> recipients)
 		{
 			using (var session = _documentStore.OpenSession())
 			{
@@ -104,8 +113,6 @@ namespace SpeedyMailer.Master.Service.Tasks
 									  .Where(condition => x.Email.Contains(condition.Condition))
 									  .ToList()
 									  .ForEach(action => x.Interval = action.Interval));
-
-				return recipients.ToList();
 			}
 		}
 	}

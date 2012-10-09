@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
@@ -14,10 +15,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class IntegrationEmailHelpers
 	{
-		public void AssertEmailSent(Func<FakeEmailMessage, bool> func, int waitFor = 30)
+		public void AssertEmailSent(Expression<Func<FakeEmailMessage, bool>> func, int waitFor = 30)
 		{
 			var email = GetEmailFromDisk(waitFor);
-			Assert.That(func(email));
+			email.Should().Match(func);
 		}
 
 		public void AssertEmailSent(Action<FakeEmailMessage> action, int waitFor = 30)
@@ -139,7 +140,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.OrderBy(x => x.ToUniversalTime());
 
 			emails.Should().HaveCount(recipients.Count, "Not all emails were sent expected {0} but was {1}", emails.Count, recipients.Count);
-			deliveryTimes.AssertTimeDifferenceInRange(interval, 2);
+			deliveryTimes.AssertTimeDifferenceInRange(interval, 1);
 		}
 
 		public void AssertEmailsSentWithInterval(List<string> recipients, int interval, int waitFor = 30)

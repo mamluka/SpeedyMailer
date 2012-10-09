@@ -34,11 +34,17 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly SendCreativePackageCommand _sendCreativePackageCommand;
 			private readonly ICreativeBodySourceWeaver _creativeBodySourceWeaver;
 			private readonly UrlBuilder _urlBuilder;
-			private CreativePackagesStore _creativePackagesStore;
+			private readonly Framework _framework;
+			private readonly CreativePackagesStore _creativePackagesStore;
 
-			public Job(Api api, SendCreativePackageCommand sendCreativePackageCommand,
-					   ICreativeBodySourceWeaver creativeBodySourceWeaver, UrlBuilder urlBuilder,CreativePackagesStore creativePackagesStore)
+			public Job(Framework framework,
+				Api api,
+				SendCreativePackageCommand sendCreativePackageCommand,
+				ICreativeBodySourceWeaver creativeBodySourceWeaver,
+				UrlBuilder urlBuilder,
+				CreativePackagesStore creativePackagesStore)
 			{
+				_framework = framework;
 				_creativePackagesStore = creativePackagesStore;
 				_urlBuilder = urlBuilder;
 				_creativeBodySourceWeaver = creativeBodySourceWeaver;
@@ -59,10 +65,13 @@ namespace SpeedyMailer.Drones.Tasks
 
 				var recipiens = creativeFragment.Recipients;
 
-				foreach (var package in recipiens.Select(recipient => ToPackage(recipient, creativeFragment)))
+				_creativePackagesStore.BatchInsert(recipiens.Select(x => ToPackage(x, creativeFragment)).ToList());
+
+				var intervals = recipiens.GroupBy(x => x.Interval).ToList();
+
+				foreach (var interval in intervals)
 				{
-					_sendCreativePackageCommand.Package = package;
-					_sendCreativePackageCommand.Execute();
+					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x => x.Interval = interval.Key, x => x.WithIntervalInSeconds(interval.Key).RepeatForever()));	
 				}
 			}
 

@@ -63,6 +63,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DroneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InSingletonScope();
 
 			DefaultBaseUrl = IntergrationHelpers.GenerateRandomLocalhostAddress();
+
+			IntergrationHelpers.ValidateSettingClasses();
 		}
 
 		[SetUp]

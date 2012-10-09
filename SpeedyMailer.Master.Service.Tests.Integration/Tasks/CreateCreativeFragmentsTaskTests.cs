@@ -21,6 +21,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenACreativeIsGiven_ShouldStoreTheFragmentsWithRecipientsDevidedBetweenTheFragments()
 		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 1000);
 
 			var listId = UiActions.CreateListWithRandomContacts("MyList", 1500);
 
@@ -37,7 +38,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new CreateCreativeFragmentsTask
 						{
 							CreativeId = creativeId,
-							RecipientsPerFragment = 1000
 						};
 
 			ServiceActions.ExecuteTask(task);
@@ -55,7 +55,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenACreativeIsGiven_ShouldReturnTheServiceEndpoints()
 		{
-
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 1000);
 			ServiceActions.EditSettings<ServiceSettings>(x => x.BaseUrl = DefaultBaseUrl);
 
 			var listId = UiActions.CreateListWithRandomContacts("MyList", 700);
@@ -73,7 +73,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new CreateCreativeFragmentsTask
 						{
 							CreativeId = creativeId,
-							RecipientsPerFragment = 1000
 						};
 
 			ServiceActions.ExecuteTask(task);
@@ -88,6 +87,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervals()
 		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 200);
 			var contacts = AddRandomContacts(100);
 
 			var topDomainContacts = new List<Contact>
@@ -123,7 +123,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new CreateCreativeFragmentsTask
 			{
 				CreativeId = creativeId,
-				RecipientsPerFragment = 200
 			};
 
 			ServiceActions.ExecuteTask(task);
@@ -134,8 +133,14 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenThereAreNoIntervalRules_ShouldKeepTheIntervalsAtZero()
+		public void Execute_WhenThereAreNoIntervalRules_ShouldSetTheIntervalToTheDefaultValue()
 		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x =>
+				                                                      {
+					                                                      x.DefaultInterval = 1;
+					                                                      x.RecipientsPerFragment = 200;
+				                                                      });
+
 			var contacts = AddRandomContacts(200);
 
 			var listId = CraeteListFromContacts("my list", contacts);
@@ -153,14 +158,13 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var task = new CreateCreativeFragmentsTask
 			{
 				CreativeId = creativeId,
-				RecipientsPerFragment = 200
 			};
 
 			ServiceActions.ExecuteTask(task);
 
 			var result = Store.Query<CreativeFragment>().First();
 
-			result.Recipients.Should().NotContain(x => x.Interval > 0);
+			result.Recipients.Should().OnlyContain(x => x.Interval == 1);
 		}
 
 		private string CraeteListFromContacts(string listName, IEnumerable<Contact> contacts)
