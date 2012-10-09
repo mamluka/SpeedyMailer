@@ -124,7 +124,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Email.AssertEmailsSentWithInterval(recipients, 3,10000);
+			Email.AssertEmailsSentWithInterval(recipients, 3, 10000);
 		}
 
 		[Test]
@@ -233,7 +233,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			return new Recipient
 					   {
 						   Email = email,
-						   ContactId = contactId
+						   ContactId = contactId,
+						   Interval = 1
 					   };
 		}
 	}

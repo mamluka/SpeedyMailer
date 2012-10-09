@@ -71,7 +71,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 				foreach (var interval in intervals)
 				{
-					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x => x.Interval = interval.Key, x => x.WithIntervalInSeconds(interval.Key).RepeatForever()));	
+					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x => x.Interval = interval.Key, x => x.WithIntervalInSeconds(interval.Key).RepeatForever()));
 				}
 			}
 
@@ -81,7 +81,8 @@ namespace SpeedyMailer.Drones.Tasks
 						{
 							Subject = creativeFragment.Subject,
 							Body = PersonalizeBody(creativeFragment, recipient),
-							To = recipient.Email
+							To = recipient.Email,
+							Interval =recipient.Interval
 						};
 			}
 
