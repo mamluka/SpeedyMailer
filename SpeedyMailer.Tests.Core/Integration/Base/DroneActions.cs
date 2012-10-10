@@ -82,11 +82,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Done();
 
 			var randomizePost = RandomizePost();
+			var storeUri = IntergrationHelpers.DefaultStoreUri(randomizePost);
+
+			Trace.WriteLine(droneId + " has started mongo on: " + storeUri);
 
 			MongoRunner.Start(randomizePost);
-
-			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
-			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
 
 			EditSettings<ApiCallsSettings>(x =>
 											   {
@@ -96,11 +96,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											{
 												x.BaseUrl = baseUrl;
 												x.Identifier = droneId;
-												x.StoreHostname = "mongodb://localhost:" + randomizePost + "/drone?safe=true";
+												x.StoreHostname = storeUri;
 											}, droneKernel);
 
 			EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory, droneKernel);
 
+			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
+			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
 			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
 
 			var topDrone = droneKernel.Get<TopDrone>();
@@ -116,13 +118,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void Store<T>(T entity) where T : class
 		{
-			var manager = new RecordManager<T>();
+			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri());
 			manager.BatchInsert(new List<T> { entity });
 		}
 
 		public void StorCollection<T>(IEnumerable<T> collection) where T : class
 		{
-			var manager = new RecordManager<T>();
+			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri());
 			manager.BatchInsert(collection);
 		}
 
@@ -132,7 +134,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			try
 			{
-				var manager = new GenericRecordManager<SocketCycling>();
+				var manager = new GenericRecordManager<SocketCycling>(IntergrationHelpers.DefaultStoreUri());
 				manager.BatchInsert(new[] { new SocketCycling(), });
 			}
 			catch (Exception)
@@ -158,7 +160,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public IList<T> FindAll<T>() where T : class
 		{
-			var manager = new GenericRecordManager<T>();
+			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri());
 			return manager.FindAll();
 		}
 	}

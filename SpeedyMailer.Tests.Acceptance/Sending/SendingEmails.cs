@@ -82,12 +82,12 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone1.Initialize();
 			drone1.Start();
 
-//			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
-//			drone2.Initialize();
-//			drone2.Start();
+			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone2.Initialize();
+			drone2.Start();
 
-			Email.AssertEmailsSentBy("drone1", 40,60);
-//			Email.AssertEmailsSentBy("drone2", 20);
+			Email.AssertEmailsSentBy("drone1", 20,120);
+			Email.AssertEmailsSentBy("drone2", 20,120);
 		}
 
 		[Test]

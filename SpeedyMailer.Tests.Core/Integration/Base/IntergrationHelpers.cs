@@ -21,6 +21,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
+		public static string DefaultStoreUri(int port = 27027)
+		{
+			return "mongodb://localhost:" + port + "/drone?safe=true";
+		}
+
 		public static string GenerateRandomLocalhostAddress()
 		{
 			return "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
@@ -28,7 +33,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public static void ValidateSettingClasses()
 		{
-			var settings = typeof (CoreAssemblyMarker)
+			var settings = typeof(CoreAssemblyMarker)
 				.Assembly.GetExportedTypes()
 				.Where(x => x.Name.EndsWith("Settings"))
 				.SelectMany(x => x.GetProperties())

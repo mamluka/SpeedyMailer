@@ -28,6 +28,10 @@ namespace Mongol {
 
 		private static Dictionary<object, T> cache = new Dictionary<object, T>();
 
+		public CachingRecordManager(string connectionString) : base(connectionString)
+		{
+		}
+
 		/// <summary>
 		/// Retrieves an object by Id and caches the retrieval by Id for future lookup.
 		/// </summary>
