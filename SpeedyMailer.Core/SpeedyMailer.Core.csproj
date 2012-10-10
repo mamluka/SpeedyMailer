@@ -61,10 +61,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\mongocsharpdriver.1.6\lib\net35\MongoDB.Driver.dll</HintPath>
     </Reference>
-    <Reference Include="Mongol, Version=0.15.2.41051, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpeedyMailer.Mongol.0.15.2\lib\net40\Mongol.dll</HintPath>
-    </Reference>
     <Reference Include="Nancy, Version=0.12.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Nancy.0.12.1\lib\net40\Nancy.dll</HintPath>
@@ -252,6 +248,12 @@
   <ItemGroup>
     <Folder Include="Exceptions\" />
     <Folder Include="Protocol\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Mongol\Mongol.csproj">
+      <Project>{3d27f3b9-d705-4bee-80e7-b16aa2acd2c5}</Project>
+      <Name>Mongol</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

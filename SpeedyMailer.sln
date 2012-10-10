@@ -1,4 +1,3 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{3CBF8842-15D2-417F-84DA-237C457273AB}"
@@ -48,6 +47,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Web.App", "SpeedyMailer.Master.Web.App\SpeedyMailer.Master.Web.App.csproj", "{0369672A-FA69-4B5F-84C6-3A710BDBCE8D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Acceptence", "Acceptence", "{A0AF2FB0-56C0-4614-AEE8-B969B08D8943}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mongol", "Mongol\Mongol.csproj", "{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}"
 EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
@@ -446,6 +447,31 @@ Global
 		{0369672A-FA69-4B5F-84C6-3A710BDBCE8D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0369672A-FA69-4B5F-84C6-3A710BDBCE8D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{0369672A-FA69-4B5F-84C6-3A710BDBCE8D}.Release|x86.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.AutomatedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.AutomatedRelease|Any CPU.Build.0 = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.AutomatedRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.AutomatedRelease|Mixed Platforms.Build.0 = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.AutomatedRelease|x86.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoDebug|Any CPU.Build.0 = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoDebug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoDebug|x86.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoRelease|Mixed Platforms.Build.0 = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.MonoRelease|x86.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -453,6 +479,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{5CF80BBC-A484-4339-ADE6-F6C902B961B1} = {3CBF8842-15D2-417F-84DA-237C457273AB}
 		{639F640B-BE3D-4E53-87B8-80D652889851} = {3CBF8842-15D2-417F-84DA-237C457273AB}
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5} = {3CBF8842-15D2-417F-84DA-237C457273AB}
 		{9FBC4FF3-0992-46F0-80B0-7AC971C78E00} = {8320022E-4A22-417F-8CED-FB194BB063E9}
 		{C74D19F4-3541-4954-87EA-ADDFDC9B3C6A} = {8320022E-4A22-417F-8CED-FB194BB063E9}
 		{403DB2FF-5FE3-4A27-9F13-F10F46DF9990} = {8320022E-4A22-417F-8CED-FB194BB063E9}

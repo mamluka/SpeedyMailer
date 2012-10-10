@@ -4,5 +4,6 @@ namespace SpeedyMailer.Drones.Settings
 	{
 		public virtual string Identifier { get; set; }
 		public virtual string BaseUrl { get; set; }
+		public string StoreHostname { get; set; }
 	}
 }

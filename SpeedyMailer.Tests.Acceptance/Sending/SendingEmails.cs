@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Lists;
-using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Settings;
-using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Tests.Core.Integration.Base;
 using SpeedyMailer.Tests.Core.Integration.Utils;
 
@@ -35,9 +31,11 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			var csvRows = Fixture
 				.Build<ContactsListCsvRow>()
-				.With(x => x.Email, "email" + Guid.NewGuid() + "@domain.com")
-				.CreateMany(20)
+				.Without(x => x.Email)
+				.CreateMany(10)
 				.ToList();
+
+			csvRows.ForEach(x => x.Email = "email" + Guid.NewGuid() + "@domain.com");
 
 			CreateTemplate();
 			CreateList("my list");
@@ -50,9 +48,8 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone.Initialize();
 			drone.Start();
 
-			var contacts = csvRows.Select(x => x.Email);
-			Email.AssertEmailsSentTo(contacts);
-
+			var contacts = csvRows.Select(x => x.Email).ToList();
+			Email.AssertEmailsSentWithInterval(contacts, 1);
 		}
 
 		[Test]
@@ -60,7 +57,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
-			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 50; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 10; });
 
 			_api = MasterResolve<Api>();
 
@@ -69,9 +66,10 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			var csvRows = Fixture
 				.Build<ContactsListCsvRow>()
-				.With(x => x.Email, "email" + Guid.NewGuid() + "@domain.com")
-				.CreateMany(200)
+				.CreateMany(40)
 				.ToList();
+
+			csvRows.ForEach(x => x.Email = "email" + Guid.NewGuid() + "@domain.com");
 
 			CreateTemplate();
 			CreateList("my list");
@@ -84,12 +82,12 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone1.Initialize();
 			drone1.Start();
 
-			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
-			drone2.Initialize();
-			drone2.Start();
+//			var drone2 = DroneActions.CreateDrone("drone2", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+//			drone2.Initialize();
+//			drone2.Start();
 
-			Email.AssertEmailsSentBy("drone1", 100, 120);
-			Email.AssertEmailsSentBy("drone2", 100, 120);
+			Email.AssertEmailsSentBy("drone1", 40,60);
+//			Email.AssertEmailsSentBy("drone2", 20);
 		}
 
 		[Test]

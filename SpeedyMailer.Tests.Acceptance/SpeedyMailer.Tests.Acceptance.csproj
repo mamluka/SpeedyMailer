@@ -129,6 +129,7 @@
     <Compile Include="Sending\SendingEmails.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

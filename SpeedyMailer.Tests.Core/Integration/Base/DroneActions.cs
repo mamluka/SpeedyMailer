@@ -46,7 +46,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var settingsFolderName = settingsFolder.FullName;
 			using (var writter = new StreamWriter(Path.Combine(settingsFolderName, name)))
 			{
-				dynamic settings = new T();
+				var settings = AutoMapper.Mapper.DynamicMap<T, T>((kernel ?? Kernel).Get<T>());
 				action(settings);
 				writter.WriteLine(JsonConvert.SerializeObject(settings,
 															  Formatting.Indented,
@@ -81,6 +81,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
+			var randomizePost = RandomizePost();
+
+			MongoRunner.Start(randomizePost);
+
 			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
 			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
 
@@ -92,6 +96,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											{
 												x.BaseUrl = baseUrl;
 												x.Identifier = droneId;
+												x.StoreHostname = "mongodb://localhost:" + randomizePost + "/drone?safe=true";
 											}, droneKernel);
 
 			EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory, droneKernel);
@@ -101,6 +106,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var topDrone = droneKernel.Get<TopDrone>();
 
 			return topDrone;
+		}
+
+		private int RandomizePost()
+		{
+			var random = new Random();
+			return random.Next(1000, 10000);
 		}
 
 		public void Store<T>(T entity) where T : class
@@ -122,7 +133,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			try
 			{
 				var manager = new GenericRecordManager<SocketCycling>();
-				manager.BatchInsert(new[] { new SocketCycling(),  });
+				manager.BatchInsert(new[] { new SocketCycling(), });
 			}
 			catch (Exception)
 			{

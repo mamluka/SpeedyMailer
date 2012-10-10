@@ -77,10 +77,6 @@
     <Reference Include="MongoDB.Runner">
       <HintPath>..\packages\MongoDB.Runner.1.0.0\lib\MongoDB.Runner.dll</HintPath>
     </Reference>
-    <Reference Include="Mongol, Version=0.15.2.41051, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpeedyMailer.Mongol.0.15.2\lib\net40\Mongol.dll</HintPath>
-    </Reference>
     <Reference Include="nDumbster">
       <HintPath>..\libs\nDumbster\nDumbster.dll</HintPath>
     </Reference>
@@ -167,6 +163,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Mongol\Mongol.csproj">
+      <Project>{3d27f3b9-d705-4bee-80e7-b16aa2acd2c5}</Project>
+      <Name>Mongol</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>

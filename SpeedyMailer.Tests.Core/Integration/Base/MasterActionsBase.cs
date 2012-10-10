@@ -25,7 +25,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var documentStore = Kernel.Get<IDocumentStore>();
 			using (var session = documentStore.OpenSession())
 			{
-				var settings = new T();
+				var settings = AutoMapper.Mapper.DynamicMap<T, T>((kernel ?? Kernel).Get<T>());
 				action.Invoke(settings);
 				session.Store(settings, "settings/" + typeof(T).Name.Replace("Settings", ""));
 				session.SaveChanges();
