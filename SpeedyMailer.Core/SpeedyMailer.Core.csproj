@@ -173,6 +173,7 @@
     <Compile Include="Container\SettingsResolverGathererOptions.cs" />
     <Compile Include="CoreAssemblyMarker.cs" />
     <Compile Include="Domain\Contacts\Contact.cs" />
+    <Compile Include="Domain\Contacts\ContactActions.cs" />
     <Compile Include="Domain\Contacts\ContactsListCsvRow.cs" />
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using SpeedyMailer.Core;
+using SpeedyMailer.Core.Utilities;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -46,6 +47,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				var setting = settings.First();
 				NUnit.Framework.Assert.Fail("You have a settings class {0} with method {1} that is not virtual", setting.DeclaringType, setting.Name);
 			}
+		}
+
+		public static string Encode(object obj)
+		{
+			return UrlBuilder.ToBase64(obj);
 		}
 	}
 }

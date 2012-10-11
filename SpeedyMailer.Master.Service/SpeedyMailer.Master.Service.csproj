@@ -112,6 +112,7 @@
     <Compile Include="Modules\AdminModule.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Modules\DealsModule.cs" />
     <Compile Include="Modules\ListsModule.cs" />
     <Compile Include="Modules\CreativeModule.cs" />
     <Compile Include="Modules\DronesModule.cs" />

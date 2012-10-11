@@ -32,6 +32,13 @@ namespace SpeedyMailer.Core.Utilities
 			return returnValue;
 		}
 
+		public static T DecodeBase64<T>(string whatToDecode)
+		{
+			var encodedDataAsBytes =  Convert.FromBase64String(whatToDecode);
+			var stringObject = Encoding.UTF8.GetString(encodedDataAsBytes);
+			return JsonConvert.DeserializeObject<T>(stringObject);
+		}
+
 		public string AppendAsSlashes()
 		{
 			var finelUrl = string.Format("{0}/{1}", _baseUrl, String.Join("/", _dataObjects));

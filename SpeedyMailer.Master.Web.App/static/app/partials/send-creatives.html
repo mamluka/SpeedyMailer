@@ -1,10 +1,10 @@
 <div>
-    <div ng-repeat="creative in creatives">
+    <div ng-repeat="creativeModel in creatives">
         <div style="margin:10px;">
-            <div>{{creative.Subject}}</div>
-            <div>{{creative.Body}}</div>
-            <div>{{creative.DealUrl}}</div>
-            <input type="button" value="Send" ng-click="send(creative)"/>
+            <div>{{creativeModel.Subject}}</div>
+            <div>{{creativeModel.Body}}</div>
+            <div>{{creativeModel.DealUrl}}</div>
+            <input type="button" value="Send" ng-click="send(creativeModel)"/>
         </div>
     </div>
 </div>

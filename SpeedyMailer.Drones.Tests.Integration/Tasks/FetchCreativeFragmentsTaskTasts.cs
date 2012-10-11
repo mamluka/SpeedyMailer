@@ -170,7 +170,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertBodyContains("http://www.topemail.com/deal/" + Encode(new DealUrlData
+			AssertBodyContains("http://www.topemail.com/deal/" + IntergrationHelpers.Encode(new DealUrlData
 																			{
 																				ContactId = "contacts/1",
 																				CreativeId = "creative/1"
@@ -206,17 +206,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			AssertBodyContains("here  is a template");
-			AssertBodyContains("http://www.topemail.com/unsubscribe/" + Encode(new UnsubscribeUrlData
+			AssertBodyContains("http://www.topemail.com/unsubscribe/" + IntergrationHelpers.Encode(new UnsubscribeUrlData
 										{
 											CreativeId = "creative/1",
 											ContactId = "contacts/1"
 										}));
 		}
 
-		private static string Encode(object obj)
-		{
-			return UrlBuilder.ToBase64(obj);
-		}
+		
 
 		private void AssertBodyContains(string text)
 		{

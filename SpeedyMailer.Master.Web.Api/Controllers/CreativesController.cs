@@ -12,7 +12,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 {
 	public class CreativesController : ApiController
 	{
-		private SpeedyMailer.Core.Apis.Api _api;
+		private readonly SpeedyMailer.Core.Apis.Api _api;
 
 		public CreativesController(SpeedyMailer.Core.Apis.Api api)
 		{
@@ -30,6 +30,15 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 															 x.ListId = creativeModel.ListId;
 															 x.UnsubscribeTemplateId = creativeModel.TemplateId;
 														 });
+		}
+
+		[POST("/creatives/send"), HttpPost]
+		public void SendCreative(CreativeModel creativeModel)
+		{
+			_api.Call<ServiceEndpoints.Creative.Send>(x =>
+														  {
+															  x.CreativeId = creativeModel.Id;
+														  });
 		}
 
 		[GET("/creatives"), HttpGet]

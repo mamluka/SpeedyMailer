@@ -54,14 +54,14 @@ function AppController() {
 }
 AppController.$inject = [];
 
-function SendingController($scope, creativeResource) {
+function SendingController($scope, $http, creativeResource) {
     $scope.creatives = creativeResource.query();
 
-    $scope.send = function (creative) {
-        creative.$send();
+    $scope.send = function (creativeModel) {
+        $http.post('http://speedymailer.api/creatives/send', { Id: creativeModel.Id });
     };
 }
-SendingController.$inject = ['$scope','Creative'];
+SendingController.$inject = ['$scope', '$http', 'Creative'];
 
 function PlaygroundController($scope, list) {
     $scope.lists = list.query();
