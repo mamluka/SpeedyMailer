@@ -27,7 +27,7 @@ namespace SpeedyMailer.Core.Container
 								 var prop = type.GetProperties();
 								 return prop.Select(info => new
 								 {
-									 Value = info.GetValue(x,null),//type.Get(info.Name, BindingFlags.Public | BindingFlags.GetProperty, null, x, null),
+									 Value = info.GetValue(x,null),
 									 info.Name
 								 }).ToDictionary(key => key.Name, value => value.Value);
 							 }).ToList();

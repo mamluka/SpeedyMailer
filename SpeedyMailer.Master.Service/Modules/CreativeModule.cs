@@ -45,6 +45,14 @@ namespace SpeedyMailer.Master.Service.Modules
 								    return Response.AsJson(new ApiStringResult { Result = creativeId });
 								};
 
+			Get["/getall"] = call =>
+				                 {
+					                 using (var session = documentStore.OpenSession())
+					                 {
+						                 return session.Query<Creative>();
+					                 }
+				                 };
+
 			Get["/fragments"] = call =>
 									{
 										using (var session = documentStore.OpenSession())

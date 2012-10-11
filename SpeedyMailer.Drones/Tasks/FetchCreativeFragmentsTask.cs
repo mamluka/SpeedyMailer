@@ -2,13 +2,11 @@ using System;
 using System.Linq;
 using Quartz;
 using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 using Template = Antlr4.StringTemplate.Template;
 
@@ -31,7 +29,6 @@ namespace SpeedyMailer.Drones.Tasks
 		public class Job : IJob
 		{
 			private readonly Api _api;
-			private readonly SendCreativePackageCommand _sendCreativePackageCommand;
 			private readonly ICreativeBodySourceWeaver _creativeBodySourceWeaver;
 			private readonly UrlBuilder _urlBuilder;
 			private readonly Framework _framework;
@@ -39,7 +36,6 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public Job(Framework framework,
 				Api api,
-				SendCreativePackageCommand sendCreativePackageCommand,
 				ICreativeBodySourceWeaver creativeBodySourceWeaver,
 				UrlBuilder urlBuilder,
 				CreativePackagesStore creativePackagesStore)
@@ -48,7 +44,6 @@ namespace SpeedyMailer.Drones.Tasks
 				_creativePackagesStore = creativePackagesStore;
 				_urlBuilder = urlBuilder;
 				_creativeBodySourceWeaver = creativeBodySourceWeaver;
-				_sendCreativePackageCommand = sendCreativePackageCommand;
 				_api = api;
 			}
 
@@ -82,7 +77,7 @@ namespace SpeedyMailer.Drones.Tasks
 							Subject = creativeFragment.Subject,
 							Body = PersonalizeBody(creativeFragment, recipient),
 							To = recipient.Email,
-							Interval =recipient.Interval
+							Interval = recipient.Interval
 						};
 			}
 
@@ -105,12 +100,12 @@ namespace SpeedyMailer.Drones.Tasks
 					.AddObject(GetDealUrlData(fragment, contact))
 					.AppendAsSlashes();
 
-				var deal = _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
+				var body = _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
 
 				var unsubscribeTemplate = new Template(fragment.UnsubscribeTemplate);
 				unsubscribeTemplate.Add("url", unsubsribeUrl);
 
-				return deal + unsubscribeTemplate.Render();
+				return body + unsubscribeTemplate.Render();
 			}
 
 			private static DealUrlData GetDealUrlData(CreativeFragment fragment, Recipient contact)

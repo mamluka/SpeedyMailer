@@ -7,6 +7,7 @@ angular.module('SpeedyMailer', ['SpeedyMailer.filters', 'SpeedyMailer.services',
       $routeProvider.when('/create-creative', { templateUrl: 'partials/create-creative.html', controller: CreativeController });
       $routeProvider.when('/create-list', { templateUrl: 'partials/create-list.html', controller: ListsController });
       $routeProvider.when('/create-template', { templateUrl: 'partials/create-template.html', controller: TemplatesController });
+      $routeProvider.when('/send-creatives', { templateUrl: 'partials/send-creatives.html', controller: SendingController });
       $routeProvider.when('/playground', { templateUrl: 'partials/playground.html', controller: PlaygroundController });
       $routeProvider.when('/not-supported', { templateUrl: 'partials/not-supported.html', controller: AppController });
       $routeProvider.otherwise({ redirectTo: '/not-supported' });

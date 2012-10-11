@@ -178,7 +178,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			_api.AddFiles(new[] { fileName }).Call<ServiceEndpoints.Lists.UploadContacts>(x =>
 																					  {
-																						  x.ListName = lists[0].Id;
+																						  x.ListId = lists[0].Id;
 																					  });
 
 		}

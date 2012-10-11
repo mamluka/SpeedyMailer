@@ -12,20 +12,24 @@ angular.module('SpeedyMailer.settings', []).
   value('apiSettings', { baseUrl: "http://speedymailer.api" });
 
 angular.module('SpeedyMailer.services', ['ngResource']).
-    factory('List', function ($resource) {
+    factory('List', function($resource) {
         return $resource('http://speedymailer.api/lists/list/:listId', { listId: '@id' });
     }).
-    factory('Creative', function ($resource) {
-        return $resource('http://speedymailer.api/creatives/creative/:creativeId', {
+    factory('Creative', function($resource) {
+        return $resource('http://speedymailer.api/creatives/:creativeId', {
             creativeId: '@id'
         });
     }).
-    factory('Template', function ($resource) {
-        return $resource('http://speedymailer.api/templates/:templateType/:templateId', {
-            templateId: '@id',
-            templateType: '@type'
-        });
+    factory('Template', function($resource) {
+        return $resource('http://speedymailer.api/templates/:templateType/:templateId',
+            {
+                templateId: '@id',
+                templateType: '@type'
+            },
+            {
+                send: { method: 'POST' }
+            });
     }).
-    factory('TemplateType', function ($resource) {
+    factory('TemplateType', function($resource) {
         return $resource('http://speedymailer.api/templates/types/list');
     });

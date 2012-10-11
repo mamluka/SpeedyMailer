@@ -11,7 +11,7 @@ namespace SpeedyMailer.Core.Apis
 		{
 			public class UploadContacts : ApiCall
 			{
-				public string ListName { get; set; }
+				public string ListId { get; set; }
 
 				public UploadContacts()
 					: base("/lists/upload-list")

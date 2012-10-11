@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Linq;
 using NUnit.Framework;
 using Newtonsoft.Json;
@@ -167,19 +166,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		private static void WaitForSchedulerToShutdown(IScheduler scheduler)
-		{
-			if (scheduler.IsStarted)
-			{
-				scheduler.Shutdown();
-
-				while (!scheduler.IsShutdown)
-				{
-					Thread.Sleep(200);
-				}
-			}
-		}
-
 		private void RegisterActions()
 		{
 			UiActions = MasterKernel.Get<UiActions>();
@@ -202,9 +188,5 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			return DroneKernel.Get<T>();
 		}
-
-
-
-
 	}
 }

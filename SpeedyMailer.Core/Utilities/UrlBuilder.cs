@@ -8,7 +8,7 @@ namespace SpeedyMailer.Core.Utilities
 	public class UrlBuilder
 	{
 		private string _baseUrl;
-		private readonly IList<string> _dataObjects = new List<string>();
+		private IList<string> _dataObjects = new List<string>();
 
 		public UrlBuilder Base(string baseUrl)
 		{
@@ -34,7 +34,10 @@ namespace SpeedyMailer.Core.Utilities
 
 		public string AppendAsSlashes()
 		{
-			return string.Format("{0}/{1}",_baseUrl,String.Join("/",_dataObjects));
+			var finelUrl = string.Format("{0}/{1}", _baseUrl, String.Join("/", _dataObjects));
+			_dataObjects = new List<string>();
+
+			return finelUrl;
 		}
 	}
 }

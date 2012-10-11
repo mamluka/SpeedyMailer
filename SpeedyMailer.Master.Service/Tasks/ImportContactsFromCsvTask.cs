@@ -42,13 +42,18 @@ namespace SpeedyMailer.Master.Service.Tasks
 												{
 													Country = x.Country,
 													Email = x.Email,
-													Name = x.Name,
+													Name = string.Format("{0} {1}",x.Firstname,x.Lastname),
+													City =  x.City,
+													Ip = x.Ip,
+													Phone = x.Phone,
+													State = x.State,
+													Zip = x.Zip,
 												});
 
 			_addContactsCommand.Contacts = contacts;
 			_addContactsCommand.ListId = task.ListId;
 
-			var counter = _framework.ExecuteCommand<long>(_addContactsCommand);
+			var counter = _framework.ExecuteCommand(_addContactsCommand);
 
 			var result = new ImportContactsFromCsvTask.Results
 					   {

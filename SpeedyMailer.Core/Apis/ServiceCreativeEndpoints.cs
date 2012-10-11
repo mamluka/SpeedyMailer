@@ -46,21 +46,14 @@ namespace SpeedyMailer.Core.Apis
 				}
 
 				public string CreativeId { get; set; }
-
-				public class Response
-				{
-
-				}
 			}
 
-			public class AddIntervalRules:ApiCall
+			public class GetAll:ApiCall
 			{
-				public AddIntervalRules() : base("/creative/fragments/cyclerules")
+				public GetAll():base("/creative/getall")
 				{
-					CallMethod = RestMethod.Post;
+					CallMethod = RestMethod.Get;
 				}
-
-				public IList<IntervalRule> Rules { get; set; }
 			}
 		}
 	}

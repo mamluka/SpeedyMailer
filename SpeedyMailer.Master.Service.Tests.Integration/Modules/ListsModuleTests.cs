@@ -16,7 +16,7 @@ using SpeedyMailer.Tests.Core.Integration.Utils;
 namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 {
 	[TestFixture]
-	public class ListsModuleTests:IntegrationTestBase
+	public class ListsModuleTests : IntegrationTestBase
 	{
 		[Test]
 		public void GetLists_WhenCalled_ShouldGetAllListIds()
@@ -33,7 +33,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var lists = api.Call<ServiceEndpoints.Lists.GetLists, List<ListDescriptor>>();
 
-			lists.Should().Contain(x=> x.Id == listId && x.Name == "myList");
+			lists.Should().Contain(x => x.Id == listId && x.Name == "myList");
 		}
 
 		[Test]
@@ -47,7 +47,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.Lists.CreateList,ApiStringResult>(x=> x.Name = "myName");
+			var result = api.Call<ServiceEndpoints.Lists.CreateList, ApiStringResult>(x => x.Name = "myName");
 
 			var list = Store.Load<ListDescriptor>(result.Result);
 
@@ -72,16 +72,17 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 			api.AddFiles(new[] { fileName })
-				.Call<ServiceEndpoints.Lists.UploadContacts>(x => x.ListName = "list/1");
+				.Call<ServiceEndpoints.Lists.UploadContacts>(x => x.ListId = "list/1");
 
 			Store.WaitForEntitiesToExist<Contact>(1000);
 
 			var firstContact = list.First();
-			var result = Store.Query<Contact>(x => x.Name == firstContact.Name).First();
+			var result = Store.Query<Contact>(x => x.Email == firstContact.Email).First();
 
 			result.MemberOf.Should().Contain("list/1");
 			result.Email.Should().Be(firstContact.Email);
 			result.Country.Should().Be(firstContact.Country);
+			result.Name.Should().Be(firstContact.Firstname + " " + firstContact.Lastname);
 		}
 	}
 }

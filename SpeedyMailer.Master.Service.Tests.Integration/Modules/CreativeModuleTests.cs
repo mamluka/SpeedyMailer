@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -65,6 +66,26 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Lists.Should().Contain("list/1");
 			result.Subject.Should().Be("subject");
 			result.UnsubscribeTemplateId.Should().Be("templateId");
+		}
+
+		[Test]
+		public void GetAll_WhenCalled_ShouldReturnTheCurrentlyStoredCreatives()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var api = MasterResolve<Api>();
+
+			var creative1 = CreateCreative(100);
+			var creative2 = CreateCreative(100);
+
+			var result = api.Call<ServiceEndpoints.Creative.GetAll, List<Creative>>();
+
+			result.Should().Contain(x => x.Id == creative1);
+			result.Should().Contain(x => x.Id == creative2);
 		}
 
 		[Test]

@@ -54,6 +54,15 @@ function AppController() {
 }
 AppController.$inject = [];
 
+function SendingController($scope, creativeResource) {
+    $scope.creatives = creativeResource.query();
+
+    $scope.send = function (creative) {
+        creative.$send();
+    };
+}
+SendingController.$inject = ['$scope','Creative'];
+
 function PlaygroundController($scope, list) {
     $scope.lists = list.query();
 

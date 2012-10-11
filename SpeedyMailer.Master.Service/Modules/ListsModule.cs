@@ -40,7 +40,7 @@ namespace SpeedyMailer.Master.Service.Modules
 
                                           var importContactsFromCsvTask = new ImportContactsFromCsvTask
                                                                               {
-                                                                                  File = path, ListId = model.ListName
+                                                                                  File = path, ListId = model.ListId
                                                                               };
                                           _framework.ExecuteTask(importContactsFromCsvTask);
 

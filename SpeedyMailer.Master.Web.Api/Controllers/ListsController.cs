@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Http;
 using AttributeRouting.Web.Http;
 using RestSharp;
@@ -29,7 +31,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
             if (!Request.Content.IsMimeMultipartContent())
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
 
-            var provider = new MultipartFormDataStreamProvider("c:/Users/cookie/Documents/SpeedyMailer/SpeedyMailer.Master.Web.Api/");
+			var provider = new MultipartFormDataStreamProvider(HostingEnvironment.ApplicationPhysicalPath);
 
 			var task = Request.Content.ReadAsMultipartAsync(provider);
 
@@ -44,7 +46,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 														 .AddFiles(new[] { file })
 														 .Call<ServiceEndpoints.Lists.UploadContacts>(x =>
 															                                        {
-																                                        x.ListName = t.Result.FormData["listName"];
+																                                        x.ListId = t.Result.FormData["listId"];
 															                                        });
 
 					                                 return "OK";

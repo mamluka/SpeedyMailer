@@ -93,13 +93,25 @@ namespace :winrun do
       cmd.parameters=["/c","start","Out\\Service\\SpeedyMailer.Master.Service.exe","-b",args[:host]]
       cmd.log_level = :verbose
     end
+	
+	desc "Run service bare"
+
+    exec :run_service_bare => ["windows:build_service"] do |cmd|
+      cmd.command="cmd.exe"
+      cmd.parameters=["/c","start","Out\\Service\\SpeedyMailer.Master.Service.exe","-b",local_host_url]
+      cmd.log_level = :verbose
+    end
 
   desc "Run default service"
 
   task :run_default_service do
     puts local_ip
 	
-    Rake::Task["winrun:run_service"].invoke("http://"+local_ip + ":9852")
+    Rake::Task["winrun:run_service"].invoke()
+  end
+  
+  def local_host_url
+      "http://"+local_ip + ":9852"
   end
   
   def local_ip
