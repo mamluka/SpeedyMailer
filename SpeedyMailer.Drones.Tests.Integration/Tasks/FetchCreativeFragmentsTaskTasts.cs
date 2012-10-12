@@ -205,7 +205,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertBodyContains("also we have the ema1il here test@test.com");
+			AssertBodyContains("also we have the email here test@test.com");
 		}
 
 		private string CreateBodyWithLinkAndEmailTemplating(string link)

@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -7,7 +6,6 @@ using Newtonsoft.Json;
 using Ninject;
 using Quartz;
 using Quartz.Impl.Matchers;
-using Quartz.Util;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
@@ -42,6 +40,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public IntegrationEmailHelpers Email { get; set; }
 
 		public IntegrationTasksHelpers Tasks { get; set; }
+
+		public IntegrationMongoDbHelper MongoDb { get; set; }
 
 		public IntegrationTestBase()
 		{
@@ -82,9 +82,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Store = new IntegrationStoreHelpers(DocumentStore);
 			Email = new IntegrationEmailHelpers();
 			Tasks = new IntegrationTasksHelpers(Store);
+			MongoDb = new IntegrationMongoDbHelper();
 
 			if (_options.UseMongo)
-				DroneActions.StartMongo();
+				MongoDb.StartMongo();
+		}
+
+		private void DeleteLogs()
+		{
+			Directory.Delete("logs", true);
 		}
 
 		private static IDocumentStore CreateEmbeddableStore()
@@ -119,11 +125,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Email.DeleteEmails();
 			DeleteJsonSettingFiles();
 			ClearJobsFromSchedulers();
+			DroneActions.StopAllDroneStores();
 
 			Api.StopListeningToApiCalls();
 
 			if (_options.UseMongo)
-				DroneActions.ShutdownMongo();
+				MongoDb.ShutdownMongo();
 
 			ExtraTeardown();
 		}
@@ -144,16 +151,19 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DeleteRunningJobs(droneScheduler);
 		}
 
-		private static void DeleteRunningJobs(IScheduler masterScheduler)
+		private static void DeleteRunningJobs(IScheduler scheduler)
 		{
-			var groups = masterScheduler.GetJobGroupNames();
+			if (scheduler.IsShutdown)
+				return;
 
-			var jobKeys = groups.SelectMany(x => masterScheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
+			var groups = scheduler.GetJobGroupNames();
+
+			var jobKeys = groups.SelectMany(x => scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
 
 			foreach (var key in jobKeys)
 			{
-				masterScheduler.PauseJob(key);
-				masterScheduler.DeleteJob(key);
+				scheduler.PauseJob(key);
+				scheduler.DeleteJob(key);
 			}
 		}
 

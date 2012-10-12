@@ -151,6 +151,10 @@
     <Compile Include="Tasks\WakeupSleepingDronesTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SpeedyMailer.Master.Service\NLog.xsd">
+      <Link>NLog.xsd</Link>
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

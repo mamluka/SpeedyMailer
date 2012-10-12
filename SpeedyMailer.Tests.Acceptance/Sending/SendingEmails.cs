@@ -23,6 +23,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.DefaultInterval = 2);
 
 			_api = MasterResolve<Api>();
 
@@ -49,7 +50,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone.Start();
 
 			var contacts = csvRows.Select(x => x.Email).ToList();
-			Email.AssertEmailsSentWithInterval(contacts, 1);
+			Email.AssertEmailsSentWithInterval(contacts, 2);
 		}
 
 		[Test]
@@ -57,7 +58,11 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
-			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 10; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x =>
+				                                                      {
+					                                                      x.RecipientsPerFragment = 10;
+					                                                      x.DefaultInterval = 2;
+				                                                      });
 
 			_api = MasterResolve<Api>();
 
@@ -86,8 +91,8 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone2.Initialize();
 			drone2.Start();
 
-			Email.AssertEmailsSentBy("drone1", 20,120);
-			Email.AssertEmailsSentBy("drone2", 20,120);
+			Email.AssertEmailsSentBy("drone1", 20, 120);
+			Email.AssertEmailsSentBy("drone2", 20, 120);
 		}
 
 		[Test]

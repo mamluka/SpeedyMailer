@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Mail;
 using System.Threading;
+using NLog;
 using Newtonsoft.Json;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
@@ -14,10 +15,12 @@ namespace SpeedyMailer.Drones.Commands
 	{
 		private readonly EmailingSettings _emailingSettings;
 		private readonly DroneSettings _droneSettings;
+		private Logger _logger;
 		public CreativePackage Package { get; set; }
 
-		public SendCreativePackageCommand(EmailingSettings emailingSettings, DroneSettings droneSettings)
+		public SendCreativePackageCommand(Logger logger, EmailingSettings emailingSettings, DroneSettings droneSettings)
 		{
+			_logger = logger;
 			_droneSettings = droneSettings;
 			_emailingSettings = emailingSettings;
 		}
@@ -44,7 +47,6 @@ namespace SpeedyMailer.Drones.Commands
 				using (var writer = new StreamWriter(CreateEmailFilePath()))
 				{
 					writer.Write(emailFile);
-					Trace.WriteLine("Email sent to :" + Package.To);
 					writer.Flush();
 				}
 			}
@@ -53,6 +55,8 @@ namespace SpeedyMailer.Drones.Commands
 				var client = new SmtpClient();
 				client.Send(email);
 			}
+
+			_logger.Info("Email sent to: {0}, with subject {1}, email body was: {2}", Package.To, Package.Subject, Package.Body);
 		}
 
 		private string CreateEmailFilePath()

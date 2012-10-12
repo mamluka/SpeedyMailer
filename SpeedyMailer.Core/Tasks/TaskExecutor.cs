@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Reflection;
+using NLog;
 using Ninject;
 using Raven.Abstractions.Exceptions;
 using Raven.Client;
@@ -20,9 +21,11 @@ namespace SpeedyMailer.Core.Tasks
 		private readonly IDocumentStore _documentStore;
 		private readonly IKernel _kernel;
 		private readonly TaskExecutionSettings _taskExecutionSettings;
+		private Logger _logger;
 
-		public TaskExecutor(IKernel kernel, IDocumentStore documentStore, TaskExecutionSettings taskExecutionSettings)
+		public TaskExecutor(IKernel kernel, IDocumentStore documentStore, TaskExecutionSettings taskExecutionSettings, Logger logger)
 		{
+			_logger = logger;
 			_taskExecutionSettings = taskExecutionSettings;
 			_kernel = kernel;
 			_documentStore = documentStore;
@@ -59,10 +62,15 @@ namespace SpeedyMailer.Core.Tasks
 						var executeMethod = executor.GetType().GetMethod("Execute");
 						executeMethod.Invoke(executor, BindingFlags.Default, null, new object[] { task }, null);
 
+						_logger.Info("Task {0} was executed", task.GetType().FullName);
+
 						MarkAs(task, session, PersistentTaskStatus.Executed);
 					}
-					catch (Exception)
+					catch (Exception ex)
 					{
+
+						_logger.ErrorException("Task failed", ex);
+
 						if (task.RetryCount >= _taskExecutionSettings.NumberOfRetries)
 						{
 							MarkAs(task, session, PersistentTaskStatus.Failed);

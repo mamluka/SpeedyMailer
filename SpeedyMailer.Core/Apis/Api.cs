@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NLog;
 using RestSharp;
 
 namespace SpeedyMailer.Core.Apis
@@ -13,10 +14,12 @@ namespace SpeedyMailer.Core.Apis
 		private readonly IRestClient _restClient;
 		private readonly ApiCallsSettings _apiCallsSettings;
 		private string _apiBaseUrl;
-		private IList<string> _requestFiles;
+		private IList<string> _requestFiles = new List<string>();
+		private readonly Logger _logger;
 
-		public Api(IRestClient restClient, ApiCallsSettings apiCallsSettings)
+		public Api(IRestClient restClient, ApiCallsSettings apiCallsSettings, Logger logger)
 		{
+			_logger = logger;
 			_apiCallsSettings = apiCallsSettings;
 			_restClient = restClient;
 		}
@@ -55,18 +58,37 @@ namespace SpeedyMailer.Core.Apis
 		{
 			var restRequest = SetupApiCall(apiCall);
 
-			Trace.WriteLine("Endpoint url called is: " + restRequest.Resource);
-			Trace.WriteLine("Base url called is: " + _restClient.BaseUrl);
-
+			BeforeCallLogging(restRequest);
 			var result = _restClient.Execute<TResponse>(restRequest);
-
-			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
-			Trace.WriteLine("Error message: " + result.ErrorMessage);
+			AfterCallLogging(result);
 
 			CleanUp();
 
 			return result.Data;
 
+		}
+
+		private void AfterCallLogging(IRestResponse result)
+		{
+			_logger.Info("The Api call return status was: {0}", result.StatusCode);
+
+			if (result.ResponseStatus == ResponseStatus.Error || result.ResponseStatus == ResponseStatus.TimedOut)
+			{
+				_logger.Error("The API call ended with an exception", result.ResponseStatus);
+				return;
+			}
+
+			_logger.Info("The Api raw response is : {0}", result.Content);
+		}
+
+		private void BeforeCallLogging(IRestRequest restRequest)
+		{
+			_logger.Info("An api call is been made to: {0}/{1} method used: {2}", _restClient.BaseUrl, restRequest.Resource, restRequest.Method);
+
+			if (_requestFiles.Any())
+			{
+				_logger.Info("The API call also include files: {0}", _requestFiles);
+			}
 		}
 
 		private void CleanUp()
@@ -79,13 +101,9 @@ namespace SpeedyMailer.Core.Apis
 
 			var restRequest = SetupApiCall(apiCall);
 
-			Trace.WriteLine("Endpoint url called is: " + restRequest.Resource);
-			Trace.WriteLine("Base url called is: " + _restClient.BaseUrl);
-
+			BeforeCallLogging(restRequest);
 			var result = _restClient.Execute(restRequest);
-
-			Trace.WriteLine("response status: " + result.ResponseStatus + " status code: " + result.StatusCode);
-			Trace.WriteLine("Error message: " + result.ErrorMessage);
+			AfterCallLogging(result);
 
 			CleanUp();
 		}
@@ -99,7 +117,7 @@ namespace SpeedyMailer.Core.Apis
 			var method = Translate(apiCall);
 			restRequest.Method = method;
 
-			if (_requestFiles != null)
+			if (_requestFiles.Any())
 				_requestFiles.ToList().ForEach(x => restRequest.AddFile(Path.GetFileName(x), x));
 
 			HandleRequestBody(apiCall, restRequest);
@@ -175,7 +193,10 @@ namespace SpeedyMailer.Core.Apis
 
 		public Api AddFiles(IEnumerable<string> files)
 		{
-			_requestFiles = files.ToList();
+			_requestFiles = _requestFiles
+				.Union(files.ToList())
+				.ToList();
+
 			return this;
 		}
 	}

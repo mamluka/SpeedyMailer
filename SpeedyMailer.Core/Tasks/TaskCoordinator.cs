@@ -1,4 +1,5 @@
 using System;
+using NLog;
 using Quartz;
 
 namespace SpeedyMailer.Core.Tasks
@@ -11,16 +12,20 @@ namespace SpeedyMailer.Core.Tasks
 	public class TaskCoordinator : ITaskCoordinator
 	{
 		private readonly IScheduler _scheduler;
+		private Logger _logger;
 
-		public TaskCoordinator(IScheduler scheduler)
+		public TaskCoordinator(IScheduler scheduler, Logger logger)
 		{
+			_logger = logger;
 			_scheduler = scheduler;
+
+			_logger.Info("TaskCoordincator started with scheduler: {0}", scheduler.SchedulerInstanceId);
 		}
 
 		public void BeginExecuting()
 		{
 			var jobDetail = JobBuilder.Create<StartTaskExecutionJob>()
-				.WithIdentity("StartTaskExecution","Tasks")
+				.WithIdentity("StartTaskExecution", "Tasks")
 				.RequestRecovery()
 				.StoreDurably()
 				.Build();
@@ -29,15 +34,15 @@ namespace SpeedyMailer.Core.Tasks
 
 			if (!_scheduler.CheckExists(jobDetail.Key))
 			{
-				_scheduler.AddJob(jobDetail, true);	
+				_scheduler.AddJob(jobDetail, true);
 			}
-			
+
 			_scheduler.TriggerJob(jobDetail.Key);
 		}
 	}
 
 	[DisallowConcurrentExecution]
-	public class StartTaskExecutionJob:IJob
+	public class StartTaskExecutionJob : IJob
 	{
 		private readonly ITaskExecutor _taskExecutor;
 

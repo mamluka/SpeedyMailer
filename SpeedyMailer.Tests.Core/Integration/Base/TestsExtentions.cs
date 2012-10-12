@@ -12,7 +12,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public static void AssertTimeDifferenceInRange(this IEnumerable<DateTime> target, decimal interval, decimal tolorance)
 		{
 			if (tolorance == interval)
-				tolorance = tolorance / 2;
+				tolorance = tolorance * (2 / 3);
 
 			var orderTarget = target.OrderBy(x => x.ToUniversalTime());
 

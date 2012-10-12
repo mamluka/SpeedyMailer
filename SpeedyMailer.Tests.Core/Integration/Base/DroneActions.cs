@@ -31,6 +31,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	{
 		public IKernel Kernel { get; set; }
 
+		private IList<int> RunningMongoPorts = new List<int>();
+
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
 		{
@@ -87,6 +89,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Trace.WriteLine(droneId + " has started mongo on: " + storeUri);
 
 			MongoRunner.Start(randomizePost);
+			RunningMongoPorts.Add(randomizePost);
 
 			EditSettings<ApiCallsSettings>(x =>
 											   {
@@ -110,10 +113,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return topDrone;
 		}
 
-		private int RandomizePost()
+		public void StopAllDroneStores()
 		{
-			var random = new Random();
-			return random.Next(1000, 10000);
+			var mongodb = new IntegrationMongoDbHelper();
+
+			mongodb.ShutdownMongo(RunningMongoPorts);
 		}
 
 		public void Store<T>(T entity) where T : class
@@ -128,40 +132,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			manager.BatchInsert(collection);
 		}
 
-		public void StartMongo()
-		{
-			MongoRunner.Start();
-
-			try
-			{
-				var manager = new GenericRecordManager<SocketCycling>(IntergrationHelpers.DefaultStoreUri());
-				manager.BatchInsert(new[] { new SocketCycling(), });
-			}
-			catch (Exception)
-			{
-				Trace.WriteLine("Mongo socket was garbage collected");
-			}
-
-			while (!Process.GetProcessesByName("mongod").Any())
-			{
-				Thread.Sleep(500);
-			}
-		}
-
-		public void ShutdownMongo()
-		{
-			MongoRunner.Shutdown();
-
-			while (Process.GetProcessesByName("mongod").Any())
-			{
-				Thread.Sleep(500);
-			}
-		}
 
 		public IList<T> FindAll<T>() where T : class
 		{
 			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri());
 			return manager.FindAll();
+		}
+
+		private int RandomizePost()
+		{
+			var random = new Random();
+			return random.Next(1000, 10000);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using NLog;
 using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;

@@ -159,6 +159,9 @@
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\SpeedyMailer.Drones\NLog.config">
+      <Link>NLog.config</Link>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>

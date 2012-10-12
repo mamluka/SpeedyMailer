@@ -199,6 +199,8 @@
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
+    <Compile Include="Logging\LoggingModule.cs" />
+    <Compile Include="Logging\NancyErrorLogging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\How.cs" />
     <Compile Include="Rules\HowType.cs" />

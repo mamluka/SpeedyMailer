@@ -211,6 +211,7 @@
     <Compile Include="Integration\Base\IntegrationApiHelpers.cs" />
     <Compile Include="Integration\Base\ContainersConfigurationsForTesting.cs" />
     <Compile Include="Integration\Base\IntegrationEmailHelpers.cs" />
+    <Compile Include="Integration\Base\IntegrationMongoDbHelper.cs" />
     <Compile Include="Integration\Base\IntegrationStoreHelpers.cs" />
     <Compile Include="Integration\Base\IntegrationTestsOptions.cs" />
     <Compile Include="Integration\Base\IntergrationHelpers.cs" />
