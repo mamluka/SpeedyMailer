@@ -67,7 +67,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.CreativeId = "creative/1";
 																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.Subject = "hello world subject";
-																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
 																								  x.Service = new Service
 																								  {
@@ -110,7 +110,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.CreativeId = "creative/1";
 																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.Subject = "hello world subject";
-																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
 																								  x.Service = new Service
 																												  {
@@ -156,7 +156,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.CreativeId = "creative/1";
 																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.Subject = "hello world subject";
-																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
 																								  x.Service = new Service
 																												  {
@@ -178,6 +178,42 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenBodyContainsEmailTemplatingElement_ShouldReplaceWithTheRecipientEmail()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+																								  {
+																									  x.Id = "fragment/1";
+																									  x.CreativeId = "creative/1";
+																									  x.Body = CreateBodyWithLinkAndEmailTemplating("http://www.dealexpress.com/deal");
+																									  x.Subject = "hello world subject";
+																									  x.UnsubscribeTemplate = "here  is a template ^url^";
+																									  x.Recipients = recipients;
+																									  x.Service = new Service
+																													  {
+																														  BaseUrl = "http://www.topemail.com",
+																														  DealsEndpoint = "deal",
+																														  UnsubscribeEndpoint = "unsubscribe"
+																													  };
+																								  });
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			AssertBodyContains("also we have the ema1il here test@test.com");
+		}
+
+		private string CreateBodyWithLinkAndEmailTemplating(string link)
+		{
+			return CreateBodyWithLink(link) + " also we have the email here ^email^";
+		}
+
+		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldAppendTheUnsubscribeTemplate()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
@@ -191,7 +227,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.CreativeId = "creative/1";
 																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.Subject = "hello world subject";
-																								  x.UnsubscribeTemplate = "here  is a template <url>";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
 																								  x.Service = new Service
 																												  {
@@ -213,7 +249,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										}));
 		}
 
-		
+
 
 		private void AssertBodyContains(string text)
 		{

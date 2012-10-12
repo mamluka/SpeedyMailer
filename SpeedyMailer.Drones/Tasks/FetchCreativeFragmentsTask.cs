@@ -100,12 +100,19 @@ namespace SpeedyMailer.Drones.Tasks
 					.AddObject(GetDealUrlData(fragment, contact))
 					.AppendAsSlashes();
 
-				var body = _creativeBodySourceWeaver.WeaveDeals(fragment.Body, dealUrl);
+				var bodyTemplateEngine = new Template(fragment.Body, '^', '^');
+				bodyTemplateEngine.Add("email", contact.Email);
 
-				var unsubscribeTemplate = new Template(fragment.UnsubscribeTemplate);
-				unsubscribeTemplate.Add("url", unsubsribeUrl);
+				var body = bodyTemplateEngine.Render();
 
-				return body + unsubscribeTemplate.Render();
+				var weavedBody = _creativeBodySourceWeaver.WeaveDeals(body, dealUrl);
+
+				var unsubscribeTemplateEngine = new Template(fragment.UnsubscribeTemplate, '^', '^');
+				unsubscribeTemplateEngine.Add("url", unsubsribeUrl);
+
+				var template = unsubscribeTemplateEngine.Render();
+
+				return weavedBody + template;
 			}
 
 			private static DealUrlData GetDealUrlData(CreativeFragment fragment, Recipient contact)

@@ -3,25 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Nancy;
+using Ninject;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
-    public class AdminModule : NancyModule
-    {
-        private readonly ServiceSettings _serviceSettings;
-
-        public AdminModule(ServiceSettings serviceSettings)
-            : base("/admin")
+	public class AdminModule : NancyModule
+	{
+		public AdminModule(ServiceSettings serviceSettings, IKernel kernel)
+			: base("/admin")
         {
-            _serviceSettings = serviceSettings;
+			Get["/settings"] = x =>
+				                   {
 
-            Get["/settings"] = x => Response.AsJson(new ServiceEndpoints.Admin.GetRemoteServiceConfiguration.Response
-                                                            {
-                                                                ServiceBaseUrl = _serviceSettings.BaseUrl
-                                                            });
+					                   ContainerBootstrapper.ReloadAllStoreSettings(kernel);
+
+					                   return Response.AsJson(new ServiceEndpoints.Admin.GetRemoteServiceConfiguration.Response
+							                                   {
+								                                   ServiceBaseUrl = serviceSettings.BaseUrl
+							                                   });
+				                   };
             Get["/info"] = x => Response.AsJson("OK");
         }
-    }
+	}
 }

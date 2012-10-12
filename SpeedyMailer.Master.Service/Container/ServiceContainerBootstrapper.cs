@@ -30,7 +30,7 @@ namespace SpeedyMailer.Master.Service.Container
                 .BindInterfaceToDefaultImplementation()
 				.DefaultConfiguration()
                 .Storage<IDocumentStore>(x=> x.Provider<RavenDocumentStoreProvider>())
-                .Settings(x => x.UseJsonFiles())
+                .Settings(x => x.UseDocumentDatabase())
                 .Done();
         }
     }

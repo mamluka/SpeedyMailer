@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Container
 			var settingsId = string.Format("settings/{0}", settingsName);
 			try
 			{
-				using (IDocumentSession session = _store.OpenSession())
+				using (var session = _store.OpenSession())
 				{
 					settings = session.Load<object>(settingsId);
 				}
