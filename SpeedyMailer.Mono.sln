@@ -5,12 +5,18 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Drones", "Spee
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Core", "SpeedyMailer.Core\SpeedyMailer.Core.csproj", "{5CF80BBC-A484-4339-ADE6-F6C902B961B1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mongol", "Mongol\Mongol.csproj", "{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Debug|x86.Build.0 = Debug|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|x86.ActiveCfg = Release|Any CPU
+		{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}.Release|x86.Build.0 = Release|Any CPU
 		{5CF80BBC-A484-4339-ADE6-F6C902B961B1}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{5CF80BBC-A484-4339-ADE6-F6C902B961B1}.Debug|x86.Build.0 = Debug|Any CPU
 		{5CF80BBC-A484-4339-ADE6-F6C902B961B1}.Release|x86.ActiveCfg = Release|Any CPU
