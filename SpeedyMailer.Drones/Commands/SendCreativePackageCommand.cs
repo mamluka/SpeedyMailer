@@ -52,7 +52,7 @@ namespace SpeedyMailer.Drones.Commands
 			}
 			else
 			{
-				var client = new SmtpClient();
+				var client = new SmtpClient(_emailingSettings.SmtpHost);
 				client.Send(email);
 			}
 
