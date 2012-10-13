@@ -12,7 +12,7 @@ namespace SpeedyMailer.Core.Tasks
 	public class TaskCoordinator : ITaskCoordinator
 	{
 		private readonly IScheduler _scheduler;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public TaskCoordinator(IScheduler scheduler, Logger logger)
 		{
@@ -24,20 +24,24 @@ namespace SpeedyMailer.Core.Tasks
 
 		public void BeginExecuting()
 		{
-			var jobDetail = JobBuilder.Create<StartTaskExecutionJob>()
+			var job = JobBuilder.Create<StartTaskExecutionJob>()
 				.WithIdentity("StartTaskExecution", "Tasks")
 				.RequestRecovery()
 				.StoreDurably()
 				.Build();
 
+			var trigger = TriggerBuilder.Create()
+				.WithIdentity("TaskExecutionTrigger")
+				.WithSimpleSchedule(x => x.WithIntervalInSeconds(5).RepeatForever())
+				.StartNow()
+				.Build();
+
 			_scheduler.StartIfNeeded();
 
-			if (!_scheduler.CheckExists(jobDetail.Key))
+			if (!_scheduler.CheckExists(job.Key))
 			{
-				_scheduler.AddJob(jobDetail, true);
+				_scheduler.ScheduleJob(job, trigger);
 			}
-
-			_scheduler.TriggerJob(jobDetail.Key);
 		}
 	}
 

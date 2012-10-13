@@ -107,7 +107,7 @@ namespace :winrun do
   task :run_default_service do
     puts local_ip
 	
-    Rake::Task["winrun:run_service"].invoke()
+    Rake::Task["winrun:run_service"].invoke(local_host_url)
   end
   
   def local_host_url

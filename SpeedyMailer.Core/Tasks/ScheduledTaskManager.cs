@@ -13,7 +13,7 @@ namespace SpeedyMailer.Core.Tasks
 	public class ScheduledTaskManager : IScheduledTaskManager
 	{
 		private readonly IScheduler _scheduler;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public ScheduledTaskManager(IScheduler scheduler, Logger logger)
 		{

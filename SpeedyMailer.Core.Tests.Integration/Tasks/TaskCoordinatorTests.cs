@@ -96,7 +96,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			_taskManager.Save(task2);
 			_target.BeginExecuting();
 
-			Store.WaitForEntityToExist(resultId2, 5);
+			Store.WaitForEntityToExist(resultId2, 10);
 
 			var result1 = Store.Load<ComputationResult<int>>(resultId1);
 			var result2 = Store.Load<ComputationResult<int>>(resultId2);

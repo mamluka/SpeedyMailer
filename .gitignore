@@ -32,3 +32,4 @@ Out/**
 RavenDB/Server/Data/**
 RavenDB/Server/*.xml
 packages/*.exe
+SpeedyMailer.Master.Web.Api/BodyPart*

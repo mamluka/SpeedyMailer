@@ -21,7 +21,7 @@ namespace SpeedyMailer.Core.Tasks
 		private readonly IDocumentStore _documentStore;
 		private readonly IKernel _kernel;
 		private readonly TaskExecutionSettings _taskExecutionSettings;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public TaskExecutor(IKernel kernel, IDocumentStore documentStore, TaskExecutionSettings taskExecutionSettings, Logger logger)
 		{
