@@ -53,6 +53,42 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenACreativeIsGiven_ShouldStoreAllRelevantDataForTheRecipients()
+		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 1000);
+
+			var contact = Fixture.CreateAnonymous<Contact>();
+
+			var listId = UiActions.CreateListWithContacts("MyList", new[] { contact });
+
+			var templateId = CreateTemplate("Body");
+
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+													  {
+														  x.Body = "Body";
+														  x.Subject = "Subject";
+														  x.UnsubscribeTemplateId = templateId;
+														  x.Lists = new List<string> { listId };
+													  });
+
+			var task = new CreateCreativeFragmentsTask
+						{
+							CreativeId = creativeId,
+						};
+
+			ServiceActions.ExecuteTask(task);
+
+			var result = Store.Query<CreativeFragment>(x => x.CreativeId == creativeId);
+
+			result.First().Recipients.Should().HaveCount(1)
+				.And.OnlyContain(x =>
+								 x.ContactId == contact.Id &&
+								 x.Name == contact.Name &&
+								 x.Email == contact.Email
+				);
+		}
+
+		[Test]
 		public void Execute_WhenACreativeIsGiven_ShouldReturnTheServiceEndpoints()
 		{
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 1000);
@@ -136,10 +172,10 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		public void Execute_WhenThereAreNoIntervalRules_ShouldSetTheIntervalToTheDefaultValue()
 		{
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x =>
-				                                                      {
-					                                                      x.DefaultInterval = 1;
-					                                                      x.RecipientsPerFragment = 200;
-				                                                      });
+																	  {
+																		  x.DefaultInterval = 1;
+																		  x.RecipientsPerFragment = 200;
+																	  });
 
 			var contacts = AddRandomContacts(200);
 

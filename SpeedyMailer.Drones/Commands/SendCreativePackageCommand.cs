@@ -40,18 +40,7 @@ namespace SpeedyMailer.Drones.Commands
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
-				var tmpEmailFile = SerializeObject(email);
-				var fakeEmailFile = JsonConvert.DeserializeObject<FakeEmailMessage>(tmpEmailFile);
-				fakeEmailFile.DroneId = _droneSettings.Identifier;
-				fakeEmailFile.DeliveryDate = DateTime.UtcNow;
-
-				var emailFile = SerializeObject(fakeEmailFile);
-
-				using (var writer = new StreamWriter(CreateEmailFilePath()))
-				{
-					writer.Write(emailFile);
-					writer.Flush();
-				}
+				WriteEmailToDisk(email);
 			}
 			else
 			{
@@ -60,6 +49,22 @@ namespace SpeedyMailer.Drones.Commands
 			}
 
 			_logger.Info("Email sent to: {0}, with subject {1}, email body was: {2}", Package.To, Package.Subject, Package.Body);
+		}
+
+		private void WriteEmailToDisk(MailMessage email)
+		{
+			var tmpEmailFile = SerializeObject(email);
+			var fakeEmailFile = JsonConvert.DeserializeObject<FakeEmailMessage>(tmpEmailFile);
+			fakeEmailFile.DroneId = _droneSettings.Identifier;
+			fakeEmailFile.DeliveryDate = DateTime.UtcNow;
+
+			var emailFile = SerializeObject(fakeEmailFile);
+
+			using (var writer = new StreamWriter(CreateEmailFilePath()))
+			{
+				writer.Write(emailFile);
+				writer.Flush();
+			}
 		}
 
 		private string CreateEmailFilePath()

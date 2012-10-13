@@ -89,7 +89,8 @@ namespace SpeedyMailer.Master.Service.Tasks
 			return new Recipient
 						   {
 							   Email = contact.Email,
-							   Name = contact.Name
+							   Name = contact.Name,
+							   ContactId = contact.Id
 						   };
 		}
 

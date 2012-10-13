@@ -26,7 +26,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public string CreateListWithRandomContacts(string listName, int contactsCount)
 		{
-			var listId = ExecuteCommand<CreateListCommand, string>(x => x.Name = "MyList");
+			var listId = ExecuteCommand<CreateListCommand, string>(x => x.Name = listName);
 			ExecuteCommand<AddContactsCommand, long>(command =>
 			{
 				command.Contacts = Fixture
@@ -37,6 +37,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				command.ListId = listId;
 
 			});
+			return listId;
+		}
+
+		public string CreateListWithContacts(string listName, IEnumerable<Contact> contacts)
+		{
+			var listId = ExecuteCommand<CreateListCommand, string>(x => x.Name = listName);
+			ExecuteCommand<AddContactsCommand, long>(command =>
+														 {
+															 command.Contacts = contacts;
+															 command.ListId = listId;
+														 });
 			return listId;
 		}
 
