@@ -34,6 +34,8 @@ namespace SpeedyMailer.Drones.Commands
 			email.To.Add(Package.To);
 			email.Body = Package.Body;
 			email.Subject = Package.Subject;
+			email.From = new MailAddress("sales@xomixinc.com","XomixInc");
+			email.Sender = new MailAddress("sales@xomixinc.com","XomixInc");
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
