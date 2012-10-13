@@ -1,7 +1,7 @@
 require 'albacore'
 require 'nokogiri'
 require 'open-uri'
-require 'FileUtils'
+require 'fileutils'
 require 'socket'
 
 namespace :windows do
