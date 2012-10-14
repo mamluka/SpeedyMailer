@@ -7,7 +7,7 @@ using NLog;
 using Newtonsoft.Json;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Drones.Settings;
+using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Commands
 {
@@ -15,8 +15,11 @@ namespace SpeedyMailer.Drones.Commands
 	{
 		private readonly EmailingSettings _emailingSettings;
 		private readonly DroneSettings _droneSettings;
-		private Logger _logger;
+		private readonly Logger _logger;
+
 		public CreativePackage Package { get; set; }
+		public string FromName { get; set; }
+		public string FromAddressDomainPrefix { get; set; }
 
 		public SendCreativePackageCommand(Logger logger, EmailingSettings emailingSettings, DroneSettings droneSettings)
 		{
@@ -34,8 +37,7 @@ namespace SpeedyMailer.Drones.Commands
 			email.To.Add(Package.To);
 			email.Body = Package.Body;
 			email.Subject = Package.Subject;
-			email.From = new MailAddress("john.carter@xomixinc.com","John Carter");
-			email.Sender = new MailAddress("john.carter+samson@xomixinc.com","John Carter Co");
+			email.From = new MailAddress(FromAddressDomainPrefix + "@" + _emailingSettings.MailingDomain, FromName);
 			email.IsBodyHtml = true;
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))

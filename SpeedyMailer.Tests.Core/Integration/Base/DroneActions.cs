@@ -20,9 +20,9 @@ using SpeedyMailer.Core;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
-using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Master.Service;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base

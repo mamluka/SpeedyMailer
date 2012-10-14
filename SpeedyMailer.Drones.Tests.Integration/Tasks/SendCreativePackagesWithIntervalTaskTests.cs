@@ -8,7 +8,7 @@ using FluentAssertions;
 using MongoDB.Runner;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Drones.Settings;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -25,18 +25,30 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenTaskHasAnInterval_ShouldSendThePackagesAccordingToTheIntervalSpecified()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+
+															});
 
 			var creativePackages = new[]
 				                       {
-					                       CreatePackage("david@gmail.com", 5), 
-										   CreatePackage("david2@gmail.com", 5), 
-										   CreatePackage("david3@gmail.com", 5)
+					                       CreatePackage("david@gmail.com", "gmail"), 
+										   CreatePackage("david2@gmail.com", "gmail"), 
+										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
 			DroneActions.StorCollection(creativePackages);
 
-			var task = new SendCreativePackagesWithIntervalTask(x => x.Interval = 5, x => x.WithIntervalInSeconds(5).RepeatForever());
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																		x.FromName = "david";
+																		x.FromAddressDomainPrefix = "sales";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
 			DroneActions.StartScheduledTask(task);
 
@@ -48,18 +60,30 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenPckagesArePresent_ShouldDeleteThemAfterSendingThem()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+				                                            {
+					                                            x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+					                                            x.MailingDomain = "example.com";
+
+				                                            });
 
 			var creativePackages = new[]
 				                       {
-					                       CreatePackage("david@gmail.com", 5), 
-										   CreatePackage("david2@gmail.com", 5), 
-										   CreatePackage("david3@gmail.com", 5)
+					                       CreatePackage("david@gmail.com", "gmail"), 
+										   CreatePackage("david2@gmail.com", "gmail"), 
+										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
 			DroneActions.StorCollection(creativePackages);
 
-			var task = new SendCreativePackagesWithIntervalTask(x => x.Interval = 5, x => x.WithIntervalInSeconds(5).RepeatForever());
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																		x.FromName = "david";
+																		x.FromAddressDomainPrefix = "sales";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
 			DroneActions.StartScheduledTask(task);
 
@@ -73,18 +97,30 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenTaskHasAnIntervalAndNoPackagesWereFound_ShouldStopExecutingTheTaskAndRemoveIt()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+				                                            {
+					                                            x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+					                                            x.MailingDomain = "example.com";
+
+				                                            });
 
 			var creativePackages = new[]
 				                       {
-					                       CreatePackage("david@gmail.com", 5), 
-										   CreatePackage("david2@gmail.com", 5), 
-										   CreatePackage("david3@gmail.com", 5)
+					                       CreatePackage("david@gmail.com", "gmail"), 
+										   CreatePackage("david2@gmail.com", "gmail"), 
+										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
 			DroneActions.StorCollection(creativePackages);
 
-			var task = new SendCreativePackagesWithIntervalTask(x => x.Interval = 5, x => x.WithIntervalInSeconds(5).RepeatForever());
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																		x.FromName = "david";
+																		x.FromAddressDomainPrefix = "sales";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
 			DroneActions.StartScheduledTask(task);
 
@@ -96,12 +132,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Tasks.AssertTaskIsNotRunning(task);
 		}
 
-		private static CreativePackage CreatePackage(string email, int interval)
+		private static CreativePackage CreatePackage(string email, string group)
 		{
 			return new CreativePackage
 					   {
 						   Body = "body",
-						   Interval = interval,
+						   Group = group,
 						   Subject = "subject",
 						   To = email
 					   };

@@ -31,9 +31,10 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 									                                                               Conditon = new List<string>
 										                                                                          {
 											                                                                          "gmail.com",
-											                                                                          "hotmail.com"
+											                                                                          "googlemail.com",
 										                                                                          },
-									                                                               Interval = 5
+									                                                               Interval = 5,
+																								   Group = "gmail"
 								                                                               }
 						                                                               };
 																	 });
@@ -42,8 +43,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var result = Store.Query<IntervalRule>().First();
 
-			result.Conditon.Should().Contain(new[] { "gmail.com", "hotmail.com" });
+			result.Conditon.Should().Contain(new[] { "gmail.com", "googlemail.com" });
 			result.Interval.Should().Be(5);
+			result.Group.Should().Be("gmail");
 		}
 	}
 }

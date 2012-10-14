@@ -1,8 +1,8 @@
 using System.Net;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Drones.Commands
 {

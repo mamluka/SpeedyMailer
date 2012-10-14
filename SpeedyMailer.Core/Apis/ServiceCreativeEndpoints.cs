@@ -30,6 +30,10 @@ namespace SpeedyMailer.Core.Apis
 				public string DealUrl { get; set; }
 				public string UnsubscribeTemplateId { get; set; }
 
+				public string FromName { get; set; }
+
+				public string FromAddressDomainPrefix { get; set; }
+
 				public SaveCreative()
 					: base("/creative/save")
 				{

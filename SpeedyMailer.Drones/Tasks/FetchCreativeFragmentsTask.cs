@@ -63,11 +63,18 @@ namespace SpeedyMailer.Drones.Tasks
 
 				_creativePackagesStore.BatchInsert(recipiens.Select(x => ToPackage(x, creativeFragment)).ToList());
 
-				var intervals = recipiens.GroupBy(x => x.Interval).ToList();
+				var groups = recipiens.GroupBy(x => x.Group).Select(x => new { Group = x.Key, x.First().Interval }).ToList();
 
-				foreach (var interval in intervals)
+				foreach (var group in groups)
 				{
-					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x => x.Interval = interval.Key, x => x.WithIntervalInSeconds(interval.Key).RepeatForever()));
+					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x =>
+																					   {
+																						   x.Group = group.Group;
+																						   x.FromName = creativeFragment.FromName;
+																						   x.FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix;
+																					   },
+																				   x => x.WithIntervalInSeconds(group.Interval).RepeatForever()
+											  ));
 				}
 			}
 
@@ -78,7 +85,7 @@ namespace SpeedyMailer.Drones.Tasks
 							Subject = creativeFragment.Subject,
 							Body = PersonalizeBody(creativeFragment, recipient),
 							To = recipient.Email,
-							Interval = recipient.Interval
+							Group = recipient.Group
 						};
 			}
 

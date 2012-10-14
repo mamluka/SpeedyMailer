@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -196,6 +196,8 @@
     <Compile Include="Settings\DefaultAttribute.cs" />
     <Compile Include="Settings\CreativeApisSettings.cs" />
     <Compile Include="Settings\CreativeFragmentSettings.cs" />
+    <Compile Include="Settings\DroneSettings.cs" />
+    <Compile Include="Settings\EmailingSettings.cs" />
     <Compile Include="Settings\ServiceSettings.cs" />
     <Compile Include="Tasks\ComputationResult.cs" />
     <Compile Include="Tasks\ContainerJobFactory.cs" />

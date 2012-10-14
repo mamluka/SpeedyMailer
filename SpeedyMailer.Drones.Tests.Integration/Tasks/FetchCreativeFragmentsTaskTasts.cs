@@ -1,11 +1,9 @@
 ﻿using System.Collections.Generic;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Master;
-using SpeedyMailer.Core.Utilities;
-using SpeedyMailer.Drones.Settings;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 using System.Linq;
@@ -55,7 +53,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStartSendTheEmail()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
 
@@ -69,6 +72,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
 																								  x.Service = new Service
 																								  {
 																									  BaseUrl = "http://www.topemail.com",
@@ -87,9 +92,53 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenRecipientsHaveIntervals_ShouldSendTheEmailsAccordingToTheIntervals()
+		public void Execute_WhenWeObtainAFragment_ShouldSetTheFromAddresCorrectly()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+																							  {
+																								  x.Id = "fragment/1";
+																								  x.CreativeId = "creative/1";
+																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.Subject = "hello world subject";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
+																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
+																								  x.Service = new Service
+																								  {
+																									  BaseUrl = "http://www.topemail.com",
+																									  DealsEndpoint = "deal",
+																									  UnsubscribeEndpoint = "unsubscribe"
+																								  };
+																							  });
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			Email.AssertEmailSent(x => x.From.Address == "sales@example.com" && x.From.DisplayName == "david");
+		}
+
+		[Test]
+		public void Execute_WhenRecipientsHaveIntervalWithinASingleGroup_ShouldSendTheEmailsAccordingToTheIntervals()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
 
@@ -103,6 +152,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 				                 };
 
 			recipients.ForEach(x => x.Interval = 3);
+			recipients.ForEach(x => x.Group = "gmail");
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																							  {
@@ -112,6 +162,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
 																								  x.Service = new Service
 																												  {
 																													  BaseUrl = "http://www.topemail.com",
@@ -128,9 +180,69 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenRecipientsHaveIntervalWithinDifferentGroups_ShouldHaveTwoTypesOfIntervals()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+			{
+				x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+				x.MailingDomain = "example.com";
+			});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+
+			var recipients = new List<Recipient>
+				                 {
+					                 AddRecipient("contacts/1", "test@gmail.com"),
+					                 AddRecipient("contacts/2", "test2@gmail.com"),
+					                 AddRecipient("contacts/3", "test3@gmail.com"),
+					                 AddRecipient("contacts/4", "test4@yahoo.com"),
+					                 AddRecipient("contacts/5", "test5@yahoo.com"),
+					                 AddRecipient("contacts/6", "test6@yahoo.com"),
+				                 };
+
+			recipients.ForEach(x => x.Interval = 3);
+
+			recipients.Take(3).ToList().ForEach(x => x.Group = "gmail");
+			recipients.Skip(3).ToList().ForEach(x => x.Group = "yahoo");
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+			{
+				x.Id = "fragment/1";
+				x.CreativeId = "creative/1";
+				x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
+				x.Subject = "hello world subject";
+				x.UnsubscribeTemplate = "here  is a template ^url^";
+				x.Recipients = recipients;
+				x.FromName = "david";
+				x.FromAddressDomainPrefix = "sales";
+				x.Service = new Service
+				{
+					BaseUrl = "http://www.topemail.com",
+					DealsEndpoint = "deal",
+					UnsubscribeEndpoint = "unsubscribe"
+				};
+			});
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			Email.AssertEmailsSentWithInterval(recipients.Take(3).ToList(), 3);
+			Email.AssertEmailsSentWithInterval(recipients.Skip(3).ToList(), 3);
+
+			Email.AssertEmailsWereSendAtTheSameTime(new[] { recipients[0], recipients[3] });
+		}
+
+		[Test]
 		public void Execute_WhenThereAreNoFragments_ShouldDoNothing()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(default(CreativeFragment));
@@ -145,7 +257,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldReplaceTheDealLinksWithRediractableServiceLinks()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
@@ -158,6 +275,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
 																								  x.Service = new Service
 																												  {
 																													  BaseUrl = "http://www.topemail.com",
@@ -180,7 +299,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenBodyContainsEmailTemplatingElement_ShouldReplaceWithTheRecipientEmail()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
@@ -193,6 +317,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
 																									  x.Recipients = recipients;
+																									  x.FromName = "david";
+																									  x.FromAddressDomainPrefix = "sales";
 																									  x.Service = new Service
 																													  {
 																														  BaseUrl = "http://www.topemail.com",
@@ -216,7 +342,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldAppendTheUnsubscribeTemplate()
 		{
-			DroneActions.EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
@@ -229,6 +360,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
 																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
 																								  x.Service = new Service
 																												  {
 																													  BaseUrl = "http://www.topemail.com",
@@ -267,7 +400,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					   {
 						   Email = email,
 						   ContactId = contactId,
-						   Interval = 1
+						   Interval = 1,
+						   Group = "gmail"
 					   };
 		}
 	}

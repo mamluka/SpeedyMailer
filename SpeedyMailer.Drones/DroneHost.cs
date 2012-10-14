@@ -7,11 +7,11 @@ using Nancy.Bootstrapper;
 using Nancy.Hosting.Self;
 using Ninject;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Drones.Bootstrappers;
 using SpeedyMailer.Drones.Commands;
-using SpeedyMailer.Drones.Settings;
 using SpeedyMailer.Drones.Tasks;
 
 namespace SpeedyMailer.Drones

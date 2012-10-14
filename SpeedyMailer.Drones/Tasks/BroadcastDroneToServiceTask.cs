@@ -1,8 +1,8 @@
 using System;
 using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
-using SpeedyMailer.Drones.Settings;
 
 namespace SpeedyMailer.Drones.Tasks
 {

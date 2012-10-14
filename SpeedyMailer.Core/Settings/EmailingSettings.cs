@@ -1,6 +1,4 @@
-using SpeedyMailer.Core.Settings;
-
-namespace SpeedyMailer.Drones.Settings
+namespace SpeedyMailer.Core.Settings
 {
 	public class EmailingSettings
 	{
@@ -8,5 +6,7 @@ namespace SpeedyMailer.Drones.Settings
 
 		[Default("localhost")]
 		public virtual string SmtpHost { get; set; }
+
+		public virtual string MailingDomain { get; set; }
 	}
 }

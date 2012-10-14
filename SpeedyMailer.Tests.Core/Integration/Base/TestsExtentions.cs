@@ -14,10 +14,22 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			if (tolorance == interval)
 				tolorance = tolorance * (2 / 3);
 
+			var deltas = GetDelta(target);
+			deltas.Should().OnlyContain(x => (decimal)x.TotalSeconds > interval - tolorance && (decimal)x.TotalSeconds < interval + tolorance);
+		}
+
+		private static IEnumerable<TimeSpan> GetDelta(IEnumerable<DateTime> target)
+		{
 			var orderTarget = target.OrderBy(x => x.ToUniversalTime());
 
 			var deltas = orderTarget.Zip(orderTarget.Skip(1), (current, next) => next - current);
-			deltas.Should().OnlyContain(x => (decimal)x.TotalSeconds > interval - tolorance && (decimal)x.TotalSeconds < interval + tolorance);
+			return deltas;
+		}
+
+		public static void AssertTimesAreTheSameInRange(this IEnumerable<DateTime> target, decimal range)
+		{
+			var deltas = GetDelta(target);
+			deltas.Should().OnlyContain(x => (decimal)x.TotalMilliseconds < range);
 		}
 	}
 }

@@ -25,7 +25,9 @@ namespace SpeedyMailer.Master.Service.Commands
                                        Lists = Lists.ToList(),
                                        Subject = Subject,
                                        UnsubscribeTemplateId = UnsubscribeTemplateId,
-									   DealUrl = DealUrl
+									   DealUrl = DealUrl,
+									   FromAddressDomainPrefix = FromAddressDomainPrefix,
+									   FromName = FromName
                                    };
                 session.Store(creative);
                 session.SaveChanges();
@@ -39,5 +41,7 @@ namespace SpeedyMailer.Master.Service.Commands
         public IList<string> Lists { get; set; }
         public string UnsubscribeTemplateId { get; set; }
 	    public string DealUrl { get; set; }
+	    public string FromName { get; set; }
+	    public string FromAddressDomainPrefix { get; set; }
     }
 }

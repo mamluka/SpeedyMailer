@@ -121,7 +121,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervals()
+		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervalsAndGroup()
 		{
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 200);
 			var contacts = AddRandomContacts(100);
@@ -151,7 +151,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var rule = new IntervalRule
 							{
 								Conditon = new List<string> { "gmail.com", "hotmail.com" },
-								Interval = 10
+								Interval = 10,
+								Group = "gmail"
 							};
 
 			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
@@ -165,7 +166,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var result = Store.Query<CreativeFragment>().First();
 
-			result.Recipients.Should().Contain(x => topDomainContacts.Any(contact => contact.Email == x.Email) && x.Interval == 10);
+			result.Recipients.Should().Contain(x => topDomainContacts.Any(contact => contact.Email == x.Email) && x.Interval == 10 && x.Group == "gmail");
 		}
 
 		[Test]

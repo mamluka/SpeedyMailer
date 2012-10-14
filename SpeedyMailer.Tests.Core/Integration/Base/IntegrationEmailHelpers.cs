@@ -29,12 +29,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void AssertEmailsSentTo(IEnumerable<string> recipients, int waitFor = 30)
 		{
-			var emails = WaitForEmailsWithCondition(waitFor,
-									   messages => recipients.Join(messages, x => x, y => y.To.First().Address, (x, y) => x)
-									   .Count() == recipients.Count());
+			var emails = WaitForEmailsThatWereSentBy(recipients, waitFor);
 
 			if (emails.Count != recipients.Count())
 				Assert.Fail("Emails were not sent to all recipients expected {0} but {1} were sent", recipients.Count(), emails.Count);
+		}
+
+		private List<FakeEmailMessage> WaitForEmailsThatWereSentBy(IEnumerable<string> recipients, int waitFor)
+		{
+			return WaitForEmailsWithCondition(waitFor,
+											  messages => recipients.Join(messages, x => x, y => y.To.First().Address, (x, y) => x)
+															  .Count() == recipients.Count(), x => recipients.Any(m => x.To.First().Address == m));
 		}
 
 		private FakeEmailMessage GetEmailFromDisk(int waitFor)
@@ -137,14 +142,19 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void AssertEmailsSentWithInterval(IList<Recipient> recipients, int interval, int waitFor = 30)
 		{
-			var emails = WaitForEmailsWithCondition(waitFor, messages => recipients.Join(messages, x => x.Email, y => y.To.First().Address, (x, y) => x).Count() == recipients.Count());
+			var emails = WaitForEmailsThatWereSentBy(recipients.Select(x => x.Email), waitFor);
 
-			var deliveryTimes = emails
+			emails.Should().HaveCount(recipients.Count, "Not all emails were sent", emails.Count, recipients.Count);
+
+			var deliveryTimes = OrderByDeliveryTimes(emails);
+			deliveryTimes.AssertTimeDifferenceInRange(interval, 1);
+		}
+
+		private static IOrderedEnumerable<DateTime> OrderByDeliveryTimes(List<FakeEmailMessage> emails)
+		{
+			return emails
 				.Select(x => x.DeliveryDate)
 				.OrderBy(x => x.ToUniversalTime());
-
-			emails.Should().HaveCount(recipients.Count, "Not all emails were sent expected {0} but was {1}", emails.Count, recipients.Count);
-			deliveryTimes.AssertTimeDifferenceInRange(interval, 1);
 		}
 
 		public void AssertEmailsSentWithInterval(List<string> recipients, int interval, int waitFor = 30)
@@ -158,6 +168,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 									   messages => recipients.Join(messages, x => x, y => y.To.First().Address, (x, y) => x)
 									   .Count() == recipients.Count());
 
+		}
+
+		public void AssertEmailsWereSendAtTheSameTime(IEnumerable<Recipient> recipients, int waitFor = 30)
+		{
+			var emails = WaitForEmailsThatWereSentBy(recipients.Select(x => x.Email), waitFor);
+
+			var deliveryTimes = OrderByDeliveryTimes(emails);
+			deliveryTimes.AssertTimesAreTheSameInRange(200);
 		}
 	}
 }

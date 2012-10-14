@@ -18,8 +18,10 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 			var rule = new IntervalRule
 						   {
 							   Conditon = new List<string> { "gmail.com" },
-							   Interval = 20
+							   Interval = 20,
+							   Group = "gmail"
 						   };
+
 			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
 
 			Store.WaitForEntitiesToExist<IntervalRule>(1);
@@ -28,6 +30,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 
 			result.Conditon.Should().Contain(new[] {"gmail.com"});
 			rule.Interval.Should().Be(20);
+			rule.Group.Should().Be("gmail");
 		}
 	}
 }

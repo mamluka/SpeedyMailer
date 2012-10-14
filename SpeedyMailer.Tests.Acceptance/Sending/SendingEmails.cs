@@ -163,6 +163,8 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 															 x.UnsubscribeTemplateId = templates[0].Id;
 															 x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 															 x.Subject = "hello world subject";
+															 x.FromName = "david";
+															 x.FromAddressDomainPrefix = "sales";
 														 });
 
 			return result.Result;

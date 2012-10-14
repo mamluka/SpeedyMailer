@@ -55,6 +55,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 															x.ListId = "list/1";
 															x.Subject = "subject";
 															x.UnsubscribeTemplateId = "templateId";
+															x.FromName = "david";
+															x.FromAddressDomainPrefix = "sales";
 														}).Result;
 
 			Store.WaitForEntityToExist(creativeId);
@@ -66,6 +68,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Lists.Should().Contain("list/1");
 			result.Subject.Should().Be("subject");
 			result.UnsubscribeTemplateId.Should().Be("templateId");
+			result.FromName.Should().Be("david");
+			result.FromAddressDomainPrefix.Should().Be("sales");
 		}
 
 		[Test]

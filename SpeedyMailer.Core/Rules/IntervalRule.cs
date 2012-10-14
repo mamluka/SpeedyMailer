@@ -5,7 +5,8 @@ namespace SpeedyMailer.Core.Rules
 	public class IntervalRule
 	{
 		public List<string> Conditon { get; set; }
-
 		public int Interval { get; set; }
+
+		public string Group { get; set; }
 	}
 }

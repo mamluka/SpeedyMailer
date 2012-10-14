@@ -1,6 +1,4 @@
-using SpeedyMailer.Core.Settings;
-
-namespace SpeedyMailer.Drones.Settings
+namespace SpeedyMailer.Core.Settings
 {
 	public class DroneSettings
 	{

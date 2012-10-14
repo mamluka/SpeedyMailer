@@ -18,6 +18,10 @@ namespace SpeedyMailer.Core.Domain.Creative
 
 		[JsonConverter(typeof(StringEnumConverter))]
 		public FragmentStatus Status { get; set; }
+
+		public string FromName { get; set; }
+
+		public string FromAddressDomainPrefix { get; set; }
 	}
 
 	public class Recipient
@@ -26,5 +30,6 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public string Email { get; set; }
 		public string Name { get; set; }
 		public int Interval { get; set; }
+		public string Group { get; set; }
 	}
 }

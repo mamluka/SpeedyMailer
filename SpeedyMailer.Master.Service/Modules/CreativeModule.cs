@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Nancy;
@@ -39,6 +38,8 @@ namespace SpeedyMailer.Master.Service.Modules
 									addCreativeCommand.Subject = model.Subject;
 									addCreativeCommand.UnsubscribeTemplateId = model.UnsubscribeTemplateId;
 									addCreativeCommand.DealUrl = model.DealUrl;
+									addCreativeCommand.FromName = model.FromName;
+									addCreativeCommand.FromAddressDomainPrefix = model.FromAddressDomainPrefix;
 
 								    var creativeId = addCreativeCommand.Execute();
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -29,6 +30,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			{
 				Thread.Sleep(500);
 			}
+
+
 		}
 
 		public void ShutdownMongo()
@@ -41,20 +44,34 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			MongoRunner.Shutdown(port);
 			WaitForShutdownToComplete();
 		}
-		
+
 		public void ShutdownMongo(IEnumerable<int> ports)
 		{
 			foreach (var port in ports)
 			{
-				MongoRunner.Shutdown(port);	
+				MongoRunner.Shutdown(port);
 			}
-			
+
 			WaitForShutdownToComplete();
+			DeleteMongoDbTempDataFolder(ports);
+
+		}
+
+		private void DeleteMongoDbTempDataFolder(IEnumerable<int> ports)
+		{
+			ports
+				.ToList()
+				.ForEach(x => Directory.Delete("mongodb_" + x, true));
 		}
 
 		private static void WaitForShutdownToComplete()
 		{
 			while (Process.GetProcessesByName("mongod").Any())
+			{
+				Thread.Sleep(500);
+			}
+
+			while (Process.GetProcessesByName("mongod-killer").Any())
 			{
 				Thread.Sleep(500);
 			}

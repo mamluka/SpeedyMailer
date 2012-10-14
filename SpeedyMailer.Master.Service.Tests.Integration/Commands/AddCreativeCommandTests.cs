@@ -23,6 +23,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 		                                                                                                 "list2"
 	                                                                                                 };
 	                                                                                   x.DealUrl = "dealUrl";
+	                                                                                   x.FromAddressDomainPrefix = "sales";
+	                                                                                   x.FromName = "david";
                                                                                    });
 
             var result = Store.Load<Creative>(creativeId);
@@ -31,6 +33,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
             result.Subject.Should().Be("Subject");
             result.Lists.Should().Contain(new List<string> { "list1","list2" });
 			result.DealUrl.Should().Be("dealUrl");
+			result.FromName.Should().Be("david");
+			result.FromAddressDomainPrefix.Should().Be("sales");
         }
 	}
 }

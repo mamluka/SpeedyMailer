@@ -18,7 +18,9 @@ namespace SpeedyMailer.Drones.Tasks
 
 		public class Data : ScheduledTaskData
 		{
-			public int Interval { get; set; }
+			public string Group { get; set; }
+			public string FromName { get; set; }
+			public string FromAddressDomainPrefix { get; set; }
 		}
 
 		public override IJobDetail ConfigureJob()
@@ -40,7 +42,7 @@ namespace SpeedyMailer.Drones.Tasks
 			public void Execute(IJobExecutionContext context)
 			{
 				var data = GetData(context);
-				var creativePackage = _creativePackagesStore.GetPackageForInterval(data.Interval);
+				var creativePackage = _creativePackagesStore.GetPackageForGroup(data.Group);
 
 				if (creativePackage == null)
 				{
@@ -49,6 +51,9 @@ namespace SpeedyMailer.Drones.Tasks
 				}
 
 				_sendCreativePackageCommand.Package = creativePackage;
+				_sendCreativePackageCommand.FromName = data.FromName;
+				_sendCreativePackageCommand.FromAddressDomainPrefix = data.FromAddressDomainPrefix;
+
 				_sendCreativePackageCommand.Execute();
 
 				_creativePackagesStore.DeleteById(creativePackage.Id);
