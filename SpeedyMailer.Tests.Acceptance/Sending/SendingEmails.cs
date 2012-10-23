@@ -59,10 +59,10 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x =>
-				                                                      {
-					                                                      x.RecipientsPerFragment = 10;
-					                                                      x.DefaultInterval = 2;
-				                                                      });
+																	  {
+																		  x.RecipientsPerFragment = 10;
+																		  x.DefaultInterval = 2;
+																	  });
 
 			_api = MasterResolve<Api>();
 

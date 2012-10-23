@@ -47,9 +47,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			result.Should().HaveCount(2);
 			result.First().Recipients.Should().HaveCount(1000);
 			result.Second().Recipients.Should().HaveCount(500);
-
-			result.First().UnsubscribeTemplate.Should().Be("Body");
-			result.Second().UnsubscribeTemplate.Should().Be("Body");
 		}
 
 		[Test]
@@ -86,6 +83,44 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 								 x.Name == contact.Name &&
 								 x.Email == contact.Email
 				);
+		}
+		
+		[Test]
+		public void Execute_WhenACreativeIsGiven_ShouldStoreAllRelevantDataForTheCreative()
+		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 1000);
+
+			var contact = Fixture.CreateAnonymous<Contact>();
+
+			var listId = UiActions.CreateListWithContacts("MyList", new[] { contact });
+
+			var templateId = CreateTemplate("Body");
+
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+													  {
+														  x.Body = "Body";
+														  x.Subject = "Subject";
+														  x.UnsubscribeTemplateId = templateId;
+														  x.FromAddressDomainPrefix = "sales";
+														  x.FromName = "david";
+														  x.Lists = new List<string> { listId };
+													  });
+
+			var task = new CreateCreativeFragmentsTask
+						{
+							CreativeId = creativeId,
+						};
+
+			ServiceActions.ExecuteTask(task);
+
+			var result = Store.Query<CreativeFragment>(x => x.CreativeId == creativeId).First();
+
+			result.Body.Should().Be("Body");
+			result.Subject.Should().Be("Subject");
+			result.FromName.Should().Be("david");
+			result.FromAddressDomainPrefix.Should().Be("sales");
+			result.UnsubscribeTemplate.Should().Be("Body");
+
 		}
 
 		[Test]
@@ -170,7 +205,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenThereAreNoIntervalRules_ShouldSetTheIntervalToTheDefaultValue()
+		public void Execute_WhenThereAreNoIntervalRules_ShouldSetTheIntervalAndGroupToTheDefaultValue()
 		{
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x =>
 																	  {
@@ -202,6 +237,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().OnlyContain(x => x.Interval == 1);
+			result.Recipients.Should().OnlyContain(x => x.Group == "default");
 		}
 
 		private string CraeteListFromContacts(string listName, IEnumerable<Contact> contacts)

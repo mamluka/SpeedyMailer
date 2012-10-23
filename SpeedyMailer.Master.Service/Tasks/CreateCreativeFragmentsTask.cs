@@ -69,6 +69,8 @@ namespace SpeedyMailer.Master.Service.Tasks
 							Subject = creative.Subject,
 							Recipients = recipients,
 							UnsubscribeTemplate = unsubscribeTempalte.Body,
+							FromAddressDomainPrefix = creative.FromAddressDomainPrefix,
+							FromName = creative.FromName,
 							Service = new Core.Domain.Master.Service
 										  {
 											  BaseUrl = _serviceSettings.BaseUrl,
@@ -98,7 +100,11 @@ namespace SpeedyMailer.Master.Service.Tasks
 		{
 			recipients
 				.ToList()
-				.ForEach(x => x.Interval = _creativeFragmentSettings.DefaultInterval);
+				.ForEach(x =>
+							 {
+								 x.Interval = _creativeFragmentSettings.DefaultInterval;
+								 x.Group = _creativeFragmentSettings.DefaultGroup;
+							 });
 		}
 
 		private void ApplyIntervalRules(IEnumerable<Recipient> recipients)

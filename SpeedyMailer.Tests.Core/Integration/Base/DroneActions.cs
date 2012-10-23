@@ -102,7 +102,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 												x.StoreHostname = storeUri;
 											}, droneKernel);
 
-			EditSettings<EmailingSettings>(x => x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory, droneKernel);
+			EditSettings<EmailingSettings>(x =>
+				                               {
+					                               x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+				                               }, droneKernel);
 
 			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
 			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();

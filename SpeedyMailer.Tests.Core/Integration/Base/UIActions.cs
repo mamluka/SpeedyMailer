@@ -59,6 +59,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				x.Lists = lists.ToList();
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = unsubscribeTemplateId;
+				x.DealUrl = "dealUrl";
+				x.FromName = "david";
+				x.FromAddressDomainPrefix = "sales";
 			});
 		}
 	}
