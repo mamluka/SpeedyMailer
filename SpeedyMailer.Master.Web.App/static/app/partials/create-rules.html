@@ -10,12 +10,12 @@
 
     <label>Add a matching string</label>
     <input type="text" ng-model="condition" />
-    <button ng-click="addCondition(condition)"></button>
+    <button ng-click="addCondition(condition)">Add</button>
     <br />
 
     <ul>
         <li ng-repeat="condition in conditions">{{condition}} <span ng-click="removeCondition(condition)">remove</span></li>
     </ul>
 
-    <button ng-click="saveRule(group,interval)" value="send" />
+    <button ng-click="saveRule(group,interval)" value="send" >Send</button>
 </div>
