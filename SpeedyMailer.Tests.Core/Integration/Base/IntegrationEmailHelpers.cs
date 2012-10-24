@@ -55,10 +55,20 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private static FakeEmailMessage DeserializeEmailFile(string file)
 		{
-			var emailFile = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
-			using (var streamReader = new StreamReader(emailFile))
+			while (true)
 			{
-				return JsonConvert.DeserializeObject<FakeEmailMessage>(streamReader.ReadToEnd());
+				try
+				{
+					var emailFile = File.Open(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+					using (var streamReader = new StreamReader(emailFile))
+					{
+						return JsonConvert.DeserializeObject<FakeEmailMessage>(streamReader.ReadToEnd());
+					}
+				}
+				catch
+				{
+					Thread.Sleep(200);
+				}
 			}
 		}
 

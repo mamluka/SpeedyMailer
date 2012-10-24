@@ -8,7 +8,7 @@ namespace SpeedyMailer.Core.Tasks
 	public class ContainerJobFactory : IJobFactory
 	{
 		private readonly IKernel _kernel;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public ContainerJobFactory(IKernel kernel, Logger logger)
 		{

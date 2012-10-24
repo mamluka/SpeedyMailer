@@ -111,7 +111,7 @@ namespace :winrun do
   end
   
   def local_host_url
-      "http://"+local_ip + ":9852"
+      "http://"+local_ip
   end
   
   def local_ip

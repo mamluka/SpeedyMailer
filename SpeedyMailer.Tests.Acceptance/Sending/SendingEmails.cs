@@ -100,7 +100,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
-			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 50; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => { x.RecipientsPerFragment = 40; });
 
 			_api = MasterResolve<Api>();
 
@@ -109,9 +109,10 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			var csvRows = Fixture
 				.Build<ContactsListCsvRow>()
-				.With(x => x.Email, "email" + Guid.NewGuid() + "@domain.com")
-				.CreateMany(500)
+				.CreateMany(200)
 				.ToList();
+
+			csvRows.ForEach(x => x.Email = "email" + Guid.NewGuid() + "@domain.com");
 
 			CreateTemplate();
 			CreateList("my list");
@@ -140,11 +141,11 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			drone5.Initialize();
 			drone5.Start();
 
-			Email.AssertEmailsSentBy("drone1", 100, 150);
-			Email.AssertEmailsSentBy("drone2", 100, 150);
-			Email.AssertEmailsSentBy("drone3", 100, 150);
-			Email.AssertEmailsSentBy("drone4", 100, 150);
-			Email.AssertEmailsSentBy("drone5", 100, 150);
+			Email.AssertEmailsSentBy("drone1", 40, 150);
+			Email.AssertEmailsSentBy("drone2", 40, 150);
+			Email.AssertEmailsSentBy("drone3", 40, 150);
+			Email.AssertEmailsSentBy("drone4", 40, 150);
+			Email.AssertEmailsSentBy("drone5", 40, 150);
 		}
 
 		private void SendCreative(string creativeId)

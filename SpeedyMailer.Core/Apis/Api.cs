@@ -70,15 +70,12 @@ namespace SpeedyMailer.Core.Apis
 
 		private void AfterCallLogging(IRestResponse result)
 		{
-			_logger.Info("The Api call return status was: {0}", result.StatusCode);
+			_logger.Info("[{0}] The Api call return status was: {1}, The Api raw response is : {2}", result.ResponseUri.AbsolutePath, result.StatusCode, result.Content);
 
 			if (result.ResponseStatus == ResponseStatus.Error || result.ResponseStatus == ResponseStatus.TimedOut)
 			{
-				_logger.Error("The API call ended with an exception", result.ResponseStatus);
-				return;
+				_logger.Error("[{0}] The API call ended with an exception {1}", result.Request.Resource, result.ResponseStatus);
 			}
-
-			_logger.Info("The Api raw response is : {0}", result.Content);
 		}
 
 		private void BeforeCallLogging(IRestRequest restRequest)
@@ -87,7 +84,7 @@ namespace SpeedyMailer.Core.Apis
 
 			if (_requestFiles.Any())
 			{
-				_logger.Info("The API call also include files: {0}", _requestFiles);
+				_logger.Info("[{0}] The API call also include files: {1}", restRequest.Resource, _requestFiles);
 			}
 		}
 

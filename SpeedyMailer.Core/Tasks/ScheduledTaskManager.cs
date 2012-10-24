@@ -19,8 +19,6 @@ namespace SpeedyMailer.Core.Tasks
 		{
 			_logger = logger;
 			_scheduler = scheduler;
-
-			_logger.Info("Scheduler started : {0}", scheduler.SchedulerInstanceId);
 		}
 
 		public void AddAndStart(ScheduledTask task)

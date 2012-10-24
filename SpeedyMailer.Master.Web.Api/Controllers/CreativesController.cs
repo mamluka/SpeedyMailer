@@ -29,6 +29,8 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 															 x.Subject = creativeModel.Subject;
 															 x.ListId = creativeModel.ListId;
 															 x.UnsubscribeTemplateId = creativeModel.TemplateId;
+															 x.FromName = creativeModel.FromName;
+															 x.FromAddressDomainPrefix = creativeModel.FromAddress;
 														 });
 		}
 
@@ -69,6 +71,8 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		public string Subject { get; set; }
 		public string ListId { get; set; }
 		public string TemplateId { get; set; }
+		public string FromAddress { get; set; }
+		public string FromName { get; set; }
 		public string Id { get; set; }
 	}
 }

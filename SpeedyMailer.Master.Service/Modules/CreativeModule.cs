@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using NLog;
 using Nancy;
 using Nancy.ModelBinding;
 using Raven.Abstractions.Exceptions;
@@ -15,7 +17,7 @@ namespace SpeedyMailer.Master.Service.Modules
 {
 	public class CreativeModule : NancyModule
 	{
-		public CreativeModule(Framework framework, IDocumentStore documentStore, AddCreativeCommand addCreativeCommand)
+		public CreativeModule(Framework framework, IDocumentStore documentStore, AddCreativeCommand addCreativeCommand, Logger logger)
 			: base("/creative")
 		{
 			Post["/send"] = call =>
@@ -41,18 +43,18 @@ namespace SpeedyMailer.Master.Service.Modules
 									addCreativeCommand.FromName = model.FromName;
 									addCreativeCommand.FromAddressDomainPrefix = model.FromAddressDomainPrefix;
 
-								    var creativeId = addCreativeCommand.Execute();
+									var creativeId = addCreativeCommand.Execute();
 
-								    return Response.AsJson(new ApiStringResult { Result = creativeId });
+									return Response.AsJson(new ApiStringResult { Result = creativeId });
 								};
 
 			Get["/getall"] = call =>
-				                 {
-					                 using (var session = documentStore.OpenSession())
-					                 {
-						                 return session.Query<Creative>();
-					                 }
-				                 };
+								 {
+									 using (var session = documentStore.OpenSession())
+									 {
+										 return session.Query<Creative>();
+									 }
+								 };
 
 			Get["/fragments"] = call =>
 									{
@@ -72,18 +74,24 @@ namespace SpeedyMailer.Master.Service.Modules
 													.FirstOrDefault();
 
 													if (creativeFragment == null)
+													{
+														logger.Info("No fragments were found");
 														return null;
+													}
+
 
 													creativeFragment.Status = FragmentStatus.Sending;
 
 													session.Store(creativeFragment);
 													session.SaveChanges();
+
+													logger.Info("creative was found with id {0} it has {1} contacts inside", creativeFragment.Id, creativeFragment.Recipients.Count);
 													return Response.AsJson(creativeFragment);
 
 												}
 												catch (ConcurrencyException)
 												{
-													return null;
+													Thread.Sleep(200);
 												}
 											}
 										}
