@@ -166,6 +166,7 @@
     <Compile Include="Controllers\CreativesController.cs" />
     <Compile Include="Controllers\InfoController.cs" />
     <Compile Include="Controllers\ListsController.cs" />
+    <Compile Include="Controllers\RulesController.cs" />
     <Compile Include="Controllers\TemplatesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

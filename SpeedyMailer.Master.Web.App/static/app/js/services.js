@@ -33,4 +33,7 @@ angular.module('SpeedyMailer.services', ['ngResource']).
     }).
     factory('TemplateType', function($resource) {
         return $resource('http://speedymailer.api/templates/types/list');
+    }).
+    factory('Rule', function ($resource) {
+        return $resource('http://speedymailer.api/rules');
     });

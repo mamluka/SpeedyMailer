@@ -185,7 +185,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var rule = new IntervalRule
 							{
-								Conditon = new List<string> { "gmail.com", "hotmail.com" },
+								Conditons = new List<string> { "gmail.com", "hotmail.com" },
 								Interval = 10,
 								Group = "gmail"
 							};

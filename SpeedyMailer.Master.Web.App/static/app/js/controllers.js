@@ -65,6 +65,29 @@ function SendingController($scope, $http, creativeResource) {
 }
 SendingController.$inject = ['$scope', '$http', 'Creative'];
 
+function RulesController($scope, ruleResource) {
+    var conditions = $scope.conditions = [];
+    $scope.addCondition = function (condition) {
+        conditions.push(condition);
+    };
+
+    $scope.removeCondition = function (condition) {
+        conditions.splice(conditions.indexOf(condition), 1);
+    };
+
+    $scope.saveRule = function (group, interval) {
+        var rule = new ruleResource({
+            type: 'Interval',
+            conditions: conditions,
+            group: group,
+            interval: interval
+        });
+
+        rule.$save();
+    };
+}
+RulesController.$inject = ['$scope', 'Rule'];
+
 function PlaygroundController($scope, list) {
     $scope.lists = list.query();
 

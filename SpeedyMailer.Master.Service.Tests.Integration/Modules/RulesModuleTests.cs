@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																			           {
 							                                                               new IntervalRule
 								                                                               {
-									                                                               Conditon = new List<string>
+									                                                               Conditons = new List<string>
 										                                                                          {
 											                                                                          "gmail.com",
 											                                                                          "googlemail.com",
@@ -43,7 +43,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var result = Store.Query<IntervalRule>().First();
 
-			result.Conditon.Should().Contain(new[] { "gmail.com", "googlemail.com" });
+			result.Conditons.Should().Contain(new[] { "gmail.com", "googlemail.com" });
 			result.Interval.Should().Be(5);
 			result.Group.Should().Be("gmail");
 		}

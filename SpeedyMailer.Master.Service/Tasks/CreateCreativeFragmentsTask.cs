@@ -112,7 +112,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 			using (var session = _documentStore.OpenSession())
 			{
 				var rules = session.Query<IntervalRule>().ToList();
-				var matchingConditionsActions = rules.SelectMany(x => x.Conditon.Select(condition => new { Condition = condition, x.Interval, x.Group })).ToList();
+				var matchingConditionsActions = rules.SelectMany(x => x.Conditons.Select(condition => new { Condition = condition, x.Interval, x.Group })).ToList();
 
 				recipients
 					.ToList()
