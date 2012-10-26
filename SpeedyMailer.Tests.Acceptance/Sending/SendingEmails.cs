@@ -52,6 +52,41 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			var contacts = csvRows.Select(x => x.Email).ToList();
 			Email.AssertEmailsSentWithInterval(contacts, 2);
 		}
+		
+		[Test]
+		public void SendingEmailsWithIntervalRulesAndDefaultRules()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.DefaultInterval = 2);
+
+			_api = MasterResolve<Api>();
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var csvRows = Fixture
+				.Build<ContactsListCsvRow>()
+				.Without(x => x.Email)
+				.CreateMany(10)
+				.ToList();
+
+			csvRows.ForEach(x => x.Email = "email" + Guid.NewGuid() + "@domain.com");
+
+			CreateTemplate();
+			CreateList("my list");
+
+			AddContactsToList("my list", csvRows);
+			var creativeId = SaveCreative();
+			SendCreative(creativeId);
+
+			var drone = DroneActions.CreateDrone("drone1", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			drone.Initialize();
+			drone.Start();
+
+			var contacts = csvRows.Select(x => x.Email).ToList();
+			Email.AssertEmailsSentWithInterval(contacts, 2);
+		}
 
 		[Test]
 		public void SendingEmailsUsingTwoDrones()
