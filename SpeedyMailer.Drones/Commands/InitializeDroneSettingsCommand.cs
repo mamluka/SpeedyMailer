@@ -31,6 +31,11 @@ namespace SpeedyMailer.Drones.Commands
 					x.Identifier = GetLocalHost();
 
 				});
+			
+			_framework.EditJsonSettings<EmailingSettings>(x =>
+				                                              {
+					                                              x.MailingDomain = GetLocalHost();
+				                                              });
 		}
 
 		private string GetLocalHost()
