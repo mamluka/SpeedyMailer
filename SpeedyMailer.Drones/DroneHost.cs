@@ -57,13 +57,13 @@ namespace SpeedyMailer.Drones
 		private readonly Logger _logger;
 		private readonly ApiCallsSettings _apiCallsSettings;
 
-		public TopDrone(/*INancyBootstrapper nancyBootstrapper, */Framework framework, DroneSettings droneSettings, ApiCallsSettings apiCallsSettings, Logger logger)
+		public TopDrone(INancyBootstrapper nancyBootstrapper, Framework framework, DroneSettings droneSettings, ApiCallsSettings apiCallsSettings, Logger logger)
 		{
 			_apiCallsSettings = apiCallsSettings;
 			_logger = logger;
 			_framework = framework;
 			_droneSettings = droneSettings;
-			//			_nancyBootstrapper = nancyBootstrapper;
+			_nancyBootstrapper = nancyBootstrapper;
 		}
 
 		public void Initialize()
@@ -76,7 +76,7 @@ namespace SpeedyMailer.Drones
 
 			_framework.StartTasks(tasks);
 
-			//			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
+			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
 		}
 
 		public void Start()
@@ -84,13 +84,13 @@ namespace SpeedyMailer.Drones
 			Trace.WriteLine("Drone started:" + _droneSettings.BaseUrl);
 			_logger.Info("Drone started, master host is: {0}, drone host is: {1}", _apiCallsSettings.ApiBaseUri, _droneSettings.BaseUrl);
 
-			//			_nancy.Start();
+			_nancy.Start();
 		}
 
 		public void Stop()
 		{
 			_logger.Info("Drone stopped");
-			//			_nancy.Stop();
+			_nancy.Stop();
 		}
 	}
 }

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.NetworkInformation;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Settings;
@@ -34,7 +35,8 @@ namespace SpeedyMailer.Drones.Commands
 
 		private string GetLocalHost()
 		{
-			return Dns.GetHostEntry(Dns.GetHostName()).HostName;
+			var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+			return string.Format("{0}.{1}", ipProperties.HostName, ipProperties.DomainName);
 		}
 	}
 }
