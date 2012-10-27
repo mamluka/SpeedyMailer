@@ -1,5 +1,3 @@
-using System.Net;
-using System.Net.NetworkInformation;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Settings;
@@ -40,7 +38,7 @@ namespace SpeedyMailer.Drones.Commands
 
 		private string GetLocalHost()
 		{
-			System.Diagnostics.Process proc = new System.Diagnostics.Process();
+			var proc = new System.Diagnostics.Process();
 			proc.EnableRaisingEvents=false; 
 			proc.StartInfo.FileName = "/bin/hostname";
 			proc.StartInfo.Arguments = "-d";
