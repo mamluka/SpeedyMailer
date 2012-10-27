@@ -40,8 +40,16 @@ namespace SpeedyMailer.Drones.Commands
 
 		private string GetLocalHost()
 		{
-			var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-			return string.Format("{0}.{1}", ipProperties.HostName, ipProperties.DomainName);
+			System.Diagnostics.Process proc = new System.Diagnostics.Process();
+			proc.EnableRaisingEvents=false; 
+			proc.StartInfo.FileName = "/bin/hostname";
+			proc.StartInfo.Arguments = "-d";
+			proc.StartInfo.RedirectStandardOutput=true;
+			proc.StartInfo.UseShellExecute=false;
+			proc.Start();
+			proc.WaitForExit();
+			
+			return proc.StandardOutput.ReadLine().Trim();
 		}
 	}
 }

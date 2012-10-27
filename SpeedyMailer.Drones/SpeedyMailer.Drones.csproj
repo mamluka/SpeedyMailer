@@ -35,7 +35,7 @@
     <DefineConstants>TRACE;DEBUG;NO_ASSEMBLY_SCANNING</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Commandlineparameters>-s http://www.xomixfuture.com:9852</Commandlineparameters>
+    <Commandlineparameters>-s http://www.xomixfuture.com</Commandlineparameters>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
