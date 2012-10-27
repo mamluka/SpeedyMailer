@@ -47,7 +47,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 					{
 						var id = listId;
 						var contacts = session.Query<Contact>()
-							.Customize(x => x.WaitForNonStaleResults())
+							.Customize(Randomize())
 							.Where(contact => contact.MemberOf.Any(x => x == id))
 							.Skip(counter * chunk).Take(chunk).ToList();
 
@@ -84,6 +84,15 @@ namespace SpeedyMailer.Master.Service.Tasks
 				}
 
 			}
+		}
+
+		private static Action<IDocumentQueryCustomization> Randomize()
+		{
+			return x =>
+				       {
+					       x.WaitForNonStaleResults();
+					       x.RandomOrdering();
+				       };
 		}
 
 		private Recipient ToRecipient(Contact contact)
