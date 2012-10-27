@@ -70,12 +70,17 @@ namespace SpeedyMailer.Core.Apis
 
 		private void AfterCallLogging(IRestResponse result)
 		{
-			_logger.Info("[{0}] The Api call return status was: {1}, The Api raw response is : {2}", result.ResponseUri.AbsolutePath, result.StatusCode, result.Content);
+			_logger.Info("[{0}] The Api call return status was: {1}, The Api raw response is : {2}", GetApiCallPath(result), result.StatusCode, result.Content);
 
 			if (result.ResponseStatus == ResponseStatus.Error || result.ResponseStatus == ResponseStatus.TimedOut)
 			{
 				_logger.Error("[{0}] The API call ended with an exception {1}", result.Request.Resource, result.ResponseStatus);
 			}
+		}
+
+		private static string GetApiCallPath(IRestResponse result)
+		{
+			return result.ResponseUri != null ? result.ResponseUri.AbsolutePath : "No Url";
 		}
 
 		private void BeforeCallLogging(IRestRequest restRequest)
