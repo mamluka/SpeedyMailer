@@ -119,6 +119,7 @@
     <Compile Include="Modules\DronesModule.cs" />
     <Compile Include="Modules\RulesModule.cs" />
     <Compile Include="Modules\TemplatesModule.cs" />
+    <Compile Include="Storage\Indexes\Contacts_ByMemberOf.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />
