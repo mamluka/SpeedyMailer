@@ -8,7 +8,7 @@ namespace SpeedyMailer.Core.Settings
 		[Default(1)]
 	    public virtual int DefaultInterval { get; set; }
 
-		[Default("default")]
+		[Default("$default$")]
 	    public virtual string DefaultGroup { get; set; }
     }
 }

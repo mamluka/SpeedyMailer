@@ -62,7 +62,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			using (var session = _documentStore.OpenSession())
 			{
-				return session.Query<T>().ToList();
+				return session.Query<T>().Take(1024).ToList();
 			}
 		}
 

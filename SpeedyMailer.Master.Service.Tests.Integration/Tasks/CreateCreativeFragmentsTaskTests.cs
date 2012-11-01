@@ -84,7 +84,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 								 x.Email == contact.Email
 				);
 		}
-		
+
 		[Test]
 		public void Execute_WhenACreativeIsGiven_ShouldStoreAllRelevantDataForTheCreative()
 		{
@@ -238,6 +238,93 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			result.Recipients.Should().OnlyContain(x => x.Interval == 1);
 			result.Recipients.Should().OnlyContain(x => x.Group == "default");
+		}
+
+		[Test]
+		public void Execute_WhenGivenSeveralIntervalRules_ShouldDistributeTheDomainsEvenlyInsideTheFragment()
+		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 920);
+
+			var group1Contacts = CreateDomainContacts("hotmail.com", 217);
+			var group2Contacts = CreateDomainContacts("gmail.com", 213);
+			var group3Contacts = CreateDomainContacts("aol.com", 553);
+			var group4Contacts = CreateDomainContacts("msn.com", 337);
+			var randomContacts = CreateDomainContacts("random.com", 777);
+
+			AddIntervalRules("hotmail.com", "hotmail", 30);
+			AddIntervalRules("gmail.com", "gmail", 20);
+			AddIntervalRules("aol.com", "aol", 10);
+			AddIntervalRules("msn.com", "msn", 15);
+
+			var listId = CraeteListFromContacts("my list", group1Contacts.Union(group2Contacts).Union(group3Contacts).Union(group4Contacts).Union(randomContacts).OrderBy(x => Guid.NewGuid()));
+
+			var templateId = CreateTemplate("Body");
+
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			{
+				x.Body = "Body";
+				x.Subject = "Subject";
+				x.UnsubscribeTemplateId = templateId;
+				x.Lists = new List<string> { listId };
+			});
+
+			var task = new CreateCreativeFragmentsTask
+			{
+				CreativeId = creativeId,
+			};
+
+			ServiceActions.ExecuteTask(task);
+
+			var result = Store.Query<CreativeFragment>();
+
+			var firstFragment = result[0];
+
+			firstFragment.Recipients.Should().HaveCount(920);
+			AssertDomainCountIn(firstFragment.Recipients, "hotmail.com", 96);
+			AssertDomainCountIn(firstFragment.Recipients, "gmail.com", 93);
+			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 243);
+			AssertDomainCountIn(firstFragment.Recipients, "msn.com", 148);
+			AssertDomainCountIn(firstFragment.Recipients, "random.com", 340);
+
+			var secondFragment = result[1];
+
+			secondFragment.Recipients.Should().HaveCount(920);
+			AssertDomainCountIn(secondFragment.Recipients, "hotmail.com", 95);
+			AssertDomainCountIn(secondFragment.Recipients, "gmail.com", 94);
+			AssertDomainCountIn(secondFragment.Recipients, "aol.com", 243);
+			AssertDomainCountIn(secondFragment.Recipients, "msn.com", 148);
+			AssertDomainCountIn(secondFragment.Recipients, "random.com", 340);
+
+			var lastFragment = result.First(x => x.Recipients.Count == 257);
+
+			AssertDomainCountIn(lastFragment.Recipients, "hotmail.com", 26);
+			AssertDomainCountIn(lastFragment.Recipients, "gmail.com", 26);
+			AssertDomainCountIn(lastFragment.Recipients, "aol.com", 67);
+			AssertDomainCountIn(lastFragment.Recipients, "msn.com", 41);
+			AssertDomainCountIn(lastFragment.Recipients, "random.com", 97);
+		}
+
+		private void AddIntervalRules(string address, string group, int interval)
+		{
+			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[]
+				                                                                      {
+					                                                                      new IntervalRule
+						                                                                      {
+																								  Conditons = new List<string> { address},
+																								  Group = group,
+																								  Interval = interval
+						                                                                      }
+				                                                                      });
+		}
+
+		private void AssertDomainCountIn(IEnumerable<Recipient> recipients, string domain, int count)
+		{
+			recipients.Where(x => x.Email.Contains(domain)).Should().HaveCount(count);
+		}
+
+		private IList<Contact> CreateDomainContacts(string domain, int count)
+		{
+			return Enumerable.Range(0, count).Select(x => CreateContactWithEmail(Guid.NewGuid() + "@" + domain)).ToList();
 		}
 
 		private string CraeteListFromContacts(string listName, IEnumerable<Contact> contacts)

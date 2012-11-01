@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using SpeedyMailer.Core.Rules;
 
 namespace SpeedyMailer.Core.Domain.Contacts
 {
@@ -14,6 +15,7 @@ namespace SpeedyMailer.Core.Domain.Contacts
 		public string Phone { get; set; }
 		public string Ip { get; set; }
 		public List<string> MemberOf { get; set; }
+		public string DomainGroup { get; set; }
 
 		public Contact()
 		{

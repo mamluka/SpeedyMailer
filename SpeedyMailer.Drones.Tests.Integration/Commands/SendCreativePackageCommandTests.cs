@@ -19,11 +19,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		public void Execute_WhenToldToWriteToDisk_ShouldWriteTheEmailToDisk()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			var creativePackage = new CreativePackage
 									{
@@ -32,7 +32,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										To = "test@test"
 									};
 
-			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x => x.Package = creativePackage);
+			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>
+																		{
+																			x.Package = creativePackage;
+																			x.FromName = "david";
+																			x.FromAddressDomainPrefix = "sales";
+																		});
 
 			Email.AssertEmailSent(x => x.To.Any(address => address.Address == "test@test"));
 			Email.AssertEmailSent(x => x.Body == "test body");

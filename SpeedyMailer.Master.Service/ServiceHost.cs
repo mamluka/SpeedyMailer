@@ -36,6 +36,9 @@ namespace SpeedyMailer.Master.Service
 				initializeServiceSettingsCommand.BaseUrl = options.BaseUrl;
 				initializeServiceSettingsCommand.Execute();
 
+				var addIndexesToRavenCommand = kernel.Get<AddIndexesToRavenCommand>();
+				addIndexesToRavenCommand.Execute();
+
 				var service = kernel.Get<TopService>();
 
 				service.Start();
@@ -51,23 +54,26 @@ namespace SpeedyMailer.Master.Service
 
 	public class TopService
 	{
-		private readonly NancyHost _nancyHost;
+		private NancyHost _nancyHost;
 		private readonly Logger _logger;
 		private readonly IScheduler _scheduler;
+		private readonly INancyBootstrapper _ninjectNancyBootstrapper;
+		private readonly ServiceSettings _serviceSettings;
 
 		public TopService(INancyBootstrapper ninjectNancyBootstrapper, ServiceSettings serviceSettings, Logger logger, IScheduler scheduler)
 		{
+			_serviceSettings = serviceSettings;
+			_ninjectNancyBootstrapper = ninjectNancyBootstrapper;
 			_scheduler = scheduler;
 			_logger = logger;
 
 			logger.Info("Service was created with base url {0}", serviceSettings.BaseUrl);
 			Trace.WriteLine("Service was created with base url: "+serviceSettings.BaseUrl);
-
-			_nancyHost = new NancyHost(new Uri(serviceSettings.BaseUrl), ninjectNancyBootstrapper);
 		}
 
 		public void Start()
 		{
+			_nancyHost = new NancyHost(new Uri(_serviceSettings.BaseUrl), _ninjectNancyBootstrapper);
 			_nancyHost.Start();
 		}
 

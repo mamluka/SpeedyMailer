@@ -11,6 +11,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 	public class InitializeDroneSettingsCommandTests : IntegrationTestBase
 	{
 		[Test]
+		[Ignore]
 		public void Execute_WhenCalledWithServiceBaseUrl_ShouldInitializeTheJsonSettings()
 		{
 			Api.PrepareApiResponse<ServiceEndpoints.Admin.GetRemoteServiceConfiguration, ServiceEndpoints.Admin.GetRemoteServiceConfiguration.Response>(

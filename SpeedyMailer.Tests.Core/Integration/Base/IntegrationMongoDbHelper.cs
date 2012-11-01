@@ -45,8 +45,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			WaitForShutdownToComplete();
 		}
 
-		public void ShutdownMongo(IEnumerable<int> ports)
+		public void ShutdownMongo(IList<int> ports)
 		{
+			if (!ports.Any())
+				return;
+
 			foreach (var port in ports)
 			{
 				MongoRunner.Shutdown(port);

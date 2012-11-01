@@ -81,10 +81,12 @@
       <HintPath>..\packages\Quartz.2.0.1\lib\net40\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB.Client.1.0.960\lib\net40\Raven.Abstractions.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.980\lib\net40\Raven.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
-      <HintPath>..\packages\RavenDB.Client.1.0.960\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.980\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=103.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,6 +105,7 @@
     <Compile Include="Apis\DroneEndpoints.cs" />
     <Compile Include="Commands\AddContactsCommand.cs" />
     <Compile Include="Commands\AddCreativeCommand.cs" />
+    <Compile Include="Commands\AddIndexesToRavenCommand.cs" />
     <Compile Include="Commands\AddIntervalRulesCommand.cs" />
     <Compile Include="Commands\CreateListCommand.cs" />
     <Compile Include="Commands\CreateTemplateCommand.cs" />
@@ -120,6 +123,7 @@
     <Compile Include="Modules\RulesModule.cs" />
     <Compile Include="Modules\TemplatesModule.cs" />
     <Compile Include="Storage\Indexes\Contacts_ByMemberOf.cs" />
+    <Compile Include="Storage\Indexes\Contacts_DomainGroupCounter.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />

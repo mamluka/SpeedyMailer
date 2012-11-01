@@ -9,7 +9,9 @@ using Quartz.Impl.Matchers;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
+using Raven.Database.Server;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Master.Service;
 using SpeedyMailer.Tests.Core.Unit.Base;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
@@ -98,6 +100,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var store = new EmbeddableDocumentStore
 							{
 								RunInMemory = true,
+								UseEmbeddedHttpServer = true,
 								Conventions =
 									{
 										CustomizeJsonSerializer =
@@ -110,11 +113,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											typeof(PersistentTask).IsAssignableFrom(type)
 												? "persistenttasks"
 												: DocumentConvention.DefaultTypeTagName(type),
-										DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
 									}
 							};
 
 			store.Initialize();
+			Raven.Client.Indexes.IndexCreation.CreateIndexes(typeof(ServiceAssemblyMarker).Assembly, store);
+
 			return store;
 		}
 

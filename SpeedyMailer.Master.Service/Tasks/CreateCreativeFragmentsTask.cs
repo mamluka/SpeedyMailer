@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading;
 using Raven.Client;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
@@ -8,6 +10,8 @@ using SpeedyMailer.Core.Rules;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Master.Service.Storage.Indexes;
+using Raven.Client.Linq;
 
 namespace SpeedyMailer.Master.Service.Tasks
 {
@@ -35,55 +39,168 @@ namespace SpeedyMailer.Master.Service.Tasks
 		{
 			using (var session = _documentStore.OpenSession())
 			{
+				var intervalRules = session.Query<IntervalRule>().ToList();
+
+				var domainGroups = GetDomainGroups(intervalRules);
+				var domainGroupsTotal = GetDomainGroupTotals(domainGroups, session);
 				var creative = session.Load<Creative>(task.CreativeId);
+				
 				var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
+				var listId = creative.Lists.First();
 
-				foreach (var listId in creative.Lists)
+				var totalContacts = domainGroupsTotal.Sum(x => x.Value);
+
+				var recipientsPerFragment = _creativeFragmentSettings.RecipientsPerFragment;
+				var leftoverFragmentSize = totalContacts % recipientsPerFragment;
+				var numberOfFullSizedFragments = (totalContacts - leftoverFragmentSize) / recipientsPerFragment;
+
+				var groupsTotal = new List<GroupSummery>();
+
+				groupsTotal = PopulateGroupSummeryWithTotals(intervalRules, groupsTotal, domainGroupsTotal);
+
+				//if we have lefover fragment we should calcualte it's size
+
+				CalculateLastFragmentSize(leftoverFragmentSize, totalContacts, groupsTotal, numberOfFullSizedFragments);
+
+				var groupToTakeFrom = GetTheExtraGroupPerFragmentDistribution(groupsTotal, numberOfFullSizedFragments);
+
+				var extraSkipCounter = domainGroups.ToDictionary(x => x, y => 0);
+				extraSkipCounter[_creativeFragmentSettings.DefaultGroup] = 0;
+
+				var totalNumberOfFragments = GetTotalNumberOfFragments(leftoverFragmentSize, numberOfFullSizedFragments);
+
+				for (int i = 0; i < totalNumberOfFragments; i++)
 				{
-					var counter = 0;
-					var chunk = _creativeFragmentSettings.RecipientsPerFragment;
-					var hasMoreContacts = true;
-					while (hasMoreContacts)
+					var contacts = new List<Contact>();
+
+					foreach (var groupSummery in groupsTotal)
 					{
-						var id = listId;
-						var contacts = session.Query<Contact>()
+						var howManyAdditionalContactsToTake = (groupToTakeFrom[i].ContainsKey(groupSummery.Group) ? 1 : 0);
+
+						var currentFragmentGroupContacts = session.Query<Contact>()
 							.Customize(x => x.WaitForNonStaleResults())
-							.Where(contact => contact.MemberOf.Any(x => x == id))
-							.Skip(counter * chunk).Take(chunk).ToList();
+							.Where(contact => contact.MemberOf.Any(x => x == listId) && contact.DomainGroup == groupSummery.Group)
+							.Skip(i * groupSummery.RegularFragmentChunkSize + extraSkipCounter[groupSummery.Group])
+							.Take(groupSummery.RegularFragmentChunkSize + howManyAdditionalContactsToTake)
+							.ToList();
 
-						if (!contacts.Any())
-						{
-							hasMoreContacts = false;
-							continue;
-						}
-						counter++;
+						extraSkipCounter[groupSummery.Group] += howManyAdditionalContactsToTake;
 
-						var recipients = contacts.Select(ToRecipient).ToList();
-						ApplyDefaultRules(recipients);
-						ApplyIntervalRules(recipients);
-
-						var fragment = new CreativeFragment
-						{
-							Body = creative.Body,
-							CreativeId = creative.Id,
-							Subject = creative.Subject,
-							Recipients = recipients,
-							UnsubscribeTemplate = unsubscribeTempalte.Body,
-							FromAddressDomainPrefix = creative.FromAddressDomainPrefix,
-							FromName = creative.FromName,
-							Service = new Core.Domain.Master.Service
-										  {
-											  BaseUrl = _serviceSettings.BaseUrl,
-											  DealsEndpoint = _creativeEndpointsSettings.Deal,
-											  UnsubscribeEndpoint = _creativeEndpointsSettings.Unsubscribe
-										  }
-						};
-						session.Store(fragment);
-						session.SaveChanges();
+						contacts = contacts.Union(currentFragmentGroupContacts).ToList();
 					}
-				}
 
+					var recipients = contacts.Select(ToRecipient).ToList();
+					ApplyDefaultRules(recipients);
+					ApplyIntervalRules(recipients);
+
+					var fragment = new CreativeFragment
+									   {
+										   Body = creative.Body,
+										   CreativeId = creative.Id,
+										   Subject = creative.Subject,
+										   Recipients = recipients,
+										   UnsubscribeTemplate = unsubscribeTempalte.Body,
+										   FromAddressDomainPrefix = creative.FromAddressDomainPrefix,
+										   FromName = creative.FromName,
+										   Service = new Core.Domain.Master.Service
+														 {
+															 BaseUrl = _serviceSettings.BaseUrl,
+															 DealsEndpoint = _creativeEndpointsSettings.Deal,
+															 UnsubscribeEndpoint = _creativeEndpointsSettings.Unsubscribe
+														 }
+									   };
+					session.Store(fragment);
+					session.SaveChanges();
+				}
 			}
+		}
+
+		private static int GetTotalNumberOfFragments(int leftoverFragmentSize, int numberOfFullSizedFragments)
+		{
+			return leftoverFragmentSize == 0 ? numberOfFullSizedFragments : numberOfFullSizedFragments + 1;
+		}
+
+		private static List<Dictionary<string, int>> GetTheExtraGroupPerFragmentDistribution(List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
+		{
+			var theExtraGroupPerFragmentDistribution = groupsTotal.SelectMany(x => Enumerable.Range(1, x.RegularFragmentChunkLeftOver).Select(i => x.Group)).Select((x, i) => new {i, x}).GroupBy(x => x.i%numberOfFullSizedFragments).Select(x => x.ToDictionary(key => key.x, y => 0)).ToList();
+			theExtraGroupPerFragmentDistribution.Add(new Dictionary<string, int>());
+
+			return theExtraGroupPerFragmentDistribution;
+		}
+
+		private static void CalculateLastFragmentSize(int leftoverFragmentSize, int totalContacts, List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
+		{
+			var multiplier = (decimal) leftoverFragmentSize/totalContacts;
+			groupsTotal.ForEach(x =>
+				                    {
+					                    x.ContributionToLeftOver = (int) Math.Floor((decimal) (multiplier*x.Total));
+					                    x.TotalWithOutLeftOver = x.Total - x.ContributionToLeftOver;
+					                    x.RegularFragmentChunkLeftOver = x.TotalWithOutLeftOver%numberOfFullSizedFragments;
+					                    x.RegularFragmentChunkSize = (x.TotalWithOutLeftOver - x.RegularFragmentChunkLeftOver)/numberOfFullSizedFragments;
+				                    });
+
+			var complitionToCorrentSize = leftoverFragmentSize - groupsTotal.Sum(x => x.ContributionToLeftOver);
+
+			var lastGroupTotal = groupsTotal.Last();
+			lastGroupTotal.ContributionToLeftOver += complitionToCorrentSize;
+			lastGroupTotal.TotalWithOutLeftOver -= complitionToCorrentSize;
+			lastGroupTotal.RegularFragmentChunkLeftOver = lastGroupTotal.TotalWithOutLeftOver%numberOfFullSizedFragments;
+			lastGroupTotal.RegularFragmentChunkSize = (lastGroupTotal.TotalWithOutLeftOver - lastGroupTotal.RegularFragmentChunkLeftOver)/numberOfFullSizedFragments;
+		}
+
+		private List<GroupSummery> PopulateGroupSummeryWithTotals(List<IntervalRule> intervalRules, List<GroupSummery> groupsTotal, Dictionary<string, int> domainGroupsTotal)
+		{
+			foreach (var intervalRule in intervalRules)
+			{
+				groupsTotal.Add(new GroupSummery
+					                {
+						                Group = intervalRule.Group,
+						                Total = domainGroupsTotal[intervalRule.Group],
+						                Conditions = intervalRule.Conditons,
+						                Interval = intervalRule.Interval
+					                });
+			}
+
+			groupsTotal.Add(new GroupSummery
+				                {
+					                Group = _creativeFragmentSettings.DefaultGroup,
+					                Total = domainGroupsTotal[_creativeFragmentSettings.DefaultGroup],
+					                Interval = _creativeFragmentSettings.DefaultInterval
+				                });
+
+			groupsTotal = groupsTotal.OrderByDescending(x => x.Interval).ToList();
+			return groupsTotal;
+		}
+
+		private static Dictionary<string, int> GetDomainGroupTotals(List<string> domainGroups, IDocumentSession session)
+		{
+			return domainGroups
+				.Select(
+					domainGroup =>
+					session.Query<Contacts_DomainGroupCounter.ReduceResult, Contacts_DomainGroupCounter>()
+						.Customize(x => x.WaitForNonStaleResults()).SingleOrDefault(x => x.DomainGroup == domainGroup))
+				.ToDictionary(x => x.DomainGroup, y => y.Count);
+		}
+
+		private List<string> GetDomainGroups(List<IntervalRule> intervalRules)
+		{
+			var domainGroups = intervalRules.Select(rule => rule.Group).ToList();
+			domainGroups.Add(_creativeFragmentSettings.DefaultGroup);
+			return domainGroups;
+		}
+
+		public class GroupSummery
+		{
+			public string Group { get; set; }
+			public int Total { get; set; }
+			public int ChunkSize { get; set; }
+			public int Interval { get; set; }
+			public int ContributionToLeftOver { get; set; }
+			public int RegularFragmentChunkLeftOver { get; set; }
+			public int RegularFragmentChunkSize { get; set; }
+			public int TotalWithOutLeftOver { get; set; }
+
+			public List<string> Conditions { get; set; }
 		}
 
 		private Recipient ToRecipient(Contact contact)

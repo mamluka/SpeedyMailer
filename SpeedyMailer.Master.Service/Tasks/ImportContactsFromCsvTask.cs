@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using CsvHelper;
@@ -42,8 +43,8 @@ namespace SpeedyMailer.Master.Service.Tasks
 												{
 													Country = x.Country,
 													Email = x.Email,
-													Name = string.Format("{0} {1}",x.Firstname,x.Lastname),
-													City =  x.City,
+													Name = string.Format("{0} {1}", x.Firstname, x.Lastname),
+													City = x.City,
 													Ip = x.Ip,
 													Phone = x.Phone,
 													State = x.State,
