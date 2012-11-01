@@ -32,6 +32,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				command.Contacts = Fixture
 					.Build<Contact>()
 					.Without(x => x.Id)
+					.Without(x=> x.DomainGroup)
 					.CreateMany(contactsCount);
 
 				command.ListId = listId;

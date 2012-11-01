@@ -44,7 +44,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 				var domainGroups = GetDomainGroups(intervalRules);
 				var domainGroupsTotal = GetDomainGroupTotals(domainGroups, session);
 				var creative = session.Load<Creative>(task.CreativeId);
-				
+
 				var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
 				var listId = creative.Lists.First();
 
@@ -122,7 +122,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 		private static List<Dictionary<string, int>> GetTheExtraGroupPerFragmentDistribution(List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
 		{
-			var theExtraGroupPerFragmentDistribution = groupsTotal.SelectMany(x => Enumerable.Range(1, x.RegularFragmentChunkLeftOver).Select(i => x.Group)).Select((x, i) => new {i, x}).GroupBy(x => x.i%numberOfFullSizedFragments).Select(x => x.ToDictionary(key => key.x, y => 0)).ToList();
+			var theExtraGroupPerFragmentDistribution = groupsTotal.SelectMany(x => Enumerable.Range(1, x.RegularFragmentChunkLeftOver).Select(i => x.Group)).Select((x, i) => new { i, x }).GroupBy(x => x.i % numberOfFullSizedFragments).Select(x => x.ToDictionary(key => key.x, y => 0)).ToList();
 			theExtraGroupPerFragmentDistribution.Add(new Dictionary<string, int>());
 
 			return theExtraGroupPerFragmentDistribution;
@@ -130,22 +130,22 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 		private static void CalculateLastFragmentSize(int leftoverFragmentSize, int totalContacts, List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
 		{
-			var multiplier = (decimal) leftoverFragmentSize/totalContacts;
+			var multiplier = (decimal)leftoverFragmentSize / totalContacts;
 			groupsTotal.ForEach(x =>
-				                    {
-					                    x.ContributionToLeftOver = (int) Math.Floor((decimal) (multiplier*x.Total));
-					                    x.TotalWithOutLeftOver = x.Total - x.ContributionToLeftOver;
-					                    x.RegularFragmentChunkLeftOver = x.TotalWithOutLeftOver%numberOfFullSizedFragments;
-					                    x.RegularFragmentChunkSize = (x.TotalWithOutLeftOver - x.RegularFragmentChunkLeftOver)/numberOfFullSizedFragments;
-				                    });
+									{
+										x.ContributionToLeftOver = (int)Math.Floor((decimal)(multiplier * x.Total));
+										x.TotalWithOutLeftOver = x.Total - x.ContributionToLeftOver;
+										x.RegularFragmentChunkLeftOver = x.TotalWithOutLeftOver % numberOfFullSizedFragments;
+										x.RegularFragmentChunkSize = (x.TotalWithOutLeftOver - x.RegularFragmentChunkLeftOver) / numberOfFullSizedFragments;
+									});
 
 			var complitionToCorrentSize = leftoverFragmentSize - groupsTotal.Sum(x => x.ContributionToLeftOver);
 
 			var lastGroupTotal = groupsTotal.Last();
 			lastGroupTotal.ContributionToLeftOver += complitionToCorrentSize;
 			lastGroupTotal.TotalWithOutLeftOver -= complitionToCorrentSize;
-			lastGroupTotal.RegularFragmentChunkLeftOver = lastGroupTotal.TotalWithOutLeftOver%numberOfFullSizedFragments;
-			lastGroupTotal.RegularFragmentChunkSize = (lastGroupTotal.TotalWithOutLeftOver - lastGroupTotal.RegularFragmentChunkLeftOver)/numberOfFullSizedFragments;
+			lastGroupTotal.RegularFragmentChunkLeftOver = lastGroupTotal.TotalWithOutLeftOver % numberOfFullSizedFragments;
+			lastGroupTotal.RegularFragmentChunkSize = (lastGroupTotal.TotalWithOutLeftOver - lastGroupTotal.RegularFragmentChunkLeftOver) / numberOfFullSizedFragments;
 		}
 
 		private List<GroupSummery> PopulateGroupSummeryWithTotals(List<IntervalRule> intervalRules, List<GroupSummery> groupsTotal, Dictionary<string, int> domainGroupsTotal)
@@ -153,20 +153,20 @@ namespace SpeedyMailer.Master.Service.Tasks
 			foreach (var intervalRule in intervalRules)
 			{
 				groupsTotal.Add(new GroupSummery
-					                {
-						                Group = intervalRule.Group,
-						                Total = domainGroupsTotal[intervalRule.Group],
-						                Conditions = intervalRule.Conditons,
-						                Interval = intervalRule.Interval
-					                });
+									{
+										Group = intervalRule.Group,
+										Total = domainGroupsTotal[intervalRule.Group],
+										Conditions = intervalRule.Conditons,
+										Interval = intervalRule.Interval
+									});
 			}
 
 			groupsTotal.Add(new GroupSummery
-				                {
-					                Group = _creativeFragmentSettings.DefaultGroup,
-					                Total = domainGroupsTotal[_creativeFragmentSettings.DefaultGroup],
-					                Interval = _creativeFragmentSettings.DefaultInterval
-				                });
+								{
+									Group = _creativeFragmentSettings.DefaultGroup,
+									Total = domainGroupsTotal[_creativeFragmentSettings.DefaultGroup],
+									Interval = _creativeFragmentSettings.DefaultInterval
+								});
 
 			groupsTotal = groupsTotal.OrderByDescending(x => x.Interval).ToList();
 			return groupsTotal;
