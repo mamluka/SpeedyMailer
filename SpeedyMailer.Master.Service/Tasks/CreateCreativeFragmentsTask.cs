@@ -55,14 +55,11 @@ namespace SpeedyMailer.Master.Service.Tasks
 				var numberOfFullSizedFragments = (totalContacts - leftoverFragmentSize) / recipientsPerFragment;
 
 				var groupsTotal = new List<GroupSummery>();
-
 				groupsTotal = PopulateGroupSummeryWithTotals(intervalRules, groupsTotal, domainGroupsTotal);
 
-				//if we have lefover fragment we should calcualte it's size
+				CalculateFragmentDistribution(leftoverFragmentSize, totalContacts, groupsTotal, numberOfFullSizedFragments);
 
-				CalculateLastFragmentSize(leftoverFragmentSize, totalContacts, groupsTotal, numberOfFullSizedFragments);
-
-				var groupToTakeFrom = GetTheExtraGroupPerFragmentDistribution(groupsTotal, numberOfFullSizedFragments);
+				var groupToTakeFrom = GetTheExtraGroupPerFragmentDistribution(groupsTotal, numberOfFullSizedFragments, leftoverFragmentSize);
 
 				var extraSkipCounter = domainGroups.ToDictionary(x => x, y => 0);
 				extraSkipCounter[_creativeFragmentSettings.DefaultGroup] = 0;
@@ -75,7 +72,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 					foreach (var groupSummery in groupsTotal)
 					{
-						var howManyAdditionalContactsToTake = (groupToTakeFrom[i].ContainsKey(groupSummery.Group) ? 1 : 0);
+						var howManyAdditionalContactsToTake = GetHowManyAdditionalContactsToTake(groupToTakeFrom, i, groupSummery);
 
 						var currentFragmentGroupContacts = session.Query<Contact>()
 							.Customize(x => x.WaitForNonStaleResults())
@@ -115,37 +112,62 @@ namespace SpeedyMailer.Master.Service.Tasks
 			}
 		}
 
+		private static int GetHowManyAdditionalContactsToTake(List<Dictionary<string, int>> groupToTakeFrom, int i, GroupSummery groupSummery)
+		{
+			if (i + 1 > groupToTakeFrom.Count)
+				return 0;
+
+			return (groupToTakeFrom[i].ContainsKey(groupSummery.Group) ? 1 : 0);
+		}
+
 		private static int GetTotalNumberOfFragments(int leftoverFragmentSize, int numberOfFullSizedFragments)
 		{
 			return leftoverFragmentSize == 0 ? numberOfFullSizedFragments : numberOfFullSizedFragments + 1;
 		}
 
-		private static List<Dictionary<string, int>> GetTheExtraGroupPerFragmentDistribution(List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
+		private static List<Dictionary<string, int>> GetTheExtraGroupPerFragmentDistribution(List<GroupSummery> groupsTotal, int numberOfFullSizedFragments, int leftoverFragmentSize)
 		{
 			var theExtraGroupPerFragmentDistribution = groupsTotal.SelectMany(x => Enumerable.Range(1, x.RegularFragmentChunkLeftOver).Select(i => x.Group)).Select((x, i) => new { i, x }).GroupBy(x => x.i % numberOfFullSizedFragments).Select(x => x.ToDictionary(key => key.x, y => 0)).ToList();
-			theExtraGroupPerFragmentDistribution.Add(new Dictionary<string, int>());
 
 			return theExtraGroupPerFragmentDistribution;
 		}
 
-		private static void CalculateLastFragmentSize(int leftoverFragmentSize, int totalContacts, List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
+		private static void CalculateFragmentDistribution(int leftoverFragmentSize, int totalContacts, List<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
 		{
 			var multiplier = (decimal)leftoverFragmentSize / totalContacts;
-			groupsTotal.ForEach(x =>
-									{
-										x.ContributionToLeftOver = (int)Math.Floor((decimal)(multiplier * x.Total));
-										x.TotalWithOutLeftOver = x.Total - x.ContributionToLeftOver;
-										x.RegularFragmentChunkLeftOver = x.TotalWithOutLeftOver % numberOfFullSizedFragments;
-										x.RegularFragmentChunkSize = (x.TotalWithOutLeftOver - x.RegularFragmentChunkLeftOver) / numberOfFullSizedFragments;
-									});
 
-			var complitionToCorrentSize = leftoverFragmentSize - groupsTotal.Sum(x => x.ContributionToLeftOver);
+			if (ThereIsALeftOverFragmentAsTheLastFragment(multiplier))
+			{
+				groupsTotal.ForEach(x =>
+				{
+					x.ContributionToLeftOver = (int)Math.Floor((decimal)(multiplier * x.Total));
+					x.TotalWithOutLeftOver = x.Total - x.ContributionToLeftOver;
+					x.RegularFragmentChunkLeftOver = x.TotalWithOutLeftOver % numberOfFullSizedFragments;
+					x.RegularFragmentChunkSize = (x.TotalWithOutLeftOver - x.RegularFragmentChunkLeftOver) / numberOfFullSizedFragments;
+				});
 
-			var lastGroupTotal = groupsTotal.Last();
-			lastGroupTotal.ContributionToLeftOver += complitionToCorrentSize;
-			lastGroupTotal.TotalWithOutLeftOver -= complitionToCorrentSize;
-			lastGroupTotal.RegularFragmentChunkLeftOver = lastGroupTotal.TotalWithOutLeftOver % numberOfFullSizedFragments;
-			lastGroupTotal.RegularFragmentChunkSize = (lastGroupTotal.TotalWithOutLeftOver - lastGroupTotal.RegularFragmentChunkLeftOver) / numberOfFullSizedFragments;
+				var complitionToCorrentSize = leftoverFragmentSize - groupsTotal.Sum(x => x.ContributionToLeftOver);
+
+				var lastGroupTotal = groupsTotal.Last();
+				lastGroupTotal.ContributionToLeftOver += complitionToCorrentSize;
+				lastGroupTotal.TotalWithOutLeftOver -= complitionToCorrentSize;
+				lastGroupTotal.RegularFragmentChunkLeftOver = lastGroupTotal.TotalWithOutLeftOver % numberOfFullSizedFragments;
+				lastGroupTotal.RegularFragmentChunkSize = (lastGroupTotal.TotalWithOutLeftOver - lastGroupTotal.RegularFragmentChunkLeftOver) / numberOfFullSizedFragments;
+			}
+			else
+			{
+				groupsTotal.ForEach(x =>
+										{
+											x.RegularFragmentChunkSize = x.Total;
+										});
+			}
+
+
+		}
+
+		private static bool ThereIsALeftOverFragmentAsTheLastFragment(decimal multiplier)
+		{
+			return multiplier < 1;
 		}
 
 		private List<GroupSummery> PopulateGroupSummeryWithTotals(List<IntervalRule> intervalRules, List<GroupSummery> groupsTotal, Dictionary<string, int> domainGroupsTotal)

@@ -159,6 +159,16 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervalsAndGroup()
 		{
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 200);
+			
+			var rule = new IntervalRule
+			{
+				Conditons = new List<string> { "gmail.com", "hotmail.com" },
+				Interval = 10,
+				Group = "gmail"
+			};
+
+			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
+			
 			var contacts = AddRandomContacts(100);
 
 			var topDomainContacts = new List<Contact>
@@ -169,7 +179,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 				                   CreateContactWithEmail("user4@hotmail.com"),
 				                   CreateContactWithEmail("user5@hotmail.com"),
 			                   };
-
 
 			var listId = CraeteListFromContacts("my list", contacts.Union(topDomainContacts));
 
@@ -183,14 +192,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 				x.Lists = new List<string> { listId };
 			});
 
-			var rule = new IntervalRule
-							{
-								Conditons = new List<string> { "gmail.com", "hotmail.com" },
-								Interval = 10,
-								Group = "gmail"
-							};
-
-			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
+			
 
 			var task = new CreateCreativeFragmentsTask
 			{
@@ -237,7 +239,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().OnlyContain(x => x.Interval == 1);
-			result.Recipients.Should().OnlyContain(x => x.Group == "default");
+			result.Recipients.Should().OnlyContain(x => x.Group == "$default$");
 		}
 
 		[Test]
