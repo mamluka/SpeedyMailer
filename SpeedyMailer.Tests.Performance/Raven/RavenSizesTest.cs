@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using NUnit.Framework;
 using Ploeh.AutoFixture;
@@ -85,6 +86,13 @@ namespace SpeedyMailer.Tests.Performance.Raven
 
 			}, true);
 
+		}
+
+		[Test]
+		public void DNS_WhenWhen_ShouldExpectedResult()
+		{
+			Trace.WriteLine(Dns.GetHostEntry("88.213.179.79.zen.spamhaus.org").AddressList.First());
+			Trace.WriteLine(Dns.GetHostEntry("66.124.7.195.bl.spamcop.net").AddressList.First());
 		}
 	}
 

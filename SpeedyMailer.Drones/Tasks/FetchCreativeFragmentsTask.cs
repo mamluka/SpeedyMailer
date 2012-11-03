@@ -63,7 +63,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 				_creativePackagesStore.BatchInsert(recipiens.Select(x => ToPackage(x, creativeFragment)).ToList());
 
-				var groups = recipiens.GroupBy(x => x.Group).Select(x => new { Group = x.Key, x.First().Interval }).ToList();
+				var groups = recipiens.GroupBy(x => x.Group).Select(x => new { Group = x.Key, x.First().Interval, Count = x.Count() }).ToList();
 
 				foreach (var group in groups)
 				{
@@ -73,7 +73,7 @@ namespace SpeedyMailer.Drones.Tasks
 																						   x.FromName = creativeFragment.FromName;
 																						   x.FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix;
 																					   },
-																				   x => x.WithIntervalInSeconds(group.Interval).RepeatForever()
+																				   x => x.WithIntervalInSeconds(group.Interval).WithRepeatCount(group.Count)
 											  ));
 				}
 			}
