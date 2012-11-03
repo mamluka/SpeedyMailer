@@ -159,7 +159,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervalsAndGroup()
 		{
 			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 200);
-			
+
 			var rule = new IntervalRule
 			{
 				Conditons = new List<string> { "gmail.com", "hotmail.com" },
@@ -168,7 +168,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			};
 
 			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = new[] { rule });
-			
+
 			var contacts = AddRandomContacts(100);
 
 			var topDomainContacts = new List<Contact>
@@ -192,7 +192,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 				x.Lists = new List<string> { listId };
 			});
 
-			
+
 
 			var task = new CreateCreativeFragmentsTask
 			{
@@ -304,6 +304,55 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			AssertDomainCountIn(lastFragment.Recipients, "aol.com", 67);
 			AssertDomainCountIn(lastFragment.Recipients, "msn.com", 41);
 			AssertDomainCountIn(lastFragment.Recipients, "random.com", 97);
+		}
+
+		[Test]
+		public void Execute_WhenGivenSeveralIntervalRulesAndAnotherListAlreadyExists_ShouldDistributeTheDomainsEvenlyInsideTheFragment()
+		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 920);
+
+			var group1Contacts = CreateDomainContacts("hotmail.com", 217);
+			var group2Contacts = CreateDomainContacts("gmail.com", 213);
+			var group3Contacts = CreateDomainContacts("aol.com", 553);
+			var group4Contacts = CreateDomainContacts("msn.com", 337);
+			var randomContacts = CreateDomainContacts("random.com", 777);
+
+			AddIntervalRules("hotmail.com", "hotmail", 30);
+			AddIntervalRules("gmail.com", "gmail", 20);
+			AddIntervalRules("aol.com", "aol", 10);
+			AddIntervalRules("msn.com", "msn", 15);
+
+			var listId = CraeteListFromContacts("my list", group1Contacts.Union(group2Contacts).Union(group3Contacts).Union(group4Contacts).Union(randomContacts).OrderBy(x => Guid.NewGuid()));
+
+			CraeteListFromContacts("my seocnd list", CreateDomainContacts("antoherdomain.com", 1252));
+
+			var templateId = CreateTemplate("Body");
+
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			{
+				x.Body = "Body";
+				x.Subject = "Subject";
+				x.UnsubscribeTemplateId = templateId;
+				x.Lists = new List<string> { listId };
+			});
+
+			var task = new CreateCreativeFragmentsTask
+			{
+				CreativeId = creativeId,
+			};
+
+			ServiceActions.ExecuteTask(task);
+
+			var result = Store.Query<CreativeFragment>();
+
+			var firstFragment = result[0];
+
+			firstFragment.Recipients.Should().HaveCount(920);
+			AssertDomainCountIn(firstFragment.Recipients, "hotmail.com", 96);
+			AssertDomainCountIn(firstFragment.Recipients, "gmail.com", 93);
+			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 243);
+			AssertDomainCountIn(firstFragment.Recipients, "msn.com", 148);
+			AssertDomainCountIn(firstFragment.Recipients, "random.com", 340);
 		}
 
 		private void AddIntervalRules(string address, string group, int interval)

@@ -40,13 +40,13 @@ namespace SpeedyMailer.Master.Service.Tasks
 			using (var session = _documentStore.OpenSession())
 			{
 				var intervalRules = session.Query<IntervalRule>().ToList();
-
-				var domainGroups = GetDomainGroups(intervalRules);
-				var domainGroupsTotal = GetDomainGroupTotals(domainGroups, session);
 				var creative = session.Load<Creative>(task.CreativeId);
 
 				var unsubscribeTempalte = session.Load<Template>(creative.UnsubscribeTemplateId);
 				var listId = creative.Lists.First();
+
+				var domainGroups = GetDomainGroups(intervalRules);
+				var domainGroupsTotal = GetDomainGroupTotals(session, domainGroups, listId);
 
 				var totalContacts = domainGroupsTotal.Sum(x => x.Value);
 
@@ -194,13 +194,13 @@ namespace SpeedyMailer.Master.Service.Tasks
 			return groupsTotal;
 		}
 
-		private static Dictionary<string, int> GetDomainGroupTotals(List<string> domainGroups, IDocumentSession session)
+		private static Dictionary<string, int> GetDomainGroupTotals(IDocumentSession session, List<string> domainGroups, string listId)
 		{
 			return domainGroups
 				.Select(
 					domainGroup =>
 					session.Query<Contacts_DomainGroupCounter.ReduceResult, Contacts_DomainGroupCounter>()
-						.Customize(x => x.WaitForNonStaleResults()).SingleOrDefault(x => x.DomainGroup == domainGroup))
+						.Customize(x => x.WaitForNonStaleResults()).SingleOrDefault(x => x.DomainGroup == domainGroup && x.ListId == listId))
 				.ToDictionary(x => x.DomainGroup, y => y.Count);
 		}
 
