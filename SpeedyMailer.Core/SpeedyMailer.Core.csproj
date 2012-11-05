@@ -203,6 +203,10 @@
     <Compile Include="Emails\ICreativeBodySourceWeaver.cs" />
     <Compile Include="Emails\CreativeBodySourceWeaver.cs" />
     <Compile Include="Emails\IEmailPoolService.cs" />
+    <Compile Include="Evens\EventDispatcher.cs" />
+    <Compile Include="Evens\HappendOn.cs" />
+    <Compile Include="Evens\TestEventData.cs" />
+    <Compile Include="Evens\TestEventHappend.cs" />
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />

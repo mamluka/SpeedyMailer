@@ -144,6 +144,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Container\ContainerBootstrapperTests.cs" />
+    <Compile Include="Events\EventDispatcherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ScheduledTaskManagerTests.cs" />
     <Compile Include="Tasks\TaskCoordinatorTests.cs" />
