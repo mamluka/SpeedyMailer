@@ -45,20 +45,25 @@ namespace Mongol
 	{
 		private static readonly ILog logger = LogManager.GetCurrentClassLogger();
 
-		private void SetupCollection(string connectionString, string collectionName = null) {
+		private void SetupCollection(string connectionString, string collectionName = null)
+		{
 			var type = typeof(T);
 
 			var connection = Connection.GetInstance(connectionString);
-			if (collectionName == null) {
+			if (collectionName == null)
+			{
 				var collectionAttribute = type.GetCustomAttributes(typeof(CollectionNameAttribute), true).Cast<CollectionNameAttribute>().FirstOrDefault();
-				if (collectionAttribute != null) {
+				if (collectionAttribute != null)
+				{
 					collectionName = collectionAttribute.CollectionName;
 				}
 			}
-			if(collectionName!=null) {
+			if (collectionName != null)
+			{
 				collection = connection.GetCollection<T>(collectionName);
 			}
-			else {
+			else
+			{
 				collection = connection.GetCollection<T>();
 			}
 		}
@@ -89,9 +94,9 @@ namespace Mongol
 		/// <summary>
 		/// Creates a new RecordManager
 		/// </summary>
-		public RecordManager(string connectionString)
+		public RecordManager(string connectionString, string collectionName = null)
 		{
-			SetupCollection(connectionString);
+			SetupCollection(connectionString, collectionName);
 			if (!Initialized)
 			{
 				lock (typeof(RecordManager<T>))
@@ -176,16 +181,11 @@ namespace Mongol
 				logger.Error("BatchInsert() called with null value for records enumeration.");
 				throw new ArgumentNullException("records");
 			}
-			if (records == null)
+
 			{
-				logger.Warn("Attempted to InsertMany on null (not empty, but null) collection. Nothing done.");
-			}
-			else
-			{
-				var array = records.ToArray();
-				List<T> materializedItems = array.Where(r => r != null).ToList();
+				var materializedItems = records.ToArray().Where(r => r != null).ToList();
 				logger.Info("InsertMany called for " + materializedItems.Count + "non-null items");
-				foreach (T record in materializedItems)
+				foreach (var record in materializedItems)
 				{
 					OnBeforeSave(record);
 				}

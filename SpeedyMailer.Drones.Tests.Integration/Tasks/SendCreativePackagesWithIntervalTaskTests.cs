@@ -39,7 +39,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-			DroneActions.StorCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
 			var task = new SendCreativePackagesWithIntervalTask(x =>
 																	{
@@ -74,7 +74,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-			DroneActions.StorCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
 			var task = new SendCreativePackagesWithIntervalTask(x =>
 																	{
@@ -111,7 +111,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-			DroneActions.StorCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
 			var task = new SendCreativePackagesWithIntervalTask(x =>
 																	{

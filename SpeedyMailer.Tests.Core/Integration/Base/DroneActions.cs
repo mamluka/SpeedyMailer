@@ -129,7 +129,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			manager.BatchInsert(new List<T> { entity });
 		}
 
-		public void StorCollection<T>(IEnumerable<T> collection) where T : class
+		public void StoreCollection<T>(IEnumerable<T> collection) where T : class
 		{
 			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri());
 			manager.BatchInsert(collection);

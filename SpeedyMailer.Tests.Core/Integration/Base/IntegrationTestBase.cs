@@ -1,6 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using FluentAssertions;
 using NUnit.Framework;
 using Newtonsoft.Json;
 using Ninject;
@@ -10,6 +14,8 @@ using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
 using Raven.Database.Server;
+using Rhino.Mocks;
+using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Tests.Core.Unit.Base;
@@ -45,6 +51,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public IntegrationMongoDbHelper MongoDb { get; set; }
 
+		protected static IList<object> EventRegistry { get; set; }
+
 		public IntegrationTestBase()
 		{
 
@@ -79,6 +87,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			RegisterActions();
 			ExtraSetup();
+			ClearEventRegistry();
 
 			Api = new IntegrationApiHelpers(DefaultBaseUrl);
 			Store = new IntegrationStoreHelpers(DocumentStore);
@@ -88,6 +97,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			if (_options.UseMongo)
 				MongoDb.StartMongo();
+		}
+
+		private void ClearEventRegistry()
+		{
+			EventRegistry = new List<object>();
 		}
 
 		private void DeleteLogs()
@@ -201,6 +215,28 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public T DroneResolve<T>()
 		{
 			return DroneKernel.Get<T>();
+		}
+
+		protected void AssertEventWasPublished<T>(Action<T> shouldFunc) where T : class
+		{
+			var stopWatch = new Stopwatch();
+			stopWatch.Start();
+
+			while (stopWatch.ElapsedMilliseconds < 30 * 1000 && !EventRegistry.Contains(typeof(T)))
+			{
+				Thread.Sleep(250);
+			}
+
+			EventRegistry.Should().Contain(x=> x is T, "Event {0} did not fire", typeof(T).Name);
+			shouldFunc(EventRegistry.First(x => x is T) as T);
+			//testFunc().Should().BeTrue("Event {0} did not match the asserted values", typeof(T).Name);
+		}
+
+		protected void ListenToEvent<T>()
+		{
+			var generateMock = MockRepository.GenerateMock<HappendOn<T>>();
+			generateMock.Stub(x => x.Inspect(Arg<T>.Is.Anything)).WhenCalled(x => EventRegistry.Add(x.Arguments[0]));
+			DroneKernel.Bind<HappendOn<T>>().ToConstant(generateMock);
 		}
 	}
 }
