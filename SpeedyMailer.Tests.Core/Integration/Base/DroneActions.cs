@@ -103,9 +103,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											}, droneKernel);
 
 			EditSettings<EmailingSettings>(x =>
-				                               {
-					                               x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-				                               }, droneKernel);
+											   {
+												   x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+											   }, droneKernel);
 
 			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
 			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
@@ -129,9 +129,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			manager.BatchInsert(new List<T> { entity });
 		}
 
-		public void StoreCollection<T>(IEnumerable<T> collection) where T : class
+		public void StoreCollection<T>(IEnumerable<T> collection, string collectionName = null) where T : class
 		{
-			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri());
+			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
 			manager.BatchInsert(collection);
 		}
 
