@@ -127,6 +127,7 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Storage\CreativePackagesStore.cs" />
+    <Compile Include="Storage\LogsStore.cs" />
     <Compile Include="Tasks\AnalyzePostfixLogsTask.cs" />
     <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />

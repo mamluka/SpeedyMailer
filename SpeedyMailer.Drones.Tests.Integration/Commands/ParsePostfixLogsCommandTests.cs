@@ -82,5 +82,23 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			result[0].DelayBreakDown.Should().Contain(new[] { 0.04, 0, 1.9, 0.54 });
 		}
+		
+		[Test]
+		public void Execute_WhenGivenLogsContaingOtherDataThenSendData_ShouldNotParseIt()
+		{
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = " connect from localhost.localdomain[127.0.0.1]", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 67253AE3A7: client=localhost.localdomain[127.0.0.1]", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 687EFAE3A8: from=<david@xomixinc.com>, size=1098, nrcpt=1 (queue active)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 687EFAE3A8: message-id=<20121028125520.687EFAE3A8@mail.xomixinc.com>", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}, 
+					                 new MailLogEntry {Msg = " 67E3DAE362: removed", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}, 
+					                 new MailLogEntry {Msg = " disconnect from localhost.localdomain[127.0.0.1]", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}, 
+				                 };
+
+			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
+
+			result.Should().BeEmpty();
+		}
 	}
 }

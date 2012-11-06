@@ -222,20 +222,19 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
 
-			while (stopWatch.ElapsedMilliseconds < 30 * 1000 && !EventRegistry.Contains(typeof(T)))
+			while (stopWatch.ElapsedMilliseconds < 30 * 1000 || !EventRegistry.Any(x => x is T))
 			{
 				Thread.Sleep(250);
 			}
 
-			EventRegistry.Should().Contain(x=> x is T, "Event {0} did not fire", typeof(T).Name);
+			EventRegistry.Should().Contain(x => x is T, "Event {0} did not fire", typeof(T).Name);
 			shouldFunc(EventRegistry.First(x => x is T) as T);
-			//testFunc().Should().BeTrue("Event {0} did not match the asserted values", typeof(T).Name);
 		}
 
 		protected void ListenToEvent<T>()
 		{
 			var generateMock = MockRepository.GenerateMock<HappendOn<T>>();
-			generateMock.Stub(x => x.Inspect(Arg<T>.Is.Anything)).WhenCalled(x => EventRegistry.Add(x.Arguments[0]));
+			generateMock.Stub(x => x.Inspect(Arg<T>.Is.Anything)).Do(new Action<T>(x => EventRegistry.Add(x)));
 			DroneKernel.Bind<HappendOn<T>>().ToConstant(generateMock);
 		}
 	}

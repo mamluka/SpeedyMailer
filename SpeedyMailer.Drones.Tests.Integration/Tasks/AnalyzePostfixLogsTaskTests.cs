@@ -52,7 +52,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenCalledAndFoundBounceStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
 		{
-			ListenToEvent<AggregatedMailSent>();
+			ListenToEvent<AggregatedMailBounced>();
 
 			var logEntries = new List<MailLogEntry>
 				                 {
@@ -67,13 +67,42 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertEventWasPublished<AggregatedMailSent>(x =>
+			AssertEventWasPublished<AggregatedMailBounced>(x =>
 															{
 																x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.Type == MailEventType.Bounced);
 																x.MailEvents
 																	.Select(mailEvent => mailEvent.Recipient)
 																	.Should()
 																	.BeEquivalentTo(new[] { "a11eng@aol.com", "pnc211@gmail.com", "a.villa767@verizon.net" });
+															});
+
+		}
+
+		[Test]
+		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
+		{
+			ListenToEvent<AggregatedMailDeferred>();
+
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " B1F58AE39F: to=<lorihooks@5aol.com>, relay=none, delay=36378, delays=36273/0/105/0, dsn=4.4.1, status=deferred (connect to 5aol.com[205.188.101.24]:25: Connection timed out)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries, "logs");
+
+			var task = new AnalyzePostfixLogsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			AssertEventWasPublished<AggregatedMailDeferred>(x =>
+															{
+																x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.Type == MailEventType.Deferred);
+																x.MailEvents
+																	.Select(mailEvent => mailEvent.Recipient)
+																	.Should()
+																	.BeEquivalentTo(new[] { "aabubars@sbcglobal.net", "lorihooks@5aol.com", "a336448@aol.com" });
 															});
 
 		}

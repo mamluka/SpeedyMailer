@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
-using MongoDB.Driver.Builders;
-using Mongol;
 using Quartz;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
-using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Commands;
+using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Tasks
 {
@@ -42,20 +40,22 @@ namespace SpeedyMailer.Drones.Tasks
 				_parsePostfixLogsCommand.Logs = _logsStore.GetAllLogs();
 				var parsedLogs = _parsePostfixLogsCommand.Execute();
 
-				_eventDispatcher.ExecuteAll(new AggregatedMailSent { MailEvents = parsedLogs });
+				DispatchEvent<AggregatedMailBounced>(parsedLogs, MailEventType.Bounced);
+				DispatchEvent<AggregatedMailSent>(parsedLogs, MailEventType.Sent);
+				DispatchEvent<AggregatedMailDeferred>(parsedLogs, MailEventType.Deferred);
 			}
-		}
-	}
 
-	public class LogsStore : RecordManager<MailLogEntry>
-	{
-		public LogsStore(DroneSettings droneSettings)
-			: base(droneSettings.StoreHostname, "logs")
-		{ }
+			private void DispatchEvent<T>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType) where T : AggregatedMail, new()
+			{
+				var mailEvent = new T
+									{
+										MailEvents = parsedLogs
+											.Where(x => x.Type == mailEventType)
+											.ToList()
+									};
 
-		public IList<MailLogEntry> GetAllLogs()
-		{
-			return Find(Query.EQ(PropertyName(x => x.Level), "INFO")).ToList();
+				_eventDispatcher.ExecuteAll(mailEvent);
+			}
 		}
 	}
 }

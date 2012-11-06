@@ -13,24 +13,34 @@ namespace SpeedyMailer.Drones.Commands
 
 		public override IList<MailEvent> Execute()
 		{
-			return Logs.Select(x => Parse(x)).ToList();
+			return Logs.Select(Parse)
+				.Where(x=> x != null)
+				.ToList();
 		}
 
 		private MailEvent Parse(MailLogEntry mailLogEntry)
 		{
+			if (ThisMailLogEntryDoesntHaveSendingInformation(mailLogEntry))
+				return null;
+
 			var msg = mailLogEntry.Msg;
 			return new MailEvent
-				       {
-					       Level = TryParse(mailLogEntry),
+					   {
+						   Level = TryParse(mailLogEntry),
 						   Recipient = ParseRegexWithOneGroup(msg, "to=<(.+?)>"),
-						   RelayHost = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,",1),
+						   RelayHost = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 1),
 						   RelayIp = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 3),
 						   Time = mailLogEntry.Time,
 						   Type = ParseType(mailLogEntry.Msg),
 						   DelayBreakDown = ParseDelayBreakdown(mailLogEntry.Msg),
 						   TotalDelay = ParseRegexWithOneGroup(msg, "delay=(.+?),"),
 						   RelayMessage = ParseRegexWithOneGroup(msg, "status.+?\\((.+?)\\)$")
-				       };
+					   };
+		}
+
+		private bool ThisMailLogEntryDoesntHaveSendingInformation(MailLogEntry mailLogEntry)
+		{
+			return !Regex.Match(mailLogEntry.Msg, "status=").Success;
 		}
 
 		private IList<double> ParseDelayBreakdown(string msg)
@@ -46,7 +56,7 @@ namespace SpeedyMailer.Drones.Commands
 
 		private double ParseDelaysArrayItem(string msg, int groupId)
 		{
-			return double.Parse(ParseRegexWithMiltipleGroup(msg,"delays=(\\d*?\\.?\\d*?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?),",groupId));
+			return double.Parse(ParseRegexWithMiltipleGroup(msg, "delays=(\\d*?\\.?\\d*?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?),", groupId));
 		}
 
 		private MailEventType ParseType(string msg)
@@ -69,7 +79,7 @@ namespace SpeedyMailer.Drones.Commands
 		private static MailEventLevel TryParse(MailLogEntry mailLogEntry)
 		{
 			MailEventLevel level;
-			Enum.TryParse(mailLogEntry.Level,true,out level);
+			Enum.TryParse(mailLogEntry.Level, true, out level);
 			return level;
 		}
 	}
