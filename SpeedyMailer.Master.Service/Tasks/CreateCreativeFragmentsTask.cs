@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading;
 using Raven.Client;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
@@ -9,7 +7,6 @@ using System.Linq;
 using SpeedyMailer.Core.Rules;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
-using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Master.Service.Storage.Indexes;
 using Raven.Client.Linq;
 
@@ -59,7 +56,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 				CalculateFragmentDistribution(leftoverFragmentSize, totalContacts, groupsTotal, numberOfFullSizedFragments);
 
-				var groupToTakeFrom = GetTheExtraGroupPerFragmentDistribution(groupsTotal, numberOfFullSizedFragments, leftoverFragmentSize);
+				var groupToTakeFrom = GetTheExtraGroupPerFragmentDistribution(groupsTotal, numberOfFullSizedFragments);
 
 				var extraSkipCounter = domainGroups.ToDictionary(x => x, y => 0);
 				extraSkipCounter[_creativeFragmentSettings.DefaultGroup] = 0;
@@ -125,7 +122,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 			return leftoverFragmentSize == 0 ? numberOfFullSizedFragments : numberOfFullSizedFragments + 1;
 		}
 
-		private static List<Dictionary<string, int>> GetTheExtraGroupPerFragmentDistribution(List<GroupSummery> groupsTotal, int numberOfFullSizedFragments, int leftoverFragmentSize)
+		private static List<Dictionary<string, int>> GetTheExtraGroupPerFragmentDistribution(IEnumerable<GroupSummery> groupsTotal, int numberOfFullSizedFragments)
 		{
 			var theExtraGroupPerFragmentDistribution = groupsTotal.SelectMany(x => Enumerable.Range(1, x.RegularFragmentChunkLeftOver).Select(i => x.Group)).Select((x, i) => new { i, x }).GroupBy(x => x.i % numberOfFullSizedFragments).Select(x => x.ToDictionary(key => key.x, y => 0)).ToList();
 
@@ -170,18 +167,17 @@ namespace SpeedyMailer.Master.Service.Tasks
 			return multiplier < 1;
 		}
 
-		private List<GroupSummery> PopulateGroupSummeryWithTotals(List<IntervalRule> intervalRules, List<GroupSummery> groupsTotal, Dictionary<string, int> domainGroupsTotal)
+		private List<GroupSummery> PopulateGroupSummeryWithTotals(IEnumerable<IntervalRule> intervalRules, List<GroupSummery> groupsTotal, Dictionary<string, int> domainGroupsTotal)
 		{
-			foreach (var intervalRule in intervalRules)
-			{
-				groupsTotal.Add(new GroupSummery
-									{
-										Group = intervalRule.Group,
-										Total = domainGroupsTotal[intervalRule.Group],
-										Conditions = intervalRule.Conditons,
-										Interval = intervalRule.Interval
-									});
-			}
+			groupsTotal
+				.AddRange(intervalRules
+					          .Select(intervalRule => new GroupSummery
+						                                  {
+							                                  Group = intervalRule.Group,
+							                                  Total = domainGroupsTotal[intervalRule.Group],
+							                                  Conditions = intervalRule.Conditons,
+							                                  Interval = intervalRule.Interval
+						                                  }));
 
 			groupsTotal.Add(new GroupSummery
 								{
@@ -194,17 +190,17 @@ namespace SpeedyMailer.Master.Service.Tasks
 			return groupsTotal;
 		}
 
-		private static Dictionary<string, int> GetDomainGroupTotals(IDocumentSession session, List<string> domainGroups, string listId)
+		private static Dictionary<string, int> GetDomainGroupTotals(IDocumentSession session, IEnumerable<string> domainGroups, string listId)
 		{
 			return domainGroups
 				.Select(
 					domainGroup =>
 					session.Query<Contacts_DomainGroupCounter.ReduceResult, Contacts_DomainGroupCounter>()
-						.Customize(x => x.WaitForNonStaleResults()).SingleOrDefault(x => x.DomainGroup == domainGroup && x.ListId == listId))
+						.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5))).SingleOrDefault(x => x.DomainGroup == domainGroup && x.ListId == listId))
 				.ToDictionary(x => x.DomainGroup, y => y.Count);
 		}
 
-		private List<string> GetDomainGroups(List<IntervalRule> intervalRules)
+		private IList<string> GetDomainGroups(IEnumerable<IntervalRule> intervalRules)
 		{
 			var domainGroups = intervalRules.Select(rule => rule.Group).ToList();
 			domainGroups.Add(_creativeFragmentSettings.DefaultGroup);
