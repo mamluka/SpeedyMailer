@@ -136,9 +136,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		}
 
 
-		public IList<T> FindAll<T>() where T : class
+		public IList<T> FindAll<T>(string collectionName = null) where T : class
 		{
-			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri());
+			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
 			return manager.FindAll();
 		}
 

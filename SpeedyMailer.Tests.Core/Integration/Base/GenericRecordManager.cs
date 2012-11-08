@@ -6,8 +6,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class GenericRecordManager<T> : RecordManager<T> where T : class
 	{
-		public GenericRecordManager(string connectionString) : base(connectionString)
-		{}
+		public GenericRecordManager(string connectionString,string collectionName = null)
+			: base(connectionString,collectionName)
+		{ }
 
 		public IList<T> FindAll()
 		{

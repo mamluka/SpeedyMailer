@@ -217,18 +217,40 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return DroneKernel.Get<T>();
 		}
 
+		public IEnumerable<T> DroneResolveAll<T>()
+		{
+			return DroneKernel.GetAll<T>();
+		}
+
 		protected void AssertEventWasPublished<T>(Action<T> shouldFunc) where T : class
+		{
+			WaitForEvent<T>();
+
+			EventRegistry.Should().Contain(x => x is T, "Event {0} did not fire", typeof(T).Name);
+			shouldFunc(EventRegistry.First(x => x is T) as T);
+		}
+
+		private static void WaitForEvent<T>(int waitFor = 30) where T : class
 		{
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();
 
-			while (stopWatch.ElapsedMilliseconds < 30 * 1000 || !EventRegistry.Any(x => x is T))
+			while (stopWatch.ElapsedMilliseconds < waitFor * 1000 && !EventRegistry.Any(x => x is T))
 			{
 				Thread.Sleep(250);
 			}
+		}
 
+		protected void AssertEventWasNotPublished<T>() where T : class
+		{
+			WaitForEvent<T>(5);
+			EventRegistry.Should().NotContain(x => x is T, "Event {0} did not fire", typeof(T).Name);
+		}
+
+		protected void AssertEventWasPublished<T>() where T : class
+		{
+			WaitForEvent<T>();
 			EventRegistry.Should().Contain(x => x is T, "Event {0} did not fire", typeof(T).Name);
-			shouldFunc(EventRegistry.First(x => x is T) as T);
 		}
 
 		protected void ListenToEvent<T>()
@@ -236,6 +258,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var generateMock = MockRepository.GenerateMock<HappendOn<T>>();
 			generateMock.Stub(x => x.Inspect(Arg<T>.Is.Anything)).Do(new Action<T>(x => EventRegistry.Add(x)));
 			DroneKernel.Bind<HappendOn<T>>().ToConstant(generateMock);
+		}
+
+		protected void FireEvent<TEvent, TEventData>(Action<TEventData> action)
+			where TEventData : new()
+			where TEvent : HappendOn<TEventData>
+		{
+			var eventData = new TEventData();
+			action(eventData);
+
+			DroneResolveAll<HappendOn<TEventData>>().OfType<TEvent>().First().Inspect(eventData);
+
 		}
 	}
 }

@@ -10,6 +10,7 @@ using Rhino.Mocks;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Drones.Tasks;
+using SpeedyMailer.Drones.Tests.Integration.Events;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
@@ -105,6 +106,53 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																	.BeEquivalentTo(new[] { "aabubars@sbcglobal.net", "lorihooks@5aol.com", "a336448@aol.com" });
 															});
 
+		}
+
+		[Test]
+		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldOnlyPublshTheDeferredEvent()
+		{
+			ListenToEvent<AggregatedMailDeferred>();
+			ListenToEvent<AggregatedMailBounced>();
+			ListenToEvent<AggregatedMailSent>();
+
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " B1F58AE39F: to=<lorihooks@5aol.com>, relay=none, delay=36378, delays=36273/0/105/0, dsn=4.4.1, status=deferred (connect to 5aol.com[205.188.101.24]:25: Connection timed out)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries, "logs");
+
+			var task = new AnalyzePostfixLogsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			AssertEventWasPublished<AggregatedMailDeferred>();
+			AssertEventWasNotPublished<AggregatedMailBounced>();
+			AssertEventWasNotPublished<AggregatedMailSent>();
+		}
+
+		[Test]
+		public void Execute_WhenStatusLogsfound_ShouldStoreBounces()
+		{
+
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries, "logs");
+
+			var task = new AnalyzePostfixLogsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			var result = DroneActions.FindAll<Bounce>("logs").First();
+
+			result.Address.Should().Be("aabubars@sbcglobal.net");
+			result.DomainGroup.Should().Be("sbcglobal");
+			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
 		}
 	}
 }

@@ -47,11 +47,14 @@ namespace SpeedyMailer.Drones.Tasks
 
 			private void DispatchEvent<T>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType) where T : AggregatedMail, new()
 			{
+				var mailEvents = parsedLogs.Where(x => x.Type == mailEventType).ToList();
+
+				if (!mailEvents.Any())
+					return;
+
 				var mailEvent = new T
 									{
-										MailEvents = parsedLogs
-											.Where(x => x.Type == mailEventType)
-											.ToList()
+										MailEvents = mailEvents
 									};
 
 				_eventDispatcher.ExecuteAll(mailEvent);

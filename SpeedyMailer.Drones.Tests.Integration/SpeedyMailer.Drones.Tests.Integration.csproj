@@ -154,10 +154,12 @@
     <Compile Include="Commands\InitializeDroneSettingsCommandTests.cs" />
     <Compile Include="Commands\ParsePostfixLogsCommandTests.cs" />
     <Compile Include="Commands\SendCreativePackageCommandTests.cs" />
+    <Compile Include="Events\DeliveryRealTimeDecisionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\AnalyzePostfixLogsTaskTests.cs" />
     <Compile Include="Tasks\BroadcastDroneToServiceTaskTests.cs" />
     <Compile Include="Tasks\FetchCreativeFragmentsTaskTasts.cs" />
+    <Compile Include="Tasks\FetchIntervalRulesTaskTests.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
