@@ -4,6 +4,7 @@ using System.Linq;
 using Quartz;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
@@ -30,9 +31,16 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly LogsStore _logsStore;
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly IntervalRulesStore _intervalRulesStore;
+			private readonly CreativeFragmentSettings _creativeFragmentSettings;
 
-			public Job(EventDispatcher eventDispatcher, ParsePostfixLogsCommand parsePostfixLogsCommand, LogsStore logsStore, OmniRecordManager omniRecordManager, IntervalRulesStore intervalRulesStore)
+			public Job(EventDispatcher eventDispatcher, 
+				ParsePostfixLogsCommand parsePostfixLogsCommand, 
+				LogsStore logsStore, 
+				OmniRecordManager omniRecordManager,
+				IntervalRulesStore intervalRulesStore,
+				CreativeFragmentSettings creativeFragmentSettings)
 			{
+				_creativeFragmentSettings = creativeFragmentSettings;
 				_intervalRulesStore = intervalRulesStore;
 				_omniRecordManager = omniRecordManager;
 				_logsStore = logsStore;
@@ -47,12 +55,9 @@ namespace SpeedyMailer.Drones.Tasks
 
 				var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
 
-				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent);
-				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced);
-				var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred);
-
-
-
+				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent, parsedLogsDomainGroups);
+				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups);
+				var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred, parsedLogsDomainGroups);
 
 				_omniRecordManager.BatchInsert(mailSent);
 				_omniRecordManager.BatchInsert(mailBounced);
@@ -71,16 +76,23 @@ namespace SpeedyMailer.Drones.Tasks
 					.ToList();
 
 				return mailEvents
-					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(x => x.Group).SingleOrDefault(), Recipient = x.Recipient })
+					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).SingleOrDefault(), Recipient = x.Recipient })
 					.ToDictionary(x => x.Recipient, x => x.Group);
 			}
 
-			private static List<TEventData> ParseToSpecificMailEvent<TEventData>(IList<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction)
+			private List<TEventData> ParseToSpecificMailEvent<TEventData>(IList<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IDictionary<string, string> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
 			{
 				return parsedLogs
 					.Where(x => x.Type == mailEventType)
 					.Select(convertFunction)
+					.Join(parsedLogsDomainGroups, x => x.Recipient, y => y.Key, SetDomainGroup)
 					.ToList();
+			}
+
+			private TEventData SetDomainGroup<TEventData>(TEventData x, KeyValuePair<string, string> y) where TEventData : IHasDomainGroup, IHasRecipient
+			{
+				x.DomainGroup = y.Value ?? _creativeFragmentSettings.DefaultGroup;
+				return x;
 			}
 
 			private static MailDeferred ToMailDeferred(MailEvent x)

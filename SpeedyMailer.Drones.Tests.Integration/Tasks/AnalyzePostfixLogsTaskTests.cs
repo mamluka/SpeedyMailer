@@ -9,6 +9,7 @@ using NUnit.Framework;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
+using SpeedyMailer.Core.Rules;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Drones.Tests.Integration.Events;
 using SpeedyMailer.Tests.Core.Integration.Base;
@@ -40,8 +41,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			AssertEventWasPublished<AggregatedMailSent>(x =>
-				                                            {
-					                                            x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
+															{
+																x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
 																x.MailEvents
 																	.Select(mailEvent => mailEvent.Recipient)
 																	.Should()
@@ -69,13 +70,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			AssertEventWasPublished<AggregatedMailBounced>(x =>
-				                                               {
+															   {
 																   x.MailEvents.Should().ContainItemsAssignableTo<MailBounced>();
-					                                               x.MailEvents
-						                                               .Select(mailEvent => mailEvent.Recipient)
-						                                               .Should()
-						                                               .BeEquivalentTo(new[] {"a11eng@aol.com", "pnc211@gmail.com", "a.villa767@verizon.net"});
-				                                               });
+																   x.MailEvents
+																	   .Select(mailEvent => mailEvent.Recipient)
+																	   .Should()
+																	   .BeEquivalentTo(new[] { "a11eng@aol.com", "pnc211@gmail.com", "a.villa767@verizon.net" });
+															   });
 
 		}
 
@@ -142,40 +143,79 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 				                 };
 
 			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.Store(new IntervalRule
+								   {
+									   Conditons = new List<string> { "gmail.com" },
+									   Group = "gmail"
+								   });
 
 			var task = new AnalyzePostfixLogsTask();
 
 			DroneActions.StartScheduledTask(task);
-			
+
 			DroneActions.WaitForDocumentToExist<MailBounced>();
-			
+
 			var result = DroneActions.FindAll<MailBounced>().First();
 
-			result.Recipient.Should().Be("aabubars@sbcglobal.net");
-			result.DomainGroup.Should().Be("sbcglobal");
+			result.Recipient.Should().Be("pnc211@gmail.com");
+			result.DomainGroup.Should().Be("gmail");
 			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
 		}
 		
 		[Test]
-		public void Execute_WhenStatusLogsfound_ShouldStoreSentMails()
+		public void Execute_WhenStatusLogsFoundButThere
+		_ShouldStoreBouncesMails()
 		{
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {Msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
+					                 new MailLogEntry {Msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
 				                 };
 
 			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.Store(new IntervalRule
+								   {
+									   Conditons = new List<string> { "gmail.com" },
+									   Group = "gmail"
+								   });
 
 			var task = new AnalyzePostfixLogsTask();
 
 			DroneActions.StartScheduledTask(task);
-			
+
+			DroneActions.WaitForDocumentToExist<MailBounced>();
+
+			var result = DroneActions.FindAll<MailBounced>().First();
+
+			result.Recipient.Should().Be("pnc211@gmail.com");
+			result.DomainGroup.Should().Be("gmail");
+			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
+		}
+
+		[Test]
+		public void Execute_WhenStatusLogsFoundButThereAreNoInervalRules_ShouldStoreSentMails()
+		{
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", Time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), Level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.Store(new IntervalRule
+			{
+				Conditons = new List<string> { "aol.com" },
+				Group = "aol"
+			});
+
+			var task = new AnalyzePostfixLogsTask();
+
+			DroneActions.StartScheduledTask(task);
+
 			DroneActions.WaitForDocumentToExist<MailSent>();
-			
+
 			var result = DroneActions.FindAll<MailSent>().First();
 
-			result.Recipient.Should().Be("aabubars@sbcglobal.net");
-			result.DomainGroup.Should().Be("sbcglobal");
+			result.Recipient.Should().Be("a66122s@aol.com");
+			result.DomainGroup.Should().Be("aol");
 			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
 		}
 
@@ -188,6 +228,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 				                 };
 
 			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.Store(new IntervalRule
+			{
+				Conditons = new List<string> { "sbcglobal.net" },
+				Group = "sbcglobal"
+			});
 
 			var task = new AnalyzePostfixLogsTask();
 

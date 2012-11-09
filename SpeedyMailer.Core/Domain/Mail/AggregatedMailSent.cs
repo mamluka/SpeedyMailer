@@ -23,7 +23,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		string DomainGroup { get; set; }
 	}
 
-	public class MailSent:IHasDomainGroup
+	public class MailSent:IHasDomainGroup,IHasRecipient
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
@@ -33,7 +33,12 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string DomainGroup { get; set; }
 	}
 
-	public class MailBounced : IHasDomainGroup
+	public interface IHasRecipient
+	{
+		string Recipient { get; set; }
+	}
+
+	public class MailBounced : IHasDomainGroup, IHasRecipient
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
@@ -44,7 +49,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string Message { get; set; }
 	}
 
-	public class MailDeferred : IHasDomainGroup
+	public class MailDeferred : IHasDomainGroup, IHasRecipient
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
