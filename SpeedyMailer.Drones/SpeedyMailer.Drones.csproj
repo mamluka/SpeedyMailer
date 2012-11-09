@@ -122,7 +122,6 @@
     <Compile Include="Commands\InitializeDroneSettingsCommand.cs" />
     <Compile Include="Commands\ParsePostfixLogsCommand.cs" />
     <Compile Include="Commands\SendCreativePackageCommand.cs" />
-    <Compile Include="Commands\UpdateDomainGroupBounceCountersCommand.cs" />
     <Compile Include="Configurations\DroneConfigurationManager.cs" />
     <Compile Include="Configurations\IDroneConfigurationManager.cs" />
     <Compile Include="Configurations\PoolOporationsUrls.cs" />

@@ -15,9 +15,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenGivenABounceEventAndGroupCountIsNotEnoughToStopTheSendingGroup_ShouldNotStopSending()
 		{
-			DroneActions.ExecuteCommand<UpdateDomainGroupBounceCountersCommand,IList<MailBounced>>();
-			
-			//FireEvent<DeliveryRealTimeDecision, MailEvent>();
+			FireEvent<DeliveryRealTimeDecision, MailEvent>(x=> x.);
 		}
 	}
 }
