@@ -197,6 +197,8 @@
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
+    <Compile Include="Domain\Mail\HardBounceHeuristics.cs" />
+    <Compile Include="Domain\Mail\BounceType.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
     <Compile Include="Domain\Mail\MailEventType.cs" />

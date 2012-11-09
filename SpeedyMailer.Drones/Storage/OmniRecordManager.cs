@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Mongol;
 using SpeedyMailer.Core.Settings;
 
@@ -17,6 +18,12 @@ namespace SpeedyMailer.Drones.Storage
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
 			specificRecordManager.BatchInsert(records);
+		}
+
+		public T GetSingle<T>() where T : class
+		{
+			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
+			return specificRecordManager.AsQueryable.SingleOrDefault();
 		}
 	}
 }
