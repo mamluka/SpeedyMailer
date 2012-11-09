@@ -3,11 +3,11 @@ using SpeedyMailer.Core.Evens;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class DeliveryRealTimeDecision : HappendOn<MailEvent>
+	public class DeliveryRealTimeDecision : HappendOn<AggregatedMailBounced>
 	{
-		public override void Inspect(MailEvent data)
+		public override void Inspect(AggregatedMailBounced data)
 		{
-
+			
 		}
 	}
 }
