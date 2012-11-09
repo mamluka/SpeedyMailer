@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Quartz;
@@ -27,9 +28,13 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly EventDispatcher _eventDispatcher;
 			private readonly ParsePostfixLogsCommand _parsePostfixLogsCommand;
 			private readonly LogsStore _logsStore;
+			private readonly OmniRecordManager _omniRecordManager;
+			private readonly IntervalRulesStore _intervalRulesStore;
 
-			public Job(EventDispatcher eventDispatcher, ParsePostfixLogsCommand parsePostfixLogsCommand, LogsStore logsStore)
+			public Job(EventDispatcher eventDispatcher, ParsePostfixLogsCommand parsePostfixLogsCommand, LogsStore logsStore, OmniRecordManager omniRecordManager, IntervalRulesStore intervalRulesStore)
 			{
+				_intervalRulesStore = intervalRulesStore;
+				_omniRecordManager = omniRecordManager;
 				_logsStore = logsStore;
 				_parsePostfixLogsCommand = parsePostfixLogsCommand;
 				_eventDispatcher = eventDispatcher;
@@ -40,19 +45,79 @@ namespace SpeedyMailer.Drones.Tasks
 				_parsePostfixLogsCommand.Logs = _logsStore.GetAllLogs();
 				var parsedLogs = _parsePostfixLogsCommand.Execute();
 
-				DispatchEvent<AggregatedMailBounced>(parsedLogs, MailEventType.Bounced);
-				DispatchEvent<AggregatedMailSent>(parsedLogs, MailEventType.Sent);
-				DispatchEvent<AggregatedMailDeferred>(parsedLogs, MailEventType.Deferred);
+				var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
+
+				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent);
+				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced);
+				var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred);
+
+
+
+
+				_omniRecordManager.BatchInsert(mailSent);
+				_omniRecordManager.BatchInsert(mailBounced);
+				_omniRecordManager.BatchInsert(mailDeferred);
+
+				DispatchEvent<AggregatedMailBounced, MailBounced>(mailBounced);
+				DispatchEvent<AggregatedMailSent, MailSent>(mailSent);
+				DispatchEvent<AggregatedMailDeferred, MailDeferred>(mailDeferred);
 			}
 
-			private void DispatchEvent<T>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType) where T : AggregatedMail, new()
+			private IDictionary<string, string> CalculateDomainGroupFor(IList<MailEvent> mailEvents)
 			{
-				var mailEvents = parsedLogs.Where(x => x.Type == mailEventType).ToList();
+				var conditions = _intervalRulesStore
+					.GetAll()
+					.SelectMany(intervalRule => intervalRule.Conditons.Select(x => new { Condition = x, intervalRule.Group }))
+					.ToList();
 
+				return mailEvents
+					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(x => x.Group).SingleOrDefault(), Recipient = x.Recipient })
+					.ToDictionary(x => x.Recipient, x => x.Group);
+			}
+
+			private static List<TEventData> ParseToSpecificMailEvent<TEventData>(IList<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction)
+			{
+				return parsedLogs
+					.Where(x => x.Type == mailEventType)
+					.Select(convertFunction)
+					.ToList();
+			}
+
+			private static MailDeferred ToMailDeferred(MailEvent x)
+			{
+				return new MailDeferred
+						   {
+							   Recipient = x.Recipient,
+							   Time = x.Time,
+							   Message = x.RelayMessage
+						   };
+			}
+
+			private static MailBounced ToMailBounced(MailEvent x)
+			{
+				return new MailBounced
+						   {
+							   Recipient = x.Recipient,
+							   Time = x.Time,
+							   Message = x.RelayMessage
+						   };
+			}
+
+			private static MailSent ToMailSent(MailEvent x)
+			{
+				return new MailSent
+						   {
+							   Recipient = x.Recipient,
+							   Time = x.Time
+						   };
+			}
+
+			private void DispatchEvent<TEvent, TEventData>(IList<TEventData> mailEvents) where TEvent : AggregatedMailEvents<TEventData>, new()
+			{
 				if (!mailEvents.Any())
 					return;
 
-				var mailEvent = new T
+				var mailEvent = new TEvent
 									{
 										MailEvents = mailEvents
 									};

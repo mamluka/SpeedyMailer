@@ -24,7 +24,7 @@ namespace SpeedyMailer.Core.Apis
 			{
 				public GetIntervalRules():base("/rules/interval")
 				{
-					CallMethod = RestMethod.Post;
+					CallMethod = RestMethod.Get;
 				}
 			}
 		}

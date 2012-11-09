@@ -129,12 +129,15 @@
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Events\DeliveryRealTimeDecision.cs" />
     <Compile Include="Storage\CreativePackagesStore.cs" />
+    <Compile Include="Storage\IntervalRulesStore.cs" />
     <Compile Include="Storage\LogsStore.cs" />
+    <Compile Include="Storage\OmniRecordManager.cs" />
     <Compile Include="Tasks\AnalyzePostfixLogsTask.cs" />
     <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\FetchCreativeFragmentsTask.cs" />
+    <Compile Include="Tasks\FetchIntervalRulesTask.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTask.cs" />
   </ItemGroup>
   <ItemGroup>

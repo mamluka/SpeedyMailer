@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using FluentAssertions;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Runner;
@@ -146,6 +147,22 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var random = new Random();
 			return random.Next(1000, 10000);
+		}
+
+		public void WaitForDocumentToExist<T>(string collectionName = null) where T : class
+		{
+			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
+
+			var st = new Stopwatch();
+			st.Start();
+			
+			while (st.ElapsedMilliseconds < 30 * 1000 && !manager.Exists())
+			{
+				Thread.Sleep(500);
+			}
+
+			st.Stop();
+			manager.Exists().Should().BeTrue("Waiting for {0} to exist in the database", typeof(T).Name);
 		}
 	}
 }

@@ -60,11 +60,11 @@ namespace Mongol
 			}
 			if (collectionName != null)
 			{
-				collection = connection.GetCollection<T>(collectionName);
+				Collection = connection.GetCollection<T>(collectionName);
 			}
 			else
 			{
-				collection = connection.GetCollection<T>();
+				Collection = connection.GetCollection<T>();
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace Mongol
 		/// <summary>
 		/// The underlying MongoDB collection that the RecordManager encapsulates
 		/// </summary>
-		protected virtual MongoCollection<T> collection
+		protected virtual MongoCollection<T> Collection
 		{
 			get;
 			set;
@@ -116,7 +116,7 @@ namespace Mongol
 		{
 			get
 			{
-				return collection.AsQueryable();
+				return Collection.AsQueryable();
 			}
 		}
 
@@ -133,7 +133,7 @@ namespace Mongol
 			}
 			else
 			{
-				collection.Remove(QueryCriteria_ById(id));
+				Collection.Remove(QueryCriteria_ById(id));
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Mongol
 				logger.Error("GetById() called with null id.");
 				throw new ArgumentNullException("id");
 			}
-			return collection.FindOneById(BsonValue.Create(id));
+			return Collection.FindOneById(BsonValue.Create(id));
 		}
 
 		/// <summary>
@@ -165,7 +165,7 @@ namespace Mongol
 			}
 			var array = ids.ToArray();
 			logger.Debug(m => m("GetManyByIds(ListOfIds.Length=" + array.Length + ")"));
-			return collection.Find(Query.In(ID_FIELD, new BsonArray(array)));
+			return Collection.Find(Query.In(ID_FIELD, new BsonArray(array)));
 		}
 
 		/// <summary>
@@ -191,7 +191,7 @@ namespace Mongol
 				}
 				if (materializedItems.Count > 0)
 				{
-					collection.InsertBatch(materializedItems);
+					Collection.InsertBatch(materializedItems);
 				}
 				foreach (T record in materializedItems)
 				{
@@ -215,7 +215,7 @@ namespace Mongol
 			{
 				logger.Debug(m => m("Save({0})", record));
 				OnBeforeSave(record);
-				var safeModeResult = collection.Save(record);
+				var safeModeResult = Collection.Save(record);
 				OnAfterSave(record);
 				return safeModeResult == null || !safeModeResult.UpdatedExisting;
 			}
@@ -245,7 +245,7 @@ namespace Mongol
 		protected internal long Count(IMongoQuery criteria = null)
 		{
 			logger.Debug(m => m("Count({0})", criteria));
-			return collection.Count(criteria);
+			return Collection.Count(criteria);
 		}
 
 		/// <summary>
@@ -302,9 +302,9 @@ namespace Mongol
 		protected internal virtual void DropCollection()
 		{
 			logger.Warn("DropCollection");
-			if (collection.Exists())
+			if (Collection.Exists())
 			{
-				collection.Drop();
+				Collection.Drop();
 			}
 		}
 
@@ -318,7 +318,7 @@ namespace Mongol
 		protected internal virtual T FindOneAndModify(IMongoQuery criteria, IMongoUpdate update, IMongoSortBy sortBy = null, bool returnModifiedVersion = true)
 		{
 			logger.Debug(m => m("FindAndModify({0},{1},{2},{3})", criteria, update, sortBy, returnModifiedVersion));
-			return collection.FindAndModify(criteria, sortBy, update, returnModifiedVersion).GetModifiedDocumentAs<T>();
+			return Collection.FindAndModify(criteria, sortBy, update, returnModifiedVersion).GetModifiedDocumentAs<T>();
 		}
 
 		/// <summary>
@@ -328,7 +328,7 @@ namespace Mongol
 		protected internal virtual T FindOneAndRemove(IMongoQuery criteria, IMongoSortBy sortBy = null)
 		{
 			logger.Debug(m => m("FindOneAndRemove({0},{1})", criteria, sortBy));
-			var removeResult = collection.FindAndRemove(criteria, sortBy);
+			var removeResult = Collection.FindAndRemove(criteria, sortBy);
 			if (removeResult.ModifiedDocument != null)
 			{
 				return removeResult.GetModifiedDocumentAs<T>();
@@ -384,7 +384,7 @@ namespace Mongol
 			{
 				update = update.Combine(Update.Set(PropertyNameResolver<ITimeStampedRecord>.Resolve(x => x.ModifiedDate), DateTime.UtcNow));
 			}
-			var result = collection.Update(criteria, update, asUpsert ? UpdateFlags.Multi | UpdateFlags.Upsert : UpdateFlags.Multi);
+			var result = Collection.Update(criteria, update, asUpsert ? UpdateFlags.Multi | UpdateFlags.Upsert : UpdateFlags.Multi);
 			if (result == null)
 			{
 				return 0;
@@ -402,20 +402,15 @@ namespace Mongol
 		protected internal virtual long DeleteMany(IMongoQuery criteria)
 		{
 			logger.Debug(m => m("DeleteMany({0})", criteria));
+			
 			if (criteria == null)
 			{
 				logger.Error("Attempted to call DeleteMany with a null query.");
 				throw new ArgumentNullException("query", "Cannot call DeleteMany with a null query");
 			}
-			var result = collection.Remove(criteria);
-			if (result == null)
-			{
-				return 0;
-			}
-			else
-			{
-				return result.DocumentsAffected;
-			}
+			var result = Collection.Remove(criteria);
+
+			return result == null ? 0 : result.DocumentsAffected;
 		}
 
 		/// <summary>
@@ -441,7 +436,7 @@ namespace Mongol
 		protected internal virtual void EnsureIndex(IMongoIndexKeys keys, IMongoIndexOptions options)
 		{
 			logger.Debug(m => m("EnsureIndex({0},{1})", keys, options));
-			collection.EnsureIndex(keys, options);
+			Collection.EnsureIndex(keys, options);
 		}
 
 		/// <summary>
@@ -479,7 +474,7 @@ namespace Mongol
 		/// </summary>
 		protected internal IEnumerable<T> find(IMongoQuery criteria, IMongoSortBy sortBy = null, int? skip = null, int? limit = null)
 		{
-			MongoCursor<T> cursor = collection.Find(criteria);
+			MongoCursor<T> cursor = Collection.Find(criteria);
 			if (sortBy != null)
 			{
 				cursor.SetSortOrder(sortBy);
@@ -515,10 +510,10 @@ namespace Mongol
 		protected IEnumerable<BsonDocument> Aggregate(IEnumerable<BsonDocument> pipeline)
 		{
 			CommandDocument docAggregationCommand = new CommandDocument() {
-            				{ AGGREGATE_COMMAND, collection.Name },
+            				{ AGGREGATE_COMMAND, Collection.Name },
             				{ PIPELINE_PARAMETER, BsonArray.Create(pipeline.Where(x => x!=null)) }
             			};
-			var response = collection.Database.RunCommand(docAggregationCommand);
+			var response = Collection.Database.RunCommand(docAggregationCommand);
 			return response.Response.AsBsonDocument.GetValue("result").AsBsonArray.Select(x => x.AsBsonDocument);
 		}
 

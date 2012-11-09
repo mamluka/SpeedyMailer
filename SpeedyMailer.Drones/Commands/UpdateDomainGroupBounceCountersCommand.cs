@@ -4,9 +4,9 @@ using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Drones.Commands
 {
-	public class UpdateDomainGroupBounceCountersCommand:Command<IList<Bounce>>
+	public class UpdateDomainGroupBounceCountersCommand:Command<IList<MailBounced>>
 	{
-		public override IList<Bounce> Execute()
+		public override IList<MailBounced> Execute()
 		{
 			return null;
 		}
