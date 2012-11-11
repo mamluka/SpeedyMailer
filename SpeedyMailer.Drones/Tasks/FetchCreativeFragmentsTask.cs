@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Quartz;
@@ -51,7 +52,14 @@ namespace SpeedyMailer.Drones.Tasks
 			public void Execute(IJobExecutionContext context)
 			{
 				if (_creativePackagesStore.AreThereAnyPackages())
+				{
+					if (GroupSendingJobsAreNotPresent(context))
+					{
+						StartGroupSendimhJobs();
+					}
+						
 					return;
+				}
 
 				var creativeFragment = _api
 					.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
@@ -60,21 +68,32 @@ namespace SpeedyMailer.Drones.Tasks
 					return;
 
 				var recipiens = creativeFragment.Recipients;
+				var creativePackages = recipiens.Select(x => ToPackage(x, creativeFragment)).ToList();
 
-				_creativePackagesStore.BatchInsert(recipiens.Select(x => ToPackage(x, creativeFragment)).ToList());
+				_creativePackagesStore.BatchInsert(creativePackages);
 
-				var groups = recipiens.GroupBy(x => x.Group).Select(x => new { Group = x.Key, x.First().Interval, Count = x.Count() }).ToList();
+				StartGroupSendimhJobs(recipiens, creativeFragment);
+			}
+
+			private bool GroupSendingJobsAreNotPresent(IJobExecutionContext context)
+			{
+			context.	
+			}
+
+			private void StartGroupSendimhJobs(IEnumerable<Recipient> recipiens, CreativeFragment creativeFragment)
+			{
+				var groups = recipiens.GroupBy(x => x.Group).Select(x => new {Group = x.Key, x.First().Interval, Count = x.Count()}).ToList();
 
 				foreach (var group in groups)
 				{
 					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x =>
-																					   {
-																						   x.Group = group.Group;
-																						   x.FromName = creativeFragment.FromName;
-																						   x.FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix;
-																					   },
-																				   x => x.WithIntervalInSeconds(group.Interval).WithRepeatCount(group.Count)
-											  ));
+						                                                               {
+							                                                               x.Group = @group.Group;
+							                                                               x.FromName = creativeFragment.FromName;
+							                                                               x.FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix;
+						                                                               },
+					                                                               x => x.WithIntervalInSeconds(@group.Interval).WithRepeatCount(@group.Count)
+						                      ));
 				}
 			}
 
