@@ -42,7 +42,10 @@ namespace SpeedyMailer.Drones.Commands
 
 			if (!string.IsNullOrEmpty(_emailingSettings.WritingEmailsToDiskPath))
 			{
-				WriteEmailToDisk(email);
+				if (_emailingSettings.WritingEmailsToDiskPath != "dev/null")
+				{
+					WriteEmailToDisk(email);
+				}
 			}
 			else
 			{

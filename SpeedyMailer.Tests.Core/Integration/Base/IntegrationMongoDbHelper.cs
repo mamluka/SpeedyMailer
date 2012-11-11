@@ -5,33 +5,68 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using MongoDB.Driver;
 using MongoDB.Runner;
 using MongoDB.Runner.Configuration;
+using Mongol;
+using Ninject;
+using SpeedyMailer.Core;
+using SpeedyMailer.Drones;
+using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class IntegrationMongoDbHelper
 	{
+		private IKernel _droneKernel;
+
+		public IntegrationMongoDbHelper(IKernel droneKernel)
+		{
+			_droneKernel = droneKernel;
+		}
+
 		public void StartMongo()
 		{
 			MongoRunner.Start();
 
-			try
+			var waitForMongoToStart = true;
+
+			while (waitForMongoToStart)
 			{
-				var manager = new GenericRecordManager<SocketCycling>(IntergrationHelpers.DefaultStoreUri());
-				manager.BatchInsert(new[] { new SocketCycling(), });
-			}
-			catch (Exception)
-			{
-				Trace.WriteLine("Mongo socket was garbage collected");
+				try
+				{
+//					var manager = new GenericRecordManager<SocketCycling>(IntergrationHelpers.DefaultStoreUri());
+//					manager.BatchInsert(new[] { new SocketCycling() });
+//					new[] {typeof (CoreAssemblyMarker).Assembly, typeof (DroneAssemblyMarker).Assembly}
+//						.SelectMany(x => x.GetExportedTypes())
+//						.Where(x => x.GetInterfaces().Any(i => i == typeof (ICycleSocket)))
+//						.ToList()
+//						.ForEach(x =>
+//							         {
+//								         var store = _droneKernel.Get(x) as ICycleSocket;
+//								         store.CycleSocket();
+//							         });
+
+					var server = MongoServer.Create(new MongoUrl("mongodb://localhost:27027/drone?safe=true"));
+					server.Connect();
+
+
+					waitForMongoToStart = false;
+				}
+				catch (Exception ex)
+				{
+					Trace.WriteLine("Mongo socket was garbage collected " + ex.Message);
+
+					Thread.Sleep(500);
+
+					waitForMongoToStart = true;
+				}
 			}
 
 			while (!Process.GetProcessesByName("mongod").Any())
 			{
 				Thread.Sleep(500);
 			}
-
-
 		}
 
 		public void ShutdownMongo()
@@ -62,9 +97,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private void DeleteMongoDbTempDataFolder(IEnumerable<int> ports)
 		{
-			ports
-				.ToList()
-				.ForEach(x => Directory.Delete("mongodb_" + x, true));
+			ports.ToList().ForEach(x => Directory.Delete("mongodb_" + x, true));
 		}
 
 		private static void WaitForShutdownToComplete()

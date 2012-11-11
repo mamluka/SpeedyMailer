@@ -18,19 +18,41 @@ namespace SpeedyMailer.Core.Domain.Mail
 	{
 	}
 
-	public interface IHasDomainGroup
-	{
-		string DomainGroup { get; set; }
-	}
-
-	public class MailSent:IHasDomainGroup,IHasRecipient
+	public class MailSent : IHasDomainGroup, IHasRecipient
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
-		
+
 		public string Recipient { get; set; }
 		public DateTime Time { get; set; }
 		public string DomainGroup { get; set; }
+	}
+
+	public class MailBounced : IHasDomainGroup, IHasRecipient, IHasRelayMessage
+	{
+		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+		public virtual string Id { get; set; }
+
+		public string Recipient { get; set; }
+		public DateTime Time { get; set; }
+		public string DomainGroup { get; set; }
+		public string Message { get; set; }
+	}
+
+	public class MailDeferred : IHasDomainGroup, IHasRecipient, IHasRelayMessage
+	{
+		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+		public virtual string Id { get; set; }
+
+		public string Recipient { get; set; }
+		public DateTime Time { get; set; }
+		public string DomainGroup { get; set; }
+		public string Message { get; set; }
+	}
+
+	public interface IHasDomainGroup
+	{
+		string DomainGroup { get; set; }
 	}
 
 	public interface IHasRecipient
@@ -38,26 +60,9 @@ namespace SpeedyMailer.Core.Domain.Mail
 		string Recipient { get; set; }
 	}
 
-	public class MailBounced : IHasDomainGroup, IHasRecipient
+	public interface IHasRelayMessage
 	{
-		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
-		public virtual string Id { get; set; }
-		
-		public string Recipient { get; set; }
-		public DateTime Time { get; set; }
-		public string DomainGroup { get; set; }
-		public string Message { get; set; }
-	}
-
-	public class MailDeferred : IHasDomainGroup, IHasRecipient
-	{
-		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
-		public virtual string Id { get; set; }
-
-		public string Recipient { get; set; }
-		public DateTime Time { get; set; }
-		public string DomainGroup { get; set; }
-		public string Message { get; set; }
+		string Message { get; set; }
 	}
 
 	public class AggregatedMailEvents<T>

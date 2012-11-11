@@ -1,11 +1,11 @@
 namespace SpeedyMailer.Core.Evens
 {
-	public abstract class HappendOn<T>:HappandOn
+	public interface IHappendOn<in T> : IHappendOn
 	{
-		public abstract void Inspect(T data);
+		void Inspect(T data);
 	}
 
-	public class HappandOn
+	public interface IHappendOn
 	{
 	}
 }

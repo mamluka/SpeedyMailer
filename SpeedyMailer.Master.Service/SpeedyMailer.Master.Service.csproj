@@ -116,6 +116,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Modules\DealsModule.cs" />
+    <Compile Include="Modules\HeuristicsModule.cs" />
     <Compile Include="Modules\LeakModule.cs" />
     <Compile Include="Modules\ListsModule.cs" />
     <Compile Include="Modules\CreativeModule.cs" />

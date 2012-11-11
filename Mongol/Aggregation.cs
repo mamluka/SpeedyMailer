@@ -101,7 +101,7 @@ namespace Mongol {
 			/// </summary>
 			public static BsonElement ByNothing {
 				get {
-					return new BsonElement(RecordManager.ID_FIELD, BsonNull.Value);
+					return new BsonElement(RecordManager.IdField, BsonNull.Value);
 				}
 			}
 
@@ -110,7 +110,7 @@ namespace Mongol {
 			/// </summary>
 			/// <param name="Field">The name of the field to group by</param>
 			public static BsonElement By(string Field) {
-				return new BsonElement(RecordManager.ID_FIELD, "$" + Field);
+				return new BsonElement(RecordManager.IdField, "$" + Field);
 			}
 
 			/// <summary>
@@ -125,7 +125,7 @@ namespace Mongol {
 				foreach (string field in Fields) {
 					docFields.Add(field, 1);
 				}
-				return new BsonElement(RecordManager.ID_FIELD, docFields);
+				return new BsonElement(RecordManager.IdField, docFields);
 			}
 
 			/// <summary>
@@ -245,7 +245,7 @@ namespace Mongol {
 			/// </summary>
 			/// <param name="ascending">True if ascending (default), false if descending</param>
 			public static BsonDocument ById(bool ascending = true) {
-				return new BsonDocument(RecordManager.ID_FIELD, ascending?1:-1);
+				return new BsonDocument(RecordManager.IdField, ascending?1:-1);
 			}
 		}
 

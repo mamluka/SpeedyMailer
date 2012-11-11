@@ -2,28 +2,42 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Commands
 {
-	public class ClassifyBouncedMailCommand:Command<BounceType>
+	public class ClassifyNonDeliveredMailCommand : Command<BounceType>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
 
 		public string Message { get; set; }
 
-		public ClassifyBouncedMailCommand(OmniRecordManager omniRecordManager)
+		public ClassifyNonDeliveredMailCommand(OmniRecordManager omniRecordManager)
 		{
 			_omniRecordManager = omniRecordManager;
 		}
 
 		public override BounceType Execute()
 		{
-			var heuristics = _omniRecordManager.GetSingle<HardBounceHeuristics>();
+			var heuristics = _omniRecordManager.GetSingle<UnDeliveredMailClassificationHeuristicsRules>();
 
-			var hardBounce = heuristics.HardBounceRules.Any(x => Regex.Match(Message, x).Success);
+			if (heuristics == null)
+				return BounceType.NotClassified;
 
-			return hardBounce ? BounceType.HardBounce : BounceType.NotClassified;
+			var rules = heuristics
+				.HardBounceRules
+				.EmptyIfNull()
+				.Select(x => new {Rule = x, BounceType = BounceType.HardBounce})
+				.Union(heuristics
+					       .IpBlockingRules
+					       .EmptyIfNull()
+					       .Select(x => new {Rule = x, BounceType = BounceType.IpBlocked})
+				);
+
+			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Rule).Success);
+
+			return hardBounce != null ? hardBounce.BounceType : BounceType.NotClassified;
 		}
 	}
 }

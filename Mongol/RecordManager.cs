@@ -16,6 +16,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization;
@@ -32,9 +34,9 @@ namespace Mongol
 		/// <summary>
 		/// The field name MongoDB uses for the _id field.  Useful when specifying query or update operations against the ID field to avoid duplicating "magic string" constants.
 		/// </summary>
-		public const string ID_FIELD = "_id";
-		protected const string AGGREGATE_COMMAND = "aggregate";
-		protected const string PIPELINE_PARAMETER = "pipeline";
+		public const string IdField = "_id";
+		protected const string AggregateCommand = "aggregate";
+		protected const string PipelineParameter = "pipeline";
 	}
 
 	/// <summary>
@@ -129,12 +131,9 @@ namespace Mongol
 			if (id == null)
 			{
 				logger.Error("Delete() called without specifying an Id");
-				throw new ArgumentNullException("Id must be specified for deletion.");
+				throw new ArgumentNullException("id");
 			}
-			else
-			{
-				Collection.Remove(QueryCriteria_ById(id));
-			}
+			Collection.Remove(QueryCriteria_ById(id));
 		}
 
 		/// <summary>
@@ -165,7 +164,7 @@ namespace Mongol
 			}
 			var array = ids.ToArray();
 			logger.Debug(m => m("GetManyByIds(ListOfIds.Length=" + array.Length + ")"));
-			return Collection.Find(Query.In(ID_FIELD, new BsonArray(array)));
+			return Collection.Find(Query.In(IdField, new BsonArray(array)));
 		}
 
 		/// <summary>
@@ -211,14 +210,11 @@ namespace Mongol
 				logger.Error("Cannot Save a null record.");
 				throw new ArgumentNullException("record", "Cannot save a null record.");
 			}
-			else
-			{
-				logger.Debug(m => m("Save({0})", record));
-				OnBeforeSave(record);
-				var safeModeResult = Collection.Save(record);
-				OnAfterSave(record);
-				return safeModeResult == null || !safeModeResult.UpdatedExisting;
-			}
+			logger.Debug(m => m("Save({0})", record));
+			OnBeforeSave(record);
+			var safeModeResult = Collection.Save(record);
+			OnAfterSave(record);
+			return safeModeResult == null || !safeModeResult.UpdatedExisting;
 		}
 
 		/// <summary>
@@ -451,7 +447,7 @@ namespace Mongol
 				logger.Error("Attempted to call QueryCriteriaById with a null Id");
 				throw new ArgumentNullException("Id", "Cannot QueryCriteriaById with a null Id");
 			}
-			return Query.EQ(ID_FIELD, BsonValue.Create(Id));
+			return Query.EQ(IdField, BsonValue.Create(Id));
 		}
 
 		/// <summary>
@@ -466,7 +462,7 @@ namespace Mongol
 				logger.Error("Attempted to call QueryCriteriaById with a null Id");
 				throw new ArgumentNullException("Id", "Cannot QueryCriteriaById with a null Id");
 			}
-			return Query.In(ID_FIELD, BsonArray.Create(IdList));
+			return Query.In(IdField, BsonArray.Create(IdList));
 		}
 
 		/// <summary>
@@ -510,8 +506,8 @@ namespace Mongol
 		protected IEnumerable<BsonDocument> Aggregate(IEnumerable<BsonDocument> pipeline)
 		{
 			CommandDocument docAggregationCommand = new CommandDocument() {
-            				{ AGGREGATE_COMMAND, Collection.Name },
-            				{ PIPELINE_PARAMETER, BsonArray.Create(pipeline.Where(x => x!=null)) }
+            				{ AggregateCommand, Collection.Name },
+            				{ PipelineParameter, BsonArray.Create(pipeline.Where(x => x!=null)) }
             			};
 			var response = Collection.Database.RunCommand(docAggregationCommand);
 			return response.Response.AsBsonDocument.GetValue("result").AsBsonArray.Select(x => x.AsBsonDocument);

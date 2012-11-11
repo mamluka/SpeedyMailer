@@ -33,6 +33,14 @@
     <Reference Include="HtmlAgilityPack">
       <HintPath>..\libs\HTMLAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson, Version=1.6.1.4678, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\mongocsharpdriver.1.6.1\lib\net35\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver, Version=1.6.1.4678, Culture=neutral, PublicKeyToken=f686731cfb9cc103, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\mongocsharpdriver.1.6.1\lib\net35\MongoDB.Driver.dll</HintPath>
+    </Reference>
     <Reference Include="Ninject">
       <HintPath>..\packages\Ninject.Mono.3.0.1.13\lib\net40\Ninject.dll</HintPath>
     </Reference>
@@ -88,12 +96,6 @@
     <Reference Include="CsvHelper">
       <HintPath>..\packages\CsvHelper.1.8.0\lib\net40-client\CsvHelper.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Bson">
-      <HintPath>..\packages\mongocsharpdriver.1.6\lib\net35\MongoDB.Bson.dll</HintPath>
-    </Reference>
-    <Reference Include="MongoDB.Driver">
-      <HintPath>..\packages\mongocsharpdriver.1.6\lib\net35\MongoDB.Driver.dll</HintPath>
-    </Reference>
     <Reference Include="Nancy">
       <HintPath>..\packages\Nancy.0.12.1\lib\net40\Nancy.dll</HintPath>
     </Reference>
@@ -147,6 +149,7 @@
     <Compile Include="Apis\ServiceAdminEndpoints.cs" />
     <Compile Include="Apis\ServiceCreativeEndpoints.cs" />
     <Compile Include="Apis\ServiceDronesEndpoints.cs" />
+    <Compile Include="Apis\ServiceHeuriticsEndpoints.cs" />
     <Compile Include="Apis\ServiceListsEndpoints.cs" />
     <Compile Include="Apis\ServiceRulesEndpoints.cs" />
     <Compile Include="Apis\ServiceTemplatesEndpoints.cs" />
@@ -197,7 +200,8 @@
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
-    <Compile Include="Domain\Mail\HardBounceHeuristics.cs" />
+    <Compile Include="Domain\Mail\IpBlockingGroups.cs" />
+    <Compile Include="Domain\Mail\UnDeliveredMailClassificationHeuristicsRules.cs" />
     <Compile Include="Domain\Mail\BounceType.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />

@@ -14,7 +14,7 @@ namespace SpeedyMailer.Core.Evens
 
 		public void ExecuteAll<TEventData>(TEventData eventData)
 		{
-			_kernel.GetAll<HappendOn<TEventData>>()
+			_kernel.GetAll<IHappendOn<TEventData>>()
 				.ToList()
 				.ForEach(x=> x.Inspect(eventData));
 		}

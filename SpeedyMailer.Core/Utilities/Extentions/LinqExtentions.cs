@@ -8,7 +8,12 @@ namespace SpeedyMailer.Core.Utilities.Extentions
 {
     public static class LinqExtentions
     {
-        public static IEnumerable<IEnumerable<T>> Clump<T>(this IEnumerable<T> source, int size)
+		public static IEnumerable<T> EmptyIfNull<T> (this IEnumerable<T> target )
+		{
+			return target ?? Enumerable.Empty<T>();
+		}
+
+	    public static IEnumerable<IEnumerable<T>> Clump<T>(this IEnumerable<T> source, int size)
         {
             if (source == null)
                 throw new ArgumentNullException("source");

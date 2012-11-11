@@ -4,11 +4,11 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace SpeedyMailer.Core.Domain.Mail
 {
-	public class HardBounceHeuristics
+	public class IpBlockingGroups
 	{
 		[BsonId(IdGenerator = typeof (StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
 
-		public IList<string> HardBounceRules { get; set; }
+		public List<string> Groups { get; set; }
 	}
 }

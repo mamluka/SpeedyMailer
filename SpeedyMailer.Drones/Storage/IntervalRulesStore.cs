@@ -7,7 +7,7 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Storage
 {
-	public class IntervalRulesStore : RecordManager<IntervalRule>
+	public class IntervalRulesStore : RecordManager<IntervalRule>,ICycleSocket
 	{
 		public IntervalRulesStore(DroneSettings droneSettings)
 			: base(droneSettings.StoreHostname, null)
@@ -21,6 +21,11 @@ namespace SpeedyMailer.Drones.Storage
 		public IList<IntervalRule> GetAll()
 		{
 			return Collection.FindAllAs<IntervalRule>().ToList();
+		}
+
+		public void CycleSocket()
+		{
+			Count();
 		}
 	}
 }

@@ -32,7 +32,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	{
 		public IKernel Kernel { get; set; }
 
-		private IList<int> RunningMongoPorts = new List<int>();
+		private readonly IList<int> RunningMongoPorts = new List<int>();
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
@@ -119,7 +119,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void StopAllDroneStores()
 		{
-			var mongodb = new IntegrationMongoDbHelper();
+			var mongodb = new IntegrationMongoDbHelper(Kernel);
 
 			mongodb.ShutdownMongo(RunningMongoPorts);
 		}
@@ -163,6 +163,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			st.Stop();
 			manager.Exists().Should().BeTrue("Waiting for {0} to exist in the database", typeof(T).Name);
+		}
+
+		public T FindSingle<T>(string collectionName = null) where T : class
+		{
+			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
+			return manager.AsQueryable.FirstOrDefault();
 		}
 	}
 }

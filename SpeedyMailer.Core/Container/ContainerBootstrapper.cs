@@ -47,7 +47,7 @@ namespace SpeedyMailer.Core.Container
 
 			kernel.Bind(x => ApplyBindFunction(x, fromFunction, bindFunction, selectFunction).Configure(_currentOptions.ConfigurationAction));
 			kernel.Load(GetAssembliesToAnalyze());
-			kernel.Bind(x => fromFunction(x).Select(type => type.IsSubclassOf(typeof(HappandOn))).BindWith<HappendOnBindingGenerator>());
+			kernel.Bind(x => fromFunction(x).Select(type => typeof(IHappendOn).IsAssignableFrom(type)).BindWith<HappendOnBindingGenerator>());
 
 			BindDatabase(kernel);
 			BindSettings(kernel);
@@ -204,11 +204,17 @@ namespace SpeedyMailer.Core.Container
 		}
 	}
 
-	public class HappendOnBindingGenerator:IBindingGenerator
+	public class HappendOnBindingGenerator : IBindingGenerator
 	{
 		public IEnumerable<IBindingWhenInNamedWithOrOnSyntax<object>> CreateBindings(Type type, IBindingRoot bindingRoot)
 		{
-			return new[] { bindingRoot.Bind(type.BaseType).To(type) };
+			if (type == typeof(IHappendOn) || type == typeof(IHappendOn<>))
+				return new IBindingWhenInNamedWithOrOnSyntax<object>[0];
+
+			return type
+				.GetInterfaces()
+				.Select(x => bindingRoot.Bind(x).To(type))
+				.ToList();
 		}
 	}
 

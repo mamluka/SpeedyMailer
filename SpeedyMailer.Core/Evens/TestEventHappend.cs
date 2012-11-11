@@ -3,7 +3,7 @@ using SpeedyMailer.Core.Tasks;
 
 namespace SpeedyMailer.Core.Evens
 {
-	public class TestEventHappend:HappendOn<TestEventData>
+	public class TestEventHappend:IHappendOn<TestEventData>
 	{
 		private readonly IDocumentStore _documentStore;
 
@@ -12,7 +12,7 @@ namespace SpeedyMailer.Core.Evens
 			_documentStore = documentStore;
 		}
 
-		public override void Inspect(TestEventData data)
+		public void Inspect(TestEventData data)
 		{
 			using (var session = _documentStore.OpenSession())
 			{
@@ -28,7 +28,7 @@ namespace SpeedyMailer.Core.Evens
 		}
 	}
 	
-	public class AnotherTestEventHappend:HappendOn<TestEventData>
+	public class AnotherTestEventHappend:IHappendOn<TestEventData>
 	{
 		private readonly IDocumentStore _documentStore;
 
@@ -37,7 +37,7 @@ namespace SpeedyMailer.Core.Evens
 			_documentStore = documentStore;
 		}
 
-		public override void Inspect(TestEventData data)
+		public void Inspect(TestEventData data)
 		{
 			using (var session = _documentStore.OpenSession())
 			{

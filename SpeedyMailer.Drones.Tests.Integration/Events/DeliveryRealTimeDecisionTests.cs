@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
-using Quartz;
-using Quartz.Impl.Matchers;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
-using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Events;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
@@ -23,30 +18,58 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		{ }
 
 		[Test]
-		public void Inspect_WhenGivenABounceEventAndTheBounceAnalyzerSayingItsABadBounce_ShouldNotStopSendingForTheGivenGroup()
+		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldStopSendingForTheGivenGroup()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-			{
-				x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-				x.MailingDomain = "example.com";
+				                                            {
+					                                            x.WritingEmailsToDiskPath = "dev/null";
+					                                            x.MailingDomain = "example.com";
 
-			});
+				                                            });
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             AddCreativePackage(),
-					                             AddCreativePackage()
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
 				                             });
 
-			var task = new SendCreativePackagesWithIntervalTask(x =>
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
 																		x.FromName = "davud";
 																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1)
 				);
 
-			DroneActions.StartScheduledTask(task);
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "hotmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
+								   {
+									   HardBounceRules = new List<string>
+						                                     {
+							                                     "account.+?disabled",
+						                                     },
+									   IpBlockingRules = new List<string>
+						                                     {
+							                                     "bad bounce"
+						                                     }
+								   });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -55,26 +78,449 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 							                                                                          new MailBounced
 								                                                                          {
 									                                                                          DomainGroup = "gmail",
-																											  Recipient = "david@gmail.com",
-																											  Message = "message meaning its a bad bounce"
+									                                                                          Recipient = "david@gmail.com",
+									                                                                          Message = "message meaning its a bad bounce"
 								                                                                          }
 						                                                                          };
 																		   });
 
-			var scheduler = DroneResolve<IScheduler>();
-
-			var groups = scheduler.GetJobGroupNames();
-
-			var jobKeys = groups.SelectMany(x => scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
-
-			jobKeys.Should().NotContain(x => x.Name.Contains("SendCreativePackagesWithIntervalTask"));
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobWasRemoved<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
 		}
 
-		private static CreativePackage AddCreativePackage()
+		[Test]
+		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpDeferral_ShouldStopSendingForTheGivenGroup()
+		{
+
+			
+
+			DroneActions.EditSettings<EmailingSettings>(x =>
+				                                            {
+					                                            x.WritingEmailsToDiskPath = "dev/null";
+					                                            x.MailingDomain = "example.com";
+
+				                                            });
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "hotmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
+								   {
+									   HardBounceRules = new List<string>
+						                                     {
+							                                     "account.+?disabled",
+						                                     },
+									   IpBlockingRules = new List<string>
+						                                     {
+							                                     "DNSBL"
+						                                     }
+								   });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
+																		   {
+																			   x.MailEvents = new List<MailDeferred>
+						                                                                          {
+							                                                                          new MailDeferred
+								                                                                          {
+									                                                                          DomainGroup = "gmail",
+									                                                                          Recipient = "david@gmail.com",
+									                                                                          Message = "deferred mail because of DNSBL"
+								                                                                          }
+						                                                                          };
+																		   });
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobWasRemoved<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+		}
+
+		[Test]
+		public void Inspect_WhenRulesAreNotMatchingForBouncedMail_ShouldDoNothing()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+			{
+				x.WritingEmailsToDiskPath = "dev/null";
+				x.MailingDomain = "example.com";
+
+			});
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "hotmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
+								   {
+									   HardBounceRules = new List<string>
+						                                     {
+							                                     "account.+?disabled",
+						                                     },
+									   IpBlockingRules = new List<string>
+						                                     {
+							                                     "DNSBL"
+						                                     }
+								   });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
+																		   {
+																			   x.MailEvents = new List<MailBounced>
+						                                                                          {
+							                                                                          new MailBounced
+								                                                                          {
+									                                                                          DomainGroup = "gmail",
+									                                                                          Recipient = "david@gmail.com",
+									                                                                          Message = "message meaning its a good bounce"
+								                                                                          }
+						                                                                          };
+																		   });
+
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+		}
+
+		[Test]
+		public void Inspect_WhenRulesAreNotMatchingForDeferredMail_ShouldDoNothing()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+			{
+				x.WritingEmailsToDiskPath = "dev/null";
+				x.MailingDomain = "example.com";
+
+			});
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "hotmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
+								   {
+									   HardBounceRules = new List<string>
+						                                     {
+							                                     "account.+?disabled",
+						                                     },
+									   IpBlockingRules = new List<string>
+						                                     {
+							                                     "DNSBL"
+						                                     }
+								   });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
+																			{
+																				x.MailEvents = new List<MailDeferred>
+						                                                                           {
+							                                                                           new MailDeferred
+								                                                                           {
+									                                                                           DomainGroup = "gmail",
+									                                                                           Recipient = "david@gmail.com",
+									                                                                           Message = "deferred message because of real cause"
+								                                                                           }
+						                                                                           };
+																			});
+
+
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+		}
+
+		[Test]
+		public void Inspect_WhenThereAreNoRules_ShouldDoNothing()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+			{
+				x.WritingEmailsToDiskPath = "dev/null";
+				x.MailingDomain = "example.com";
+
+			});
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.FromName = "davud";
+																		x.FromAddressDomainPrefix = "sales";
+																		x.Group = "hotmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
+																			{
+																				x.MailEvents = new List<MailDeferred>
+						                                                                           {
+							                                                                           new MailDeferred
+								                                                                           {
+									                                                                           DomainGroup = "gmail",
+									                                                                           Recipient = "david@gmail.com",
+									                                                                           Message = "deferred message because of real cause"
+								                                                                           }
+						                                                                           };
+																			});
+
+
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+		}
+
+		[Test]
+		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldPersistTheNonSendingPolicy()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+				                                            {
+					                                            x.WritingEmailsToDiskPath = "dev/null";
+					                                            x.MailingDomain = "example.com";
+
+				                                            });
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+				                                                     {
+					                                                     x.FromName = "davud";
+					                                                     x.FromAddressDomainPrefix = "sales";
+					                                                     x.Group = "gmail";
+				                                                     },
+			                                                     x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+				                                                     {
+					                                                     x.FromName = "davud";
+					                                                     x.FromAddressDomainPrefix = "sales";
+					                                                     x.Group = "hotmail";
+				                                                     },
+			                                                     x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
+				                   {
+					                   HardBounceRules = new List<string>
+						                                     {
+							                                     "account.+?disabled",
+						                                     },
+					                   IpBlockingRules = new List<string>
+						                                     {
+							                                     "bad bounce"
+						                                     }
+				                   });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
+				                                                           {
+					                                                           x.MailEvents = new List<MailBounced>
+						                                                                          {
+							                                                                          new MailBounced
+								                                                                          {
+									                                                                          DomainGroup = "gmail",
+									                                                                          Recipient = "david@gmail.com",
+									                                                                          Message = "message meaning its a bad bounce"
+								                                                                          }
+						                                                                          };
+				                                                           });
+
+			DroneActions.WaitForDocumentToExist<IpBlockingGroups>();
+
+			var result = DroneActions.FindSingle<IpBlockingGroups>();
+
+			result.Groups.Should().OnlyContain(x => x == "gmail");
+		}
+		
+		[Test]
+		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldPersistTheNonSendingPolicy()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+				                                            {
+					                                            x.WritingEmailsToDiskPath = "dev/null";
+					                                            x.MailingDomain = "example.com";
+
+				                                            });
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+				                                                     {
+					                                                     x.FromName = "davud";
+					                                                     x.FromAddressDomainPrefix = "sales";
+					                                                     x.Group = "gmail";
+				                                                     },
+			                                                     x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+				                                                     {
+					                                                     x.FromName = "davud";
+					                                                     x.FromAddressDomainPrefix = "sales";
+					                                                     x.Group = "hotmail";
+				                                                     },
+			                                                     x => x.WithIntervalInHours(1)
+				);
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+
+			Jobs.Drone().WaitForJobToStart(task1);
+			Jobs.Drone().WaitForJobToStart(task2);
+
+			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
+				                   {
+					                   HardBounceRules = new List<string>
+						                                     {
+							                                     "account.+?disabled",
+						                                     },
+					                   IpBlockingRules = new List<string>
+						                                     {
+							                                     "ip blocked"
+						                                     }
+				                   });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
+				                                                           {
+					                                                           x.MailEvents = new List<MailDeferred>
+						                                                                          {
+							                                                                          new MailDeferred()
+								                                                                          {
+									                                                                          DomainGroup = "gmail",
+									                                                                          Recipient = "david@gmail.com",
+									                                                                          Message = "ip blocked"
+								                                                                          }
+						                                                                          };
+				                                                           });
+
+			DroneActions.WaitForDocumentToExist<IpBlockingGroups>();
+
+			var result = DroneActions.FindSingle<IpBlockingGroups>();
+
+			result.Groups.Should().OnlyContain(x => x == "gmail");
+		}
+
+		private static CreativePackage AddCreativePackage(string domainGroup)
 		{
 			return new CreativePackage
 					   {
-						   Group = "gmail",
+						   Group = domainGroup,
 						   Subject = "test",
 						   Body = "body",
 						   To = "david@david.com"

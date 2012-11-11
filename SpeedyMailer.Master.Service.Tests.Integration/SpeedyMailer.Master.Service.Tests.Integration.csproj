@@ -143,6 +143,7 @@
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Modules\DealsModuleTests.cs" />
     <Compile Include="Modules\DronesModuleTests.cs" />
+    <Compile Include="Modules\HeuristicsModuleTests.cs" />
     <Compile Include="Modules\ListsModuleTests.cs" />
     <Compile Include="Modules\RulesModuleTests.cs" />
     <Compile Include="Modules\TemplatesModuleTests.cs" />

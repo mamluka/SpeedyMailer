@@ -51,6 +51,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public IntegrationMongoDbHelper MongoDb { get; set; }
 
+		public IntergrationJobsHelper Jobs { get; set; }
+
 		protected static IList<object> EventRegistry { get; set; }
 
 		public IntegrationTestBase()
@@ -93,7 +95,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Store = new IntegrationStoreHelpers(DocumentStore);
 			Email = new IntegrationEmailHelpers();
 			Tasks = new IntegrationTasksHelpers(Store);
-			MongoDb = new IntegrationMongoDbHelper();
+			MongoDb = new IntegrationMongoDbHelper(DroneKernel);
+			Jobs = new IntergrationJobsHelper(MasterResolve<IScheduler>(),DroneResolve<IScheduler>());
 
 			if (_options.UseMongo)
 				MongoDb.StartMongo();
@@ -140,9 +143,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public void Teardown()
 		{
 			ServiceActions.Stop();
+			ClearJobsFromSchedulers();
 			Email.DeleteEmails();
 			DeleteJsonSettingFiles();
-			ClearJobsFromSchedulers();
 			DroneActions.StopAllDroneStores();
 
 			Api.StopListeningToApiCalls();
@@ -255,20 +258,19 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		protected void ListenToEvent<T>()
 		{
-			var generateMock = MockRepository.GenerateMock<HappendOn<T>>();
+			var generateMock = MockRepository.GenerateMock<IHappendOn<T>>();
 			generateMock.Stub(x => x.Inspect(Arg<T>.Is.Anything)).Do(new Action<T>(x => EventRegistry.Add(x)));
-			DroneKernel.Bind<HappendOn<T>>().ToConstant(generateMock);
+			DroneKernel.Bind<IHappendOn<T>>().ToConstant(generateMock);
 		}
 
 		protected void FireEvent<TEvent, TEventData>(Action<TEventData> action)
 			where TEventData : new()
-			where TEvent : HappendOn<TEventData>
+			where TEvent : IHappendOn<TEventData>
 		{
 			var eventData = new TEventData();
 			action(eventData);
 
-			DroneResolveAll<HappendOn<TEventData>>().OfType<TEvent>().First().Inspect(eventData);
-
+			DroneResolveAll<IHappendOn<TEventData>>().OfType<TEvent>().First().Inspect(eventData);
 		}
 	}
 }

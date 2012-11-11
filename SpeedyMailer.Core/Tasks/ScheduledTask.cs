@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Tasks
 				.Build();
 		}
 
-		protected virtual string GetNamePrefix()
+		public virtual string GetNamePrefix()
 		{
 			return Name;
 		}
@@ -58,7 +58,7 @@ namespace SpeedyMailer.Core.Tasks
 		protected ScheduledTaskWithData()
 		{ }
 
-		protected override string GetNamePrefix()
+		public override string GetNamePrefix()
 		{
 			return base.GetNamePrefix() + "_" + TaskData.GetHashCode() + "_";
 		}
