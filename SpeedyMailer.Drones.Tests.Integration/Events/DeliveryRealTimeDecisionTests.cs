@@ -41,7 +41,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -50,7 +50,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -115,7 +115,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -124,7 +124,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -186,7 +186,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -195,7 +195,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -258,7 +258,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -267,7 +267,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -331,7 +331,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -340,7 +340,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
-																x => x.WithIntervalInHours(1)
+																x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -392,7 +392,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					                                                     x.FromAddressDomainPrefix = "sales";
 					                                                     x.Group = "gmail";
 				                                                     },
-			                                                     x => x.WithIntervalInHours(1)
+			                                                     x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -401,7 +401,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					                                                     x.FromAddressDomainPrefix = "sales";
 					                                                     x.Group = "hotmail";
 				                                                     },
-			                                                     x => x.WithIntervalInHours(1)
+			                                                     x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -466,7 +466,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					                                                     x.FromAddressDomainPrefix = "sales";
 					                                                     x.Group = "gmail";
 				                                                     },
-			                                                     x => x.WithIntervalInHours(1)
+			                                                     x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
@@ -475,7 +475,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					                                                     x.FromAddressDomainPrefix = "sales";
 					                                                     x.Group = "hotmail";
 				                                                     },
-			                                                     x => x.WithIntervalInHours(1)
+			                                                     x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
