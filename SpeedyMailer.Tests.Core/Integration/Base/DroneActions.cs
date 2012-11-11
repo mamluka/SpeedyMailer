@@ -119,7 +119,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void StopAllDroneStores()
 		{
-			var mongodb = new IntegrationMongoDbHelper(Kernel);
+			var mongodb = new IntegrationMongoDbHelper(Kernel.Get<DroneSettings>().StoreHostname);
 
 			mongodb.ShutdownMongo(RunningMongoPorts);
 		}
@@ -155,7 +155,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			var st = new Stopwatch();
 			st.Start();
-			
+
 			while (st.ElapsedMilliseconds < 30 * 1000 && !manager.Exists())
 			{
 				Thread.Sleep(500);

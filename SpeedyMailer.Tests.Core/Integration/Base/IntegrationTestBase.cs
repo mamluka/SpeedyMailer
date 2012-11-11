@@ -16,6 +16,7 @@ using Raven.Client.Embedded;
 using Raven.Database.Server;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Evens;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Tests.Core.Unit.Base;
@@ -75,7 +76,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			DefaultBaseUrl = IntergrationHelpers.GenerateRandomLocalhostAddress();
 
+			Api = new IntegrationApiHelpers(DefaultBaseUrl);
+			Store = new IntegrationStoreHelpers(DocumentStore);
+			Email = new IntegrationEmailHelpers();
+			Tasks = new IntegrationTasksHelpers(Store);
+			MongoDb = new IntegrationMongoDbHelper(DroneKernel.Get<DroneSettings>().StoreHostname);
+			Jobs = new IntergrationJobsHelper(MasterResolve<IScheduler>(), DroneResolve<IScheduler>());
+
 			IntergrationHelpers.ValidateSettingClasses();
+
+			if (_options.UseMongo)
+				MongoDb.StartMongo();
 		}
 
 		[SetUp]
@@ -91,15 +102,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			ExtraSetup();
 			ClearEventRegistry();
 
-			Api = new IntegrationApiHelpers(DefaultBaseUrl);
-			Store = new IntegrationStoreHelpers(DocumentStore);
-			Email = new IntegrationEmailHelpers();
-			Tasks = new IntegrationTasksHelpers(Store);
-			MongoDb = new IntegrationMongoDbHelper(DroneKernel);
-			Jobs = new IntergrationJobsHelper(MasterResolve<IScheduler>(),DroneResolve<IScheduler>());
-
 			if (_options.UseMongo)
-				MongoDb.StartMongo();
+				MongoDb.DropDatabase();
 		}
 
 		private void ClearEventRegistry()
@@ -147,11 +151,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Email.DeleteEmails();
 			DeleteJsonSettingFiles();
 			DroneActions.StopAllDroneStores();
-
 			Api.StopListeningToApiCalls();
-
-			if (_options.UseMongo)
-				MongoDb.ShutdownMongo();
 
 			ExtraTeardown();
 		}
@@ -161,6 +161,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			ClearJobsFromSchedulers();
 			DeleteJsonSettingFiles();
+
+			if (_options.UseMongo)
+				MongoDb.ShutdownMongo();
 		}
 
 		private void ClearJobsFromSchedulers()

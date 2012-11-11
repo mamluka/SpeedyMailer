@@ -18,50 +18,16 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class IntegrationMongoDbHelper
 	{
-		private IKernel _droneKernel;
+		private string _storeHostName;
 
-		public IntegrationMongoDbHelper(IKernel droneKernel)
+		public IntegrationMongoDbHelper(string storeHostName)
 		{
-			_droneKernel = droneKernel;
+			_storeHostName = storeHostName;
 		}
 
 		public void StartMongo()
 		{
 			MongoRunner.Start();
-
-			var waitForMongoToStart = true;
-
-			while (waitForMongoToStart)
-			{
-				try
-				{
-//					var manager = new GenericRecordManager<SocketCycling>(IntergrationHelpers.DefaultStoreUri());
-//					manager.BatchInsert(new[] { new SocketCycling() });
-//					new[] {typeof (CoreAssemblyMarker).Assembly, typeof (DroneAssemblyMarker).Assembly}
-//						.SelectMany(x => x.GetExportedTypes())
-//						.Where(x => x.GetInterfaces().Any(i => i == typeof (ICycleSocket)))
-//						.ToList()
-//						.ForEach(x =>
-//							         {
-//								         var store = _droneKernel.Get(x) as ICycleSocket;
-//								         store.CycleSocket();
-//							         });
-
-					var server = MongoServer.Create(new MongoUrl("mongodb://localhost:27027/drone?safe=true"));
-					server.Connect();
-
-
-					waitForMongoToStart = false;
-				}
-				catch (Exception ex)
-				{
-					Trace.WriteLine("Mongo socket was garbage collected " + ex.Message);
-
-					Thread.Sleep(500);
-
-					waitForMongoToStart = true;
-				}
-			}
 
 			while (!Process.GetProcessesByName("mongod").Any())
 			{
@@ -93,6 +59,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			WaitForShutdownToComplete();
 			DeleteMongoDbTempDataFolder(ports);
 
+			MongoServer.GetAllServers().ToList().ForEach(x => x.Disconnect());
+		}
+
+		public void DropDatabase()
+		{
+			var mongoUrl = new MongoUrl(_storeHostName);
+			MongoServer.Create(mongoUrl).GetDatabase(mongoUrl.DatabaseName).Drop();
 		}
 
 		private void DeleteMongoDbTempDataFolder(IEnumerable<int> ports)
