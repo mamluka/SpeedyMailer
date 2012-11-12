@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using MongoDB.Bson;
 using MongoDB.Driver.Builders;
 using Mongol;
 using SpeedyMailer.Core.Domain.Creative;
@@ -9,7 +10,7 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Storage
 {
-	public class CreativePackagesStore : RecordManager<CreativePackage>,ICycleSocket
+	public class CreativePackagesStore : RecordManager<CreativePackage>, ICycleSocket
 	{
 		public CreativePackagesStore(DroneSettings droneSettings)
 			: base(droneSettings.StoreHostname)
@@ -21,6 +22,14 @@ namespace SpeedyMailer.Drones.Storage
 			return Find(Query.EQ(PropertyName(x => x.Group), group)).FirstOrDefault();
 		}
 
+		public IList<string> GetPackageGroups()
+		{
+			return AsQueryable
+				.GroupBy(x => x.Group)
+				.Select(x => x.Key)
+				.ToList();
+		}
+
 		public bool AreThereAnyPackages()
 		{
 			return Count() > 0;
@@ -29,6 +38,13 @@ namespace SpeedyMailer.Drones.Storage
 		public void CycleSocket()
 		{
 			Count();
+		}
+
+		public IList<CreativePackage> GetAll()
+		{
+			return Collection
+				.FindAllAs<CreativePackage>()
+				.ToList();
 		}
 	}
 }

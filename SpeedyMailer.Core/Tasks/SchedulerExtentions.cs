@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using Quartz;
 using Quartz.Impl.Matchers;
 
@@ -17,14 +18,32 @@ namespace SpeedyMailer.Core.Tasks
 			}
 		}
 
-		public static void JobExistWithData<T>(this IScheduler target)
+		public static bool JobExistWithData<TEventData>(this IScheduler target,Func<TEventData,bool> testFunc)
 		{
-			var groups = target.GetJobGroupNames();
-			var data = groups
-				.SelectMany(x => target.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)))
-				.Where(x => x.Name.Contains(typeof(T).Name))
+			return GetCurrentJobs(target)
+				.Where(x => x.Name.Contains(typeof(TEventData).Name))
 				.Select(target.GetJobDetail)
-				.Any();
+				.Select(ConvertToEventData<TEventData>)
+				.Any(testFunc);
+		}
+
+		private static IEnumerable<JobKey> GetCurrentJobs(IScheduler target)
+		{
+			return target
+				.GetJobGroupNames()
+				.SelectMany(x => target.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
+		}
+
+		public static bool IsJobsRunning<TJob>(this IScheduler target)
+		{
+			return GetCurrentJobs(target)
+				.Any(x => x.Name.Contains(typeof (TJob).Name));
+		}
+
+
+		private static TEventData ConvertToEventData<TEventData>(IJobDetail x)
+		{
+			return JsonConvert.DeserializeObject<TEventData>((string)x.JobDataMap["data"]);
 		}
 	}
 }

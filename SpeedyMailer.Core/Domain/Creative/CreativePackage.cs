@@ -13,5 +13,11 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public string Subject { get; set; }
 		public string To { get; set; }
 		public string Group { get; set; }
+
+		public string FromName { get; set; }
+
+		public string FromAddressDomainPrefix { get; set; }
+
+		public int Interval { get; set; }
 	}
 }

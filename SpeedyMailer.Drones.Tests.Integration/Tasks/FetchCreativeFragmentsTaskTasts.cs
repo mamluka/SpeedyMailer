@@ -31,14 +31,24 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenNotAllCreativePackagesAreSent_ShouldNotFetchANewFragment()
+		public void Execute_WhenNotAllCreativePackagesAreSentAndNoSendingJobsAreRunning_ShouldResumeSending()
 		{
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
 			Api.ListenToApiCall<ServiceEndpoints.Creative.FetchFragment>();
 
 			var creativePackage = new CreativePackage
 									  {
-										  Id = "package/1"
+										  Group = "$default$",
+										  Body = "body",
+										  Subject = "subject",
+										  To = "david@david.com"
+
 									  };
 
 			DroneActions.Store(creativePackage);
@@ -47,7 +57,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Api.AssertApiWasntCalled<ServiceEndpoints.Creative.FetchFragment>();
+//			Api.AssertApiWasntCalled<ServiceEndpoints.Creative.FetchFragment>();
+			Email.AssertEmailsSentTo(new[] { "david@david.com" });
 		}
 
 		[Test]

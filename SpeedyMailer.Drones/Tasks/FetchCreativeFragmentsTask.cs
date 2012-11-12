@@ -53,11 +53,11 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				if (_creativePackagesStore.AreThereAnyPackages())
 				{
-					if (GroupSendingJobsAreNotPresent(context))
+					if (!context.Scheduler.IsJobsRunning<SendCreativePackagesWithIntervalTask>())
 					{
-						StartGroupSendimhJobs();
+						var packages = _creativePackagesStore.GetAll();
+						StartGroupSendingJobs(packages);
 					}
-						
 					return;
 				}
 
@@ -72,28 +72,24 @@ namespace SpeedyMailer.Drones.Tasks
 
 				_creativePackagesStore.BatchInsert(creativePackages);
 
-				StartGroupSendimhJobs(recipiens, creativeFragment);
+				StartGroupSendingJobs(creativePackages);
 			}
 
-			private bool GroupSendingJobsAreNotPresent(IJobExecutionContext context)
+			private void StartGroupSendingJobs(IEnumerable<CreativePackage> recipiens)
 			{
-			context.	
-			}
-
-			private void StartGroupSendimhJobs(IEnumerable<Recipient> recipiens, CreativeFragment creativeFragment)
-			{
-				var groups = recipiens.GroupBy(x => x.Group).Select(x => new {Group = x.Key, x.First().Interval, Count = x.Count()}).ToList();
+				var groups = recipiens
+					.GroupBy(x => x.Group)
+					.Select(x => new { Group = x.Key, x.First().Interval, Count = x.Count() })
+					.ToList();
 
 				foreach (var group in groups)
 				{
 					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x =>
-						                                                               {
-							                                                               x.Group = @group.Group;
-							                                                               x.FromName = creativeFragment.FromName;
-							                                                               x.FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix;
-						                                                               },
-					                                                               x => x.WithIntervalInSeconds(@group.Interval).WithRepeatCount(@group.Count)
-						                      ));
+																					   {
+																						   x.Group = @group.Group;
+																					   },
+																				   x => x.WithIntervalInSeconds(@group.Interval).WithRepeatCount(@group.Count)
+											  ));
 				}
 			}
 
@@ -104,7 +100,10 @@ namespace SpeedyMailer.Drones.Tasks
 							Subject = creativeFragment.Subject,
 							Body = PersonalizeBody(creativeFragment, recipient),
 							To = recipient.Email,
-							Group = recipient.Group
+							Group = recipient.Group,
+							FromName = creativeFragment.FromName,
+							FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix,
+							Interval = recipient.Interval
 						};
 			}
 
