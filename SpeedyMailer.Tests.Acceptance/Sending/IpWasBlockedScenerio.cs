@@ -56,7 +56,8 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			AddClassifictionRulesForBlockedIp("gmail has blocked you");
 			SendCreative(creativeId);
 
-			var drone = DroneActions.CreateDrone("drone1", IntergrationHelpers.GenerateRandomLocalhostAddress(), DefaultBaseUrl);
+			var droneAddress = IntergrationHelpers.GenerateRandomLocalhostAddress();
+			var drone = DroneActions.CreateDrone("drone1", droneAddress, DefaultBaseUrl);
 			drone.Initialize();
 			drone.Start();
 
@@ -69,7 +70,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 									   Msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
 								   }, "drone1");
 
-			_api.Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
+			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
 
 			Email.AssertEmailSent(23);
 			Email.AssertEmailsSentTo(csvRows.Take(10).Select(x => x.Email).ToList());
