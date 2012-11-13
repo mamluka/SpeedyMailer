@@ -14,7 +14,6 @@ namespace SpeedyMailer.Drones.Modules
 		public AdminModule(IScheduler scheduler)
 			: base("/admin")
 		{
-			Trace.WriteLine("drone admin module laoded");
 
 			Get["/hello"] = x => Response.AsText("OK");
 

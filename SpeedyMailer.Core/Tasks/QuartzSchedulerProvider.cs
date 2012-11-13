@@ -13,13 +13,12 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		protected override IScheduler CreateInstance(IContext context)
 		{
-			var schedulerFactory = new StdSchedulerFactory(new NameValueCollection { { "quartz.scheduler.instanceName", Guid.NewGuid().ToString() } });
+			var value = Guid.NewGuid().ToString();
+			var schedulerFactory = new StdSchedulerFactory(new NameValueCollection { { "quartz.scheduler.instanceName", value } });
 			var scheduler = schedulerFactory.GetScheduler();
 			scheduler.ListenerManager.AddSchedulerListener(new SchedulerListener());
 			scheduler.JobFactory = context.Kernel.Get<ContainerJobFactory>();
 			scheduler.Start();
-
-			Trace.WriteLine("started scheduler");
 
 			return scheduler;
 		}

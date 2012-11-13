@@ -30,8 +30,7 @@ namespace SpeedyMailer.Core.Tasks
 
 		public static void TriggerTaskByClassName(this IScheduler target, string taskName)
 		{
-			var key = GetCurrentJobs(target).SingleOrDefault(x => x.Name.Contains(taskName));
-			Trace.WriteLine(string.Join(",", GetCurrentJobs(target).ToList()));
+			var key = GetCurrentJobs(target).SingleOrDefault(x => x.Name.IndexOf(taskName, StringComparison.InvariantCultureIgnoreCase) > -1);
 
 			if (key == null)
 				return;

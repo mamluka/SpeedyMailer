@@ -55,7 +55,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			using (var session = _documentStore.OpenSession())
 			{
 				return session.Query<T>()
-					.Customize(x=> x.WaitForNonStaleResults())
+					.Customize(x => x.WaitForNonStaleResults())
 					.Where(expression)
 					.ToList();
 			}
@@ -93,7 +93,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			WaitForStoreWithFunction(condition);
 		}
 
-		public void WaitForEntitiesToExist<T>(int numberOfEntities, int secondsToWait = 30)
+		public void WaitForEntitiesToExist<T>(int numberOfEntities = 1, int secondsToWait = 30)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>

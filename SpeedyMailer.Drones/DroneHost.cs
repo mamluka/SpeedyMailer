@@ -77,6 +77,8 @@ namespace SpeedyMailer.Drones
 					new FetchIntervalRulesTask(),
 				};
 
+			
+
 			_framework.StartTasks(tasks);
 
 			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);

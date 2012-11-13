@@ -77,9 +77,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DefaultBaseUrl = IntergrationHelpers.GenerateRandomLocalhostAddress();
 
 			Api = new IntegrationApiHelpers(DefaultBaseUrl);
-			Store = new IntegrationStoreHelpers(DocumentStore);
 			Email = new IntegrationEmailHelpers();
-			Tasks = new IntegrationTasksHelpers(Store);
 			MongoDb = new IntegrationMongoDbHelper(DroneKernel.Get<DroneSettings>().StoreHostname);
 			Jobs = new IntergrationJobsHelper(MasterResolve<IScheduler>(), DroneResolve<IScheduler>());
 
@@ -97,6 +95,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			MasterKernel.Rebind<IDocumentStore>().ToConstant(DocumentStore);
 			DroneKernel.Rebind<IDocumentStore>().ToConstant(ContainersConfigurationsForTesting.MockedDocumentStore);
+
+			Store = new IntegrationStoreHelpers(DocumentStore);
+			Tasks = new IntegrationTasksHelpers(Store);
 
 			RegisterActions();
 			ExtraSetup();

@@ -6,7 +6,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Tasks
 {
-	public class FetchDeliveryClassificationHeuristicsTask:ScheduledTask
+	public class FetchDeliveryClassificationHeuristicsTask : ScheduledTask
 	{
 		public override IJobDetail ConfigureJob()
 		{
@@ -18,7 +18,7 @@ namespace SpeedyMailer.Drones.Tasks
 			return TriggerWithTimeCondition(x => x.WithIntervalInHours(2).RepeatForever());
 		}
 
-		public class Job:IJob
+		public class Job : IJob
 		{
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly Api _api;
@@ -36,7 +36,7 @@ namespace SpeedyMailer.Drones.Tasks
 				if (result == null)
 					return;
 
-				_omniRecordManager.BatchInsert(new[] {result});
+				_omniRecordManager.BatchInsert(new[] { result });
 			}
 		}
 	}

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -11,12 +12,20 @@ namespace SpeedyMailer.Core.Apis
 		{
 			public class GetDeliveryRules:ApiCall
 			{
-				public List<string> HardBounceRules { get; set; }
-				public List<string> IpBlockingRules { get; set; }
-
 				public GetDeliveryRules() : base("/heuritics/delivery")
 				{
 					CallMethod = RestMethod.Get;
+				}
+			}
+
+			public class SetDeliveryRules:ApiCall
+			{
+				public UnDeliveredMailClassificationHeuristicsRules Rules { get; set; }
+
+				public SetDeliveryRules()
+					: base("/heuritics/delivery")
+				{
+					CallMethod = RestMethod.Post;
 				}
 			}
 		}

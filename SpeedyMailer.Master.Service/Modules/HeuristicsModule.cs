@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Nancy;
+using Nancy.ModelBinding;
 using Raven.Client;
+using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Master.Service.Modules
@@ -16,8 +18,24 @@ namespace SpeedyMailer.Master.Service.Modules
 				                   {
 					                   using (var session = documentStore.OpenSession())
 					                   {
-						                   var rules = session.Query<UnDeliveredMailClassificationHeuristicsRules>().FirstOrDefault();
+						                   var rules = session
+											   .Query<UnDeliveredMailClassificationHeuristicsRules>()
+											   .FirstOrDefault() ?? new UnDeliveredMailClassificationHeuristicsRules();
+
 						                   return Response.AsJson(rules);
+					                   }
+				                   };
+			
+			Post["/delivery"] = x =>
+				                    {
+					                    var model = this.Bind<ServiceEndpoints.Heuristics.SetDeliveryRules>();
+
+					                   using (var session = documentStore.OpenSession())
+					                   {
+										   session.Store(model.Rules);
+										   session.SaveChanges();
+
+						                   return Response.AsText("OK");
 					                   }
 				                   };
 		}
