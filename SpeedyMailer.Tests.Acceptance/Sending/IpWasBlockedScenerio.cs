@@ -78,6 +78,56 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			Email.AssertEmailsSentTo(csvRows.Skip(20).Take(10).Select(x => x.Email).ToList());
 		}
 
+		[Test]
+		public void WhenSendingEmailAndNoIntervalRules_ShouldStopTheSendingForTheDefaultGroup()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.DefaultInterval = 2);
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			_api = MasterResolve<Api>();
+
+			var csvRows = Fixture
+				.Build<ContactsListCsvRow>()
+				.Without(x => x.Email)
+				.CreateMany(30)
+				.ToList();
+
+			csvRows.Take(10).ToList().ForEach(x => x.Email = "email" + Guid.NewGuid() + "@domain.com");
+			csvRows.Skip(10).Take(10).ToList().ForEach(x => x.Email = "email" + Guid.NewGuid() + "@gmail.com");
+			csvRows.Skip(20).Take(10).ToList().ForEach(x => x.Email = "email" + Guid.NewGuid() + "@hotmail.com");
+
+			CreateTemplate();
+			CreateList("my list");
+
+			AddContactsToList("my list", csvRows);
+			var creativeId = SaveCreative();
+
+			AddClassifictionRulesForBlockedIp("gmail has blocked you");
+			SendCreative(creativeId);
+
+			var droneAddress = IntergrationHelpers.GenerateRandomLocalhostAddress();
+			var drone = DroneActions.CreateDrone("drone1", droneAddress, DefaultBaseUrl);
+			drone.Initialize();
+			drone.Start();
+
+			Email.AssertEmailsSentTo(csvRows.Take(10).Select(x => x.Email).ToList(), 20);
+
+			DroneActions.StoreCollection(new[] { new MailLogEntry
+								   {
+									   Level = "INFO",
+									   Time = DateTime.UtcNow,
+									   Msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
+								   }}, "drone1", "logs");
+
+			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
+
+			Email.AssertEmailSent(10);
+		}
+		
 		private void AddClassifictionRulesForBlockedIp(string rule)
 		{
 			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x =>
