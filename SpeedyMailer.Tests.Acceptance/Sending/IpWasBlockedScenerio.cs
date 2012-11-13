@@ -63,12 +63,12 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			Email.AssertEmailsSentTo(csvRows.Skip(10).Take(3).Select(x => x.Email).ToList(), 20);
 
-			DroneActions.Store(new MailLogEntry
+			DroneActions.StoreCollection(new[] { new MailLogEntry
 								   {
 									   Level = "INFO",
 									   Time = DateTime.UtcNow,
 									   Msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
-								   }, "drone1");
+								   }}, "drone1", "logs");
 
 			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
 

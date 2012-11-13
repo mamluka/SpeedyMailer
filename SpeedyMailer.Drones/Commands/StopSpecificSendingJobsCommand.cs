@@ -33,6 +33,9 @@ namespace SpeedyMailer.Drones.Commands
 		private bool IsBelongsToGroup(JobKey jobKey)
 		{
 			var jobDetail = _scheduler.GetJobDetail(jobKey);
+			if (jobDetail.JobDataMap == null || !jobDetail.JobDataMap.Contains("data"))
+				return false;
+			
 			var data = JsonConvert.DeserializeObject<SendCreativePackagesWithIntervalTask.Data>((string) jobDetail.JobDataMap["data"]);
 			return data.Group == Group;
 		}

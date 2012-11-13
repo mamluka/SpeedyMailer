@@ -53,6 +53,49 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 		}
+		
+		[Test]
+		public void Execute_WhenSendingTaskIsRunningWithGroupsTogetherWithOtherTasks_ShouldStopOnlyTheGroupGiven()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+			{
+				x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+				x.MailingDomain = "example.com";
+
+			});
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("gmail"),
+					                             AddCreativePackage("hotmail"),
+					                             AddCreativePackage("hotmail")
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			var task2 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "hotmail";
+																	},
+																x => x.WithIntervalInHours(1)
+				);
+
+			var anotherTask = new FetchIntervalRulesTask();
+
+			DroneActions.StartScheduledTask(task1);
+			DroneActions.StartScheduledTask(task2);
+			DroneActions.StartScheduledTask(anotherTask);
+
+			DroneActions.ExecuteCommand<StopSpecificSendingJobsCommand>(x => x.Group = "gmail");
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+		}
 
 		private static CreativePackage AddCreativePackage(string domainGroup)
 		{

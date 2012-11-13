@@ -73,7 +73,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private IEnumerable<T> GetData<T>(IEnumerable<JobKey> jobKeys)
 		{
-			return jobKeys.Select(x => JsonConvert.DeserializeObject<T>((string)_scheduler.GetJobDetail(x).JobDataMap["data"]));
+			return jobKeys
+				.Select(x => _scheduler.GetJobDetail(x).JobDataMap)
+				.Where(x => x != null && x.Contains("data"))
+				.Select(x => JsonConvert.DeserializeObject<T>((string)x["data"]))
+				.ToList();
 		}
 
 		private IEnumerable<JobKey> GetJobKeys()
