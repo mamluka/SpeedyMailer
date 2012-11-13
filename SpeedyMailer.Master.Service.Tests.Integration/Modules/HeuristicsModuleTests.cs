@@ -29,7 +29,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.Heuristics.SaveDelivery, UnDeliveredMailClassificationHeuristicsRules>();
+			var result = api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, UnDeliveredMailClassificationHeuristicsRules>();
 
 			result.HardBounceRules.Should().Contain(new[] { "yeah" });
 			result.IpBlockingRules.Should().Contain(new[] { "sexy" });

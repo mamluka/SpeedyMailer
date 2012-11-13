@@ -16,11 +16,13 @@ namespace SpeedyMailer.Drones.Modules
 		{
 			Trace.WriteLine("drone admin module laoded");
 
-			Post["/tasks/fire-exiting/{job}"] = x =>
-				                                    {
+			Get["/hello"] = x => Response.AsText("OK");
+
+			Get["/fire-task/{job}"] = x =>
+													{
 														scheduler.TriggerTaskByClassName((string)x.job);
-					                                    return Response.AsText("OK");
-				                                    };
+														return Response.AsText("OK");
+													};
 		}
 	}
 }

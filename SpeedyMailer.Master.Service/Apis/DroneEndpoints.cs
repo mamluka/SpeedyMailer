@@ -12,7 +12,7 @@ namespace SpeedyMailer.Master.Service.Apis
 				public Wakeup()
 					: base("/manage/wakeup")
 				{
-					CallMethod = RestMethod.Post; 
+					CallMethod = RestMethod.Post;
 				}
 
 				public class Response
@@ -21,13 +21,14 @@ namespace SpeedyMailer.Master.Service.Apis
 				}
 			}
 
-			public class FireTask:ApiCall
+			public class FireTask : ApiCall
 			{
 				public string Job { get; set; }
 
-				public FireTask() : base("/admin/tasks/fire-existing/{job}")
+				public FireTask()
+					: base("/admin/fire-task/{job}")
 				{
-					CallMethod = RestMethod.Post;
+					CallMethod = RestMethod.Get;
 				}
 			}
 		}

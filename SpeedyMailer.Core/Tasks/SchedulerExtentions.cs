@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
@@ -18,7 +19,7 @@ namespace SpeedyMailer.Core.Tasks
 			}
 		}
 
-		public static bool JobExistWithData<TEventData>(this IScheduler target,Func<TEventData,bool> testFunc)
+		public static bool JobExistWithData<TEventData>(this IScheduler target, Func<TEventData, bool> testFunc)
 		{
 			return GetCurrentJobs(target)
 				.Where(x => x.Name.Contains(typeof(TEventData).Name))
@@ -27,9 +28,11 @@ namespace SpeedyMailer.Core.Tasks
 				.Any(testFunc);
 		}
 
-		public static void TriggerTaskByClassName(this IScheduler target,string taskName)
+		public static void TriggerTaskByClassName(this IScheduler target, string taskName)
 		{
 			var key = GetCurrentJobs(target).SingleOrDefault(x => x.Name.Contains(taskName));
+			Trace.WriteLine(string.Join(",", GetCurrentJobs(target).ToList()));
+
 			if (key == null)
 				return;
 
@@ -46,7 +49,7 @@ namespace SpeedyMailer.Core.Tasks
 		public static bool IsJobsRunning<TJob>(this IScheduler target)
 		{
 			return GetCurrentJobs(target)
-				.Any(x => x.Name.Contains(typeof (TJob).Name));
+				.Any(x => x.Name.Contains(typeof(TJob).Name));
 		}
 
 

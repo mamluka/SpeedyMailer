@@ -80,7 +80,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 		private void AddClassifictionRulesForBlockedIp(string rule)
 		{
-			_api.Call<ServiceEndpoints.Heuristics.SaveDelivery>(x =>
+			_api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules>(x =>
 																	{
 																		x.IpBlockingRules = new List<string> { rule };
 

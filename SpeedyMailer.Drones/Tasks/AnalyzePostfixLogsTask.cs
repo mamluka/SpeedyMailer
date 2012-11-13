@@ -20,7 +20,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 		public override ITrigger ConfigureTrigger()
 		{
-			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(1).RepeatForever());
+			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(10).RepeatForever());
 		}
 
 		[DisallowConcurrentExecution]

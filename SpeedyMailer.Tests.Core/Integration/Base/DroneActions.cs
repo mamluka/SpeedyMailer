@@ -111,8 +111,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											   }, droneKernel);
 
 			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
-			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
-			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting() as INancyBootstrapper);
+			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>();
+			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting(droneKernel.Get<IScheduler>()) as INancyBootstrapper);
 
 			var topDrone = droneKernel.Get<TopDrone>();
 

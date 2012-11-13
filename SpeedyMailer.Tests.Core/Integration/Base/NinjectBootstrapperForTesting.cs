@@ -32,7 +32,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				                                    		typeof(IRestClient)
 				                                    	}))
 				.BindInterfaceToDefaultImplementation()
-				.Configure(x=> x.InTransientScope())
+				.Configure(x => x.InTransientScope())
 				.Storage<IDocumentStore>(x => x.Constant(_documentStore))
 				.Settings(x => x.UseDocumentDatabase())
 				.Done();
@@ -52,6 +52,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 	public class DroneNancyNinjectBootstrapperForTesting : NinjectNancyBootstrapper
 	{
+		private readonly IScheduler _scheduler;
+
+		public DroneNancyNinjectBootstrapperForTesting(IScheduler scheduler)
+		{
+			_scheduler = scheduler;
+		}
+
 		protected override void ConfigureApplicationContainer(IKernel existingContainer)
 		{
 			ContainerBootstrapper
@@ -69,7 +76,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Settings(x => x.UseJsonFiles())
 				.Done();
 
-			existingContainer.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InTransientScope();
+			existingContainer.Rebind<IScheduler>().ToConstant(_scheduler);
 		}
 
 		protected override NancyInternalConfiguration InternalConfiguration

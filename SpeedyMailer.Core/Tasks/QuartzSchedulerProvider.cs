@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using NLog;
 using Ninject;
 using Ninject.Activation;
@@ -14,15 +15,17 @@ namespace SpeedyMailer.Core.Tasks
 		{
 			var schedulerFactory = new StdSchedulerFactory(new NameValueCollection { { "quartz.scheduler.instanceName", Guid.NewGuid().ToString() } });
 			var scheduler = schedulerFactory.GetScheduler();
-			scheduler.ListenerManager.AddSchedulerListener(new MyClass());
+			scheduler.ListenerManager.AddSchedulerListener(new SchedulerListener());
 			scheduler.JobFactory = context.Kernel.Get<ContainerJobFactory>();
 			scheduler.Start();
+
+			Trace.WriteLine("started scheduler");
 
 			return scheduler;
 		}
 	}
 
-	public class MyClass : ISchedulerListener
+	public class SchedulerListener : ISchedulerListener
 	{
 		public static Logger Logger = LogManager.GetCurrentClassLogger();
 

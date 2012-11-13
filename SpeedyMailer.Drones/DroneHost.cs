@@ -71,7 +71,10 @@ namespace SpeedyMailer.Drones
 			var tasks = new List<ScheduledTask>
 				{
 					new BroadcastDroneToServiceTask(),
-					new FetchCreativeFragmentsTask()
+					new FetchCreativeFragmentsTask(),
+					new AnalyzePostfixLogsTask(),
+					new FetchDeliveryClassificationHeuristicsTask(),
+					new FetchIntervalRulesTask(),
 				};
 
 			_framework.StartTasks(tasks);

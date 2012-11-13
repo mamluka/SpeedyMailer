@@ -22,7 +22,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		{
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.SaveDelivery,
+			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				UnDeliveredMailClassificationHeuristicsRules>(x =>
 					                                              {
 						                                              x.HardBounceRules = new List<string>
