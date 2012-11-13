@@ -31,7 +31,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var result = _api.Call<ServiceEndpoints.Heuristics.Delivery, UnDeliveredMailClassificationHeuristicsRules>();
+				var result = _api.Call<ServiceEndpoints.Heuristics.SaveDelivery, UnDeliveredMailClassificationHeuristicsRules>();
 
 				if (result == null)
 					return;

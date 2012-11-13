@@ -27,6 +27,15 @@ namespace SpeedyMailer.Core.Tasks
 				.Any(testFunc);
 		}
 
+		public static void TriggerTaskByClassName(this IScheduler target,string taskName)
+		{
+			var key = GetCurrentJobs(target).SingleOrDefault(x => x.Name.Contains(taskName));
+			if (key == null)
+				return;
+
+			target.TriggerJob(key);
+		}
+
 		private static IEnumerable<JobKey> GetCurrentJobs(IScheduler target)
 		{
 			return target

@@ -40,7 +40,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 					if (session.Query<CreativeFragment>().Customize(x=> x.WaitForNonStaleResults()).Any())
 					{
 						var drones = session.Query<Drone>().Where(x => x.Status == DroneStatus.Asleep).ToList();
-						 drones.ForEach(drone => _api.SetBaseUrl(drone.BaseUrl).Call<DroneEndpoints.Manage.Wakeup>());
+						 drones.ForEach(drone => _api.SetBaseUrl(drone.BaseUrl).Call<DroneEndpoints.Admin.Wakeup>());
 					}
 				}
 			}

@@ -34,8 +34,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "david";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1)
@@ -43,8 +41,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "david";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
 																x => x.WithIntervalInHours(1)
@@ -65,7 +61,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 				Group = domainGroup,
 				Subject = "test",
 				Body = "body",
-				To = "david@david.com"
+				To = "david@david.com",
+				FromAddressDomainPrefix = "david",
+				Interval = 10,
+				FromName = "sales"
 
 			};
 		}

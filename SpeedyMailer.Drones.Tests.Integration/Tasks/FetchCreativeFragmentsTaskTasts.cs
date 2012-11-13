@@ -47,8 +47,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										  Group = "$default$",
 										  Body = "body",
 										  Subject = "subject",
-										  To = "david@david.com"
-
+										  To = "david@david.com",
+										  FromAddressDomainPrefix = "david",
+										  FromName = "sales",
+										  Interval = 10
 									  };
 
 			DroneActions.Store(creativePackage);
@@ -57,7 +59,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-//			Api.AssertApiWasntCalled<ServiceEndpoints.Creative.FetchFragment>();
+			//			Api.AssertApiWasntCalled<ServiceEndpoints.Creative.FetchFragment>();
 			Email.AssertEmailsSentTo(new[] { "david@david.com" });
 		}
 

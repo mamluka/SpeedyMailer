@@ -21,11 +21,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldStopSendingForTheGivenGroup()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = "dev/null";
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = "dev/null";
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			DroneActions.StoreCollection(new[]
 				                             {
@@ -37,8 +37,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -46,8 +44,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -92,14 +88,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpDeferral_ShouldStopSendingForTheGivenGroup()
 		{
 
-			
+
 
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = "dev/null";
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = "dev/null";
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			DroneActions.StoreCollection(new[]
 				                             {
@@ -111,8 +107,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -120,8 +114,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -182,8 +174,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -191,8 +181,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -254,8 +242,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -263,8 +249,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -327,8 +311,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "gmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -336,8 +318,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.FromName = "davud";
-																		x.FromAddressDomainPrefix = "sales";
 																		x.Group = "hotmail";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
@@ -372,11 +352,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldPersistTheNonSendingPolicy()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = "dev/null";
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = "dev/null";
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			DroneActions.StoreCollection(new[]
 				                             {
@@ -387,21 +367,17 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				                             });
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
-				                                                     {
-					                                                     x.FromName = "davud";
-					                                                     x.FromAddressDomainPrefix = "sales";
-					                                                     x.Group = "gmail";
-				                                                     },
-			                                                     x => x.WithIntervalInHours(1).RepeatForever()
+																	 {
+																		 x.Group = "gmail";
+																	 },
+																 x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
-				                                                     {
-					                                                     x.FromName = "davud";
-					                                                     x.FromAddressDomainPrefix = "sales";
-					                                                     x.Group = "hotmail";
-				                                                     },
-			                                                     x => x.WithIntervalInHours(1).RepeatForever()
+																	 {
+																		 x.Group = "hotmail";
+																	 },
+																 x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -411,20 +387,20 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-				                   {
-					                   HardBounceRules = new List<string>
+								   {
+									   HardBounceRules = new List<string>
 						                                     {
 							                                     "account.+?disabled",
 						                                     },
-					                   IpBlockingRules = new List<string>
+									   IpBlockingRules = new List<string>
 						                                     {
 							                                     "bad bounce"
 						                                     }
-				                   });
+								   });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
-				                                                           {
-					                                                           x.MailEvents = new List<MailBounced>
+																		   {
+																			   x.MailEvents = new List<MailBounced>
 						                                                                          {
 							                                                                          new MailBounced
 								                                                                          {
@@ -433,7 +409,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 									                                                                          Message = "message meaning its a bad bounce"
 								                                                                          }
 						                                                                          };
-				                                                           });
+																		   });
 
 			DroneActions.WaitForDocumentToExist<IpBlockingGroups>();
 
@@ -441,16 +417,16 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			result.Groups.Should().OnlyContain(x => x == "gmail");
 		}
-		
+
 		[Test]
 		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldPersistTheNonSendingPolicy()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = "dev/null";
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = "dev/null";
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			DroneActions.StoreCollection(new[]
 				                             {
@@ -461,21 +437,17 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				                             });
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
-				                                                     {
-					                                                     x.FromName = "davud";
-					                                                     x.FromAddressDomainPrefix = "sales";
-					                                                     x.Group = "gmail";
-				                                                     },
-			                                                     x => x.WithIntervalInHours(1).RepeatForever()
+																	 {
+																		 x.Group = "gmail";
+																	 },
+																 x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			var task2 = new SendCreativePackagesWithIntervalTask(x =>
-				                                                     {
-					                                                     x.FromName = "davud";
-					                                                     x.FromAddressDomainPrefix = "sales";
-					                                                     x.Group = "hotmail";
-				                                                     },
-			                                                     x => x.WithIntervalInHours(1).RepeatForever()
+																	 {
+																		 x.Group = "hotmail";
+																	 },
+																 x => x.WithIntervalInHours(1).RepeatForever()
 				);
 
 			DroneActions.StartScheduledTask(task1);
@@ -485,20 +457,20 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-				                   {
-					                   HardBounceRules = new List<string>
+								   {
+									   HardBounceRules = new List<string>
 						                                     {
 							                                     "account.+?disabled",
 						                                     },
-					                   IpBlockingRules = new List<string>
+									   IpBlockingRules = new List<string>
 						                                     {
 							                                     "ip blocked"
 						                                     }
-				                   });
+								   });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
-				                                                           {
-					                                                           x.MailEvents = new List<MailDeferred>
+																		   {
+																			   x.MailEvents = new List<MailDeferred>
 						                                                                          {
 							                                                                          new MailDeferred()
 								                                                                          {
@@ -507,7 +479,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 									                                                                          Message = "ip blocked"
 								                                                                          }
 						                                                                          };
-				                                                           });
+																		   });
 
 			DroneActions.WaitForDocumentToExist<IpBlockingGroups>();
 
@@ -523,7 +495,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						   Group = domainGroup,
 						   Subject = "test",
 						   Body = "body",
-						   To = "david@david.com"
+						   To = "david@david.com",
+						   FromAddressDomainPrefix = "david",
+						   Interval = 10,
+						   FromName = "sales"
 
 					   };
 		}

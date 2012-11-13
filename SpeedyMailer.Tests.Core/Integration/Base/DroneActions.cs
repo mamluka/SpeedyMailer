@@ -32,7 +32,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	{
 		public IKernel Kernel { get; set; }
 
-		private readonly IList<int> RunningMongoPorts = new List<int>();
+		private readonly IList<int> _runningMongoPorts = new List<int>();
+		private readonly IDictionary<string, string> _runningMongoUrls = new Dictionary<string, string>();
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
@@ -90,7 +91,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Trace.WriteLine(droneId + " has started mongo on: " + storeUri);
 
 			MongoRunner.Start(randomizePost);
-			RunningMongoPorts.Add(randomizePost);
+			_runningMongoPorts.Add(randomizePost);
+			_runningMongoUrls.Add(droneId, storeUri);
 
 			EditSettings<ApiCallsSettings>(x =>
 											   {
@@ -121,21 +123,24 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var mongodb = new IntegrationMongoDbHelper(Kernel.Get<DroneSettings>().StoreHostname);
 
-			mongodb.ShutdownMongo(RunningMongoPorts);
+			mongodb.ShutdownMongo(_runningMongoPorts);
 		}
 
-		public void Store<T>(T entity) where T : class
+		public void Store<T>(T entity, string droneId = null) where T : class
 		{
-			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri());
+			var connectionString = droneId != null && _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : IntergrationHelpers.DefaultStoreUri();
+
+			var manager = new RecordManager<T>(connectionString);
 			manager.BatchInsert(new List<T> { entity });
 		}
 
-		public void StoreCollection<T>(IEnumerable<T> collection, string collectionName = null) where T : class
+		public void StoreCollection<T>(IEnumerable<T> collection, string droneId = null, string collectionName = null) where T : class
 		{
-			var manager = new RecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
+			var connectionString = droneId != null && _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : IntergrationHelpers.DefaultStoreUri();
+
+			var manager = new RecordManager<T>(connectionString, collectionName);
 			manager.BatchInsert(collection);
 		}
-
 
 		public IList<T> FindAll<T>(string collectionName = null) where T : class
 		{

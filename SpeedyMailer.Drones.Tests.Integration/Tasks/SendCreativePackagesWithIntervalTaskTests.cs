@@ -44,8 +44,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var task = new SendCreativePackagesWithIntervalTask(x =>
 																	{
 																		x.Group = "gmail";
-																		x.FromName = "david";
-																		x.FromAddressDomainPrefix = "sales";
 																	},
 																x => x.WithIntervalInSeconds(5).RepeatForever()
 				);
@@ -61,11 +59,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		public void Execute_WhenPckagesArePresent_ShouldDeleteThemAfterSendingThem()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			var creativePackages = new[]
 				                       {
@@ -79,8 +77,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var task = new SendCreativePackagesWithIntervalTask(x =>
 																	{
 																		x.Group = "gmail";
-																		x.FromName = "david";
-																		x.FromAddressDomainPrefix = "sales";
 																	},
 																x => x.WithIntervalInSeconds(5).RepeatForever()
 				);
@@ -98,11 +94,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		public void Execute_WhenTaskHasAnIntervalAndNoPackagesWereFound_ShouldStopExecutingTheTaskAndRemoveIt()
 		{
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-					                                            x.MailingDomain = "example.com";
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-				                                            });
+															});
 
 			var creativePackages = new[]
 				                       {
@@ -116,8 +112,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var task = new SendCreativePackagesWithIntervalTask(x =>
 																	{
 																		x.Group = "gmail";
-																		x.FromName = "david";
-																		x.FromAddressDomainPrefix = "sales";
 																	},
 																x => x.WithIntervalInSeconds(5).RepeatForever()
 				);
@@ -139,7 +133,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 						   Body = "body",
 						   Group = group,
 						   Subject = "subject",
-						   To = email
+						   To = email,
+						   FromAddressDomainPrefix = "david",
+						   Interval = 10,
+						   FromName = "sales"
 					   };
 		}
 	}

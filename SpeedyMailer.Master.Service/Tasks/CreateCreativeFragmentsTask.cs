@@ -197,6 +197,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 					domainGroup =>
 					session.Query<Contacts_DomainGroupCounter.ReduceResult, Contacts_DomainGroupCounter>()
 						.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5))).SingleOrDefault(x => x.DomainGroup == domainGroup && x.ListId == listId))
+				.Where(x => x != null)
 				.ToDictionary(x => x.DomainGroup, y => y.Count);
 		}
 

@@ -5,7 +5,7 @@ namespace SpeedyMailer.Master.Service.Apis
 {
 	public class DroneEndpoints
 	{
-		public class Manage
+		public class Admin
 		{
 			public class Wakeup : ApiCall
 			{
@@ -18,6 +18,16 @@ namespace SpeedyMailer.Master.Service.Apis
 				public class Response
 				{
 					public DroneStatus DroneStatus { get; set; }
+				}
+			}
+
+			public class FireTask:ApiCall
+			{
+				public string Job { get; set; }
+
+				public FireTask() : base("/admin/tasks/fire-existing/{job}")
+				{
+					CallMethod = RestMethod.Post;
 				}
 			}
 		}

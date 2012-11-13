@@ -9,9 +9,12 @@ namespace SpeedyMailer.Core.Apis
 	{
 		public class Heuristics
 		{
-			public class Delivery:ApiCall
+			public class SaveDelivery:ApiCall
 			{
-				public Delivery() : base("/heuritics/delivery")
+				public List<string> HardBounceRules { get; set; }
+				public List<string> IpBlockingRules { get; set; }
+
+				public SaveDelivery() : base("/heuritics/delivery")
 				{
 					CallMethod = RestMethod.Get;
 				}

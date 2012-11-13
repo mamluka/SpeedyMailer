@@ -19,8 +19,6 @@ namespace SpeedyMailer.Drones.Tasks
 		public class Data : ScheduledTaskData
 		{
 			public string Group { get; set; }
-			public string FromName { get; set; }
-			public string FromAddressDomainPrefix { get; set; }
 		}
 
 		public override IJobDetail ConfigureJob()
@@ -51,8 +49,8 @@ namespace SpeedyMailer.Drones.Tasks
 				}
 
 				_sendCreativePackageCommand.Package = creativePackage;
-				_sendCreativePackageCommand.FromName = data.FromName;
-				_sendCreativePackageCommand.FromAddressDomainPrefix = data.FromAddressDomainPrefix;
+				_sendCreativePackageCommand.FromName = creativePackage.FromName;
+				_sendCreativePackageCommand.FromAddressDomainPrefix = creativePackage.FromAddressDomainPrefix;
 
 				_sendCreativePackageCommand.Execute();
 

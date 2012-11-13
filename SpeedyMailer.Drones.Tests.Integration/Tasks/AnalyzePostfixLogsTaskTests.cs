@@ -63,7 +63,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {Msg = " 5CDF7AE39E: to=<a.villa767@verizon.net>, relay=relay.verizon.net[206.46.232.11]:25, delay=0.55, delays=0.04/0/0.38/0.13, dsn=5.0.0, status=bounced (host relay.verizon.net[206.46.232.11] said: 550 4.2.1 mailbox temporarily disabled: a.villa767@verizon.net (in reply to RCPT TO command))", Time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), Level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, collectionName: "logs");
 
 			var task = new AnalyzePostfixLogsTask();
 

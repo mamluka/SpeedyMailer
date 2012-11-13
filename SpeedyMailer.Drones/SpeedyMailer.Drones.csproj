@@ -131,6 +131,7 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Events\DeliveryRealTimeDecision.cs" />
+    <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Storage\CreativePackagesStore.cs" />
     <Compile Include="Storage\ICycleSocket.cs" />
     <Compile Include="Storage\IntervalRulesStore.cs" />

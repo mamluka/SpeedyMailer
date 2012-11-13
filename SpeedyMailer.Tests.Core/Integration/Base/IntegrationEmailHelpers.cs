@@ -139,6 +139,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 
 		}
+		
+		public void AssertEmailSent(int count, int waitFor = 30)
+		{
+			var files = WaitForEmailFiles(waitFor,x=> x.Count == count);
+
+			files.Should().HaveCount(count);
+		}
 
 		public void AssertEmailsSentBy(string droneId, int numberOfEmails, int waitFor = 30)
 		{
