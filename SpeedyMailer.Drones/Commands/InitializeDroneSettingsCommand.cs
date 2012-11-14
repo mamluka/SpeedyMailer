@@ -26,7 +26,7 @@ namespace SpeedyMailer.Drones.Commands
 			_framework.EditJsonSettings<DroneSettings>(x =>
 				{
 					x.BaseUrl = string.Format("http://{0}:4253", GetDomain());
-					x.Domain = GetDomain(),
+					x.Domain = GetDomain();
 					x.Identifier = GetDomain();
 
 				});
