@@ -200,6 +200,8 @@
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
+    <Compile Include="Domain\Mail\Dnsbl.cs" />
+    <Compile Include="Domain\Mail\DnsnlType.cs" />
     <Compile Include="Domain\Mail\IpBlockingGroups.cs" />
     <Compile Include="Domain\Mail\UnDeliveredMailClassificationHeuristicsRules.cs" />
     <Compile Include="Domain\Mail\BounceType.cs" />

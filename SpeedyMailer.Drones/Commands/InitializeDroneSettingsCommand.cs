@@ -25,18 +25,19 @@ namespace SpeedyMailer.Drones.Commands
 			_framework.EditJsonSettings<ApiCallsSettings>(x => x.ApiBaseUri = response.ServiceBaseUrl);
 			_framework.EditJsonSettings<DroneSettings>(x =>
 				{
-					x.BaseUrl = string.Format("http://{0}:4253", GetLocalHost());
-					x.Identifier = GetLocalHost();
+					x.BaseUrl = string.Format("http://{0}:4253", GetDomain());
+					x.Domain = GetDomain(),
+					x.Identifier = GetDomain();
 
 				});
 			
 			_framework.EditJsonSettings<EmailingSettings>(x =>
 				                                              {
-					                                              x.MailingDomain = GetLocalHost();
+					                                              x.MailingDomain = GetDomain();
 				                                              });
 		}
 
-		private string GetLocalHost()
+		private string GetDomain()
 		{
 			var proc = new System.Diagnostics.Process();
 			proc.EnableRaisingEvents=false; 

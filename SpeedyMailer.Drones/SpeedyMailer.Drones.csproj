@@ -141,6 +141,7 @@
     <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\DnsBlackListingIpNotificationTask.cs" />
     <Compile Include="Tasks\FetchCreativeFragmentsTask.cs" />
     <Compile Include="Tasks\FetchDeliveryClassificationHeuristicsTask.cs" />
     <Compile Include="Tasks\FetchIntervalRulesTask.cs" />

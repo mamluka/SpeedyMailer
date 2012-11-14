@@ -23,6 +23,14 @@ namespace SpeedyMailer.Core.Apis
 
 				public string LastUpdate { get; set; }
 			}
+
+			public class GetDnsblData:ApiCall
+			{
+				public GetDnsblData() : base("/drones/dnsbl")
+				{
+					CallMethod = RestMethod.Get;
+				}
+			}
 		}
 	}
 }

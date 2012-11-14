@@ -74,7 +74,7 @@ namespace SpeedyMailer.Core.Apis
 
 			if (result.ResponseStatus == ResponseStatus.Error || result.ResponseStatus == ResponseStatus.TimedOut)
 			{
-				_logger.Error("[{0}] The API call ended with an exception {1}", result.Request.Resource, result.ResponseStatus);
+				_logger.Error("[{0}] The API call ended with an exception {1}:{2}", GetApiCallPath(result), result.ResponseStatus, result.ErrorMessage);
 			}
 		}
 
@@ -85,7 +85,7 @@ namespace SpeedyMailer.Core.Apis
 
 		private void BeforeCallLogging(IRestRequest restRequest)
 		{
-			_logger.Info("An api call is been made to: {0}/{1} method used: {2}", _restClient.BaseUrl, restRequest.Resource, restRequest.Method);
+			_logger.Info("An api call is been made to: {0}{1} method used: {2}", _restClient.BaseUrl, restRequest.Resource, restRequest.Method);
 
 			if (_requestFiles.Any())
 			{
