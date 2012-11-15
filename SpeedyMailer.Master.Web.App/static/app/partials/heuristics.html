@@ -1,0 +1,23 @@
+<div>
+    <h2>Add heuristics</h2>
+    
+    <label>Hard bouce</label>
+    <input type="text" ng-model="hardBounce" />
+    <button ng-click="addHardBounce(hardBounce)">Add</button>
+    <br />
+
+    <ul>
+        <li ng-repeat="hardBounce in hardBounces">{{hardBounce}} <span ng-click="removeHardBounce(hardBounce)">remove</span></li>
+    </ul>
+    
+    <label>Hard bouce</label>
+    <input type="text" ng-model="ipBlock" />
+    <button ng-click="addIpBlock(ipBlock)">Add</button>
+    <br />
+
+    <ul>
+        <li ng-repeat="ipBlock in ipBlocks">{{ipBlock}} <span ng-click="removeIpBlock(ipBlock)">remove</span></li>
+    </ul>
+
+    <button ng-click="saveHeuristics()" value="send" >Send</button>
+</div>

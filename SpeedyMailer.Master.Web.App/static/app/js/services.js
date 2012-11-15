@@ -36,4 +36,7 @@ angular.module('SpeedyMailer.services', ['ngResource']).
     }).
     factory('Rule', function ($resource) {
         return $resource('http://speedymailer.api/rules');
+    }).
+    factory('DeliveryHeuristics', function ($resource) {
+        return $resource('http://speedymailer.api/heuristics/delivery');
     });

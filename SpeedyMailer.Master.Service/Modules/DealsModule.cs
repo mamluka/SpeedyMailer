@@ -33,42 +33,40 @@ namespace SpeedyMailer.Master.Service.Modules
 						   };
 
 			Get["/{data}"] = call =>
-								 {
-									 string objectString = call.data;
+				                 {
+					                 string objectString = call.data;
 
-									 var data = UrlBuilder.DecodeBase64<DealUrlData>(objectString);
+					                 var data = UrlBuilder.DecodeBase64<DealUrlData>(objectString);
 
-									 using (var session = documentStore.OpenSession())
-									 {
-										 var creative = session.Load<Creative>(data.CreativeId);
+					                 using (var session = documentStore.OpenSession())
+					                 {
+						                 var creative = session.Load<Creative>(data.CreativeId);
 
-										 if (creative == null)
-											 return new NotFoundResponse();
+						                 if (creative == null)
+							                 return new NotFoundResponse();
 
-										 var contactActions = session
-											 .Query<ContactActions>()
-											 .Where(q => q.ContactId == data.ContactId)
-											 .FirstOrDefault();
+						                 var contactActions = session
+							                 .Query<ContactActions>().FirstOrDefault(q => q.ContactId == data.ContactId);
 
-										 if (contactActions == null)
-										 {
-											 contactActions = new ContactActions
-																  {
-																	  Clicks = new List<string> { data.CreativeId },
-																	  ContactId = data.ContactId
-																  };
-										 }
-										 else
-										 {
-											 contactActions.Clicks.Add(creative.Id);
-										 }
+						                 if (contactActions == null)
+						                 {
+							                 contactActions = new ContactActions
+								                                  {
+									                                  Clicks = new List<string> {data.CreativeId},
+									                                  ContactId = data.ContactId
+								                                  };
+						                 }
+						                 else
+						                 {
+							                 contactActions.Clicks.Add(creative.Id);
+						                 }
 
-										 session.Store(contactActions);
-										 session.SaveChanges();
+						                 session.Store(contactActions);
+						                 session.SaveChanges();
 
-										 return new RedirectResponse(creative.DealUrl, RedirectResponse.RedirectType.Permanent);
-									 }
-								 };
+						                 return new RedirectResponse(creative.DealUrl, RedirectResponse.RedirectType.Permanent);
+					                 }
+				                 };
 		}
 	}
 }

@@ -84,6 +84,10 @@ function RulesController($scope, ruleResource) {
         });
 
         rule.$save();
+
+        $scope.conditions = [];
+        $scope.group = '';
+        $scope.interval = "";
     };
 }
 RulesController.$inject = ['$scope', 'Rule'];
@@ -93,3 +97,32 @@ function PlaygroundController($scope, list) {
 
 }
 PlaygroundController.$inject = ['$scope', 'List'];
+
+function HeuristicsController($scope, deliveryHeuristicsResource) {
+
+    var deliveryHeuristics = deliveryHeuristicsResource.query();
+
+    var hardBounces = $scope.hardBounces = [];
+    var ipBlocks = $scope.ipBlocks = [];
+
+    $scope.addHardBounce = function (hardBounce) {
+        hardBounces.push(hardBounce);
+    };
+
+    $scope.removeHardBounces = function (hardBounce) {
+        hardBounces.splice(hardBounce.indexOf(hardBounce), 1);
+    };
+
+    $scope.addIpBlock = function (ipBlock) {
+        ipBlocks.push(ipBlock);
+    };
+
+    $scope.removeIpBlock = function (ipBlock) {
+        ipBlocks.splice(ipBlock.indexOf(ipBlock), 1);
+    };
+
+    $scope.saveHeuristics = function () {
+
+    };
+}
+HeuristicsController.$inject = ['$scope', 'DeliveryHeuristics'];

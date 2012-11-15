@@ -18,13 +18,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 				x => x.ServiceBaseUrl = DefaultBaseUrl
 				);
 
-			DroneActions.ExecuteCommand<InitializeDroneSettingsCommand>(x=> x.RemoteConfigurationServiceBaseUrl = DefaultBaseUrl);
+			DroneActions.ExecuteCommand<InitializeDroneSettingsCommand>(x => x.RemoteConfigurationServiceBaseUrl = DefaultBaseUrl);
 
 			var apiCallSettings = DroneResolve<ApiCallsSettings>();
 			var droneSettings = DroneResolve<DroneSettings>();
 
 			apiCallSettings.ApiBaseUri.Should().Be(DefaultBaseUrl);
-			droneSettings.BaseUrl.Should().Be(string.Format("http://{0}:4253",GetLocalHost()));
+			droneSettings.BaseUrl.Should().Be(string.Format("http://{0}:4253", GetLocalHost()));
 			droneSettings.Identifier.Should().Be(GetLocalHost());
 			droneSettings.Ip.Should().Be(GetIp());
 		}
@@ -33,9 +33,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		{
 			var restClient = MasterResolve<IRestClient>();
 			restClient.BaseUrl = "http://ipecho.net";
-			var ip = restClient.Execute(new RestRequest("/plain")
-				                   {
-				                   });
+			var ip = restClient.Execute(new RestRequest("/plain"));
 
 			return ip.Content;
 		}

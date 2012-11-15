@@ -72,6 +72,7 @@
     <Content Include="static\app\lib\angular\angular.min.js" />
     <Content Include="static\app\lib\angular\version.txt" />
     <Content Include="static\app\partials\.gitignore" />
+    <Content Include="static\app\partials\heuristics.html" />
     <Content Include="static\app\partials\create-rules.html" />
     <Content Include="static\app\partials\send-creatives.html" />
     <Content Include="static\app\partials\create-template.html" />

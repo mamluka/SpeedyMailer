@@ -11,7 +11,7 @@ namespace SpeedyMailer.Drones.Events
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly StopSpecificSendingJobsCommand _stopSpecificSendingJobsCommand;
-		private OmniRecordManager _omniRecordManager;
+		private readonly OmniRecordManager _omniRecordManager;
 
 		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, StopSpecificSendingJobsCommand stopSpecificSendingJobsCommand, OmniRecordManager omniRecordManager)
 		{
