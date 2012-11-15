@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using NUnit.Framework;
+using RestSharp;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Commands;
@@ -11,7 +12,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 	public class InitializeDroneSettingsCommandTests : IntegrationTestBase
 	{
 		[Test]
-		[Ignore]
 		public void Execute_WhenCalledWithServiceBaseUrl_ShouldInitializeTheJsonSettings()
 		{
 			Api.PrepareApiResponse<ServiceEndpoints.Admin.GetRemoteServiceConfiguration, ServiceEndpoints.Admin.GetRemoteServiceConfiguration.Response>(
@@ -26,6 +26,18 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			apiCallSettings.ApiBaseUri.Should().Be(DefaultBaseUrl);
 			droneSettings.BaseUrl.Should().Be(string.Format("http://{0}:4253",GetLocalHost()));
 			droneSettings.Identifier.Should().Be(GetLocalHost());
+			droneSettings.Ip.Should().Be(GetIp());
+		}
+
+		private string GetIp()
+		{
+			var restClient = MasterResolve<IRestClient>();
+			restClient.BaseUrl = "http://ipecho.net";
+			var ip = restClient.Execute(new RestRequest("/plain")
+				                   {
+				                   });
+
+			return ip.Content;
 		}
 
 		private string GetLocalHost()

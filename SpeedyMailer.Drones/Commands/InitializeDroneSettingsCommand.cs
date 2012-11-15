@@ -1,3 +1,6 @@
+using System;
+using System.Net;
+using RestSharp;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Settings;
@@ -11,9 +14,11 @@ namespace SpeedyMailer.Drones.Commands
 
 		private readonly Api _api;
 		private readonly Framework _framework;
+		private readonly IRestClient _restClient;
 
-		public InitializeDroneSettingsCommand(Api api, Framework framework)
+		public InitializeDroneSettingsCommand(Api api, Framework framework,IRestClient restClient)
 		{
+			_restClient = restClient;
 			_framework = framework;
 			_api = api;
 		}
@@ -28,6 +33,7 @@ namespace SpeedyMailer.Drones.Commands
 					x.BaseUrl = string.Format("http://{0}:4253", GetDomain());
 					x.Domain = GetDomain();
 					x.Identifier = GetDomain();
+					x.Ip = GetIp();
 
 				});
 			
@@ -36,19 +42,40 @@ namespace SpeedyMailer.Drones.Commands
 					                                              x.MailingDomain = GetDomain();
 				                                              });
 		}
+		private string GetIp()
+		{
+			_restClient.BaseUrl = "http://ipecho.net";
+			var ip = _restClient.Execute(new RestRequest("/plain"));
+
+			return ip.Content;
+		}
 
 		private string GetDomain()
 		{
-			var proc = new System.Diagnostics.Process();
-			proc.EnableRaisingEvents=false; 
-			proc.StartInfo.FileName = "/bin/hostname";
-			proc.StartInfo.Arguments = "-d";
-			proc.StartInfo.RedirectStandardOutput=true;
-			proc.StartInfo.UseShellExecute=false;
-			proc.Start();
-			proc.WaitForExit();
+			try
+			{
+				var proc = new System.Diagnostics.Process
+				{
+					EnableRaisingEvents = false,
+					StartInfo =
+					{
+						FileName = "/bin/hostname",
+						Arguments = "-d",
+						RedirectStandardOutput = true,
+						UseShellExecute = false
+					}
+				};
+
+				proc.Start();
+				proc.WaitForExit();
+
+				return proc.StandardOutput.ReadLine().Trim();
+			}
+			catch (Exception)
+			{
+				return Dns.GetHostEntry(Dns.GetHostName()).HostName;
+			}
 			
-			return proc.StandardOutput.ReadLine().Trim();
 		}
 	}
 }
