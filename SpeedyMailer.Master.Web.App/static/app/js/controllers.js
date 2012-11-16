@@ -100,10 +100,20 @@ PlaygroundController.$inject = ['$scope', 'List'];
 
 function HeuristicsController($scope, deliveryHeuristicsResource) {
 
-    var deliveryHeuristics = deliveryHeuristicsResource.query();
+    var hardBounces;
+    var ipBlocks;
+    
+    var deliveryHeuristics = deliveryHeuristicsResource.query(function () {
+        $scope.hardBounces = deliveryHeuristics[0].HardBounceRules || [];
+        $scope.ipBlocks = deliveryHeuristics[0].IpBlockingRules || [];
+        $scope.Id = deliveryHeuristics[0].Id;
 
-    var hardBounces = $scope.hardBounces = [];
-    var ipBlocks = $scope.ipBlocks = [];
+        hardBounces = $scope.hardBounces;
+        ipBlocks = $scope.ipBlocks;
+    });
+
+
+    
 
     $scope.addHardBounce = function (hardBounce) {
         hardBounces.push(hardBounce);
@@ -122,7 +132,13 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
     };
 
     $scope.saveHeuristics = function () {
+        var rule = new deliveryHeuristicsResource({
+            HardBounceRules: hardBounces,
+            IpBlockingRules: ipBlocks,
+            Id: $scope.Id
+        });
 
+        rule.$save();
     };
 }
 HeuristicsController.$inject = ['$scope', 'DeliveryHeuristics'];
