@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using Quartz;
 using Raven.Client.Util;
 using SpeedyMailer.Core.Domain.Mail;
@@ -33,14 +34,17 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly IntervalRulesStore _intervalRulesStore;
 			private readonly CreativeFragmentSettings _creativeFragmentSettings;
+			private Logger _logger;
 
 			public Job(EventDispatcher eventDispatcher,
 				ParsePostfixLogsCommand parsePostfixLogsCommand,
 				LogsStore logsStore,
 				OmniRecordManager omniRecordManager,
 				IntervalRulesStore intervalRulesStore,
-				CreativeFragmentSettings creativeFragmentSettings)
+				CreativeFragmentSettings creativeFragmentSettings,
+				Logger logger)
 			{
+				_logger = logger;
 				_creativeFragmentSettings = creativeFragmentSettings;
 				_intervalRulesStore = intervalRulesStore;
 				_omniRecordManager = omniRecordManager;
@@ -53,6 +57,8 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var mailLogEntries = _logsStore.GetUnprocessedLogs();
 
+				_logger.Info("Found {0} postfix log entries to analyze", mailLogEntries.Count);
+
 				_parsePostfixLogsCommand.Logs = mailLogEntries;
 				var parsedLogs = _parsePostfixLogsCommand.Execute();
 
@@ -61,6 +67,8 @@ namespace SpeedyMailer.Drones.Tasks
 				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent, parsedLogsDomainGroups);
 				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups);
 				var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred, parsedLogsDomainGroups);
+
+				_logger.Info("postfix log contained: send: {0},bounced: {1}, deferred: {2}", mailSent.Count, mailBounced.Count, mailDeferred.Count);
 
 				_omniRecordManager.BatchInsert(mailSent);
 				_omniRecordManager.BatchInsert(mailBounced);

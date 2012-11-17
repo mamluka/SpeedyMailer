@@ -20,6 +20,13 @@ namespace SpeedyMailer.Drones.Storage
 			specificRecordManager.BatchInsert(records);
 		}
 
+		public void UpdateOrInsert<T>(T record) where T : class
+		{
+			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
+
+			specificRecordManager.Save(record);
+		}
+
 		public T GetSingle<T>() where T : class
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);

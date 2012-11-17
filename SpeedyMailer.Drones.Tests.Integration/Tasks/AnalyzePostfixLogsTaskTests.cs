@@ -63,9 +63,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 1, 1, 1,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 3,1, 1,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1,3, 3, 1,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = LogTimeOffset(0), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = LogTimeOffset(1), level = "INFO"},
+					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = LogTimeOffset(2), level = "INFO"},
 				                 };
 
 			DroneActions.StoreCollection(logEntries, "logs");
@@ -80,9 +80,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var logEntries2 = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = "to=<xbianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 1, 1, 1,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " 6715DAE362: to=<xa66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 3,1, 1,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " EECBDAE8E7: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1,3, 3, 1,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = "to=<xbianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = LogTimeOffset(3), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE362: to=<xa66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = LogTimeOffset(4), level = "INFO"},
+					                 new MailLogEntry {msg = " EECBDAE8E7: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = LogTimeOffset(5), level = "INFO"},
 				                 };
 
 			DroneActions.StoreCollection(logEntries2, "logs");
@@ -95,9 +95,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																x.MailEvents
 																	.Select(mailEvent => mailEvent.Recipient)
 																	.Should()
-																	.BeEquivalentTo(new[] { "bianca23518@yahoo.com", "a66122s@aol.com", "pkaraszewski@gmail.com" });
+																	.BeEquivalentTo(new[] { "xbianca23518@yahoo.com", "xa66122s@aol.com", "xpkaraszewski@gmail.com" });
 															});
 
+		}
+
+		private static DateTime LogTimeOffset(int offset)
+		{
+			return new DateTime(2012, 1, 1, 1, 1, 1,DateTimeKind.Utc)+TimeSpan.FromMinutes(offset);
 		}
 
 		[Test]

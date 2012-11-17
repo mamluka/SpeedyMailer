@@ -14,6 +14,5 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string msg { get; set; }
 		public string level { get; set; }
 		public DateTime time { get; set; }
-		public string processed { get; set; }
 	}
 }

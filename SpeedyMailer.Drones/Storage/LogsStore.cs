@@ -2,8 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 using MongoDB.Driver.Builders;
 using Mongol;
+using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
 
@@ -11,11 +14,13 @@ namespace SpeedyMailer.Drones.Storage
 {
 	public class LogsStore : RecordManager<MailLogEntry>
 	{
-		private OmniRecordManager _omniRecordManager;
+		private readonly OmniRecordManager _omniRecordManager;
+		private Logger _logger;
 
-		public LogsStore(DroneSettings droneSettings, OmniRecordManager omniRecordManager)
+		public LogsStore(DroneSettings droneSettings, OmniRecordManager omniRecordManager, Logger logger)
 			: base(droneSettings.StoreHostname, "logs")
 		{
+			_logger = logger;
 			_omniRecordManager = omniRecordManager;
 		}
 
@@ -25,7 +30,9 @@ namespace SpeedyMailer.Drones.Storage
 
 			if (last == null)
 				return Find(Query.EQ("level", "INFO"), SortBy.Ascending("time"))
-				.ToList();
+					.ToList();
+
+			_logger.Info("When loading postfix logs, the last processed log was from: {0}", last.Time.ToLongTimeString());
 
 			return Find(Query.EQ("level", "INFO").And(Query.GT("time", last.Time)), SortBy.Ascending("time"))
 			.ToList();
@@ -33,16 +40,25 @@ namespace SpeedyMailer.Drones.Storage
 
 		public void MarkProcessed(IList<MailLogEntry> mailLogEntries)
 		{
+			if (!mailLogEntries.Any())
+				return;
+
 			var last = _omniRecordManager.GetSingle<LastProcessedLog>() ?? new LastProcessedLog();
 
-			var lastTime=mailLogEntries
-				.OrderByDescending(x => x.time).First();
+			last.Time = mailLogEntries
+				.OrderByDescending(x => x.time).First().time;
 
+			_logger.Info("After processing postfix logs the last log is from: {0}", last.Time.ToLongTimeString());
+
+			_omniRecordManager.UpdateOrInsert(last);
 		}
 	}
 
 	public class LastProcessedLog
 	{
+		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+		public virtual string Id { get; set; }
+
 		public DateTime Time { get; set; }
 	}
 }
