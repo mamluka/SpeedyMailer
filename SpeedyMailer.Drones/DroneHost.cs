@@ -25,12 +25,13 @@ namespace SpeedyMailer.Drones
 	{
 		public static void Main(string[] args)
 		{
+			var kernel = DroneContainerBootstrapper.Kernel;
+			var logger = kernel.Get<Logger>();
+
 			var options = new DroneCommandOptions();
 
 			if (CommandLineParser.Default.ParseArguments(args, options))
 			{
-				var kernel = DroneContainerBootstrapper.Kernel;
-
 				var initializeDroneSettingsCommand = kernel.Get<InitializeDroneSettingsCommand>();
 				initializeDroneSettingsCommand.RemoteConfigurationServiceBaseUrl = options.ServiceBaseUrl;
 				initializeDroneSettingsCommand.Execute();
@@ -40,11 +41,11 @@ namespace SpeedyMailer.Drones
 				drone.Initialize();
 				drone.Start();
 
+				logger.Info("Stone started with master on: {0}", options.ServiceBaseUrl);
 				Console.WriteLine("Starting drone...");
-
 			}
 
-			Console.ReadKey();
+			logger.Error("Master was not given to drone");
 		}
 	}
 
@@ -77,7 +78,7 @@ namespace SpeedyMailer.Drones
 					new FetchIntervalRulesTask(),
 				};
 
-			
+
 
 			_framework.StartTasks(tasks);
 
