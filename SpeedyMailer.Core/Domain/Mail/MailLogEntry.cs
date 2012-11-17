@@ -11,8 +11,9 @@ namespace SpeedyMailer.Core.Domain.Mail
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
 
-		public string Msg { get; set; }
-		public string Level { get; set; }
-		public DateTime Time { get; set; }
+		public string msg { get; set; }
+		public string level { get; set; }
+		public DateTime time { get; set; }
+		public string processed { get; set; }
 	}
 }

@@ -10,7 +10,7 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Storage
 {
-	public class CreativePackagesStore : RecordManager<CreativePackage>, ICycleSocket
+	public class CreativePackagesStore : RecordManager<CreativePackage>
 	{
 		public CreativePackagesStore(DroneSettings droneSettings)
 			: base(droneSettings.StoreHostname)
@@ -33,11 +33,6 @@ namespace SpeedyMailer.Drones.Storage
 		public bool AreThereAnyPackages()
 		{
 			return Count() > 0;
-		}
-
-		public void CycleSocket()
-		{
-			Count();
 		}
 
 		public IList<CreativePackage> GetAll()

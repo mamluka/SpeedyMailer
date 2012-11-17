@@ -51,7 +51,9 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				_parsePostfixLogsCommand.Logs = _logsStore.GetUnprocessedLogs();
+				var mailLogEntries = _logsStore.GetUnprocessedLogs();
+
+				_parsePostfixLogsCommand.Logs = mailLogEntries;
 				var parsedLogs = _parsePostfixLogsCommand.Execute();
 
 				var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
@@ -63,6 +65,8 @@ namespace SpeedyMailer.Drones.Tasks
 				_omniRecordManager.BatchInsert(mailSent);
 				_omniRecordManager.BatchInsert(mailBounced);
 				_omniRecordManager.BatchInsert(mailDeferred);
+
+				_logsStore.MarkProcessed(mailLogEntries);
 
 				DispatchEvent<AggregatedMailBounced, MailBounced>(mailBounced);
 				DispatchEvent<AggregatedMailSent, MailSent>(mailSent);

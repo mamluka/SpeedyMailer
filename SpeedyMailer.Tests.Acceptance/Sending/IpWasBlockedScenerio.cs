@@ -65,9 +65,9 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			DroneActions.StoreCollectionForDrone(new[] { new MailLogEntry
 								   {
-									   Level = "INFO",
-									   Time = DateTime.UtcNow,
-									   Msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
+									   level = "INFO",
+									   time = DateTime.UtcNow,
+									   msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
 								   }}, "drone1", "logs");
 
 			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
@@ -118,9 +118,9 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			DroneActions.StoreCollectionForDrone(new[] { new MailLogEntry
 								   {
-									   Level = "INFO",
-									   Time = DateTime.UtcNow,
-									   Msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
+									   level = "INFO",
+									   time = DateTime.UtcNow,
+									   msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
 								   }}, "drone1", "logs");
 
 			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);

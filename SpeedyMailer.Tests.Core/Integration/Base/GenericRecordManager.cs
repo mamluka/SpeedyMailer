@@ -6,7 +6,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
-	public class GenericRecordManager<T> : RecordManager<T>, ICycleSocket where T : class
+	public class GenericRecordManager<T> : RecordManager<T> where T : class
 	{
 		public GenericRecordManager(string connectionString, string collectionName = null)
 			: base(connectionString, collectionName)
@@ -20,11 +20,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public bool Exists(int count = -1)
 		{
 			return Count() >= count;
-		}
-
-		public void CycleSocket()
-		{
-			Count();
 		}
 	}
 }

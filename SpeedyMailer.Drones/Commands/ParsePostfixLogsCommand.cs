@@ -23,16 +23,16 @@ namespace SpeedyMailer.Drones.Commands
 			if (ThisMailLogEntryDoesntHaveSendingInformation(mailLogEntry))
 				return null;
 
-			var msg = mailLogEntry.Msg;
+			var msg = mailLogEntry.msg;
 			return new MailEvent
 					   {
 						   Level = TryParse(mailLogEntry),
 						   Recipient = ParseRegexWithOneGroup(msg, "to=<(.+?)>"),
 						   RelayHost = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 1),
 						   RelayIp = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 3),
-						   Time = mailLogEntry.Time,
-						   Type = ParseType(mailLogEntry.Msg),
-						   DelayBreakDown = ParseDelayBreakdown(mailLogEntry.Msg),
+						   Time = mailLogEntry.time,
+						   Type = ParseType(mailLogEntry.msg),
+						   DelayBreakDown = ParseDelayBreakdown(mailLogEntry.msg),
 						   TotalDelay = ParseRegexWithOneGroup(msg, "delay=(.+?),"),
 						   RelayMessage = ParseRegexWithOneGroup(msg, "status.+?\\((.+?)\\)$")
 					   };
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Drones.Commands
 
 		private bool ThisMailLogEntryDoesntHaveSendingInformation(MailLogEntry mailLogEntry)
 		{
-			return !Regex.Match(mailLogEntry.Msg, "status=").Success;
+			return !Regex.Match(mailLogEntry.msg, "status=").Success;
 		}
 
 		private IList<double> ParseDelayBreakdown(string msg)
@@ -80,7 +80,7 @@ namespace SpeedyMailer.Drones.Commands
 		private static MailEventLevel TryParse(MailLogEntry mailLogEntry)
 		{
 			MailEventLevel level;
-			Enum.TryParse(mailLogEntry.Level, true, out level);
+			Enum.TryParse(mailLogEntry.level, true, out level);
 			return level;
 		}
 	}

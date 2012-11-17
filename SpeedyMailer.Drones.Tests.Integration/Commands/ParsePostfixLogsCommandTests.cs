@@ -19,7 +19,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		{
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {Msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}
+					                 new MailLogEntry {msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
@@ -42,7 +42,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		{
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {Msg = " 59C18AE39B: to=<a.and@comcast.net>, relay=mx2.comcast.net[2001:558:fe2d:70::22]:25, delay=0.95, delays=0.04/0/0.46/0.44, dsn=5.1.1, status=bounced (host mx2.comcast.net[2001:558:fe2d:70::22] said: 550 5.1.1 Not our Customer (in reply to RCPT TO command))", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}
+					                 new MailLogEntry {msg = " 59C18AE39B: to=<a.and@comcast.net>, relay=mx2.comcast.net[2001:558:fe2d:70::22]:25, delay=0.95, delays=0.04/0/0.46/0.44, dsn=5.1.1, status=bounced (host mx2.comcast.net[2001:558:fe2d:70::22] said: 550 5.1.1 Not our Customer (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
@@ -65,7 +65,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		{
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {Msg = " 64210AE3A5: to=<aacorley@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.04/0/1.9/0.54, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}
+					                 new MailLogEntry {msg = " 64210AE3A5: to=<aacorley@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.04/0/1.9/0.54, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
@@ -88,12 +88,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		{
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {Msg = " connect from localhost.localdomain[127.0.0.1]", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
-					                 new MailLogEntry {Msg = " 67253AE3A7: client=localhost.localdomain[127.0.0.1]", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
-					                 new MailLogEntry {Msg = " 687EFAE3A8: from=<david@xomixinc.com>, size=1098, nrcpt=1 (queue active)", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"},
-					                 new MailLogEntry {Msg = " 687EFAE3A8: message-id=<20121028125520.687EFAE3A8@mail.xomixinc.com>", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}, 
-					                 new MailLogEntry {Msg = " 67E3DAE362: removed", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}, 
-					                 new MailLogEntry {Msg = " disconnect from localhost.localdomain[127.0.0.1]", Time = new DateTime(2012, 1, 1, 0, 0, 0), Level = "INFO"}, 
+					                 new MailLogEntry {msg = " connect from localhost.localdomain[127.0.0.1]", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"},
+					                 new MailLogEntry {msg = " 67253AE3A7: client=localhost.localdomain[127.0.0.1]", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"},
+					                 new MailLogEntry {msg = " 687EFAE3A8: from=<david@xomixinc.com>, size=1098, nrcpt=1 (queue active)", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"},
+					                 new MailLogEntry {msg = " 687EFAE3A8: message-id=<20121028125520.687EFAE3A8@mail.xomixinc.com>", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
+					                 new MailLogEntry {msg = " 67E3DAE362: removed", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
+					                 new MailLogEntry {msg = " disconnect from localhost.localdomain[127.0.0.1]", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
