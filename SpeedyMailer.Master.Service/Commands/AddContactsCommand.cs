@@ -40,26 +40,7 @@ namespace SpeedyMailer.Master.Service.Commands
                                                    return x;
                                                });
 
-                Contacts.ToList().ForEach(x =>
-                                              {
-                                                  try
-                                                  {
-                                                      session.Store(x);
-                                                      session.Store(new UniqueContactEnforcer(x.Email, x.Id));
-                                                      counter++;
-                                                  }
-                                                  catch (NonUniqueObjectException)
-                                                  {
-                                                      var uniqueEnforcer = session.Load<UniqueContactEnforcer>(x.Email);
-                                                      var entity = session.Load<Contact>(uniqueEnforcer.EnforcedId);
-                                                      if (entity.MemberOf.Contains(ListId) == false)
-                                                      {
-                                                          entity.MemberOf.Add(ListId);
-                                                          session.Store(entity);
-                                                          counter++;
-                                                      }
-                                                  }
-                                              });
+                Contacts.ToList().ForEach(session.Store);
                 session.SaveChanges();
                 return counter;
             }

@@ -74,6 +74,8 @@ namespace SpeedyMailer.Drones.Tasks
 				_omniRecordManager.BatchInsert(mailBounced);
 				_omniRecordManager.BatchInsert(mailDeferred);
 
+				_logger.Info("entries were saved to database");
+
 				_logsStore.MarkProcessed(mailLogEntries);
 
 				DispatchEvent<AggregatedMailBounced, MailBounced>(mailBounced);

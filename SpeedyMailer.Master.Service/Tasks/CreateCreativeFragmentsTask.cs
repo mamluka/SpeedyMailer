@@ -36,6 +36,8 @@ namespace SpeedyMailer.Master.Service.Tasks
 		{
 			using (var session = _documentStore.OpenSession())
 			{
+				session.Advanced.DocumentStore.Conventions.MaxNumberOfRequestsPerSession = 9999999;
+
 				var intervalRules = session.Query<IntervalRule>().ToList();
 				var creative = session.Load<Creative>(task.CreativeId);
 
