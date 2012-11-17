@@ -10,10 +10,9 @@ namespace SpeedyMailer.Core.Logging
 
 			Kernel.Bind<Logger>().ToMethod(x =>
 											   {
-												   var fullName = x.Request.Target.Member.DeclaringType != null ? x.Request.Target.Member.DeclaringType.FullName : "RootType";
-												   return LogManager.GetLogger(fullName);
+												   var className = x.Request != null ? x.Request.Target.Member.DeclaringType.FullName : "RootType";
+												   return LogManager.GetLogger(className);
 											   });
-			//			Kernel.Bind<Logger>().ToConstant(LogManager.GetCurrentClassLogger()).InSingletonScope();
 		}
 	}
 }
