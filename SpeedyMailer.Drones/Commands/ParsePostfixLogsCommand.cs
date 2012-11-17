@@ -14,7 +14,7 @@ namespace SpeedyMailer.Drones.Commands
 		public override IList<MailEvent> Execute()
 		{
 			return Logs.Select(Parse)
-				.Where(x=> x != null)
+				.Where(x => x != null)
 				.ToList();
 		}
 
@@ -68,12 +68,13 @@ namespace SpeedyMailer.Drones.Commands
 
 		private string ParseRegexWithMiltipleGroup(string msg, string pattern, int groupId)
 		{
-			return Regex.Match(msg, pattern).Groups[groupId].Value;
+			var match = Regex.Match(msg, pattern);
+			return match.Success ? match.Groups[groupId].Value : "";
 		}
 
 		private string ParseRegexWithOneGroup(string msg, string pattern)
 		{
-			return Regex.Match(msg, pattern).Groups[1].Value;
+			return ParseRegexWithMiltipleGroup(msg, pattern, 1);
 		}
 
 		private static MailEventLevel TryParse(MailLogEntry mailLogEntry)

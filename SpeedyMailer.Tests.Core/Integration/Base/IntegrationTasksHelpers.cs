@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using Ninject;
 using Quartz;
 using Quartz.Impl;
 using Raven.Client;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Tasks;
-using NUnit;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -43,7 +39,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		private static IJobDetail JobExists(SendCreativePackagesWithIntervalTask task, IScheduler scheduler)
+		private static IJobDetail JobExists(ScheduledTask task, IScheduler scheduler)
 		{
 			return scheduler.GetJobDetail(task.GetJob().Key);
 		}

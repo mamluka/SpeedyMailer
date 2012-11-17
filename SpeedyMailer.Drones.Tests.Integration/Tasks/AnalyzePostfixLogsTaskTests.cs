@@ -5,11 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using FluentAssertions;
+using MongoDB.Driver.Builders;
+using Mongol;
 using NUnit.Framework;
+using Ploeh.AutoFixture;
+using Raven.Abstractions.Extensions;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Rules;
+using SpeedyMailer.Drones.Storage;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Drones.Tests.Integration.Events;
 using SpeedyMailer.Tests.Core.Integration.Base;
@@ -39,6 +44,50 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var task = new AnalyzePostfixLogsTask();
 
 			DroneActions.StartScheduledTask(task);
+
+			AssertEventWasPublished<AggregatedMailSent>(x =>
+															{
+																x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
+																x.MailEvents
+																	.Select(mailEvent => mailEvent.Recipient)
+																	.Should()
+																	.BeEquivalentTo(new[] { "bianca23518@yahoo.com", "a66122s@aol.com", "pkaraszewski@gmail.com" });
+															});
+
+		}
+
+		[Test]
+		public void Execute_WhenThereAreManyEntriesInTheLog_ShouldGrabOnlyTheOneThatWasNotProcesses()
+		{
+			ListenToEvent<AggregatedMailSent>();
+
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", Time = new DateTime(2012, 1, 1, 1, 1, 1,DateTimeKind.Utc), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", Time = new DateTime(2012, 1, 1, 3,1, 1,DateTimeKind.Utc), Level = "INFO"},
+					                 new MailLogEntry {Msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", Time = new DateTime(2012, 1, 1,3, 3, 1,DateTimeKind.Utc), Level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries, "logs");
+
+			var task = new AnalyzePostfixLogsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			DroneActions.WaitForDocumentToExist<MailSent>(3);
+
+			EventRegistry.Clear();
+
+			var logEntries2 = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {Msg = "to=<xbianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", Time = new DateTime(2012, 1, 1, 1, 1, 1,DateTimeKind.Utc), Level = "INFO"},
+					                 new MailLogEntry {Msg = " 6715DAE362: to=<xa66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", Time = new DateTime(2012, 1, 1, 3,1, 1,DateTimeKind.Utc), Level = "INFO"},
+					                 new MailLogEntry {Msg = " EECBDAE8E7: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", Time = new DateTime(2012, 1, 1,3, 3, 1,DateTimeKind.Utc), Level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries2, "logs");
+
+			DroneActions.FireExistingTask(task);
 
 			AssertEventWasPublished<AggregatedMailSent>(x =>
 															{

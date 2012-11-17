@@ -23,7 +23,7 @@ namespace SpeedyMailer.Drones.Storage
 		}
 
 		public IList<string> GetPackageGroups()
-		{
+		{ 
 			return AsQueryable
 				.GroupBy(x => x.Group)
 				.Select(x => x.Key)

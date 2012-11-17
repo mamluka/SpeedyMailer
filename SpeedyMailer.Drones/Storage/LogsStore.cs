@@ -7,20 +7,16 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Storage
 {
-	public class LogsStore : RecordManager<MailLogEntry>,ICycleSocket
+	public class LogsStore : RecordManager<MailLogEntry>
 	{
 		public LogsStore(DroneSettings droneSettings)
 			: base(droneSettings.StoreHostname, "logs")
 		{ }
 
-		public IList<MailLogEntry> GetAllLogs()
+		public IList<MailLogEntry> GetUnprocessedLogs()
 		{
-			return Find(Query.EQ(PropertyName(x => x.Level), "INFO")).ToList();
-		}
-
-		public void CycleSocket()
-		{
-			Count();
+			return Find(Query.EQ("level", "INFO"))
+				.ToList();
 		}
 	}
 }

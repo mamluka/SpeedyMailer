@@ -24,6 +24,7 @@ using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones;
+using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Master.Service;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
@@ -127,17 +128,25 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			mongodb.ShutdownMongo(_runningMongoPorts);
 		}
 
-		public void Store<T>(T entity, string droneId = null) where T : class
+		public void Store<T>(T entity) where T : class
 		{
-			var connectionString = droneId != null && _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : IntergrationHelpers.DefaultStoreUri();
+			var connectionString =  IntergrationHelpers.DefaultStoreUri();
 
 			var manager = new RecordManager<T>(connectionString);
 			manager.BatchInsert(new List<T> { entity });
 		}
 
-		public void StoreCollection<T>(IEnumerable<T> collection, string droneId = null, string collectionName = null) where T : class
+		public void StoreCollection<T>(IEnumerable<T> collection, string collectionName = null) where T : class
 		{
-			var connectionString = droneId != null && _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : IntergrationHelpers.DefaultStoreUri();
+			var connectionString = IntergrationHelpers.DefaultStoreUri();
+
+			var manager = new RecordManager<T>(connectionString, collectionName);
+			manager.BatchInsert(collection);
+		}
+
+		public void StoreCollectionForDrone<T>(IEnumerable<T> collection, string droneId, string collectionName = null) where T : class
+		{
+			var connectionString = _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : IntergrationHelpers.DefaultStoreUri();
 
 			var manager = new RecordManager<T>(connectionString, collectionName);
 			manager.BatchInsert(collection);
@@ -155,14 +164,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return random.Next(1000, 10000);
 		}
 
-		public void WaitForDocumentToExist<T>(string collectionName = null) where T : class
+		public void WaitForDocumentToExist<T>(int count = 1, string collectionName = null) where T : class
 		{
 			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
 
 			var st = new Stopwatch();
 			st.Start();
 
-			while (st.ElapsedMilliseconds < 30 * 1000 && !manager.Exists())
+			while (st.ElapsedMilliseconds < 30 * 1000 && !manager.Exists(count))
 			{
 				Thread.Sleep(500);
 			}

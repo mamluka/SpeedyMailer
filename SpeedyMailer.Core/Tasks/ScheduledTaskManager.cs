@@ -9,6 +9,7 @@ namespace SpeedyMailer.Core.Tasks
 	{
 		void AddAndStart(ScheduledTask task);
 		void AddAndStart(IEnumerable<ScheduledTask> tasks);
+		void FireExitingTask(ScheduledTask scheduledTask);
 	}
 
 	public class ScheduledTaskManager : IScheduledTaskManager
@@ -50,6 +51,14 @@ namespace SpeedyMailer.Core.Tasks
 			{
 				AddAndStart(task);
 			}
+		}
+
+		public void FireExitingTask(ScheduledTask scheduledTask)
+		{
+			var jobKey = scheduledTask.GetJob().Key;
+
+			if (_scheduler.CheckExists(jobKey))
+				_scheduler.TriggerJob(jobKey);
 		}
 	}
 }

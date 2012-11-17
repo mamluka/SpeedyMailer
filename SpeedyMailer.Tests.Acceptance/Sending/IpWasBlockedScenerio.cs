@@ -63,7 +63,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			Email.AssertEmailsSentTo(csvRows.Skip(10).Take(3).Select(x => x.Email).ToList(), 20);
 
-			DroneActions.StoreCollection(new[] { new MailLogEntry
+			DroneActions.StoreCollectionForDrone(new[] { new MailLogEntry
 								   {
 									   Level = "INFO",
 									   Time = DateTime.UtcNow,
@@ -116,7 +116,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			Email.AssertEmailsSentTo(csvRows.Take(10).Select(x => x.Email).ToList(), 20);
 
-			DroneActions.StoreCollection(new[] { new MailLogEntry
+			DroneActions.StoreCollectionForDrone(new[] { new MailLogEntry
 								   {
 									   Level = "INFO",
 									   Time = DateTime.UtcNow,

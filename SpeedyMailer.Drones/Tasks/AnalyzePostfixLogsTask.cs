@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Quartz;
+using Raven.Client.Util;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Settings;
@@ -33,9 +34,9 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly IntervalRulesStore _intervalRulesStore;
 			private readonly CreativeFragmentSettings _creativeFragmentSettings;
 
-			public Job(EventDispatcher eventDispatcher, 
-				ParsePostfixLogsCommand parsePostfixLogsCommand, 
-				LogsStore logsStore, 
+			public Job(EventDispatcher eventDispatcher,
+				ParsePostfixLogsCommand parsePostfixLogsCommand,
+				LogsStore logsStore,
 				OmniRecordManager omniRecordManager,
 				IntervalRulesStore intervalRulesStore,
 				CreativeFragmentSettings creativeFragmentSettings)
@@ -50,7 +51,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				_parsePostfixLogsCommand.Logs = _logsStore.GetAllLogs();
+				_parsePostfixLogsCommand.Logs = _logsStore.GetUnprocessedLogs();
 				var parsedLogs = _parsePostfixLogsCommand.Execute();
 
 				var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
@@ -68,7 +69,7 @@ namespace SpeedyMailer.Drones.Tasks
 				DispatchEvent<AggregatedMailDeferred, MailDeferred>(mailDeferred);
 			}
 
-			private IDictionary<string, string> CalculateDomainGroupFor(IList<MailEvent> mailEvents)
+			private IDictionary<string, string> CalculateDomainGroupFor(IEnumerable<MailEvent> mailEvents)
 			{
 				var conditions = _intervalRulesStore
 					.GetAll()
@@ -76,11 +77,12 @@ namespace SpeedyMailer.Drones.Tasks
 					.ToList();
 
 				return mailEvents
-					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).SingleOrDefault(), Recipient = x.Recipient })
+					.Distinct(new LambdaComparer<MailEvent>((x, y) => x.Recipient == y.Recipient))
+					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).SingleOrDefault(), x.Recipient })
 					.ToDictionary(x => x.Recipient, x => x.Group);
 			}
 
-			private List<TEventData> ParseToSpecificMailEvent<TEventData>(IList<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IDictionary<string, string> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
+			private List<TEventData> ParseToSpecificMailEvent<TEventData>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IDictionary<string, string> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
 			{
 				return parsedLogs
 					.Where(x => x.Type == mailEventType)
@@ -136,6 +138,38 @@ namespace SpeedyMailer.Drones.Tasks
 
 				_eventDispatcher.ExecuteAll(mailEvent);
 			}
+		}
+	}
+
+	public class LambdaComparer<T> : IEqualityComparer<T>
+	{
+		private readonly Func<T, T, bool> _lambdaComparer;
+		private readonly Func<T, int> _lambdaHash;
+
+		public LambdaComparer(Func<T, T, bool> lambdaComparer) :
+			this(lambdaComparer, o => 0)
+		{
+		}
+
+		public LambdaComparer(Func<T, T, bool> lambdaComparer, Func<T, int> lambdaHash)
+		{
+			if (lambdaComparer == null)
+				throw new ArgumentNullException("lambdaComparer");
+			if (lambdaHash == null)
+				throw new ArgumentNullException("lambdaHash");
+
+			_lambdaComparer = lambdaComparer;
+			_lambdaHash = lambdaHash;
+		}
+
+		public bool Equals(T x, T y)
+		{
+			return _lambdaComparer(x, y);
+		}
+
+		public int GetHashCode(T obj)
+		{
+			return _lambdaHash(obj);
 		}
 	}
 }

@@ -64,5 +64,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			_scheduledTaskManager.AddAndStart(scheduledTask);
 		}
+
+		public void FireExistingTask(ScheduledTask task)
+		{
+			_scheduledTaskManager.FireExitingTask(task);
+		}
 	}
 }

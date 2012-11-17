@@ -82,7 +82,7 @@ namespace Mongol
 		/// <summary>
 		/// The underlying MongoDB collection that the RecordManager encapsulates
 		/// </summary>
-		protected virtual MongoCollection<T> Collection
+		public virtual MongoCollection<T> Collection
 		{
 			get;
 			set;
