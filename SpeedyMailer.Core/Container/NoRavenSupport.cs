@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Specialized;
 using Raven.Client;
+using Raven.Client.Changes;
 using Raven.Client.Connection;
 using Raven.Client.Connection.Async;
 using Raven.Client.Document;
@@ -17,6 +18,11 @@ namespace SpeedyMailer.Core.Container
 
 		public bool WasDisposed { get; private set; }
 		public event EventHandler AfterDispose;
+		public IDatabaseChanges Changes(string database = null)
+		{
+			throw new NotImplementedException();
+		}
+
 		public IDisposable AggressivelyCacheFor(TimeSpan cahceDuration)
 		{
 			throw new NotImplementedException();

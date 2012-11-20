@@ -36,6 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
     <None Include="static\config\jsTestDriver.conf" />
     <None Include="static\README.md" />
     <None Include="static\scripts\e2e-test.bat" />
@@ -103,6 +104,11 @@
     <Content Include="static\test\unit\directivesSpec.js" />
     <Content Include="static\test\unit\filtersSpec.js" />
     <Content Include="static\test\unit\servicesSpec.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

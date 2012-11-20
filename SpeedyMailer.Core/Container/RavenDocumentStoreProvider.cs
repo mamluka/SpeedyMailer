@@ -3,6 +3,7 @@ using Ninject.Activation;
 using Raven.Client;
 using Raven.Client.Document;
 using SpeedyMailer.Core.Tasks;
+using TypeNameHandling = Raven.Imports.Newtonsoft.Json.TypeNameHandling;
 
 namespace SpeedyMailer.Core.Container
 {

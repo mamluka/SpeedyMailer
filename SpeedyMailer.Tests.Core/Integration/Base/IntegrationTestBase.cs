@@ -20,6 +20,7 @@ using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Tests.Core.Unit.Base;
+using TypeNameHandling = Raven.Imports.Newtonsoft.Json.TypeNameHandling;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
