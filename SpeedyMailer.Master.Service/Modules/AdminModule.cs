@@ -4,28 +4,45 @@ using System.Linq;
 using System.Text;
 using Nancy;
 using Ninject;
+using Raven.Client;
+using Raven.Client.Linq;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Master.Service.Storage.Indexes;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(ServiceSettings serviceSettings, IKernel kernel)
+		public AdminModule(ServiceSettings serviceSettings, IKernel kernel, IDocumentStore documentStore)
 			: base("/admin")
-        {
+		{
 			Get["/settings"] = x =>
-				                   {
+								   {
 
-					                   ContainerBootstrapper.ReloadAllStoreSettings(kernel);
+									   ContainerBootstrapper.ReloadAllStoreSettings(kernel);
 
-					                   return Response.AsJson(new ServiceEndpoints.Admin.GetRemoteServiceConfiguration.Response
-							                                   {
-								                                   ServiceBaseUrl = serviceSettings.BaseUrl
-							                                   });
-				                   };
-            Get["/info"] = x => Response.AsJson("OK");
-        }
+									   return Response.AsJson(new ServiceEndpoints.Admin.GetRemoteServiceConfiguration.Response
+															   {
+																   ServiceBaseUrl = serviceSettings.BaseUrl
+															   });
+								   };
+			Get["/info"] = x => Response.AsJson("OK");
+
+			Get["/store/domain-counter"] = x =>
+											{
+												var listId = (string)Request.Query["listId"];
+												var group = (string)Request.Query["group"];
+												using (var session = documentStore.OpenSession())
+												{
+													RavenQueryStatistics ravenQueryStatistics;
+													return Response.AsJson(session.Query<Contacts_DomainGroupCounter.ReduceResult, Contacts_DomainGroupCounter>()
+														.Where(result => result.ListId == listId && result.DomainGroup == group)
+														.Statistics(out ravenQueryStatistics)
+														.Select(result => new { result.Count, result.DomainGroup, ravenQueryStatistics.IsStale }));
+												}
+											};
+		}
 	}
 }

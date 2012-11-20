@@ -166,7 +166,6 @@
     <Compile Include="Container\DatabaseBindingGatherer.cs" />
     <Compile Include="Container\DatabaseBindingGathererOptions.cs" />
     <Compile Include="Container\DocumentStoreSettingsBinder.cs" />
-    <Compile Include="Container\Extentions.cs" />
     <Compile Include="Container\IDoneBootstrapping.cs" />
     <Compile Include="Container\JsonFileSettingsBinder.cs" />
     <Compile Include="Container\JsonSettingsInterceptor.cs" />
