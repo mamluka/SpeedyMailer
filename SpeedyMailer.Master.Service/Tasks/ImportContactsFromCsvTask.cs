@@ -42,7 +42,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 			var contacts = rows.Select(x => new Contact
 												{
 													Country = x.Country,
-													Email = x.Email,
+													Email = x.Email.Trim(),
 													Name = string.Format("{0} {1}", x.Firstname, x.Lastname),
 													City = x.City,
 													Ip = x.Ip,
