@@ -33,6 +33,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		protected string DefaultBaseUrl { get; set; }
 
+		protected string DefaultHostUrl { get; set; }
+
 		public IDocumentStore DocumentStore { get; private set; }
 
 		public DroneActions DroneActions { get; set; }
@@ -42,6 +44,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public ServiceActions ServiceActions { get; set; }
 
 		private readonly IntegrationTestsOptions _options = new IntegrationTestsOptions();
+		private int _mongoRandomPort;
 
 		public IntegrationStoreHelpers Store { get; set; }
 
@@ -77,16 +80,21 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			DefaultBaseUrl = IntergrationHelpers.GenerateRandomLocalhostAddress();
 
+			_mongoRandomPort = IntergrationHelpers.RandomPort() + 1;
+			DefaultHostUrl = IntergrationHelpers.DefaultStoreUri(_mongoRandomPort);
+
 			Api = new IntegrationApiHelpers(DefaultBaseUrl);
 			Email = new IntegrationEmailHelpers();
-			MongoDb = new IntegrationMongoDbHelper(DroneKernel.Get<DroneSettings>().StoreHostname);
+			MongoDb = new IntegrationMongoDbHelper(DefaultHostUrl);
 			Jobs = new IntergrationJobsHelper(MasterResolve<IScheduler>(), DroneResolve<IScheduler>());
 
 			IntergrationHelpers.ValidateSettingClasses();
 
 			if (_options.UseMongo)
-				MongoDb.StartMongo();
+				MongoDb.StartMongo(_mongoRandomPort);
 		}
+
+
 
 		[SetUp]
 		public void Setup()
@@ -123,7 +131,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var store = new EmbeddableDocumentStore
 							{
 								RunInMemory = true,
-								UseEmbeddedHttpServer = true,
 								Conventions =
 									{
 										CustomizeJsonSerializer =
@@ -165,7 +172,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DeleteJsonSettingFiles();
 
 			if (_options.UseMongo)
-				MongoDb.ShutdownMongo();
+				MongoDb.ShutdownMongo(_mongoRandomPort);
 		}
 
 		private void ClearJobsFromSchedulers()

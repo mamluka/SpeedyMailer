@@ -20,6 +20,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldStopSendingForTheGivenGroup()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = "dev/null";
@@ -88,7 +90,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpDeferral_ShouldStopSendingForTheGivenGroup()
 		{
 
-
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
@@ -157,6 +159,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenRulesAreNotMatchingForBouncedMail_ShouldDoNothing()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 			{
 				x.WritingEmailsToDiskPath = "dev/null";
@@ -225,6 +229,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenRulesAreNotMatchingForDeferredMail_ShouldDoNothing()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 			{
 				x.WritingEmailsToDiskPath = "dev/null";
@@ -294,6 +300,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenThereAreNoRules_ShouldDoNothing()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 			{
 				x.WritingEmailsToDiskPath = "dev/null";
@@ -351,6 +359,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldPersistTheNonSendingPolicy()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = "dev/null";
@@ -421,6 +431,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldPersistTheNonSendingPolicy()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = "dev/null";

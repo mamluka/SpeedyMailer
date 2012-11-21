@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using FluentAssertions;
-using MongoDB.Driver.Builders;
-using Mongol;
 using NUnit.Framework;
-using Ploeh.AutoFixture;
-using Raven.Abstractions.Extensions;
-using Rhino.Mocks;
 using SpeedyMailer.Core.Domain.Mail;
-using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Rules;
-using SpeedyMailer.Drones.Storage;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Tasks;
-using SpeedyMailer.Drones.Tests.Integration.Events;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
@@ -30,6 +20,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenCalledAndFoundSentStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			ListenToEvent<AggregatedMailSent>();
 
 			var logEntries = new List<MailLogEntry>
@@ -59,6 +51,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenThereAreManyEntriesInTheLog_ShouldGrabOnlyTheOneThatWasNotProcesses()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			ListenToEvent<AggregatedMailSent>();
 
 			var logEntries = new List<MailLogEntry>
@@ -102,12 +96,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 		private static DateTime LogTimeOffset(int offset)
 		{
-			return new DateTime(2012, 1, 1, 1, 1, 1,DateTimeKind.Utc)+TimeSpan.FromMinutes(offset);
+			return new DateTime(2012, 1, 1, 1, 1, 1, DateTimeKind.Utc) + TimeSpan.FromMinutes(offset);
 		}
 
 		[Test]
 		public void Execute_WhenCalledAndFoundBounceStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			ListenToEvent<AggregatedMailBounced>();
 
 			var logEntries = new List<MailLogEntry>
@@ -137,6 +133,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			ListenToEvent<AggregatedMailDeferred>();
 
 			var logEntries = new List<MailLogEntry>
@@ -166,6 +164,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldOnlyPublshTheDeferredEvent()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			ListenToEvent<AggregatedMailDeferred>();
 			ListenToEvent<AggregatedMailBounced>();
 			ListenToEvent<AggregatedMailSent>();
@@ -191,6 +191,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStatusLogsfound_ShouldStoreBouncesMails()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			var logEntries = new List<MailLogEntry>
 				                 {
 					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
@@ -219,6 +221,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStatusLogsFoundButThereAreNoIntervalRules_ShouldStoreWithDefaultDomainGroup()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			var logEntries = new List<MailLogEntry>
 				                 {
 					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
@@ -242,6 +246,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStatusLogsFoundButThereAreNoInervalRules_ShouldStoreSentMails()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			var logEntries = new List<MailLogEntry>
 				                 {
 					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
@@ -270,6 +276,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStatusLogsfound_ShouldStoreDeferredMails()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			var logEntries = new List<MailLogEntry>
 				                 {
 					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},

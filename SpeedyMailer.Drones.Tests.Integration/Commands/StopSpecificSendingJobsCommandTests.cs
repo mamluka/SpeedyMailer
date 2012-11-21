@@ -17,6 +17,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		[Test]
 		public void Execute_WhenSendingTaskIsRunningWithGroups_ShouldStopOnlyTheGroupGiven()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 			{
 				x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -57,6 +58,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		[Test]
 		public void Execute_WhenSendingTaskIsRunningWithGroupsTogetherWithOtherTasks_ShouldStopOnlyTheGroupGiven()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 			{
 				x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;

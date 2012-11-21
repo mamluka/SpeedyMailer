@@ -6,6 +6,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Rules;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -20,6 +21,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenIntervalRulesArePresent_ShouldFetchThem()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			Api.PrepareApiResponse<ServiceEndpoints.Rules.GetIntervalRules, List<IntervalRule>>(x =>

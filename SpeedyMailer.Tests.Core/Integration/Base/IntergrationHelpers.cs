@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using NUnit.Framework;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Utilities;
 
@@ -27,9 +28,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return "mongodb://localhost:" + port + "/drone?safe=true";
 		}
 
+		public static string RandomDefaultStoreUri(int port = 27027)
+		{
+			return DefaultStoreUri(RandomNumber());
+		}
+
 		public static string GenerateRandomLocalhostAddress()
 		{
-			return "http://localhost:" + DateTime.Now.Second + DateTime.Now.Millisecond;
+			return "http://localhost:" + RandomNumber();
 		}
 
 		public static void ValidateSettingClasses()
@@ -45,13 +51,23 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			if (settings.Any())
 			{
 				var setting = settings.First();
-				NUnit.Framework.Assert.Fail("You have a settings class {0} with method {1} that is not virtual", setting.DeclaringType, setting.Name);
+				Assert.Fail("You have a settings class {0} with method {1} that is not virtual", setting.DeclaringType, setting.Name);
 			}
 		}
 
 		public static string Encode(object obj)
 		{
 			return UrlBuilder.ToBase64(obj);
+		}
+
+		private static int RandomNumber()
+		{
+			return new Random().Next(2000, 10000);
+		}
+
+		public static int RandomPort()
+		{
+			return RandomNumber();
 		}
 	}
 }

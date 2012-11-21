@@ -130,7 +130,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void Store<T>(T entity) where T : class
 		{
-			var connectionString =  IntergrationHelpers.DefaultStoreUri();
+			var connectionString = Kernel.Get<DroneSettings>().StoreHostname;
 
 			var manager = new RecordManager<T>(connectionString);
 			manager.BatchInsert(new List<T> { entity });
@@ -138,7 +138,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void StoreCollection<T>(IEnumerable<T> collection, string collectionName = null) where T : class
 		{
-			var connectionString = IntergrationHelpers.DefaultStoreUri();
+			var connectionString = Kernel.Get<DroneSettings>().StoreHostname;
 
 			var manager = new RecordManager<T>(connectionString, collectionName);
 			manager.BatchInsert(collection);
@@ -146,7 +146,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void StoreCollectionForDrone<T>(IEnumerable<T> collection, string droneId, string collectionName = null) where T : class
 		{
-			var connectionString = _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : IntergrationHelpers.DefaultStoreUri();
+			var connectionString = _runningMongoUrls.ContainsKey(droneId) ? _runningMongoUrls[droneId] : Kernel.Get<DroneSettings>().StoreHostname;
 
 			var manager = new RecordManager<T>(connectionString, collectionName);
 			manager.BatchInsert(collection);
@@ -154,7 +154,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public IList<T> FindAll<T>(string collectionName = null) where T : class
 		{
-			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
+			var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, collectionName);
 			return manager.FindAll();
 		}
 
@@ -166,7 +166,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public void WaitForDocumentToExist<T>(int count = 1, string collectionName = null) where T : class
 		{
-			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
+			var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, collectionName);
 
 			var st = new Stopwatch();
 			st.Start();
@@ -182,7 +182,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public T FindSingle<T>(string collectionName = null) where T : class
 		{
-			var manager = new GenericRecordManager<T>(IntergrationHelpers.DefaultStoreUri(), collectionName);
+			var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, collectionName);
 			return manager.AsQueryable.FirstOrDefault();
 		}
 	}

@@ -18,13 +18,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 	{
 		public SendCreativePackagesWithIntervalTaskTests()
 			: base(x => x.UseMongo = true)
-		{
-
-		}
+		{ }
 
 		[Test]
 		public void Execute_WhenTaskHasAnInterval_ShouldSendThePackagesAccordingToTheIntervalSpecified()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -58,6 +58,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenPckagesArePresent_ShouldDeleteThemAfterSendingThem()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -93,6 +95,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenTaskHasAnIntervalAndNoPackagesWereFound_ShouldStopExecutingTheTaskAndRemoveIt()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;

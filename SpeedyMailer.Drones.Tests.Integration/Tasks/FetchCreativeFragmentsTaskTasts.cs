@@ -20,6 +20,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStarted_ShouldFetchACreativeFragmentFromServer()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			Api.ListenToApiCall<ServiceEndpoints.Creative.FetchFragment>();
 
@@ -33,6 +34,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenNotAllCreativePackagesAreSentAndNoSendingJobsAreRunning_ShouldResumeSending()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
@@ -66,6 +68,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStartSendTheEmail()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -114,7 +117,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 															});
 
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+			DroneActions.EditSettings<DroneSettings>(x =>
+				                                         {
+					                                         x.Identifier = "192.1.1.1";
+					                                         x.StoreHostname = DefaultHostUrl;
+				                                         });
 
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
 
@@ -153,7 +160,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 															});
 
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+			DroneActions.EditSettings<DroneSettings>(x =>
+				                                         {
+					                                         x.Identifier = "192.1.1.1";
+					                                         x.StoreHostname = DefaultHostUrl;
+				                                         });
 
 			var recipients = new List<Recipient>
 				                 {
@@ -202,7 +213,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			});
 
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+			DroneActions.EditSettings<DroneSettings>(x =>
+				                                         {
+					                                         x.Identifier = "192.1.1.1";
+					                                         x.StoreHostname = DefaultHostUrl;
+				                                         });
 
 			var recipients = new List<Recipient>
 				                 {
@@ -250,6 +265,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenThereAreNoFragments_ShouldDoNothing()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -270,6 +286,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldReplaceTheDealLinksWithRediractableServiceLinks()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -312,6 +329,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenBodyContainsEmailTemplatingElement_ShouldReplaceWithTheRecipientEmail()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
@@ -355,6 +373,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldAppendTheUnsubscribeTemplate()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 			DroneActions.EditSettings<EmailingSettings>(x =>
 															{
 																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;

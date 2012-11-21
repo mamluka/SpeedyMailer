@@ -18,16 +18,16 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class IntegrationMongoDbHelper
 	{
-		private string _storeHostName;
+		private readonly string _storeHostName;
 
 		public IntegrationMongoDbHelper(string storeHostName)
 		{
 			_storeHostName = storeHostName;
 		}
 
-		public void StartMongo()
+		public void StartMongo(int randomPort = 27027)
 		{
-			MongoRunner.Start();
+			MongoRunner.Start(randomPort);
 
 			while (!Process.GetProcessesByName("mongod").Any())
 			{
