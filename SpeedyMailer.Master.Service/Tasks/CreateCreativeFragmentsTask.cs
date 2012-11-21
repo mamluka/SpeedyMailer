@@ -173,13 +173,13 @@ namespace SpeedyMailer.Master.Service.Tasks
 		{
 			groupsTotal
 				.AddRange(intervalRules
-					          .Select(intervalRule => new GroupSummery
-						                                  {
-							                                  Group = intervalRule.Group,
-							                                  Total = domainGroupsTotal[intervalRule.Group],
-							                                  Conditions = intervalRule.Conditons,
-							                                  Interval = intervalRule.Interval
-						                                  }));
+							  .Select(intervalRule => new GroupSummery
+														  {
+															  Group = intervalRule.Group,
+															  Total = domainGroupsTotal[intervalRule.Group],
+															  Conditions = intervalRule.Conditons,
+															  Interval = intervalRule.Interval
+														  }));
 
 			groupsTotal.Add(new GroupSummery
 								{
@@ -250,12 +250,12 @@ namespace SpeedyMailer.Master.Service.Tasks
 			using (var session = _documentStore.OpenSession())
 			{
 				var rules = session.Query<IntervalRule>().ToList();
-				var matchingConditionsActions = rules.SelectMany(x => x.Conditons.Select(condition => new { Condition = condition, x.Interval, x.Group })).ToList();
+				var matchingConditionsActions = rules.SelectMany(x => x.Conditons.Select(condition => new { Condition = condition.ToLower(), x.Interval, x.Group })).ToList();
 
 				recipients
 					.ToList()
 					.ForEach(x => matchingConditionsActions
-									  .Where(condition => x.Email.Contains(condition.Condition))
+									  .Where(condition => x.Email.ToLower().Contains(condition.Condition))
 									  .ToList()
 									  .ForEach(action =>
 												   {

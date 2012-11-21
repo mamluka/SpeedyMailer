@@ -16,6 +16,7 @@ namespace SpeedyMailer.Core.Container
 					ConnectionStringName = "RavenDb",
 					Conventions =
 					{
+						MaxNumberOfRequestsPerSession = int.MaxValue,
 						CustomizeJsonSerializer =
 							serializer =>
 							{

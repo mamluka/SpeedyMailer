@@ -85,7 +85,7 @@ function RulesController($scope, ruleResource) {
 
         rule.$save();
 
-        $scope.conditions = [];
+        conditions = $scope.conditions = [];
         $scope.group = '';
         $scope.interval = "";
     };
