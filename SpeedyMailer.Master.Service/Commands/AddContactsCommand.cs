@@ -36,7 +36,7 @@ namespace SpeedyMailer.Master.Service.Commands
 			{
 				var matchConditions = session.Query<IntervalRule>()
 					.ToList()
-					.SelectMany(x => x.Conditons.Select(s => new Tuple<string, string>(s, x.Group)));
+					.SelectMany(x => x.Conditons.Select(s => new Tuple<string, string>(s.ToLower(), x.Group)));
 
 				Contacts = Contacts.Select(x =>
 											   {
@@ -69,7 +69,8 @@ namespace SpeedyMailer.Master.Service.Commands
 
 		private string FindMatchingDomainGroupOrDefault(IEnumerable<Tuple<string, string>> matchedConditions, Contact row)
 		{
-			var group = matchedConditions.FirstOrDefault(x => row.Email.ToLower().Contains(x.Item1.ToLower()));
+			var group = matchedConditions.FirstOrDefault(x => row.Email.ToLower().Contains(x.Item1));
+			_logger.Info("We have decided that {0} belongs to {1}", row.Email, group);
 			return group != null ? group.Item2 : _creativeFragmentSettings.DefaultGroup;
 		}
 	}

@@ -74,7 +74,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 						var howManyAdditionalContactsToTake = GetHowManyAdditionalContactsToTake(groupToTakeFrom, i, groupSummery);
 
 						var currentFragmentGroupContacts = session.Query<Contact>()
-							.Customize(x => x.WaitForNonStaleResults())
+							.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
 							.Where(contact => contact.MemberOf.Any(x => x == listId) && contact.DomainGroup == groupSummery.Group)
 							.Skip(i * groupSummery.RegularFragmentChunkSize + extraSkipCounter[groupSummery.Group])
 							.Take(groupSummery.RegularFragmentChunkSize + howManyAdditionalContactsToTake)
