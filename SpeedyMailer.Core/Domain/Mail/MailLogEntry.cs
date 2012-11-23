@@ -8,7 +8,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 	[CollectionName("log")]
 	public class MailLogEntry
 	{
-		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+		[BsonId(IdGenerator = typeof(BsonObjectIdGenerator))]
 		public virtual string Id { get; set; }
 
 		public string msg { get; set; }
