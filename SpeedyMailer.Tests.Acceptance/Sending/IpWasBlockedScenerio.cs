@@ -68,7 +68,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 									   level = "INFO",
 									   time = DateTime.UtcNow,
 									   msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
-								   }}, "drone1", "logs");
+								   }}, "drone1", "log");
 
 			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
 
@@ -121,7 +121,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 									   level = "INFO",
 									   time = DateTime.UtcNow,
 									   msg = " B1F58AE39F: to=<lorihooks@gmail.com>, relay=none, delay=405978, delays=405873/0.02/105/0, dsn=4.4.1, status=deferred (gmail has blocked you)"
-								   }}, "drone1", "logs");
+								   }}, "drone1", "log");
 
 			_api.SetBaseUrl(droneAddress).Call<DroneEndpoints.Admin.FireTask>(x => x.Job = typeof(AnalyzePostfixLogsTask).Name);
 

@@ -123,7 +123,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private void DeleteLogs()
 		{
-			Directory.Delete("logs", true);
+			Directory.Delete("log", true);
 		}
 
 		private static IDocumentStore CreateEmbeddableStore()

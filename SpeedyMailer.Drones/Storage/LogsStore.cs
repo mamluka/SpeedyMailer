@@ -15,10 +15,10 @@ namespace SpeedyMailer.Drones.Storage
 	public class LogsStore : RecordManager<MailLogEntry>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public LogsStore(DroneSettings droneSettings, OmniRecordManager omniRecordManager, Logger logger)
-			: base(droneSettings.StoreHostname, "logs")
+			: base(droneSettings.StoreHostname, "log")
 		{
 			_logger = logger;
 			_omniRecordManager = omniRecordManager;

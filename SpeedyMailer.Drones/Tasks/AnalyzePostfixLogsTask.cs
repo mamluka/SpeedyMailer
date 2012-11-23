@@ -34,7 +34,7 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly IntervalRulesStore _intervalRulesStore;
 			private readonly CreativeFragmentSettings _creativeFragmentSettings;
-			private Logger _logger;
+			private readonly Logger _logger;
 
 			public Job(EventDispatcher eventDispatcher,
 				ParsePostfixLogsCommand parsePostfixLogsCommand,

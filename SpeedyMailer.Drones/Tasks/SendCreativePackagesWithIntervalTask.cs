@@ -1,6 +1,7 @@
 using System;
 using MongoDB.Driver;
 using Mongol;
+using NLog;
 using Quartz;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Tasks;
@@ -30,9 +31,11 @@ namespace SpeedyMailer.Drones.Tasks
 		{
 			private readonly CreativePackagesStore _creativePackagesStore;
 			private readonly SendCreativePackageCommand _sendCreativePackageCommand;
+			private Logger _logger;
 
-			public Job(SendCreativePackageCommand sendCreativePackageCommand, CreativePackagesStore creativePackagesStore)
+			public Job(SendCreativePackageCommand sendCreativePackageCommand, CreativePackagesStore creativePackagesStore, Logger logger)
 			{
+				_logger = logger;
 				_sendCreativePackageCommand = sendCreativePackageCommand;
 				_creativePackagesStore = creativePackagesStore;
 			}
@@ -48,11 +51,18 @@ namespace SpeedyMailer.Drones.Tasks
 					return;
 				}
 
-				_sendCreativePackageCommand.Package = creativePackage;
-				_sendCreativePackageCommand.FromName = creativePackage.FromName;
-				_sendCreativePackageCommand.FromAddressDomainPrefix = creativePackage.FromAddressDomainPrefix;
+				try
+				{
+					_sendCreativePackageCommand.Package = creativePackage;
+					_sendCreativePackageCommand.FromName = creativePackage.FromName;
+					_sendCreativePackageCommand.FromAddressDomainPrefix = creativePackage.FromAddressDomainPrefix;
 
-				_sendCreativePackageCommand.Execute();
+					_sendCreativePackageCommand.Execute();
+				}
+				catch (Exception ex)
+				{
+					_logger.ErrorException(string.Format("While sending to {0} a exception was thrown", creativePackage.To), ex);
+				}
 
 				_creativePackagesStore.DeleteById(creativePackage.Id);
 			}

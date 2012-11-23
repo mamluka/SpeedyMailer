@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime;
+using FluentAssertions;
 using NUnit.Framework;
 using Newtonsoft.Json;
 using SpeedyMailer.Core.Domain.Creative;

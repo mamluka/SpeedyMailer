@@ -31,7 +31,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 
 			var task = new AnalyzePostfixLogsTask();
 
@@ -62,7 +62,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = LogTimeOffset(2), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 
 			var task = new AnalyzePostfixLogsTask();
 
@@ -79,7 +79,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " EECBDAE8E7: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = LogTimeOffset(5), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries2, "logs");
+			DroneActions.StoreCollection(logEntries2, "log");
 
 			DroneActions.FireExistingTask(task);
 
@@ -113,7 +113,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " 5CDF7AE39E: to=<a.villa767@verizon.net>, relay=relay.verizon.net[206.46.232.11]:25, delay=0.55, delays=0.04/0/0.38/0.13, dsn=5.0.0, status=bounced (host relay.verizon.net[206.46.232.11] said: 550 4.2.1 mailbox temporarily disabled: a.villa767@verizon.net (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, collectionName: "logs");
+			DroneActions.StoreCollection(logEntries, collectionName: "log");
 
 			var task = new AnalyzePostfixLogsTask();
 
@@ -144,7 +144,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 
 			var task = new AnalyzePostfixLogsTask();
 
@@ -177,7 +177,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 
 			var task = new AnalyzePostfixLogsTask();
 
@@ -198,7 +198,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 			DroneActions.Store(new IntervalRule
 								   {
 									   Conditons = new List<string> { "gmail.com" },
@@ -228,7 +228,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 
 			var task = new AnalyzePostfixLogsTask();
 
@@ -253,7 +253,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 			DroneActions.Store(new IntervalRule
 			{
 				Conditons = new List<string> { "aol.com" },
@@ -283,7 +283,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "logs");
+			DroneActions.StoreCollection(logEntries, "log");
 			DroneActions.Store(new IntervalRule
 			{
 				Conditons = new List<string> { "sbcglobal.net" },

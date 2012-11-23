@@ -21,7 +21,7 @@ namespace SpeedyMailer.Core.Tasks
 
 		public static bool JobExistWithData<TEventData>(this IScheduler target, Func<TEventData, bool> testFunc)
 		{
-			return GetCurrentJobs(target)
+			return target.GetCurrentJobs()
 				.Where(x => x.Name.Contains(typeof(TEventData).Name))
 				.Select(target.GetJobDetail)
 				.Select(ConvertToEventData<TEventData>)
@@ -38,11 +38,12 @@ namespace SpeedyMailer.Core.Tasks
 			target.TriggerJob(key);
 		}
 
-		private static IEnumerable<JobKey> GetCurrentJobs(IScheduler target)
+		public static IList<JobKey> GetCurrentJobs(this IScheduler target)
 		{
 			return target
 				.GetJobGroupNames()
-				.SelectMany(x => target.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
+				.SelectMany(x => target.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)))
+				.ToList();
 		}
 
 		public static bool IsJobsRunning<TJob>(this IScheduler target)

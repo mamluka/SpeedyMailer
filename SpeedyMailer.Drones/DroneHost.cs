@@ -18,7 +18,7 @@ namespace SpeedyMailer.Drones
 {
 	public class DroneCommandOptions : CommandLineOptionsBase
 	{
-		[Option("s", "service-base-url", DefaultValue = @"http://localhost:2589", HelpText = "The base url of the service to register the drone with")]
+		[Option("s", "service-base-url", HelpText = "The base url of the service to register the drone with")]
 		public string ServiceBaseUrl { get; set; }
 	}
 	public class DroneHost
@@ -26,7 +26,6 @@ namespace SpeedyMailer.Drones
 		public static void Main(string[] args)
 		{
 			var kernel = DroneContainerBootstrapper.Kernel;
-			var logger = kernel.Get<Logger>();
 
 			var options = new DroneCommandOptions();
 
@@ -41,11 +40,8 @@ namespace SpeedyMailer.Drones
 				drone.Initialize();
 				drone.Start();
 
-				logger.Info("Stone started with master on: {0}", options.ServiceBaseUrl);
 				Console.WriteLine("Starting drone...");
 			}
-
-			logger.Error("Master was not given to drone");
 		}
 	}
 
@@ -77,8 +73,6 @@ namespace SpeedyMailer.Drones
 					new FetchDeliveryClassificationHeuristicsTask(),
 					new FetchIntervalRulesTask(),
 				};
-
-
 
 			_framework.StartTasks(tasks);
 

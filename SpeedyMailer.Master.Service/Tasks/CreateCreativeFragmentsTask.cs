@@ -87,7 +87,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 					var recipients = contacts.Select(ToRecipient).ToList();
 					ApplyDefaultRules(recipients);
-					ApplyIntervalRules(recipients);
+					ApplyIntervalRules(recipients, intervalRules);
 
 					var fragment = new CreativeFragment
 									   {
@@ -245,12 +245,11 @@ namespace SpeedyMailer.Master.Service.Tasks
 							 });
 		}
 
-		private void ApplyIntervalRules(IEnumerable<Recipient> recipients)
+		private void ApplyIntervalRules(IEnumerable<Recipient> recipients, List<IntervalRule> intervalRules)
 		{
 			using (var session = _documentStore.OpenSession())
 			{
-				var rules = session.Query<IntervalRule>().ToList();
-				var matchingConditionsActions = rules.SelectMany(x => x.Conditons.Select(condition => new { Condition = condition.ToLower(), x.Interval, x.Group })).ToList();
+				var matchingConditionsActions = intervalRules.SelectMany(x => x.Conditons.Select(condition => new { Condition = condition.ToLower(), x.Interval, x.Group })).ToList();
 
 				recipients
 					.ToList()
