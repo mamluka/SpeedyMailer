@@ -18,7 +18,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string sys { get; set; }
 		public DateTime time_rcvd { get; set; }
 		public int syslog_fac { get; set; }
-		public int syslog_server { get; set; }
+		public int syslog_sever { get; set; }
 		public string syslog_tag { get; set; }
 		public string procid { get; set; }
 		public string pid { get; set; }
