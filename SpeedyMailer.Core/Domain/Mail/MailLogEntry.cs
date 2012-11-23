@@ -1,4 +1,5 @@
 using System;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 using Mongol;
@@ -9,7 +10,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 	public class MailLogEntry
 	{
 		[BsonId(IdGenerator = typeof(BsonObjectIdGenerator))]
-		public virtual string Id { get; set; }
+		public virtual ObjectId Id { get; set; }
 
 		public string msg { get; set; }
 		public string level { get; set; }
