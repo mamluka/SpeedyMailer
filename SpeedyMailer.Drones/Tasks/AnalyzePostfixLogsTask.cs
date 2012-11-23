@@ -92,7 +92,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 				return mailEvents
 					.Distinct(new LambdaComparer<MailEvent>((x, y) => x.Recipient == y.Recipient))
-					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).SingleOrDefault(), x.Recipient })
+					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).FirstOrDefault(), x.Recipient })
 					.ToDictionary(x => x.Recipient, x => x.Group);
 			}
 
