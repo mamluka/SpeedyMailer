@@ -6,14 +6,16 @@ using System.Text;
 using System.Threading;
 using Nancy;
 using Quartz;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler,LogsStore logsStore)
+		public AdminModule(IScheduler scheduler,LogsStore logsStore,SendCreativePackageCommand sendCreativePackageCommand)
 			: base("/admin")
 		{
 
@@ -50,6 +52,25 @@ namespace SpeedyMailer.Drones.Modules
 					                       var lines = logs.Select(entry => string.Format("{0} {1}", entry.time.ToLongTimeString(), entry.msg)).ToList();
 					                       return Response.AsText(string.Join(Environment.NewLine, lines));
 				                       };
+
+			Get["/send-test-email"] = x =>
+				                          {
+
+					                          sendCreativePackageCommand.Package = new CreativePackage
+						                                                               {
+																						   Body = "testing: " + Guid.NewGuid(),
+																						   FromName = "testing",
+																						   Subject = DateTime.UtcNow.ToLongTimeString() + " testing subject",
+																						   To = Request.Query["to"],
+																						   FromAddressDomainPrefix = "test"
+						                                                               };
+					                          sendCreativePackageCommand.FromAddressDomainPrefix = "test";
+					                          sendCreativePackageCommand.FromName = "testing";
+
+											  sendCreativePackageCommand.Execute();
+
+					                          return Response.AsText("OK");
+				                          };
 		}
 	}
 }
