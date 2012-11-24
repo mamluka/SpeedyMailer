@@ -53,7 +53,7 @@ namespace SpeedyMailer.Drones.Commands
 				client.Send(email);
 			}
 
-			_logger.Info("Drone: {0} sent email to: {0}, with subject {1}, email body was: {2}", _droneSettings.Identifier, Package.To, Package.Subject, Package.Body);
+			_logger.Info("Drone: {0} sent email to: {1}, with subject {2}, email body was: {3}", _droneSettings.Identifier, Package.To, Package.Subject, Package.Body);
 		}
 
 		private void WriteEmailToDisk(MailMessage email)
