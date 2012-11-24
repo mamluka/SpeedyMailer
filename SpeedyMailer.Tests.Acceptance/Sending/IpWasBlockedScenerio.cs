@@ -127,14 +127,18 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 
 			Email.AssertEmailSent(10);
 		}
-		
+
 		private void AddClassifictionRulesForBlockedIp(string rule)
 		{
 			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x =>
 																	{
 																		x.Rules = new UnDeliveredMailClassificationHeuristicsRules
 																					  {
-																						  IpBlockingRules = new List<string> { rule }
+																						  IpBlockingRules = new List<HeuristicRule> { new HeuristicRule
+																							                                              {
+																								                                              Condition = rule,
+																																			  TimeSpan = TimeSpan.FromHours(3)
+																							                                              } }
 																					  };
 																	});
 		}

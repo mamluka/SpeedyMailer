@@ -284,26 +284,26 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			firstFragment.Recipients.Should().HaveCount(920);
 			AssertDomainCountIn(firstFragment.Recipients, "hotmail.com", 96);
 			AssertDomainCountIn(firstFragment.Recipients, "gmail.com", 93);
-			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 243);
+			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 242);
 			AssertDomainCountIn(firstFragment.Recipients, "msn.com", 148);
-			AssertDomainCountIn(firstFragment.Recipients, "random.com", 340);
+			AssertDomainCountIn(firstFragment.Recipients, "random.com", 341);
 
 			var secondFragment = result[1];
 
 			secondFragment.Recipients.Should().HaveCount(920);
 			AssertDomainCountIn(secondFragment.Recipients, "hotmail.com", 95);
 			AssertDomainCountIn(secondFragment.Recipients, "gmail.com", 94);
-			AssertDomainCountIn(secondFragment.Recipients, "aol.com", 243);
+			AssertDomainCountIn(secondFragment.Recipients, "aol.com", 242);
 			AssertDomainCountIn(secondFragment.Recipients, "msn.com", 148);
-			AssertDomainCountIn(secondFragment.Recipients, "random.com", 340);
+			AssertDomainCountIn(secondFragment.Recipients, "random.com", 341);
 
 			var lastFragment = result.First(x => x.Recipients.Count == 257);
 
 			AssertDomainCountIn(lastFragment.Recipients, "hotmail.com", 26);
 			AssertDomainCountIn(lastFragment.Recipients, "gmail.com", 26);
-			AssertDomainCountIn(lastFragment.Recipients, "aol.com", 67);
+			AssertDomainCountIn(lastFragment.Recipients, "aol.com", 69);
 			AssertDomainCountIn(lastFragment.Recipients, "msn.com", 41);
-			AssertDomainCountIn(lastFragment.Recipients, "random.com", 97);
+			AssertDomainCountIn(lastFragment.Recipients, "random.com", 95);
 		}
 
 		[Test]
@@ -350,9 +350,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			firstFragment.Recipients.Should().HaveCount(920);
 			AssertDomainCountIn(firstFragment.Recipients, "hotmail.com", 96);
 			AssertDomainCountIn(firstFragment.Recipients, "gmail.com", 93);
-			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 243);
+			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 242);
 			AssertDomainCountIn(firstFragment.Recipients, "msn.com", 148);
-			AssertDomainCountIn(firstFragment.Recipients, "random.com", 340);
+			AssertDomainCountIn(firstFragment.Recipients, "random.com", 341);
 		}
 
 		private void AddIntervalRules(string address, string group, int interval)

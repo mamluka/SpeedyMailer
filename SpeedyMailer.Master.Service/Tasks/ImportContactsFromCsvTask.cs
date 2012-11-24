@@ -13,13 +13,6 @@ namespace SpeedyMailer.Master.Service.Tasks
 	{
 		public string ListId { get; set; }
 		public string File { get; set; }
-		public Results TaskResults { get; set; }
-
-		public class Results
-		{
-			public string Filename { get; set; }
-			public long NumberOfContacts { get; set; }
-		}
 	}
 
 	public class ImportContactsFromCsvTaskExecutor : PersistentTaskExecutor<ImportContactsFromCsvTask>
@@ -37,7 +30,9 @@ namespace SpeedyMailer.Master.Service.Tasks
 		{
 			var csvSource = File.OpenRead(task.File);
 			var csvReader = new CsvReader(new StreamReader(csvSource));
-			var rows = csvReader.GetRecords<ContactsListCsvRow>().ToList();
+			var rows = csvReader.GetRecords<ContactsListCsvRow>()
+				.Distinct(new LambdaComparer<ContactsListCsvRow>((x, y) => x.Email == y.Email))
+				.ToList();
 
 			var contacts = rows.Select(x => new Contact
 												{
@@ -54,14 +49,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 			_addContactsCommand.Contacts = contacts;
 			_addContactsCommand.ListId = task.ListId;
 
-			var counter = _framework.ExecuteCommand(_addContactsCommand);
-
-			var result = new ImportContactsFromCsvTask.Results
-					   {
-						   NumberOfContacts = counter,
-						   Filename = Path.GetFileName(task.File)
-					   };
-			task.TaskResults = result;
+			_framework.ExecuteCommand(_addContactsCommand);
 		}
 	}
 

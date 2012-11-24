@@ -262,6 +262,7 @@
     <Compile Include="Utilities\Extentions\LinqExtentions.cs" />
     <Compile Include="Utilities\Framework.cs" />
     <Compile Include="Utilities\General\IReportResults.cs" />
+    <Compile Include="Utilities\LambdaComparer.cs" />
     <Compile Include="Utilities\UrlBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ namespace SpeedyMailer.Drones.Commands
 					       .Select(x => new {Rule = x, BounceType = BounceType.IpBlocked})
 				);
 
-			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Rule).Success);
+			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Rule.Condition).Success);
 
 			return hardBounce != null ? hardBounce.BounceType : BounceType.NotClassified;
 		}

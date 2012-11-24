@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
@@ -59,13 +60,22 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
 								   {
-									   HardBounceRules = new List<string>
+									   HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
+																 new HeuristicRule
+																	 {
+																		 Condition = "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
+							                                     
 						                                     },
-									   IpBlockingRules = new List<string>
+									   IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "bad bounce"
+																 new HeuristicRule
+																	 {
+																		 Condition = "bad bounce",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
 						                                     }
 								   });
 
@@ -128,16 +138,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   HardBounceRules = new List<string>
+			{
+				HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
+																 new HeuristicRule
+																	 {
+																		 Condition =  "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
+							                                     
 						                                     },
-									   IpBlockingRules = new List<string>
+				IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "DNSBL"
+																 new HeuristicRule
+																	 {
+																		 Condition = "DNSBL",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
 						                                     }
-								   });
+			});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {
@@ -197,16 +216,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   HardBounceRules = new List<string>
+			{
+				HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
+																 new HeuristicRule
+																	 {
+																		 Condition =  "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
+							                                     
 						                                     },
-									   IpBlockingRules = new List<string>
+				IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "DNSBL"
+																 new HeuristicRule
+																	 {
+																		 Condition = "DNSBL",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
 						                                     }
-								   });
+			});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -267,16 +295,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   HardBounceRules = new List<string>
+			{
+				HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
+																 new HeuristicRule
+																	 {
+																		 Condition =  "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
+							                                     
 						                                     },
-									   IpBlockingRules = new List<string>
+				IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "DNSBL"
+																 new HeuristicRule
+																	 {
+																		 Condition = "DNSBL",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
 						                                     }
-								   });
+			});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																			{
@@ -397,17 +434,26 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   HardBounceRules = new List<string>
+			{
+				HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
+																 new HeuristicRule
+																	 {
+																		 Condition =  "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
+							                                     
 						                                     },
-									   IpBlockingRules = new List<string>
+				IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "bad bounce"
+																 new HeuristicRule
+																	 {
+																		 Condition = "bad bounce",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
 						                                     }
-								   });
-
+			});
+			
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
 																			   x.MailEvents = new List<MailBounced>
@@ -469,16 +515,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task2);
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   HardBounceRules = new List<string>
+			{
+				HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
+																 new HeuristicRule
+																	 {
+																		 Condition =   "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
+							                                     
 						                                     },
-									   IpBlockingRules = new List<string>
+				IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "ip blocked"
+																 new HeuristicRule
+																	 {
+																		 Condition = "ip blocked",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 }
 						                                     }
-								   });
+			});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {

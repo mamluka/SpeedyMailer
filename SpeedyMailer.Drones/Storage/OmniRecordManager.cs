@@ -30,7 +30,7 @@ namespace SpeedyMailer.Drones.Storage
 		public T GetSingle<T>() where T : class
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
-			return specificRecordManager.AsQueryable.SingleOrDefault();
+			return specificRecordManager.AsQueryable.FirstOrDefault();
 		}
 	}
 }

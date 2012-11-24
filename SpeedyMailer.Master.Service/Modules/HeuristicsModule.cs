@@ -33,12 +33,14 @@ namespace SpeedyMailer.Master.Service.Modules
 
 										using (var session = documentStore.OpenSession())
 										{
-											var rules = session.Load<UnDeliveredMailClassificationHeuristicsRules>(model.Rules.Id);
+											var rules = session.Query<UnDeliveredMailClassificationHeuristicsRules>()
+												.Customize(customization=> customization.WaitForNonStaleResults())
+												.SingleOrDefault() ?? new UnDeliveredMailClassificationHeuristicsRules();
 
 											rules.HardBounceRules = model.Rules.HardBounceRules;
 											rules.IpBlockingRules = model.Rules.IpBlockingRules;
 
-											session.Store(model.Rules);
+											session.Store(rules);
 											session.SaveChanges();
 
 											return Response.AsText("OK");

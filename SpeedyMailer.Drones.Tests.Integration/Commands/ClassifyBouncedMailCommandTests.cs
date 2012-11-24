@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Mail;
@@ -23,10 +24,18 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
 								   {
-									   HardBounceRules = new List<string>
+									   HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
-							                                     "doesn't have.+?account",
+																 new HeuristicRule
+																	 {
+																		 Condition = "account.+?disabled",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 },
+																	 new HeuristicRule
+																	 {
+																		 Condition = "doesn't have.+?account",
+																		 TimeSpan = TimeSpan.FromHours(2)
+																	 },
 						                                     }
 								   });
 
@@ -34,7 +43,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			result.Should().Be(BounceType.HardBounce);
 		}
-		
+
 		[Test]
 		public void Execute_WhenGivenAMessageThatDoesntMatchHardBounce_ShouldReturnNotClassified()
 		{
@@ -44,18 +53,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
 								   {
-									   HardBounceRules = new List<string>
+									   HardBounceRules = new List<HeuristicRule>
 						                                     {
-							                                     "account.+?disabled",
-							                                     "doesn't have.+?account",
+							                                     new HeuristicRule
+								                                     {
+									                                     Condition = "account.+?disabled",
+									                                     TimeSpan = TimeSpan.FromHours(2)
+								                                     },
+							                                     new HeuristicRule
+								                                     {
+									                                     Condition = "doesn't have.+?account",
+									                                     TimeSpan = TimeSpan.FromHours(2)
+								                                     },
 						                                     }
 								   });
-
 			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, BounceType>(x => x.Message = message);
 
 			result.Should().Be(BounceType.NotClassified);
 		}
-		
+
 		[Test]
 		public void Execute_WhenGivenAMessageThatMatchesIpBlocked_ShouldReturnHardBounce()
 		{
@@ -65,9 +81,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
 								   {
-									   IpBlockingRules = new List<string>
+									   IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "DYN:T1",
+																 new HeuristicRule
+								                                     {
+									                                     Condition ="DYN:T1",
+									                                     TimeSpan = TimeSpan.FromHours(2)
+								                                     }
 						                                     }
 								   });
 
@@ -75,7 +95,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			result.Should().Be(BounceType.IpBlocked);
 		}
-		
+
 		[Test]
 		public void Execute_WhenGivenAMessageThatDoesntMatchIpBlocked_ShouldReturnNotClassified()
 		{
@@ -84,18 +104,22 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			const string message = "host mailin-03.mx.aol.com[205.188.156.193] refused to talk to me: 421 4.7.1 : (DYN:T1) http://postmaster.info.aol.com/errors/421dynt1.html";
 
 			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   IpBlockingRules = new List<string>
+				                   {
+					                   IpBlockingRules = new List<HeuristicRule>
 						                                     {
-							                                     "Resources temporarily unavailable",
+							                                     new HeuristicRule
+								                                     {
+									                                     Condition = "Resources temporarily unavailable",
+									                                     TimeSpan = TimeSpan.FromHours(2)
+								                                     }
 						                                     }
-								   });
+				                   });
 
 			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, BounceType>(x => x.Message = message);
 
 			result.Should().Be(BounceType.NotClassified);
 		}
-		
+
 		[Test]
 		public void Execute_WhenNoClassificationRulesPresent_ShouldReturnNotClassified()
 		{

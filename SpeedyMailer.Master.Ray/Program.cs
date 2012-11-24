@@ -18,6 +18,12 @@ namespace SpeedyMailer.Master.Ray
 		{
 			[Option("p", "process-csv", HelpText = "The base url of the service to register the drone with")]
 			public string CsvFile { get; set; }
+
+			[Option("T", "top", HelpText = "The base url of the service to register the drone with")]
+			public bool ListTopDomains { get; set; }
+
+			[Option("E", "estimate", HelpText = "The base url of the service to register the drone with")]
+			public string EstimationParameters { get; set; }
 		}
 
 		static void Main(string[] args)
@@ -38,22 +44,54 @@ namespace SpeedyMailer.Master.Ray
 
 					WriteToConsole("When devided to {0} created {1} chunks", size, chunks.Count);
 
-					var domains = rows
-						.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
-						.GroupBy(x => x.ToLower())
-						.Select(x => new { x.Key, Count = x.Count() })
-						.OrderByDescending(x => x.Count)
-						.ToList();
 
-					WriteToConsole("There are {0} groups", domains.Count);
-					WriteToConsole("The top 10 domains are:");
-					WriteSaperator();
+					if (rayCommandOptions.ListTopDomains)
+						TopDomains(rows);
 
-					domains.Where(x => x.Count > 10).ToList().ForEach(x => WriteToConsole("Domain: {0} has: {1}", x.Key, x.Count));
-					WriteSaperator();
+					if (!string.IsNullOrEmpty(rayCommandOptions.EstimationParameters))
+						CalculateSendingTime(rows, rayCommandOptions.EstimationParameters);
 				}
 
 			}
+		}
+
+		private static void CalculateSendingTime(IList<ContactsListCsvRow> rows, string parameters)
+		{
+			var domains = rows
+				.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
+				.GroupBy(x => x.ToLower())
+				.Select(x => new { x.Key, Count = x.Count() })
+				.OrderByDescending(x => x.Count)
+				.Where(x => x.Count > rows.Count() * 0.1)
+				.ToList();
+
+			var strings = parameters.Split(',');
+			var numberOfDrones = int.Parse(strings[0]);
+			var interval = int.Parse(strings[1]);
+
+			WriteToConsole("We are considering {0} groups: {1}", domains.Count, string.Join(",", domains.Select(x => x.Key)));
+			WriteSaperator();
+
+			var speed = TimeSpan.FromSeconds(domains.First().Count * interval / numberOfDrones);
+
+			WriteToConsole("The sending will take minimum of {0} hours or {1} days", speed.TotalHours, speed.TotalDays);
+		}
+
+		private static void TopDomains(IEnumerable<ContactsListCsvRow> rows)
+		{
+			var domains = rows
+				.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
+				.GroupBy(x => x.ToLower())
+				.Select(x => new { x.Key, Count = x.Count() })
+				.OrderByDescending(x => x.Count)
+				.ToList();
+
+			WriteToConsole("There are {0} groups", domains.Count);
+			WriteToConsole("The top 10 domains are:");
+			WriteSaperator();
+
+			domains.Where(x => x.Count > 10).ToList().ForEach(x => WriteToConsole("Domain: {0} has: {1}", x.Key, x.Count));
+			WriteSaperator();
 		}
 
 		private static void WriteSaperator()

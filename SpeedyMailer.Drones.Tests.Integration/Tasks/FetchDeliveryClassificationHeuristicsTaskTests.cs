@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
@@ -26,16 +24,24 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				UnDeliveredMailClassificationHeuristicsRules>(x =>
-					                                              {
-						                                              x.HardBounceRules = new List<string>
+																  {
+																	  x.HardBounceRules = new List<HeuristicRule>
 							                                                                  {
-								                                                                  "hard bounce rule"
+								                                                                  new HeuristicRule
+									                                                                  {
+										                                                                 Condition  = "hard bounce rule",
+																										 TimeSpan = TimeSpan.FromHours(4)
+									                                                                  } 
 							                                                                  };
-						                                              x.IpBlockingRules = new List<string>
+																	  x.IpBlockingRules = new List<HeuristicRule>
 							                                                                  {
-								                                                                  "blocking rule"
+																								  new HeuristicRule
+									                                                                  {
+										                                                                 Condition  = "blocking rule",
+																										 TimeSpan = TimeSpan.FromHours(4)
+									                                                                  } 
 							                                                                  };
-					                                              });
+																  });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
 
@@ -45,10 +51,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var result = DroneActions.FindSingle<UnDeliveredMailClassificationHeuristicsRules>();
 
-			result.HardBounceRules.Should().Contain("hard bounce rule");
-			result.IpBlockingRules.Should().Contain("blocking rule");
+			result.HardBounceRules.Should().Contain(x => x.Condition == "hard bounce rule" && x.TimeSpan == TimeSpan.FromHours(4));
+			result.IpBlockingRules.Should().Contain(x => x.Condition == "blocking rule" && x.TimeSpan == TimeSpan.FromHours(4));
 		}
-		
+
 		[Test]
 		public void Execute_WhenCalledTwice_ShouldUpdateTheRules()
 		{
@@ -57,16 +63,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				UnDeliveredMailClassificationHeuristicsRules>(x =>
-					                                              {
-						                                              x.HardBounceRules = new List<string>
+																  {
+																	  x.HardBounceRules = new List<HeuristicRule>
 							                                                                  {
-								                                                                  "hard bounce rule"
+																								  new HeuristicRule
+									                                                                  {
+										                                                                 Condition  = "hard bounce rule",
+																										 TimeSpan = TimeSpan.FromHours(4)
+									                                                                  } 
+								                                                                  
 							                                                                  };
-						                                              x.IpBlockingRules = new List<string>
+																	  x.IpBlockingRules = new List<HeuristicRule>
 							                                                                  {
-								                                                                  "blocking rule"
+																								  new HeuristicRule
+									                                                                  {
+										                                                                 Condition  = "blocking rule",
+																										 TimeSpan = TimeSpan.FromHours(4)
+									                                                                  } 
 							                                                                  };
-					                                              });
+																  });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
 

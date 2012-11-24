@@ -32,10 +32,12 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			UiActions.ExecuteTask(task);
 
-			var result = Store.Load<ImportContactsFromCsvTask>(task.Id);
+			Store.WaitForEntitiesToExist<Contact>(10);
 
-			result.TaskResults.NumberOfContacts.Should().Be(10);
-			result.TaskResults.Filename.Should().Be(filename);
+			var result = Store.Query<Contact>();
+
+			result.Should().HaveCount(10);
+
 		}
 
 		[Test]
@@ -120,10 +122,11 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			UiActions.ExecuteTask(task);
 
-			var result = Store.Load<ImportContactsFromCsvTask>(task.Id);
+			Store.WaitForEntitiesToExist<Contact>(10);
 
-			result.TaskResults.NumberOfContacts.Should().Be(10);
-			result.TaskResults.Filename.Should().Be(filename);
+			var result = Store.Query<Contact>();
+
+			result.Should().HaveCount(10);
 		}
 	}
 }
