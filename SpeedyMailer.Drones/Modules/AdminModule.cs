@@ -42,10 +42,7 @@ namespace SpeedyMailer.Drones.Modules
 									   return Response.AsText("OK");
 				                   };
 
-			Get["/raw-postfix-logs"] = x =>
-				                           {
-					                           Response.Json(logsStore.GetAllLogs());
-				                           };
+			Get["/raw-postfix-logs"] = x => Response.AsJson(logsStore.GetAllLogs());
 		}
 	}
 }
