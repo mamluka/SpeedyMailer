@@ -11,12 +11,13 @@ using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Domain.Email;
 using Raven.Client.Linq;
+using SpeedyMailer.Master.Service.Tasks;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
 	public class DealsModule : NancyModule
 	{
-		public DealsModule(IDocumentStore documentStore)
+		public DealsModule(IDocumentStore documentStore, Framework framework)
 			: base("/deals")
 		{
 			Get["/"] = call =>
@@ -45,24 +46,7 @@ namespace SpeedyMailer.Master.Service.Modules
 						                 if (creative == null)
 							                 return new NotFoundResponse();
 
-						                 var contactActions = session
-							                 .Query<ContactActions>().FirstOrDefault(q => q.ContactId == data.ContactId);
-
-						                 if (contactActions == null)
-						                 {
-							                 contactActions = new ContactActions
-								                                  {
-									                                  Clicks = new List<string> {data.CreativeId},
-									                                  ContactId = data.ContactId
-								                                  };
-						                 }
-						                 else
-						                 {
-							                 contactActions.Clicks.Add(creative.Id);
-						                 }
-
-						                 session.Store(contactActions);
-						                 session.SaveChanges();
+						                 framework.ExecuteTask(new SaveClickActionTask {Data = data});
 
 						                 return new RedirectResponse(creative.DealUrl, RedirectResponse.RedirectType.Permanent);
 					                 }

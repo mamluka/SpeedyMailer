@@ -129,6 +129,7 @@
     <Compile Include="ServiceHost.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ImportContactsFromCsvTask.cs" />
+    <Compile Include="Tasks\SaveClickActionTask.cs" />
     <Compile Include="Tasks\WakeupSleepingDronesTask.cs" />
   </ItemGroup>
   <ItemGroup>

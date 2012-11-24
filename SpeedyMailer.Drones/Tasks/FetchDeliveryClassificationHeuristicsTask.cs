@@ -36,6 +36,10 @@ namespace SpeedyMailer.Drones.Tasks
 				if (result == null)
 					return;
 
+				var rules = _omniRecordManager.GetSingle<UnDeliveredMailClassificationHeuristicsRules>() ?? new UnDeliveredMailClassificationHeuristicsRules();
+				rules.HardBounceRules = result.HardBounceRules;
+				rules.IpBlockingRules = result.IpBlockingRules;
+
 				_omniRecordManager.BatchInsert(new[] { result });
 			}
 		}
