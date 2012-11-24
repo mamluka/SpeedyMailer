@@ -37,7 +37,7 @@ namespace SpeedyMailer.Core.Tasks
 			{
 				session.Advanced.UseOptimisticConcurrency = true;
 				var tasks = session.Query<PersistentTask>()
-					.Customize(x => x.WaitForNonStaleResults())
+					.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
 					.Where(task => task.Status == PersistentTaskStatus.Pending)
 					.OrderBy(x => x.CreateDate).Take(3)
 					.ToList();

@@ -34,7 +34,9 @@ namespace SpeedyMailer.Master.Service.Tasks
 				var creative = session.Load<Creative>(dealUrlData.CreativeId);
 
 				var contactActions = session
-					.Query<ContactActions>().FirstOrDefault(q => q.ContactId == dealUrlData.ContactId);
+					.Query<ContactActions>()
+					.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
+					.FirstOrDefault(q => q.ContactId == dealUrlData.ContactId);
 
 				if (contactActions == null)
 				{

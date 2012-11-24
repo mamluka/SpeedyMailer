@@ -38,6 +38,11 @@ namespace SpeedyMailer.Drones.Storage
 			.ToList();
 		}
 
+		public IList<MailLogEntry> GetAllLogs()
+		{
+			return Find(Query.Null).ToList();
+		}
+
 		public void MarkProcessed(IList<MailLogEntry> mailLogEntries)
 		{
 			if (!mailLogEntries.Any())

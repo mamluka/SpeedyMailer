@@ -7,12 +7,13 @@ using System.Threading;
 using Nancy;
 using Quartz;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler)
+		public AdminModule(IScheduler scheduler,LogsStore logsStore)
 			: base("/admin")
 		{
 
@@ -40,6 +41,11 @@ namespace SpeedyMailer.Drones.Modules
 
 									   return Response.AsText("OK");
 				                   };
+
+			Get["/raw-postfix-logs"] = x =>
+				                           {
+					                           Response.Json(logsStore.GetAllLogs());
+				                           };
 		}
 	}
 }
