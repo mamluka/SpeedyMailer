@@ -15,7 +15,7 @@ namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler,LogsStore logsStore,SendCreativePackageCommand sendCreativePackageCommand)
+		public AdminModule(IScheduler scheduler, LogsStore logsStore, SendCreativePackageCommand sendCreativePackageCommand)
 			: base("/admin")
 		{
 
@@ -28,49 +28,49 @@ namespace SpeedyMailer.Drones.Modules
 													};
 
 			Get["/shutdown"] = x =>
-				                   {
-					                   var jobs = scheduler.GetCurrentJobs();
-					                   scheduler.DeleteJobs(jobs);
+								   {
+									   var jobs = scheduler.GetCurrentJobs();
+									   scheduler.DeleteJobs(jobs);
 
 									   scheduler.Shutdown();
 
-					                   while (!scheduler.IsShutdown)
-					                   {
-						                   Thread.Sleep(500);
-					                   }
+									   while (!scheduler.IsShutdown)
+									   {
+										   Thread.Sleep(500);
+									   }
 
 									   Environment.Exit(0);
 
 									   return Response.AsText("OK");
-				                   };
+								   };
 
 			Get["/raw-postfix-logs"] = x => Response.AsJson(logsStore.GetAllLogs());
 
 			Get["/postfix-logs"] = x =>
-				                       {
-					                       var logs = logsStore.GetAllLogs();
-					                       var lines = logs.Select(entry => string.Format("{0} {1}", entry.time.ToLongTimeString(), entry.msg)).ToList();
-					                       return Response.AsText(string.Join(Environment.NewLine, lines));
-				                       };
+									   {
+										   var logs = logsStore.GetAllLogs();
+										   var lines = logs.Select(entry => string.Format("{0} {1}", entry.time.ToLongTimeString(), entry.msg)).ToList();
+										   return Response.AsText(string.Join(Environment.NewLine, lines));
+									   };
 
 			Get["/send-test-email"] = x =>
-				                          {
+										  {
 
-					                          sendCreativePackageCommand.Package = new CreativePackage
-						                                                               {
+											  sendCreativePackageCommand.Package = new CreativePackage
+																					   {
 																						   Body = "testing: " + Guid.NewGuid(),
 																						   FromName = "testing",
 																						   Subject = DateTime.UtcNow.ToLongTimeString() + " testing subject",
-																						   To = Request.Query["to"],
+																						   To = (string)Request.Query["to"],
 																						   FromAddressDomainPrefix = "test"
-						                                                               };
-					                          sendCreativePackageCommand.FromAddressDomainPrefix = "test";
-					                          sendCreativePackageCommand.FromName = "testing";
+																					   };
+											  sendCreativePackageCommand.FromAddressDomainPrefix = "test";
+											  sendCreativePackageCommand.FromName = "testing";
 
 											  sendCreativePackageCommand.Execute();
 
-					                          return Response.AsText("OK");
-				                          };
+											  return Response.AsText("OK");
+										  };
 		}
 	}
 }
