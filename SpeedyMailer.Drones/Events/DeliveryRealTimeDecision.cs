@@ -10,13 +10,13 @@ namespace SpeedyMailer.Drones.Events
 	public class DeliveryRealTimeDecision : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
-		private readonly StopSpecificSendingJobsCommand _stopSpecificSendingJobsCommand;
+		private readonly PauseSpecificSendingJobsCommand _pauseSpecificSendingJobsCommand;
 		private readonly OmniRecordManager _omniRecordManager;
 
-		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, StopSpecificSendingJobsCommand stopSpecificSendingJobsCommand, OmniRecordManager omniRecordManager)
+		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager)
 		{
 			_omniRecordManager = omniRecordManager;
-			_stopSpecificSendingJobsCommand = stopSpecificSendingJobsCommand;
+			_pauseSpecificSendingJobsCommand = pauseSpecificSendingJobsCommand;
 			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 		}
 
@@ -55,8 +55,8 @@ namespace SpeedyMailer.Drones.Events
 
 			foreach (var badBounce in badBouncesGroups)
 			{
-				_stopSpecificSendingJobsCommand.Group = badBounce.DomainGroup;
-				_stopSpecificSendingJobsCommand.Execute();
+				_pauseSpecificSendingJobsCommand.Group = badBounce.DomainGroup;
+				_pauseSpecificSendingJobsCommand.Execute();
 			}
 
 

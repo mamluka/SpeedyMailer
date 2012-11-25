@@ -8,9 +8,9 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Commands
 {
-	public class StopSpecificSendingJobsCommandTests : IntegrationTestBase
+	public class PauseSpecificSendingJobsCommandTests : IntegrationTestBase
 	{
-		public StopSpecificSendingJobsCommandTests()
+		public PauseSpecificSendingJobsCommandTests()
 			: base(x => x.UseMongo = true)
 		{ }
 
@@ -50,7 +50,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			DroneActions.StartScheduledTask(task1);
 			DroneActions.StartScheduledTask(task2);
 
-			DroneActions.ExecuteCommand<StopSpecificSendingJobsCommand>(x => x.Group = "gmail");
+			DroneActions.ExecuteCommand<PauseSpecificSendingJobsCommand>(x => x.Group = "gmail");
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
@@ -95,7 +95,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			DroneActions.StartScheduledTask(task2);
 			DroneActions.StartScheduledTask(anotherTask);
 
-			DroneActions.ExecuteCommand<StopSpecificSendingJobsCommand>(x => x.Group = "gmail");
+			DroneActions.ExecuteCommand<PauseSpecificSendingJobsCommand>(x => x.Group = "gmail");
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");

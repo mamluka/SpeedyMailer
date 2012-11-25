@@ -7,13 +7,13 @@ using SpeedyMailer.Drones.Tasks;
 
 namespace SpeedyMailer.Drones.Commands
 {
-	public class StopSpecificSendingJobsCommand : Command
+	public class PauseSpecificSendingJobsCommand : Command
 	{
 		private readonly IScheduler _scheduler;
 
 		public string Group { get; set; }
 
-		public StopSpecificSendingJobsCommand(IScheduler scheduler)
+		public PauseSpecificSendingJobsCommand(IScheduler scheduler)
 		{
 			_scheduler = scheduler;
 		}

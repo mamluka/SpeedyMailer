@@ -118,7 +118,7 @@
     <Compile Include="Commands\InitializeDroneSettingsCommandTests.cs" />
     <Compile Include="Commands\ParsePostfixLogsCommandTests.cs" />
     <Compile Include="Commands\SendCreativePackageCommandTests.cs" />
-    <Compile Include="Commands\StopSpecificSendingJobsCommandTests.cs" />
+    <Compile Include="Commands\PauseSpecificSendingJobsCommandTests.cs" />
     <Compile Include="Events\DeliveryRealTimeDecisionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\AnalyzePostfixLogsTaskTests.cs" />
