@@ -85,5 +85,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var groups = _scheduler.GetJobGroupNames();
 			return groups.SelectMany(x => _scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
 		}
+
+		public void AssertJobWasPaused<T>(Expression<Func<T, bool>> assertFunc)
+		{
+			var jobKeys = GetJobKeys();
+			var pausedJobs = jobKeys.Where(x => _scheduler.GetTriggersOfJob(x).Any(trigger => _scheduler.GetTriggerState(trigger.Key) == TriggerState.Paused));
+
+			var data = GetData<T>(pausedJobs);
+
+			data.Should().Contain(assertFunc);
+		}
 	}
 }

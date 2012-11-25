@@ -93,7 +93,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		   });
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
-			Jobs.Drone().AssertJobWasRemoved<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
 		}
 
 		[Test]
@@ -172,7 +172,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 																		   });
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
-			Jobs.Drone().AssertJobWasRemoved<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
 		}
 
 		[Test]

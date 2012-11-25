@@ -23,11 +23,11 @@ namespace SpeedyMailer.Drones.Commands
 			var groups = _scheduler.GetJobGroupNames();
 			var jobKeys = groups.SelectMany(x => _scheduler.GetJobKeys(GroupMatcher<JobKey>.GroupEquals(x)));
 
-			var jobsToStop = jobKeys
+			var jobsToPause = jobKeys
 				.Where(IsBelongsToGroup)
 				.ToList();
 
-			_scheduler.DeleteJobs(jobsToStop);
+			jobsToPause.ForEach(_scheduler.PauseJob);
 		}
 
 		private bool IsBelongsToGroup(JobKey jobKey)

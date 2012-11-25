@@ -53,6 +53,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			DroneActions.ExecuteCommand<StopSpecificSendingJobsCommand>(x => x.Group = "gmail");
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
 		}
 		
 		[Test]
@@ -97,6 +98,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			DroneActions.ExecuteCommand<StopSpecificSendingJobsCommand>(x => x.Group = "gmail");
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
+			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
 		}
 
 		private static CreativePackage AddCreativePackage(string domainGroup)
