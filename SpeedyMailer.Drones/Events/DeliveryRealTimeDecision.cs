@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SpeedyMailer.Core.Domain.Mail;
@@ -32,35 +33,43 @@ namespace SpeedyMailer.Drones.Events
 
 		private void StopSendingIfIpBlockageFound<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRelayMessage
 		{
-			var badBouncesGroups = data
+			var bouncesGroups = data
 				.MailEvents
 				.Select(x =>
 							{
 								_classifyNonDeliveredMailCommand.Message = x.Message;
-								var bounceType = _classifyNonDeliveredMailCommand.Execute();
-								return new { BounceType = bounceType, x.DomainGroup };
+								var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
+								return new { MailClassfication = mailClassfication, x.DomainGroup };
 							})
-				.Where(x => x.BounceType == BounceType.IpBlocked)
+				.Where(x => x.MailClassfication.BounceType == BounceType.Blocked)
+				.Where(x => !string.IsNullOrEmpty(x.DomainGroup))
 				.ToList();
 
-			if (!badBouncesGroups.Any())
+			if (!bouncesGroups.Any())
 				return;
 
-			var ipBlockingGroups = _omniRecordManager.GetSingle<IpBlockingGroups>() ?? new IpBlockingGroups();
+			var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsSendingPolicies>() ?? new GroupsSendingPolicies();
 
-			ipBlockingGroups.Groups = ipBlockingGroups.Groups ?? new List<string>();
-			ipBlockingGroups.Groups.AddRange(badBouncesGroups.Select(x => x.DomainGroup).ToList());
+			groupsSendingPolicies.GroupSendingPolicies = groupsSendingPolicies.GroupSendingPolicies ?? new Dictionary<string, GroupSendingPolicy>();
 
-			_omniRecordManager.BatchInsert(new[] { ipBlockingGroups });
+			bouncesGroups.ForEach(x =>
+										 {
+											 if (groupsSendingPolicies.GroupSendingPolicies.ContainsKey(x.DomainGroup))
+												 return;
 
-			foreach (var badBounce in badBouncesGroups)
+											 groupsSendingPolicies.GroupSendingPolicies[x.DomainGroup] = new GroupSendingPolicy
+																								{
+																									ResumeAt = DateTime.UtcNow + x.MailClassfication.TimeSpan
+																								};
+										 });
+
+			_omniRecordManager.BatchInsert(new[] { groupsSendingPolicies });
+
+			foreach (var badBounce in bouncesGroups)
 			{
 				_pauseSpecificSendingJobsCommand.Group = badBounce.DomainGroup;
 				_pauseSpecificSendingJobsCommand.Execute();
 			}
-
-
-
 		}
 	}
 }

@@ -58,26 +58,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-								   {
-									   HardBounceRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "account.+?disabled",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-							                                     
-						                                     },
-									   IpBlockingRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "bad bounce",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-						                                     }
-								   });
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -94,6 +75,21 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+		}
+
+		private void StoreClassificationRules(string bounceCondition, HeuristicRule heuristicRule)
+		{
+			DroneActions.Store(new DeliverabilityClassificationRules
+								   {
+									   HardBounceRules = new List<string>
+						                                     {
+							                                     bounceCondition,
+						                                     },
+									   BlockingRules = new List<HeuristicRule>
+						                                   {
+							                                   heuristicRule
+						                                   }
+								   });
 		}
 
 		[Test]
@@ -137,26 +133,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-			{
-				HardBounceRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition =  "account.+?disabled",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-							                                     
-						                                     },
-				IpBlockingRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "DNSBL",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-						                                     }
-			});
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "DNSBL", TimeSpan = TimeSpan.FromHours(2) });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {
@@ -215,26 +192,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-			{
-				HardBounceRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition =  "account.+?disabled",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-							                                     
-						                                     },
-				IpBlockingRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "DNSBL",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-						                                     }
-			});
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "DNSBL", TimeSpan = TimeSpan.FromHours(2) });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -294,26 +252,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-			{
-				HardBounceRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition =  "account.+?disabled",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-							                                     
-						                                     },
-				IpBlockingRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "DNSBL",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-						                                     }
-			});
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "DNSBL", TimeSpan = TimeSpan.FromHours(2) });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																			{
@@ -433,27 +372,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-			{
-				HardBounceRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition =  "account.+?disabled",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-							                                     
-						                                     },
-				IpBlockingRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "bad bounce",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-						                                     }
-			});
-			
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
 																			   x.MailEvents = new List<MailBounced>
@@ -467,11 +387,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						                                                                          };
 																		   });
 
-			DroneActions.WaitForDocumentToExist<IpBlockingGroups>();
+			DroneActions.WaitForDocumentToExist<GroupsSendingPolicies>();
 
-			var result = DroneActions.FindSingle<IpBlockingGroups>();
+			var result = DroneActions.FindSingle<GroupsSendingPolicies>();
 
-			result.Groups.Should().OnlyContain(x => x == "gmail");
+			result.GroupSendingPolicies.Should().ContainKey("gmail");
 		}
 
 		[Test]
@@ -514,32 +434,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			DroneActions.Store(new UnDeliveredMailClassificationHeuristicsRules
-			{
-				HardBounceRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition =   "account.+?disabled",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-							                                     
-						                                     },
-				IpBlockingRules = new List<HeuristicRule>
-						                                     {
-																 new HeuristicRule
-																	 {
-																		 Condition = "ip blocked",
-																		 TimeSpan = TimeSpan.FromHours(2)
-																	 }
-						                                     }
-			});
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "ip blocked", TimeSpan = TimeSpan.FromHours(2) });
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {
 																			   x.MailEvents = new List<MailDeferred>
 						                                                                          {
-							                                                                          new MailDeferred()
+							                                                                          new MailDeferred
 								                                                                          {
 									                                                                          DomainGroup = "gmail",
 									                                                                          Recipient = "david@gmail.com",
@@ -548,11 +449,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						                                                                          };
 																		   });
 
-			DroneActions.WaitForDocumentToExist<IpBlockingGroups>();
+			DroneActions.WaitForDocumentToExist<GroupsSendingPolicies>();
 
-			var result = DroneActions.FindSingle<IpBlockingGroups>();
+			var result = DroneActions.FindSingle<GroupsSendingPolicies>();
 
-			result.Groups.Should().OnlyContain(x => x == "gmail");
+			result.GroupSendingPolicies.Should().ContainKey("gmail");
 		}
 
 		private static CreativePackage AddCreativePackage(string domainGroup)

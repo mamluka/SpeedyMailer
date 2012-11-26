@@ -132,9 +132,9 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		{
 			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x =>
 																	{
-																		x.Rules = new UnDeliveredMailClassificationHeuristicsRules
+																		x.Rules = new DeliverabilityClassificationRules
 																					  {
-																						  IpBlockingRules = new List<HeuristicRule> { new HeuristicRule
+																						  BlockingRules = new List<HeuristicRule> { new HeuristicRule
 																							                                              {
 																								                                              Condition = rule,
 																																			  TimeSpan = TimeSpan.FromHours(3)

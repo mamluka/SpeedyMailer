@@ -21,20 +21,20 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			Store.Store(new UnDeliveredMailClassificationHeuristicsRules
+			Store.Store(new DeliverabilityClassificationRules
 							{
-								HardBounceRules = new List<HeuristicRule> { new HeuristicRule { Condition = "yeah", TimeSpan = TimeSpan.FromHours(2) } },
-								IpBlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
+								HardBounceRules = new List<string> { "yeah" },
+								BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
 							});
 
-			Store.WaitForEntitiesToExist<UnDeliveredMailClassificationHeuristicsRules>(1);
+			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>(1);
 
 			var api = MasterResolve<Api>();
 
-			var result = api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, UnDeliveredMailClassificationHeuristicsRules>();
+			var result = api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
 
-			result.HardBounceRules.Should().Contain(x=> x.Condition == "yeah" && x.TimeSpan == TimeSpan.FromHours(2));
-			result.IpBlockingRules.Should().Contain(x=> x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
+			result.HardBounceRules.Should().Contain(x => x == "yeah");
+			result.BlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
 		}
 
 		[Test]
@@ -48,20 +48,20 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = new UnDeliveredMailClassificationHeuristicsRules
+			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = new DeliverabilityClassificationRules
 			{
-				HardBounceRules = new List<HeuristicRule> { new HeuristicRule { Condition = "yeah", TimeSpan = TimeSpan.FromHours(2) } },
-				IpBlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
+				HardBounceRules = new List<string> { "yeah" },
+				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
 			});
 
-			Store.WaitForEntitiesToExist<UnDeliveredMailClassificationHeuristicsRules>();
+			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
 
-			var result = Store.Query<UnDeliveredMailClassificationHeuristicsRules>().SingleOrDefault();
+			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 
-			result.HardBounceRules.Should().Contain(x => x.Condition == "yeah" && x.TimeSpan == TimeSpan.FromHours(2));
-			result.IpBlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
+			result.HardBounceRules.Should().Contain(x => x == "yeah");
+			result.BlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
 		}
-		
+
 		[Test]
 		public void SetDeliveryRules_WhenRulesAlreadyExusts_ShouldSOverrideHeuristicsRules()
 		{
@@ -71,26 +71,26 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			Store.Store(new UnDeliveredMailClassificationHeuristicsRules
-				            {
-								HardBounceRules = new List<HeuristicRule> { new HeuristicRule { Condition = "old", TimeSpan = TimeSpan.FromHours(2) } },
-								IpBlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "very old", TimeSpan = TimeSpan.FromHours(2) } }
-				            });
+			Store.Store(new DeliverabilityClassificationRules
+							{
+								HardBounceRules = new List<string> { "old" },
+								BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "very old", TimeSpan = TimeSpan.FromHours(2) } }
+							});
 
 			var api = MasterResolve<Api>();
 
-			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = new UnDeliveredMailClassificationHeuristicsRules
+			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = new DeliverabilityClassificationRules
 			{
-				HardBounceRules = new List<HeuristicRule> { new HeuristicRule { Condition = "yeah", TimeSpan = TimeSpan.FromHours(2) } },
-				IpBlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
+				HardBounceRules = new List<string> { "yeah" },
+				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
 			});
 
-			Store.WaitForEntitiesToExist<UnDeliveredMailClassificationHeuristicsRules>();
+			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
 
-			var result = Store.Query<UnDeliveredMailClassificationHeuristicsRules>().SingleOrDefault();
+			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 
-			result.HardBounceRules.Should().Contain(x => x.Condition == "yeah" && x.TimeSpan == TimeSpan.FromHours(2));
-			result.IpBlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
+			result.HardBounceRules.Should().Contain(x => x == "yeah");
+			result.BlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
 		}
 	}
 }

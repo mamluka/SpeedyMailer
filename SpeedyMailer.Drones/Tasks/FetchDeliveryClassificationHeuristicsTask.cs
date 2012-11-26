@@ -31,14 +31,14 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, UnDeliveredMailClassificationHeuristicsRules>();
+				var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
 
 				if (result == null)
 					return;
 
-				var rules = _omniRecordManager.GetSingle<UnDeliveredMailClassificationHeuristicsRules>() ?? new UnDeliveredMailClassificationHeuristicsRules();
+				var rules = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
 				rules.HardBounceRules = result.HardBounceRules;
-				rules.IpBlockingRules = result.IpBlockingRules;
+				rules.BlockingRules = result.BlockingRules;
 
 				_omniRecordManager.BatchInsert(new[] { result });
 			}

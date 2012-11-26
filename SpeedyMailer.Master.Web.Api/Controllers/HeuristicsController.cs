@@ -20,15 +20,15 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[POST("heuristics/delivery")]
-		public void SetDelivery(UnDeliveredMailClassificationHeuristicsRules model)
+		public void SetDelivery(DeliverabilityClassificationRules model)
 		{
 			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = model);
 		}
 
 		[GET("heuristics/delivery")]
-		public IList<UnDeliveredMailClassificationHeuristicsRules> GetDelivery()
+		public IList<DeliverabilityClassificationRules> GetDelivery()
 		{
-			var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, UnDeliveredMailClassificationHeuristicsRules>();
+			var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
 			return new[] {result};
 		}
 	}

@@ -20,8 +20,8 @@ namespace SpeedyMailer.Master.Service.Modules
 									   using (var session = documentStore.OpenSession())
 									   {
 										   var rules = session
-											   .Query<UnDeliveredMailClassificationHeuristicsRules>()
-											   .FirstOrDefault() ?? new UnDeliveredMailClassificationHeuristicsRules();
+											   .Query<DeliverabilityClassificationRules>()
+											   .FirstOrDefault() ?? new DeliverabilityClassificationRules();
 
 										   return Response.AsJson(rules);
 									   }
@@ -33,12 +33,12 @@ namespace SpeedyMailer.Master.Service.Modules
 
 										using (var session = documentStore.OpenSession())
 										{
-											var rules = session.Query<UnDeliveredMailClassificationHeuristicsRules>()
+											var rules = session.Query<DeliverabilityClassificationRules>()
 												.Customize(customization=> customization.WaitForNonStaleResults())
-												.SingleOrDefault() ?? new UnDeliveredMailClassificationHeuristicsRules();
+												.SingleOrDefault() ?? new DeliverabilityClassificationRules();
 
 											rules.HardBounceRules = model.Rules.HardBounceRules;
-											rules.IpBlockingRules = model.Rules.IpBlockingRules;
+											rules.BlockingRules = model.Rules.BlockingRules;
 
 											session.Store(rules);
 											session.SaveChanges();

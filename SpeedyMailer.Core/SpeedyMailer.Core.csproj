@@ -195,9 +195,9 @@
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
     <Compile Include="Domain\Mail\Dnsbl.cs" />
     <Compile Include="Domain\Mail\DnsnlType.cs" />
-    <Compile Include="Domain\Mail\IpBlockingGroups.cs" />
-    <Compile Include="Domain\Mail\UnDeliveredMailClassificationHeuristicsRules.cs" />
+    <Compile Include="Domain\Mail\DeliverabilityClassificationRules.cs" />
     <Compile Include="Domain\Mail\BounceType.cs" />
+    <Compile Include="Domain\Mail\GroupsSendingPolicies.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
     <Compile Include="Domain\Mail\MailEventType.cs" />

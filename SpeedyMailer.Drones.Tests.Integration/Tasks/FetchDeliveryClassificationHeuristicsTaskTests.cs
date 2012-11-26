@@ -23,36 +23,32 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
-				UnDeliveredMailClassificationHeuristicsRules>(x =>
-																  {
-																	  x.HardBounceRules = new List<HeuristicRule>
-							                                                                  {
-								                                                                  new HeuristicRule
-									                                                                  {
-										                                                                 Condition  = "hard bounce rule",
-																										 TimeSpan = TimeSpan.FromHours(4)
-									                                                                  } 
-							                                                                  };
-																	  x.IpBlockingRules = new List<HeuristicRule>
-							                                                                  {
-																								  new HeuristicRule
-									                                                                  {
-										                                                                 Condition  = "blocking rule",
-																										 TimeSpan = TimeSpan.FromHours(4)
-									                                                                  } 
-							                                                                  };
-																  });
+				DeliverabilityClassificationRules>(x =>
+					                                   {
+						                                   x.HardBounceRules = new List<string>
+							                                                       {
+								                                                       "hard bounce rule",
+							                                                       };
+						                                   x.BlockingRules = new List<HeuristicRule>
+							                                                     {
+								                                                     new HeuristicRule
+									                                                     {
+										                                                     Condition = "blocking rule",
+										                                                     TimeSpan = TimeSpan.FromHours(4)
+									                                                     }
+							                                                     };
+					                                   });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
 
 			DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<UnDeliveredMailClassificationHeuristicsRules>();
+			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>();
 
-			var result = DroneActions.FindSingle<UnDeliveredMailClassificationHeuristicsRules>();
+			var result = DroneActions.FindSingle<DeliverabilityClassificationRules>();
 
-			result.HardBounceRules.Should().Contain(x => x.Condition == "hard bounce rule" && x.TimeSpan == TimeSpan.FromHours(4));
-			result.IpBlockingRules.Should().Contain(x => x.Condition == "blocking rule" && x.TimeSpan == TimeSpan.FromHours(4));
+			result.HardBounceRules.Should().Contain(x => x == "hard bounce rule");
+			result.BlockingRules.Should().Contain(x => x.Condition == "blocking rule" && x.TimeSpan == TimeSpan.FromHours(4));
 		}
 
 		[Test]
@@ -62,36 +58,33 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
-				UnDeliveredMailClassificationHeuristicsRules>(x =>
-																  {
-																	  x.HardBounceRules = new List<HeuristicRule>
-							                                                                  {
-																								  new HeuristicRule
-									                                                                  {
-										                                                                 Condition  = "hard bounce rule",
-																										 TimeSpan = TimeSpan.FromHours(4)
-									                                                                  } 
-								                                                                  
-							                                                                  };
-																	  x.IpBlockingRules = new List<HeuristicRule>
-							                                                                  {
-																								  new HeuristicRule
-									                                                                  {
-										                                                                 Condition  = "blocking rule",
-																										 TimeSpan = TimeSpan.FromHours(4)
-									                                                                  } 
-							                                                                  };
-																  });
+				DeliverabilityClassificationRules>(x =>
+					                                   {
+						                                   x.HardBounceRules = new List<string>
+							                                                       {
+								                                                       "hard bounce rule",
+
+
+							                                                       };
+						                                   x.BlockingRules = new List<HeuristicRule>
+							                                                     {
+								                                                     new HeuristicRule
+									                                                     {
+										                                                     Condition = "blocking rule",
+										                                                     TimeSpan = TimeSpan.FromHours(4)
+									                                                     }
+							                                                     };
+					                                   });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
 
 			DroneActions.StartScheduledTask(task);
-			DroneActions.WaitForDocumentToExist<UnDeliveredMailClassificationHeuristicsRules>();
+			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>();
 
 			DroneActions.StartScheduledTask(task);
-			DroneActions.WaitForDocumentToExist<UnDeliveredMailClassificationHeuristicsRules>();
+			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>();
 
-			var result = DroneActions.FindAll<UnDeliveredMailClassificationHeuristicsRules>();
+			var result = DroneActions.FindAll<DeliverabilityClassificationRules>();
 
 			result.Should().HaveCount(1);
 		}

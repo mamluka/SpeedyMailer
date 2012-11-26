@@ -5,13 +5,13 @@ using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace SpeedyMailer.Core.Domain.Mail
 {
-	public class UnDeliveredMailClassificationHeuristicsRules
+	public class DeliverabilityClassificationRules
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
 
-		public List<HeuristicRule> HardBounceRules { get; set; }
-		public List<HeuristicRule> IpBlockingRules { get; set; }
+		public List<string> HardBounceRules { get; set; }
+		public List<HeuristicRule> BlockingRules { get; set; }
 	}
 
 	public class HeuristicRule

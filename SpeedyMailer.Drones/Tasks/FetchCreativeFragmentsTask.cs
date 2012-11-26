@@ -53,7 +53,7 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				if (_creativePackagesStore.AreThereAnyPackages())
 				{
-					 if (!context.Scheduler.IsJobsRunning<SendCreativePackagesWithIntervalTask>())
+					if (!context.Scheduler.IsJobsRunning<SendCreativePackagesWithIntervalTask>())
 					{
 						var packages = _creativePackagesStore.GetAll();
 						StartGroupSendingJobs(packages);

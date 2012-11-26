@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 using SpeedyMailer.Core.Commands;
@@ -7,7 +8,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Commands
 {
-	public class ClassifyNonDeliveredMailCommand : Command<BounceType>
+	public class ClassifyNonDeliveredMailCommand : Command<MailClassfication>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
 
@@ -18,26 +19,32 @@ namespace SpeedyMailer.Drones.Commands
 			_omniRecordManager = omniRecordManager;
 		}
 
-		public override BounceType Execute()
+		public override MailClassfication Execute()
 		{
-			var heuristics = _omniRecordManager.GetSingle<UnDeliveredMailClassificationHeuristicsRules>();
+			var heuristics = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>();
 
 			if (heuristics == null)
-				return BounceType.NotClassified;
+				return new MailClassfication { BounceType = BounceType.NotClassified };
 
 			var rules = heuristics
 				.HardBounceRules
 				.EmptyIfNull()
-				.Select(x => new {Rule = x, BounceType = BounceType.HardBounce})
+				.Select(x => new { Condition = x, Classification = new MailClassfication { BounceType = BounceType.HardBounce, TimeSpan = TimeSpan.FromHours(0) } })
 				.Union(heuristics
-					       .IpBlockingRules
-					       .EmptyIfNull()
-					       .Select(x => new {Rule = x, BounceType = BounceType.IpBlocked})
+						   .BlockingRules
+						   .EmptyIfNull()
+						   .Select(x => new { x.Condition, Classification = new MailClassfication { BounceType = BounceType.Blocked, TimeSpan = x.TimeSpan } })
 				);
 
-			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Rule.Condition).Success);
+			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Condition).Success);
 
-			return hardBounce != null ? hardBounce.BounceType : BounceType.NotClassified;
+			return hardBounce != null ? hardBounce.Classification : new MailClassfication { BounceType = BounceType.NotClassified };
 		}
+	}
+
+	public class MailClassfication
+	{
+		public BounceType BounceType { get; set; }
+		public TimeSpan TimeSpan { get; set; }
 	}
 }
