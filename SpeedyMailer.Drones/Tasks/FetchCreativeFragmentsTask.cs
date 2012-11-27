@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NLog;
@@ -6,13 +5,12 @@ using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Mail;
-using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
+using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
-using Template = Antlr4.StringTemplate.Template;
 
 
 namespace SpeedyMailer.Drones.Tasks
@@ -38,14 +36,17 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly Framework _framework;
 			private readonly CreativePackagesStore _creativePackagesStore;
 			private readonly OmniRecordManager _omniRecordManager;
+			private MapToCreativePackageCommand _mapToCreativePackageCommand;
 
 			public Job(Framework framework,
-				Api api,
-				ICreativeBodySourceWeaver creativeBodySourceWeaver,
-				UrlBuilder urlBuilder,
-				CreativePackagesStore creativePackagesStore,
-				OmniRecordManager omniRecordManager)
+					   Api api,
+					   ICreativeBodySourceWeaver creativeBodySourceWeaver,
+					   UrlBuilder urlBuilder,
+					   CreativePackagesStore creativePackagesStore,
+					   OmniRecordManager omniRecordManager,
+					   MapToCreativePackageCommand mapToCreativePackageCommand)
 			{
+				_mapToCreativePackageCommand = mapToCreativePackageCommand;
 				_omniRecordManager = omniRecordManager;
 				_framework = framework;
 				_creativePackagesStore = creativePackagesStore;
@@ -77,11 +78,18 @@ namespace SpeedyMailer.Drones.Tasks
 					return;
 
 				var recipiens = creativeFragment.Recipients;
-				var creativePackages = recipiens.Select(x => ToPackage(x, creativeFragment)).ToList();
+				var creativePackages = recipiens.Select(x => ToCreativePackage(creativeFragment, x)).ToList();
 
 				_creativePackagesStore.BatchInsert(creativePackages);
 
 				StartGroupSendingJobs(creativePackages, groupsSendingPolicies);
+			}
+
+			private CreativePackage ToCreativePackage(CreativeFragment creativeFragment, Recipient x)
+			{
+				_mapToCreativePackageCommand.CreativeFragment = creativeFragment;
+				_mapToCreativePackageCommand.Recipient = x;
+				return _mapToCreativePackageCommand.Execute();
 			}
 
 			private bool AreThereActiveGroups(IEnumerable<CreativePackage> packages, GroupsSendingPolicies groupsSendingPolicies)
@@ -115,74 +123,6 @@ namespace SpeedyMailer.Drones.Tasks
 									 .ContainsKey(x.Group))
 					.ToList();
 			}
-
-			private CreativePackage ToPackage(Recipient recipient, CreativeFragment creativeFragment)
-			{
-				return new CreativePackage
-						{
-							Subject = creativeFragment.Subject,
-							Body = PersonalizeBody(creativeFragment, recipient),
-							To = recipient.Email,
-							Group = recipient.Group,
-							FromName = creativeFragment.FromName,
-							FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix,
-							Interval = recipient.Interval
-						};
-			}
-
-			private string ServiceEndpoint(Service service, Func<Service, string> endpointSelector)
-			{
-				return string.Format("{0}/{1}", service.BaseUrl, endpointSelector(service));
-			}
-
-			private string PersonalizeBody(CreativeFragment fragment, Recipient contact)
-			{
-				var service = fragment.Service;
-
-				var dealUrl = _urlBuilder
-					.Base(ServiceEndpoint(service, x => x.DealsEndpoint))
-					.AddObject(GetDealUrlData(fragment, contact))
-					.AppendAsSlashes();
-
-				var unsubsribeUrl = _urlBuilder
-					.Base(ServiceEndpoint(service, x => x.UnsubscribeEndpoint))
-					.AddObject(GetDealUrlData(fragment, contact))
-					.AppendAsSlashes();
-
-				var bodyTemplateEngine = new Template(fragment.Body, '^', '^');
-				bodyTemplateEngine.Add("email", contact.Email);
-
-				var body = bodyTemplateEngine.Render();
-
-				var weavedBody = _creativeBodySourceWeaver.WeaveDeals(body, dealUrl);
-
-				var unsubscribeTemplateEngine = new Template(fragment.UnsubscribeTemplate, '^', '^');
-				unsubscribeTemplateEngine.Add("url", unsubsribeUrl);
-
-				var template = unsubscribeTemplateEngine.Render();
-
-				return weavedBody + template;
-			}
-
-			private static DealUrlData GetDealUrlData(CreativeFragment fragment, Recipient contact)
-			{
-				return new DealUrlData
-						{
-							CreativeId = fragment.CreativeId,
-							ContactId = contact.ContactId
-						};
-			}
-		}
-
-		internal class PackageInfo
-		{
-			public string Group { get; set; }
-
-			public int Interval { get; set; }
-
-			public int Count { get; set; }
 		}
 	}
-
-
 }
