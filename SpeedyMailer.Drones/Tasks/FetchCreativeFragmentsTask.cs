@@ -5,10 +5,12 @@ using NLog;
 using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Storage;
 using Template = Antlr4.StringTemplate.Template;
 
@@ -35,13 +37,16 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly UrlBuilder _urlBuilder;
 			private readonly Framework _framework;
 			private readonly CreativePackagesStore _creativePackagesStore;
+			private readonly OmniRecordManager _omniRecordManager;
 
 			public Job(Framework framework,
 				Api api,
 				ICreativeBodySourceWeaver creativeBodySourceWeaver,
 				UrlBuilder urlBuilder,
-				CreativePackagesStore creativePackagesStore)
+				CreativePackagesStore creativePackagesStore,
+				OmniRecordManager omniRecordManager)
 			{
+				_omniRecordManager = omniRecordManager;
 				_framework = framework;
 				_creativePackagesStore = creativePackagesStore;
 				_urlBuilder = urlBuilder;
@@ -51,14 +56,18 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
+				var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsSendingPolicies>() ?? new GroupsSendingPolicies();
+
 				if (_creativePackagesStore.AreThereAnyPackages())
 				{
-					if (!context.Scheduler.IsJobsRunning<SendCreativePackagesWithIntervalTask>())
+					var packages = _creativePackagesStore.GetAll();
+
+					if (!context.Scheduler.IsJobsRunning<SendCreativePackagesWithIntervalTask>() && AreThereActiveGroups(packages, groupsSendingPolicies))
 					{
-						var packages = _creativePackagesStore.GetAll();
-						StartGroupSendingJobs(packages);
+						StartGroupSendingJobs(packages, groupsSendingPolicies);
+
+						return;
 					}
-					return;
 				}
 
 				var creativeFragment = _api
@@ -72,15 +81,17 @@ namespace SpeedyMailer.Drones.Tasks
 
 				_creativePackagesStore.BatchInsert(creativePackages);
 
-				StartGroupSendingJobs(creativePackages);
+				StartGroupSendingJobs(creativePackages, groupsSendingPolicies);
 			}
 
-			private void StartGroupSendingJobs(IEnumerable<CreativePackage> recipiens)
+			private bool AreThereActiveGroups(IEnumerable<CreativePackage> packages, GroupsSendingPolicies groupsSendingPolicies)
 			{
-				var groups = recipiens
-					.GroupBy(x => x.Group)
-					.Select(x => new { Group = x.Key, x.First().Interval, Count = x.Count() })
-					.ToList();
+				return GetActiveGroups(packages, groupsSendingPolicies).Any();
+			}
+
+			private void StartGroupSendingJobs(IEnumerable<CreativePackage> recipiens, GroupsSendingPolicies sendingPolicies)
+			{
+				var groups = GetActiveGroups(recipiens, sendingPolicies);
 
 				foreach (var group in groups)
 				{
@@ -91,6 +102,18 @@ namespace SpeedyMailer.Drones.Tasks
 																				   x => x.WithIntervalInSeconds(@group.Interval).WithRepeatCount(@group.Count)
 											  ));
 				}
+			}
+
+			private static IEnumerable<PackageInfo> GetActiveGroups(IEnumerable<CreativePackage> recipiens, GroupsSendingPolicies sendingPolicies)
+			{
+				return recipiens
+					.GroupBy(x => x.Group)
+					.Select(x => new PackageInfo { Group = x.Key, Interval = x.First().Interval, Count = x.Count() })
+					.Where(x => !sendingPolicies
+									 .GroupSendingPolicies
+									 .EmptyIfNull()
+									 .ContainsKey(x.Group))
+					.ToList();
 			}
 
 			private CreativePackage ToPackage(Recipient recipient, CreativeFragment creativeFragment)
@@ -150,5 +173,16 @@ namespace SpeedyMailer.Drones.Tasks
 						};
 			}
 		}
+
+		internal class PackageInfo
+		{
+			public string Group { get; set; }
+
+			public int Interval { get; set; }
+
+			public int Count { get; set; }
+		}
 	}
+
+
 }

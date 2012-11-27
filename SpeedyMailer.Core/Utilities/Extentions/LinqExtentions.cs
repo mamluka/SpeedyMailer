@@ -12,6 +12,11 @@ namespace SpeedyMailer.Core.Utilities.Extentions
 		{
 			return target ?? Enumerable.Empty<T>();
 		}
+		
+		public static IDictionary<T1,T2> EmptyIfNull<T1,T2>(this IDictionary<T1,T2> target )
+		{
+			return target ?? new Dictionary<T1, T2>();
+		}
 
 	    public static IEnumerable<IEnumerable<T>> Clump<T>(this IEnumerable<T> source, int size)
         {

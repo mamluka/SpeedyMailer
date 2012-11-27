@@ -139,10 +139,25 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 
 		}
-		
+
+		public void AssertEmailNotSent(IList<Recipient> recipients, int waitFor = 30)
+		{
+			AssertEmailNotSent(recipients.Select(x => x.Email).ToList(), waitFor);
+		}
+
+		public void AssertEmailNotSent(IList<string> recipients, int waitFor = 30)
+		{
+			var emails = WaitForEmailsThatWereSentBy(recipients, waitFor);
+
+			if (emails.Any())
+			{
+				Assert.Fail("Emails were found");
+			}
+		}
+
 		public void AssertEmailSent(int count, int waitFor = 30)
 		{
-			var files = WaitForEmailFiles(waitFor,x=> x.Count == count);
+			var files = WaitForEmailFiles(waitFor, x => x.Count == count);
 
 			files.Should().HaveCount(count);
 		}

@@ -133,6 +133,7 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Events\DeliveryRealTimeDecision.cs" />
+    <Compile Include="Events\ReinstateRecipientsForSending.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Storage\CreativePackagesStore.cs" />
     <Compile Include="Storage\IntervalRulesStore.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Tasks\FetchCreativeFragmentsTask.cs" />
     <Compile Include="Tasks\FetchDeliveryClassificationHeuristicsTask.cs" />
     <Compile Include="Tasks\FetchIntervalRulesTask.cs" />
+    <Compile Include="Tasks\ResumePausedGroupsTask.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTask.cs" />
   </ItemGroup>
   <ItemGroup>

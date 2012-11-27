@@ -120,6 +120,7 @@
     <Compile Include="Commands\SendCreativePackageCommandTests.cs" />
     <Compile Include="Commands\PauseSpecificSendingJobsCommandTests.cs" />
     <Compile Include="Events\DeliveryRealTimeDecisionTests.cs" />
+    <Compile Include="Events\ReinstateRecipientsForSendingTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\AnalyzePostfixLogsTaskTests.cs" />
     <Compile Include="Tasks\BroadcastDroneToServiceTaskTests.cs" />
@@ -127,6 +128,7 @@
     <Compile Include="Tasks\FetchCreativeFragmentsTaskTasts.cs" />
     <Compile Include="Tasks\FetchDeliveryClassificationHeuristicsTaskTests.cs" />
     <Compile Include="Tasks\FetchIntervalRulesTaskTests.cs" />
+    <Compile Include="Tasks\ResumePausedGroupsTaskTests.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
