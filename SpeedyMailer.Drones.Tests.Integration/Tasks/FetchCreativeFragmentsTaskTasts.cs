@@ -150,15 +150,60 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var result = DroneActions.FindSingle<CurrentExecutingCreativeFragment>();
 
 			result.CreativeId.Should().Be("creative/1");
-			result.Body.Should().Be("sdf");
+			result.Body.Should().Be("<html><body>this email has a link inside of it <a href=\" http://www.dealexpress.com/deal \" >test link</as>\"</body></html>");
 			result.Subject.Should().Be("hello world subject");
 			result.UnsubscribeTemplate.Should().Be("here  is a template ^url^");
 			result.FromName.Should().Be("david");
 			result.FromAddressDomainPrefix.Should().Be("sales");
 			result.Service.BaseUrl.Should().Be("http://www.topemail.com");
-			result.Service.DealsEndpoint.Should().Be("deals");
+			result.Service.DealsEndpoint.Should().Be("deal");
 			result.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");
+		}
+		
+		[Test]
+		public void Execute_WhenWeObtainAFragmentAndCurrentFragmentIsAlreadySet_ShouldOverrideIt()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
 
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+
+			DroneActions.Store(new CurrentExecutingCreativeFragment
+				                   {
+									   Id = "CurrentExecutingCreativeFragment",
+									   Subject = "old subject"
+				                   });
+
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+																							  {
+																								  x.Id = "fragment/1";
+																								  x.CreativeId = "creative/1";
+																								  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.Subject = "hello world subject";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
+																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
+																								  x.Service = new Service
+																								  {
+																									  BaseUrl = "http://www.topemail.com",
+																									  DealsEndpoint = "deal",
+																									  UnsubscribeEndpoint = "unsubscribe"
+																								  };
+																							  });
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			DroneActions.WaitForChangeOnStoredObject<CurrentExecutingCreativeFragment>(x => x.Subject == "hello world subject");
 		}
 
 		[Test]

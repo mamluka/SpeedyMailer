@@ -60,7 +60,7 @@ namespace SpeedyMailer.Drones.Commands
 				.AddObject(GetDealUrlData(fragment, contact))
 				.AppendAsSlashes();
 
-			var bodyTemplateEngine = new Antlr4.StringTemplate.Template(fragment.Body, '^', '^');
+			var bodyTemplateEngine = new Template(fragment.Body, '^', '^');
 			bodyTemplateEngine.Add("email", contact.Email);
 
 			var body = bodyTemplateEngine.Render();

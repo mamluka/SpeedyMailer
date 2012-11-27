@@ -8,10 +8,11 @@ namespace SpeedyMailer.Core.Domain.Drones
 		public string Body { get; set; }
 		public string ListId { get; set; }
 		public string Subject { get; set; }
-		public string DealUrl { get; set; }
 		public string UnsubscribeTemplate { get; set; }
 		public string FromName { get; set; }
 		public string FromAddressDomainPrefix { get; set; }
 		public Service Service { get; set; }
+
+		public string Id { get; set; }
 	}
 }

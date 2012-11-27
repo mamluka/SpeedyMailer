@@ -4,6 +4,7 @@ using NLog;
 using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
@@ -31,17 +32,13 @@ namespace SpeedyMailer.Drones.Tasks
 		public class Job : IJob
 		{
 			private readonly Api _api;
-			private readonly ICreativeBodySourceWeaver _creativeBodySourceWeaver;
-			private readonly UrlBuilder _urlBuilder;
 			private readonly Framework _framework;
 			private readonly CreativePackagesStore _creativePackagesStore;
 			private readonly OmniRecordManager _omniRecordManager;
-			private MapToCreativePackageCommand _mapToCreativePackageCommand;
+			private readonly MapToCreativePackageCommand _mapToCreativePackageCommand;
 
 			public Job(Framework framework,
 					   Api api,
-					   ICreativeBodySourceWeaver creativeBodySourceWeaver,
-					   UrlBuilder urlBuilder,
 					   CreativePackagesStore creativePackagesStore,
 					   OmniRecordManager omniRecordManager,
 					   MapToCreativePackageCommand mapToCreativePackageCommand)
@@ -50,8 +47,6 @@ namespace SpeedyMailer.Drones.Tasks
 				_omniRecordManager = omniRecordManager;
 				_framework = framework;
 				_creativePackagesStore = creativePackagesStore;
-				_urlBuilder = urlBuilder;
-				_creativeBodySourceWeaver = creativeBodySourceWeaver;
 				_api = api;
 			}
 
@@ -77,12 +72,31 @@ namespace SpeedyMailer.Drones.Tasks
 				if (creativeFragment == null)
 					return;
 
+				SaveCurrentCreativeFragment(creativeFragment);
+
 				var recipiens = creativeFragment.Recipients;
 				var creativePackages = recipiens.Select(x => ToCreativePackage(creativeFragment, x)).ToList();
 
 				_creativePackagesStore.BatchInsert(creativePackages);
 
 				StartGroupSendingJobs(creativePackages, groupsSendingPolicies);
+			}
+
+			private void SaveCurrentCreativeFragment(CreativeFragment creativeFragment)
+			{
+				_omniRecordManager.UpdateOrInsert(
+					new CurrentExecutingCreativeFragment
+						{
+							Id = "CurrentExecutingCreativeFragment",
+							Body = creativeFragment.Body,
+							CreativeId = creativeFragment.CreativeId,
+							FromName = creativeFragment.FromName,
+							FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix,
+							Service = creativeFragment.Service,
+							Subject = creativeFragment.Subject,
+							UnsubscribeTemplate = creativeFragment.UnsubscribeTemplate
+						}
+					);
 			}
 
 			private CreativePackage ToCreativePackage(CreativeFragment creativeFragment, Recipient x)
