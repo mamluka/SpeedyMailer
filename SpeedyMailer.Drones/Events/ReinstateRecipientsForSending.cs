@@ -6,7 +6,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class ReinstateRecipientsForSending : IHappendOn<AggregatedMailBounced>
+	public class ReinstateRecipientsForSending : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly CreativePackagesStore _creativePackagesStore;
@@ -19,9 +19,19 @@ namespace SpeedyMailer.Drones.Events
 
 		public void Inspect(AggregatedMailBounced data)
 		{
+			Reinstate(data);
+		}
+
+		public void Inspect(AggregatedMailDeferred data)
+		{
+			Reinstate(data);
+		}
+
+		private void Reinstate<T>(AggregatedMailEvents<T> data) where T : IHasRecipient, IHasRelayMessage
+		{
 			var mails = data
 				.MailEvents
-				.Where(AreDeferredOrNonClassified)
+				.Where(x => AreDeferredOrNonClassified(x))
 				.Select(x => x.Recipient);
 
 
@@ -32,7 +42,7 @@ namespace SpeedyMailer.Drones.Events
 			creativePackages.ForEach(x => _creativePackagesStore.Save(x));
 		}
 
-		private bool AreDeferredOrNonClassified(MailBounced x)
+		private bool AreDeferredOrNonClassified(IHasRelayMessage x)
 		{
 			_classifyNonDeliveredMailCommand.Message = x.Message;
 			var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
