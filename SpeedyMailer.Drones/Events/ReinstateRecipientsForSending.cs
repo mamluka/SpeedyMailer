@@ -1,6 +1,4 @@
 using System.Linq;
-using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Drones.Commands;
@@ -11,7 +9,7 @@ namespace SpeedyMailer.Drones.Events
 	public class ReinstateRecipientsForSending : IHappendOn<AggregatedMailBounced>
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
-		private CreativePackagesStore _creativePackagesStore;
+		private readonly CreativePackagesStore _creativePackagesStore;
 
 		public ReinstateRecipientsForSending(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, CreativePackagesStore creativePackagesStore)
 		{
@@ -21,22 +19,25 @@ namespace SpeedyMailer.Drones.Events
 
 		public void Inspect(AggregatedMailBounced data)
 		{
-			var mailBounces = data
+			var mails = data
 				.MailEvents
-				.Where(x =>
-							 {
-								 _classifyNonDeliveredMailCommand.Message = x.Message;
-								 var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-								 var bounceType = mailClassfication.BounceType;
-								 return bounceType == BounceType.Blocked || bounceType == BounceType.NotClassified;
-							 }).Select(x => x.Recipient);
+				.Where(AreDeferredOrNonClassified)
+				.Select(x => x.Recipient);
 
 
-			var creativePackages = _creativePackagesStore.GetByEmail(mailBounces);
+			var creativePackages = _creativePackagesStore.GetByEmail(mails);
 
 			creativePackages.ForEach(x => x.Processed = false);
 
 			creativePackages.ForEach(x => _creativePackagesStore.Save(x));
+		}
+
+		private bool AreDeferredOrNonClassified(MailBounced x)
+		{
+			_classifyNonDeliveredMailCommand.Message = x.Message;
+			var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
+			var bounceType = mailClassfication.BounceType;
+			return bounceType == BounceType.Blocked || bounceType == BounceType.NotClassified;
 		}
 	}
 }
