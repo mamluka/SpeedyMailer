@@ -19,5 +19,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public string FromAddressDomainPrefix { get; set; }
 
 		public int Interval { get; set; }
+
+		public bool Processed { get; set; }
 	}
 }

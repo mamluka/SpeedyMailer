@@ -1,18 +1,15 @@
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
 using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
-using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
-
 
 namespace SpeedyMailer.Drones.Tasks
 {
@@ -54,7 +51,7 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsSendingPolicies>() ?? new GroupsSendingPolicies();
 
-				if (_creativePackagesStore.AreThereAnyPackages())
+				if (_creativePackagesStore.AreThereAnyNonProcessedPackages())
 				{
 					var packages = _creativePackagesStore.GetAll();
 
@@ -84,19 +81,10 @@ namespace SpeedyMailer.Drones.Tasks
 
 			private void SaveCurrentCreativeFragment(CreativeFragment creativeFragment)
 			{
-				_omniRecordManager.UpdateOrInsert(
-					new CurrentExecutingCreativeFragment
-						{
-							Id = "CurrentExecutingCreativeFragment",
-							Body = creativeFragment.Body,
-							CreativeId = creativeFragment.CreativeId,
-							FromName = creativeFragment.FromName,
-							FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix,
-							Service = creativeFragment.Service,
-							Subject = creativeFragment.Subject,
-							UnsubscribeTemplate = creativeFragment.UnsubscribeTemplate
-						}
-					);
+				var currentExecutingCreativeFragment = _omniRecordManager.GetSingle<CurrentExecutingCreativeFragment>() ?? new CurrentExecutingCreativeFragment();
+				currentExecutingCreativeFragment.CreativeFragment = creativeFragment;
+
+				_omniRecordManager.UpdateOrInsert(currentExecutingCreativeFragment);
 			}
 
 			private CreativePackage ToCreativePackage(CreativeFragment creativeFragment, Recipient x)

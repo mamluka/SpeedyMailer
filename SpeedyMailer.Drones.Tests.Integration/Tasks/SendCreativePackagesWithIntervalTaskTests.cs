@@ -89,7 +89,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Email.AssertEmailsSentWithInterval(recipients, 5);
 
 			var packages = DroneActions.FindAll<CreativePackage>();
-			packages.Should().BeEmpty();
+			packages.Should().OnlyContain(x => x.Processed);
 		}
 
 		[Test]

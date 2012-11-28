@@ -68,6 +68,40 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenThereAreCreativePackagesInTheStoreThatWereAlreadyProcessed_ShouldFetchFragment()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
+			Api.ListenToApiCall<ServiceEndpoints.Creative.FetchFragment>();
+
+			var creativePackage = new CreativePackage
+									  {
+										  Group = "$default$",
+										  Body = "body",
+										  Subject = "subject",
+										  To = "david@david.com",
+										  FromAddressDomainPrefix = "david",
+										  FromName = "sales",
+										  Interval = 10,
+										  Processed = true
+									  };
+
+			DroneActions.Store(creativePackage);
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			Api.AssertApiCalled<ServiceEndpoints.Creative.FetchFragment>();
+		}
+
+		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStartSendTheEmail()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
@@ -107,7 +141,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Email.AssertEmailSent(x => x.To.Any(email => email.Address == "test@test.com"));
 			Email.AssertEmailSent(x => x.Subject == "hello world subject");
 		}
-		
+
 		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldSaveItAsTheCurrentExecutingFragment()
 		{
@@ -147,7 +181,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.WaitForDocumentToExist<CurrentExecutingCreativeFragment>();
 
-			var result = DroneActions.FindSingle<CurrentExecutingCreativeFragment>();
+			var result = DroneActions.FindSingle<CurrentExecutingCreativeFragment>().CreativeFragment;
 
 			result.CreativeId.Should().Be("creative/1");
 			result.Body.Should().Be("<html><body>this email has a link inside of it <a href=\" http://www.dealexpress.com/deal \" >test link</as>\"</body></html>");
@@ -159,7 +193,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			result.Service.DealsEndpoint.Should().Be("deal");
 			result.Service.UnsubscribeEndpoint.Should().Be("unsubscribe");
 		}
-		
+
 		[Test]
 		public void Execute_WhenWeObtainAFragmentAndCurrentFragmentIsAlreadySet_ShouldOverrideIt()
 		{
@@ -174,10 +208,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
 
 			DroneActions.Store(new CurrentExecutingCreativeFragment
-				                   {
-									   Id = "CurrentExecutingCreativeFragment",
-									   Subject = "old subject"
-				                   });
+								   {
+									   CreativeFragment = new CreativeFragment { Subject = "old subject" }
+								   });
 
 			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
 
@@ -203,7 +236,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForChangeOnStoredObject<CurrentExecutingCreativeFragment>(x => x.Subject == "hello world subject");
+			DroneActions.WaitForChangeOnStoredObject<CurrentExecutingCreativeFragment>(x => x.CreativeFragment.Subject == "hello world subject");
 		}
 
 		[Test]
@@ -498,7 +531,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			Email.AssertEmailsSentWithInterval(recipients, 3);
-			Email.AssertEmailNotSent(new[] { new Recipient { Email = "david@david"} }, 3);
+			Email.AssertEmailNotSent(new[] { new Recipient { Email = "david@david" } }, 3);
 		}
 
 		[Test]

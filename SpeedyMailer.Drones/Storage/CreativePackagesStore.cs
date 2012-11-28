@@ -23,14 +23,14 @@ namespace SpeedyMailer.Drones.Storage
 		}
 
 		public IList<string> GetPackageGroups()
-		{ 
+		{
 			return AsQueryable
 				.GroupBy(x => x.Group)
 				.Select(x => x.Key)
 				.ToList();
 		}
 
-		public bool AreThereAnyPackages()
+		public bool AreThereAnyNonProcessedPackages()
 		{
 			return Count() > 0;
 		}
@@ -38,7 +38,7 @@ namespace SpeedyMailer.Drones.Storage
 		public IList<CreativePackage> GetAll()
 		{
 			return Collection
-				.FindAllAs<CreativePackage>()
+				.Find(Query.EQ(PropertyName(x => x.Processed), false))
 				.ToList();
 		}
 	}
