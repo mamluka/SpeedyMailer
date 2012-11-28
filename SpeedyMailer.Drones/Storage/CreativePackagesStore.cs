@@ -19,7 +19,7 @@ namespace SpeedyMailer.Drones.Storage
 		}
 		public CreativePackage GetPackageForGroup(string group)
 		{
-			return Find(Query.EQ(PropertyName(x => x.Group), group)).FirstOrDefault();
+			return AsQueryable.FirstOrDefault(x => x.Group == @group && x.Processed == false);
 		}
 
 		public IList<string> GetPackageGroups()
@@ -40,6 +40,11 @@ namespace SpeedyMailer.Drones.Storage
 			return Collection
 				.Find(Query.EQ(PropertyName(x => x.Processed), false))
 				.ToList();
+		}
+
+		public List<CreativePackage> GetByEmail(IEnumerable<string> emails)
+		{
+			return AsQueryable.Where(x => emails.Contains(x.To)).ToList();
 		}
 	}
 }

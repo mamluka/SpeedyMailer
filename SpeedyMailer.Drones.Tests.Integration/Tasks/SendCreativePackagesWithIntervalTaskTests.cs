@@ -56,7 +56,44 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenPckagesArePresent_ShouldDeleteThemAfterSendingThem()
+		public void Execute_WhenThereAreProcessedAndNonProcessed_ShouldSendOnlyTheUnprocessedPackages()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+
+															});
+
+			var creativePackages = new[]
+				                       {
+					                       CreatePackage("david@gmail.com", "gmail"), 
+										   CreatePackage("david2@gmail.com", "gmail"), 
+										   CreatePackage("david3@gmail.com", "gmail")
+				                       };
+
+			creativePackages[2].Processed = true;
+
+			DroneActions.StoreCollection(creativePackages);
+
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
+
+			DroneActions.StartScheduledTask(task);
+
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients.Take(2).ToList(), 5);
+			Email.AssertEmailNotSent(new[] { recipients[2] });
+		}
+
+		[Test]
+		public void Execute_WhenPckagesArePresent_ShouldSetThemAsProcessed()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 

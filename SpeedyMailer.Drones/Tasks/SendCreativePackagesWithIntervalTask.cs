@@ -31,7 +31,7 @@ namespace SpeedyMailer.Drones.Tasks
 		{
 			private readonly CreativePackagesStore _creativePackagesStore;
 			private readonly SendCreativePackageCommand _sendCreativePackageCommand;
-			private Logger _logger;
+			private readonly Logger _logger;
 
 			public Job(SendCreativePackageCommand sendCreativePackageCommand, CreativePackagesStore creativePackagesStore, Logger logger)
 			{
@@ -64,7 +64,8 @@ namespace SpeedyMailer.Drones.Tasks
 					_logger.ErrorException(string.Format("While sending to {0} a exception was thrown", creativePackage.To), ex);
 				}
 
-				_creativePackagesStore.DeleteById(creativePackage.Id);
+				creativePackage.Processed = true;
+				_creativePackagesStore.Save(creativePackage);
 			}
 		}
 	}

@@ -11,35 +11,32 @@ namespace SpeedyMailer.Drones.Events
 	public class ReinstateRecipientsForSending : IHappendOn<AggregatedMailBounced>
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
-		private readonly OmniRecordManager _omniRecordManager;
-		private MapToCreativePackageCommand _mapToCreativePackageCommand;
+		private CreativePackagesStore _creativePackagesStore;
 
-		public ReinstateRecipientsForSending(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager,MapToCreativePackageCommand mapToCreativePackageCommand)
+		public ReinstateRecipientsForSending(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, CreativePackagesStore creativePackagesStore)
 		{
-			_mapToCreativePackageCommand = mapToCreativePackageCommand;
-			_omniRecordManager = omniRecordManager;
+			_creativePackagesStore = creativePackagesStore;
 			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 		}
 
 		public void Inspect(AggregatedMailBounced data)
 		{
-			var currentExecutingCreativeFragment = _omniRecordManager.GetSingle<CurrentExecutingCreativeFragment>();
-			
-			if (currentExecutingCreativeFragment == null)
-				return;
-
 			var mailBounces = data
 				.MailEvents
 				.Where(x =>
-					         {
-						         _classifyNonDeliveredMailCommand.Message = x.Message;
-						         var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-						         var bounceType = mailClassfication.BounceType;
-						         return bounceType == BounceType.Blocked || bounceType == BounceType.NotClassified;
-					         }).ToList();
+							 {
+								 _classifyNonDeliveredMailCommand.Message = x.Message;
+								 var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
+								 var bounceType = mailClassfication.BounceType;
+								 return bounceType == BounceType.Blocked || bounceType == BounceType.NotClassified;
+							 }).Select(x => x.Recipient);
 
-			
-			var creativeFragment = currentExecutingCreativeFragment.CreativeFragment;
+
+			var creativePackages = _creativePackagesStore.GetByEmail(mailBounces);
+
+			creativePackages.ForEach(x => x.Processed = false);
+
+			creativePackages.ForEach(x => _creativePackagesStore.Save(x));
 		}
 	}
 }

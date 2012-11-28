@@ -19,9 +19,15 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		{ }
 
 		[Test]
-		public void Happend_WhenBouncedMailIsClassifiedAsBlocked_ShouldCreateAPackageUsingThatEmail()
+		public void Happend_WhenBouncedMailIsClassifiedAsBlocked_ShouldSetThePastCreativePackageToBeNotProcessed()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.Store(new CreativePackage
+								   {
+									   Processed = true,
+									   To = "david@david.com"
+								   });
 
 			FireEvent<ReinstateRecipientsForSending,
 				AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
@@ -38,7 +44,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var result = DroneActions.FindSingle<CreativePackage>();
 
-			result.To.Should().Be("david@davi.com");
+			result.Processed.Should().BeFalse();
+			result.To.Should().Be("david@david.com");
 		}
 	}
 }
