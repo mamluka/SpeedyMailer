@@ -39,6 +39,24 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 
 			result.Result.Should().Be("done");
 		}
+		[Test]
+		public void Start_WhenTaskStartDelayIsGiven_ShouldScheduleAndStartTheTaskAferTheElapsedTime()
+		{
+			const string resultId = "result/1";
+			var task = new TestDelayedScheduledTask(x =>
+												{
+													x.ResultId = resultId;
+												});
+
+			var taskFiredAt = DateTime.UtcNow;
+			_target.AddAndStart(task.DelayFor(TimeSpan.FromSeconds(7)));
+
+			Store.WaitForEntityToExist(resultId);
+
+			var result = Store.Load<ComputationResult<DateTime>>(resultId);
+
+			result.Result.Should().BeAfter(taskFiredAt.AddSeconds(5));
+		}
 
 		[Test]
 		public void Start_WhenTaskHasDynamicRepeatTime_ShouldUseTheRepeatTimeGiven()
@@ -170,6 +188,49 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 		}
 	}
 
+	public class TestDelayedScheduledTask : ScheduledTaskWithData<TestDelayedScheduledTask.Data>
+	{
+		public TestDelayedScheduledTask(Action<Data> action)
+			: base(action)
+		{ }
+
+		public override IJobDetail ConfigureJob()
+		{
+			return SimpleJob<Job>();
+		}
+
+		public override ITrigger ConfigureTrigger()
+		{
+			return TriggerWithTimeCondition(x => x.WithIntervalInSeconds(5).WithRepeatCount(1));
+		}
+
+		public class Data : ScheduledTaskData
+		{
+			public string ResultId { get; set; }
+		}
+
+		public class Job : JobBase<Data>, IJob
+		{
+			private readonly Framework _framework;
+
+			public Job(Framework framework)
+			{
+				_framework = framework;
+			}
+
+			public void Execute(IJobExecutionContext context)
+			{
+				var data = GetData(context);
+
+				_framework.Store(new ComputationResult<DateTime>
+									{
+										Id = data.ResultId,
+										Result = DateTime.UtcNow
+									});
+			}
+		}
+	}
+
 	public class TestDynamicScheduledTask : DynamiclyScheduledTask
 	{
 		public TestDynamicScheduledTask(Action<SimpleScheduleBuilder> triggerBuilder)
@@ -229,10 +290,10 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			{
 				var data = GetData(context);
 				_framework.Store(new DataForTestingDynamicTasks
-					                 {
-						                 Time = DateTime.UtcNow,
-						                 Data = data.TestData
-					                 });
+									 {
+										 Time = DateTime.UtcNow,
+										 Data = data.TestData
+									 });
 			}
 		}
 	}

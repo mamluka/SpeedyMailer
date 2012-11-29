@@ -150,6 +150,7 @@
     <Compile Include="Tasks\FetchIntervalRulesTask.cs" />
     <Compile Include="Tasks\ResumePausedGroupsTask.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTask.cs" />
+    <Compile Include="Tasks\SendDroneStateSnapshotTask.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

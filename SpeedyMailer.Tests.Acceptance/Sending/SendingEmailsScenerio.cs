@@ -14,7 +14,7 @@ using SpeedyMailer.Tests.Core.Integration.Utils;
 namespace SpeedyMailer.Tests.Acceptance.Sending
 {
 	[TestFixture]
-	public class SendingEmails : IntegrationTestBase
+	public class SendingEmailsScenerio : IntegrationTestBase
 	{
 		private Api _api;
 

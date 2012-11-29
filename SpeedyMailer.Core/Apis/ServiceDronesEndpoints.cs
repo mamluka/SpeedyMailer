@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SpeedyMailer.Core.Domain.Drones;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -24,11 +25,23 @@ namespace SpeedyMailer.Core.Apis
 				public string LastUpdate { get; set; }
 			}
 
-			public class GetDnsblData:ApiCall
+			public class GetDnsblData : ApiCall
 			{
-				public GetDnsblData() : base("/drones/dnsbl")
+				public GetDnsblData()
+					: base("/drones/dnsbl")
 				{
 					CallMethod = RestMethod.Get;
+				}
+			}
+
+			public class SendStateSnapshot : ApiCall
+			{
+				public Drone Drone { get; set; }
+
+				public SendStateSnapshot()
+					: base("/drones/state-snapshot")
+				{
+					CallMethod = RestMethod.Post;
 				}
 			}
 		}

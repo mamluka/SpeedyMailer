@@ -101,7 +101,7 @@
     <Compile Include="DroneManagments\DroneBroadcastsHimSelfToTheService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sending\IpWasBlockedScenerio.cs" />
-    <Compile Include="Sending\SendingEmails.cs" />
+    <Compile Include="Sending\SendingEmailsScenerio.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

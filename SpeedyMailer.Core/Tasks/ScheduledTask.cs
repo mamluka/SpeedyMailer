@@ -7,6 +7,7 @@ namespace SpeedyMailer.Core.Tasks
 	public abstract class ScheduledTask
 	{
 		public string Name { get { return GetType().FullName; } }
+		public TimeSpan TaskTimeStartDelay { get; set; }
 
 		public abstract IJobDetail ConfigureJob();
 		public abstract ITrigger ConfigureTrigger();
@@ -16,7 +17,7 @@ namespace SpeedyMailer.Core.Tasks
 			return TriggerBuilder.Create()
 				.WithIdentity(GetNamePrefix() + "Trigger")
 				.WithSimpleSchedule(condition)
-				.StartNow()
+				.StartAt(new DateTimeOffset(DateTime.UtcNow + TaskTimeStartDelay))
 				.Build();
 		}
 
@@ -43,6 +44,15 @@ namespace SpeedyMailer.Core.Tasks
 			return ConfigureTrigger();
 		}
 
+	}
+
+	public static class ScheduledTaskExtentions
+	{
+		public static ScheduledTask DelayFor(this ScheduledTask target, TimeSpan timeSpan)
+		{
+			target.TaskTimeStartDelay = timeSpan;
+			return target;
+		}
 	}
 
 	public abstract class ScheduledTaskWithData<T> : ScheduledTask where T : ScheduledTaskData, new()

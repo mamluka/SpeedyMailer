@@ -130,6 +130,7 @@
     <Compile Include="Tasks\FetchIntervalRulesTaskTests.cs" />
     <Compile Include="Tasks\ResumePausedGroupsTaskTests.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTaskTests.cs" />
+    <Compile Include="Tasks\SendDroneStateSnapshotTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SpeedyMailer.Drones\NLog.config">
