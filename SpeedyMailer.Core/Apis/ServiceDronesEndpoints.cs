@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SpeedyMailer.Core.Domain.Drones;
+using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -37,6 +38,12 @@ namespace SpeedyMailer.Core.Apis
 			public class SendStateSnapshot : ApiCall
 			{
 				public Drone Drone { get; set; }
+
+				public IList<ReducedMailLogEntry> RawLogs { get; set; }
+
+				public IList<MailSent> MailSent { get; set; }
+				public IList<MailBounced> MailBounced { get; set; }
+				public IList<MailDeferred> MailDeferred { get; set; }
 
 				public SendStateSnapshot()
 					: base("/drones/state-snapshot")

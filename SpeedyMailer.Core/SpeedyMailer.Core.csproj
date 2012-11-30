@@ -204,6 +204,7 @@
     <Compile Include="Domain\Mail\MailEventType.cs" />
     <Compile Include="Domain\Mail\MailLogEntry.cs" />
     <Compile Include="Domain\Mail\AggregatedMailSent.cs" />
+    <Compile Include="Domain\Mail\ReducedMailLogEntry.cs" />
     <Compile Include="Domain\Master\Service.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />
