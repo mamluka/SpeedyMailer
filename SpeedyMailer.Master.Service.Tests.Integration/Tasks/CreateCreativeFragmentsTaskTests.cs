@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NUnit.Framework;
 using FluentAssertions;
-using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Rules;
@@ -12,6 +11,7 @@ using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Tasks;
 using SpeedyMailer.Tests.Core;
 using SpeedyMailer.Tests.Core.Integration.Base;
+using Ploeh.AutoFixture;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 {
@@ -178,6 +178,63 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 				                   CreateContactWithEmail("user3@hotmail.com"),
 				                   CreateContactWithEmail("user4@hotmail.com"),
 				                   CreateContactWithEmail("user5@hotmail.com"),
+			                   };
+
+			var listId = CraeteListFromContacts("my list", contacts.Union(topDomainContacts));
+
+			var templateId = CreateTemplate("Body");
+
+			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
+			{
+				x.Body = "Body";
+				x.Subject = "Subject";
+				x.UnsubscribeTemplateId = templateId;
+				x.Lists = new List<string> { listId };
+			});
+
+
+
+			var task = new CreateCreativeFragmentsTask
+			{
+				CreativeId = creativeId,
+			};
+
+			ServiceActions.ExecuteTask(task);
+
+			var result = Store.Query<CreativeFragment>().First();
+
+			result.Recipients.Should().Contain(x => topDomainContacts.Any(contact => contact.Email == x.Email) && x.Interval == 10 && x.Group == "gmail");
+		}
+
+		[Test]
+		public void Execute_WhenGivenIntervalRulesAndContactsThatNotAllOfThemMatchAllTheInteravlRules_ShouldSetTheCorrectItnervalsAndGroup()
+		{
+			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 200);
+
+			var rules = new[]
+				            {
+					            new IntervalRule
+						            {
+							            Conditons = new List<string> {"gmail.com"},
+							            Interval = 10,
+							            Group = "gmail"
+						            },
+								new IntervalRule
+						            {
+							            Conditons = new List<string> {"aol.com"},
+							            Interval = 10,
+							            Group = "aol"
+						            }
+				            };
+
+			ServiceActions.ExecuteCommand<AddIntervalRulesCommand>(x => x.Rules = rules);
+
+			var contacts = AddRandomContacts(100);
+
+			var topDomainContacts = new List<Contact>
+			                   {
+				                   CreateContactWithEmail("user1@gmail.com"),
+				                   CreateContactWithEmail("user2@gmail.com"),
 			                   };
 
 			var listId = CraeteListFromContacts("my list", contacts.Union(topDomainContacts));

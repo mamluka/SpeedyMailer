@@ -173,20 +173,25 @@ namespace SpeedyMailer.Master.Service.Tasks
 		{
 			groupsTotal
 				.AddRange(intervalRules
-							  .Select(intervalRule => new GroupSummery
-														  {
-															  Group = intervalRule.Group,
-															  Total = domainGroupsTotal[intervalRule.Group],
-															  Conditions = intervalRule.Conditons,
-															  Interval = intervalRule.Interval
-														  }));
+					          .Select(intervalRule => new GroupSummery
+						                                  {
+							                                  Group = intervalRule.Group,
+							                                  Total = domainGroupsTotal.ContainsKey(intervalRule.Group) ? domainGroupsTotal[intervalRule.Group] : 0,
+							                                  Conditions = intervalRule.Conditons,
+							                                  Interval = intervalRule.Interval
+						                                  })
+					          .Where(x => x.Total > 0)
+				);
 
-			groupsTotal.Add(new GroupSummery
-								{
-									Group = _creativeFragmentSettings.DefaultGroup,
-									Total = domainGroupsTotal[_creativeFragmentSettings.DefaultGroup],
-									Interval = _creativeFragmentSettings.DefaultInterval
-								});
+
+			if (domainGroupsTotal.ContainsKey(_creativeFragmentSettings.DefaultGroup))
+				groupsTotal.Add(new GroupSummery
+					                {
+						                Group = _creativeFragmentSettings.DefaultGroup,
+						                Total = domainGroupsTotal[_creativeFragmentSettings.DefaultGroup],
+						                Interval = _creativeFragmentSettings.DefaultInterval
+					                });
+			
 
 			groupsTotal = groupsTotal.OrderByDescending(x => x.Interval).ToList();
 			return groupsTotal;

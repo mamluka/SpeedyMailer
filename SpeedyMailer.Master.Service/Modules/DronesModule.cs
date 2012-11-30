@@ -47,6 +47,27 @@ namespace SpeedyMailer.Master.Service.Modules
 										return Response.AsJson(JsonConvert.DeserializeObject<List<Dnsbl>>(data));
 									}
 								};
+
+			Post["/state-snapshot"] = x =>
+				                          {
+					                          var model = this.Bind<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+											  using (var session = documentStore.OpenSession())
+											  {
+												  session.Store(new DroneStateSnapshoot
+													                {
+														                Drone = model.Drone,
+																		RawLogs = model.RawLogs,
+																		MailBounced = model.MailBounced,
+																		MailSent = model.MailSent,
+																		MailDeferred = model.MailDeferred
+													                });
+
+												  session.SaveChanges();
+											  }
+
+											  return Response.AsText("OK");
+										  };
 		}
 	}
 }

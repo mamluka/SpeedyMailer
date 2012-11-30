@@ -198,6 +198,7 @@
     <Compile Include="Domain\Mail\DnsnlType.cs" />
     <Compile Include="Domain\Mail\DeliverabilityClassificationRules.cs" />
     <Compile Include="Domain\Mail\BounceType.cs" />
+    <Compile Include="Domain\Mail\DroneStateSnapshoot.cs" />
     <Compile Include="Domain\Mail\GroupsSendingPolicies.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
