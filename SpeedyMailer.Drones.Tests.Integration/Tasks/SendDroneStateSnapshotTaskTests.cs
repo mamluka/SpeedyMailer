@@ -88,20 +88,20 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StoreCollection(new[]
 				                             {
 												 new MailBounced { Recipient = "bounced@bounced.com" },
-												 new MailBounced { Recipient = "bounce2d@bounced.com" }
+												 new MailBounced { Recipient = "bounced2@bounced.com" }
 				                             });
 
 			DroneActions.StoreCollection(new[]
 				                             {
 												 new MailDeferred { Recipient = "deferred@deferred.com" },
-												 new MailDeferred { Recipient = "deffered2@deferred.com" }
+												 new MailDeferred { Recipient = "deferred2@deferred.com" }
 				                             });
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailSent[0].Recipient == "sent@sent.com" && x.MailSent[0].Recipient == "sent2@sent.com");
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailBounced[0].Recipient == "bounced@bounced.com" && x.MailBounced[0].Recipient == "bounced2@bounced.com");
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailDeferred[0].Recipient == "sent@sent.com" && x.MailSent[0].Recipient == "deferred2@deferred.com");
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailSent[0].Recipient == "sent@sent.com" && x.MailSent[1].Recipient == "sent2@sent.com");
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailBounced[0].Recipient == "bounced@bounced.com" && x.MailBounced[1].Recipient == "bounced2@bounced.com");
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailDeferred[0].Recipient == "deferred@deferred.com" && x.MailDeferred[1].Recipient == "deferred2@deferred.com");
 		}
 	}
 }

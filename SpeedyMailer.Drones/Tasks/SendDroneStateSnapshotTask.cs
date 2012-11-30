@@ -28,7 +28,7 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly LogsStore _logsStore;
 			private OmniRecordManager _omniRecordManager;
 
-			public Job(Api api, LogsStore logsStore, DroneSettings droneSettings,OmniRecordManager omniRecordManager)
+			public Job(Api api, LogsStore logsStore, DroneSettings droneSettings, OmniRecordManager omniRecordManager)
 			{
 				_omniRecordManager = omniRecordManager;
 				_logsStore = logsStore;
@@ -48,17 +48,21 @@ namespace SpeedyMailer.Drones.Tasks
 									 })
 					.ToList();
 
-				var sent = 
+				var sent = _omniRecordManager.GetAll<MailSent>();
+
 
 				_api.Call<ServiceEndpoints.Drones.SendStateSnapshot>(x =>
-					                                                     {
-						                                                     x.Drone = new Drone
-							                                                               {
-								                                                               Id = _droneSettings.Identifier,
-								                                                               BaseUrl = _droneSettings.BaseUrl
-							                                                               };
-						                                                     x.RawLogs = reducedLogs;
-					                                                     });
+																		 {
+																			 x.Drone = new Drone
+																						   {
+																							   Id = _droneSettings.Identifier,
+																							   BaseUrl = _droneSettings.BaseUrl
+																						   };
+																			 x.RawLogs = reducedLogs;
+																			 x.MailSent = _omniRecordManager.GetAll<MailSent>();
+																			 x.MailBounced = _omniRecordManager.GetAll<MailBounced>();
+																			 x.MailDeferred = _omniRecordManager.GetAll<MailDeferred>();
+																		 });
 			}
 		}
 	}
