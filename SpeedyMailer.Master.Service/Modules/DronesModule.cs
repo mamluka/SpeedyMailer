@@ -31,7 +31,8 @@ namespace SpeedyMailer.Master.Service.Modules
 							{
 								BaseUrl = model.BaseUrl,
 								Id = model.Identifier,
-								LastUpdated = DateTime.Parse(model.LastUpdate)
+								LastUpdated = DateTime.Parse(model.LastUpdate),
+								Domain = model.Domain
 							});
 						session.SaveChanges();
 					}

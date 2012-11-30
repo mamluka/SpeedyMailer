@@ -29,6 +29,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 		            x.Identifier = "droneip";
 		            x.BaseUrl = "baseurl";
 		            x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
+		            x.Domain = "example.com";
 	            });
 
             Store.WaitForEntitiesToExist<Drone>();
@@ -37,6 +38,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
             result.BaseUrl.Should().Be("baseurl");
             result.Id.Should().Be("droneip");
 	        result.LastUpdated.Should().BeAfter(DateTime.UtcNow.AddSeconds(-30));
+	        result.Domain.Should().Be("example.com");
         }
 
 		[Test]

@@ -8,5 +8,6 @@ namespace SpeedyMailer.Core.Domain.Drones
 		public string BaseUrl { get; set; }
 		public DroneStatus Status { get; set; }
 		public DateTime LastUpdated { get; set; }
+		public string Domain { get; set; }
 	}
 }

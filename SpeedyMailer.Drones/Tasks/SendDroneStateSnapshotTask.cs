@@ -26,7 +26,7 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly Api _api;
 			private readonly DroneSettings _droneSettings;
 			private readonly LogsStore _logsStore;
-			private OmniRecordManager _omniRecordManager;
+			private readonly OmniRecordManager _omniRecordManager;
 
 			public Job(Api api, LogsStore logsStore, DroneSettings droneSettings, OmniRecordManager omniRecordManager)
 			{
@@ -56,8 +56,10 @@ namespace SpeedyMailer.Drones.Tasks
 																			 x.Drone = new Drone
 																						   {
 																							   Id = _droneSettings.Identifier,
-																							   BaseUrl = _droneSettings.BaseUrl
+																							   BaseUrl = _droneSettings.BaseUrl,
+																							   Domain = _droneSettings.Domain
 																						   };
+
 																			 x.RawLogs = reducedLogs;
 																			 x.MailSent = _omniRecordManager.GetAll<MailSent>();
 																			 x.MailBounced = _omniRecordManager.GetAll<MailBounced>();
