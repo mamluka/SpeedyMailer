@@ -24,7 +24,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			var droneSettings = DroneResolve<DroneSettings>();
 
 			apiCallSettings.ApiBaseUri.Should().Be(DefaultBaseUrl);
-			droneSettings.BaseUrl.Should().Be(string.Format("http://{0}:4253", GetLocalHost()));
+			droneSettings.BaseUrl.Should().Be(string.Format("http://{0}", GetLocalHost()));
 			droneSettings.Identifier.Should().Be(GetLocalHost());
 			droneSettings.Ip.Should().Be(GetIp());
 		}
