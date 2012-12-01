@@ -65,25 +65,6 @@ namespace SpeedyMailer.Master.Service.Modules
 
 					                  return Response.AsJson(new ApiStringResult {Result = listId});
 				                  };
-
-			Get["/unsubscribe/{data}"] = call =>
-				                             {
-					                             var dataString = call.data;
-					                             var data = UrlBuilder.DecodeBase64<DealUrlData>(dataString);
-
-												 using (var session = documentStore.OpenSession())
-					                             {
-						                             session.Store(new UnsubscribeRequest
-							                                           {
-								                                           ContactId = data.ContactId,
-																		   CreativeId = data.CreativeId
-							                                           });
-
-													 session.SaveChanges();
-					                             }
-
-					                             return "You were successfully unsubscribed from the list, thank you";
-				                             };
         }
 	}
 }

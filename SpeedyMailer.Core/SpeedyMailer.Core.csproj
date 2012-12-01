@@ -192,6 +192,7 @@
     <Compile Include="Domain\Drones\CurrentExecutingCreativeFragment.cs" />
     <Compile Include="Domain\Drones\Drone.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
+    <Compile Include="Domain\Emails\ClickAction.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />

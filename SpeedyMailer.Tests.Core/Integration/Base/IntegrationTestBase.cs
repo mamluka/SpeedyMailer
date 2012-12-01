@@ -6,17 +6,14 @@ using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
-using Newtonsoft.Json;
 using Ninject;
 using Quartz;
 using Quartz.Impl.Matchers;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Embedded;
-using Raven.Database.Server;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Evens;
-using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Tests.Core.Unit.Base;
@@ -27,6 +24,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	[TestFixture]
 	public class IntegrationTestBase : AutoMapperAndFixtureBase
 	{
+		private int _mongoRandomPort;
+
 		public IKernel DroneKernel { get; private set; }
 
 		public IKernel MasterKernel { get; private set; }
@@ -44,7 +43,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public ServiceActions ServiceActions { get; set; }
 
 		private readonly IntegrationTestsOptions _options = new IntegrationTestsOptions();
-		private int _mongoRandomPort;
 
 		public IntegrationStoreHelpers Store { get; set; }
 
@@ -81,6 +79,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DefaultBaseUrl = IntergrationHelpers.GenerateRandomLocalhostAddress();
 
 			_mongoRandomPort = IntergrationHelpers.RandomPort() + 1;
+
 			DefaultHostUrl = IntergrationHelpers.DefaultStoreUri(_mongoRandomPort);
 
 			Api = new IntegrationApiHelpers(DefaultBaseUrl);
@@ -156,6 +155,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		public void Teardown()
 		{
 			ServiceActions.Stop();
+			DroneActions.StopDroneEndpoints();
 			ClearJobsFromSchedulers();
 			Email.DeleteEmails();
 			DeleteJsonSettingFiles();

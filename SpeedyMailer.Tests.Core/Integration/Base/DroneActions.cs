@@ -116,7 +116,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			droneKernel.Bind<IDocumentStore>().ToConstant(MockRepository.GenerateStub<IDocumentStore>());
 			droneKernel.Rebind<IScheduler>().ToProvider<QuartzSchedulerProvider>().InSingletonScope();
 
-			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting(droneKernel.Get<IScheduler>()) as INancyBootstrapper);
+			droneKernel.Rebind<INancyBootstrapper>().ToConstant(new DroneNancyNinjectBootstrapperForTesting(Kernel, droneKernel.Get<IScheduler>()) as INancyBootstrapper);
 
 			var topDrone = droneKernel.Get<TopDrone>();
 
@@ -208,8 +208,16 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var scheduler = Kernel.Get<IScheduler>();
 
-			_nancy = new NancyHost(new Uri(Kernel.Get<DroneSettings>().BaseUrl), new DroneNancyNinjectBootstrapperForTesting(scheduler));
+			_nancy = new NancyHost(new Uri(Kernel.Get<DroneSettings>().BaseUrl), new DroneNancyNinjectBootstrapperForTesting(Kernel,scheduler));
 			_nancy.Start();
+		}
+
+		public void StopDroneEndpoints()
+		{
+			if (_nancy == null)
+				return;
+
+			_nancy.Stop();
 		}
 	}
 }

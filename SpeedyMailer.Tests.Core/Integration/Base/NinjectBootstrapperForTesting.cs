@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
@@ -53,9 +55,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	public class DroneNancyNinjectBootstrapperForTesting : NinjectNancyBootstrapper
 	{
 		private readonly IScheduler _scheduler;
+		private IKernel _kernel;
 
-		public DroneNancyNinjectBootstrapperForTesting(IScheduler scheduler)
+		public DroneNancyNinjectBootstrapperForTesting(IKernel kernel, IScheduler scheduler)
 		{
+			_kernel = kernel;
 			_scheduler = scheduler;
 		}
 
@@ -77,6 +81,10 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Done();
 
 			existingContainer.Rebind<IScheduler>().ToConstant(_scheduler);
+
+			var settings =typeof(CoreAssemblyMarker).Assembly.GetExportedTypes().Where(type => type.Name.EndsWith("Settings")).ToList();
+
+			settings.ForEach(x=> existingContainer.Rebind(x).ToConstant(_kernel.Get(x)));
 		}
 
 		protected override NancyInternalConfiguration InternalConfiguration
