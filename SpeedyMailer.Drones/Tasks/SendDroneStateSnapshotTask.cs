@@ -66,6 +66,16 @@ namespace SpeedyMailer.Drones.Tasks
 																			 x.UnsubscribeRequests = _omniRecordManager.GetAll<UnsubscribeRequest>();
 																			 x.ClickActions = _omniRecordManager.GetAll<ClickAction>();
 																		 });
+
+				if (_api.ResponseStatus.DidAnErrorOccured())
+					return;
+
+				_omniRecordManager.DeleteConnection<MailLogEntry>();
+				_omniRecordManager.DeleteConnection<MailSent>();
+				_omniRecordManager.DeleteConnection<MailDeferred>();
+				_omniRecordManager.DeleteConnection<MailBounced>();
+				_omniRecordManager.DeleteConnection<ClickAction>();
+				_omniRecordManager.DeleteConnection<UnsubscribeRequest>();
 			}
 		}
 	}

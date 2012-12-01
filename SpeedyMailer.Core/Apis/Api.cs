@@ -59,14 +59,17 @@ namespace SpeedyMailer.Core.Apis
 			var restRequest = SetupApiCall(apiCall);
 
 			BeforeCallLogging(restRequest);
-			var result = _restClient.Execute<TResponse>(restRequest);
-			AfterCallLogging(result);
 
+			var result = _restClient.Execute<TResponse>(restRequest);
+			ResponseStatus = result.ResponseStatus;
+
+			AfterCallLogging(result);
 			CleanUp();
 
 			return result.Data;
-
 		}
+
+		public ResponseStatus ResponseStatus { get; set; }
 
 		private void AfterCallLogging(IRestResponse result)
 		{
@@ -104,9 +107,11 @@ namespace SpeedyMailer.Core.Apis
 			var restRequest = SetupApiCall(apiCall);
 
 			BeforeCallLogging(restRequest);
-			var result = _restClient.Execute(restRequest);
-			AfterCallLogging(result);
 
+			var result = _restClient.Execute(restRequest);
+			ResponseStatus = result.ResponseStatus;
+
+			AfterCallLogging(result);
 			CleanUp();
 		}
 
@@ -114,9 +119,9 @@ namespace SpeedyMailer.Core.Apis
 		{
 			var endpoint = ParseArguments(apiCall);
 			var restRequest = new RestRequest(endpoint)
-				                  {
-					                  JsonSerializer = new RestSharpJsonNetSerializer()
-				                  };
+								  {
+									  JsonSerializer = new RestSharpJsonNetSerializer()
+								  };
 
 			var method = Translate(apiCall);
 			restRequest.Method = method;
@@ -208,4 +213,13 @@ namespace SpeedyMailer.Core.Apis
 	public class VoidResponse
 	{
 	}
+
+	public static class ResponseStatusExtentions
+	{
+		public static bool DidAnErrorOccured(this ResponseStatus target)
+		{
+			return target != ResponseStatus.Completed;
+		}
+	}
+
 }

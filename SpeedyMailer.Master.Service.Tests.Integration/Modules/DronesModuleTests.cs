@@ -4,7 +4,9 @@ using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Drones;
+using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Tests.Core.Integration.Base;
@@ -82,6 +84,24 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																						            Message = "log message"
 																					            }
 																			            };
+
+																		x.ClickActions = new List<ClickAction>
+																			                 {
+																				                 new ClickAction
+																					                 {
+																						                 ContactId = "contacts/1",
+																										 CreativeId = "creative/1"
+																					                 }
+																			                 };
+
+																		x.UnsubscribeRequests = new List<UnsubscribeRequest>
+																			                        {
+																				                        new UnsubscribeRequest
+																					                        {
+																						                        ContactId = "contacts/2",
+																												CreativeId = "creative/2"
+																					                        }
+																			                        };
 																	});
 
 			Store.WaitForEntitiesToExist<DroneStateSnapshoot>();
@@ -95,6 +115,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.MailSent.Should().OnlyContain(x => x.Recipient == "sent@sent.com");
 			result.MailBounced.Should().OnlyContain(x => x.Message == "mail bounced");
 			result.MailDeferred.Should().OnlyContain(x => x.Message == "mail deferred");
+			result.ClickActions.Should().OnlyContain(x => x.ContactId == "contacts/1");
+			result.UnsubscribeRequests.Should().OnlyContain(x => x.ContactId == "contacts/2");
 		}
 
 		[Test]

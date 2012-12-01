@@ -233,7 +233,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 
 			st.Stop();
-			manager.Exists().Should().BeTrue("The collection had elements of type {0}", typeof(T).Name);
+			manager.Exists().Should().BeFalse("The collection had elements of type {0}", typeof(T).Name);
 		}
 	}
 }

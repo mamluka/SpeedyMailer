@@ -44,5 +44,11 @@ namespace SpeedyMailer.Drones.Storage
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
 			return specificRecordManager.GetById(documentId);
 		}
+
+		public void DeleteConnection<T>() where T : class
+		{
+			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
+			specificRecordManager.Collection.Drop();
+		}
 	}
 }

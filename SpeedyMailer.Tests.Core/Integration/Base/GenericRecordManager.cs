@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using MongoDB.Driver.Builders;
 using Mongol;
@@ -17,8 +18,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return Collection.FindAllAs<T>().ToList();
 		}
 
-		public bool Exists(int count = -1)
+		public bool Exists(int count = 0)
 		{
+			if (count == 0)
+				return Count() > 0;
+
 			return Count() >= count;
 		}
 	}
