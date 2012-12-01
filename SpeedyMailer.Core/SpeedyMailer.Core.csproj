@@ -179,6 +179,7 @@
     <Compile Include="Domain\Contacts\ContactActions.cs" />
     <Compile Include="Domain\Contacts\ContactsListCsvRow.cs" />
     <Compile Include="Domain\Contacts\UnsubscribeRequest.cs" />
+    <Compile Include="Domain\CreativeToDealMap.cs" />
     <Compile Include="Domain\Creative\Creative.cs" />
     <Compile Include="Domain\Creative\CreativeFragment.cs" />
     <Compile Include="Domain\Creative\CreativePackage.cs" />

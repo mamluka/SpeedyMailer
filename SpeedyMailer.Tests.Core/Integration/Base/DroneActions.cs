@@ -10,6 +10,7 @@ using MongoDB.Driver.Builders;
 using MongoDB.Runner;
 using Mongol;
 using Nancy.Bootstrapper;
+using Nancy.Hosting.Self;
 using Newtonsoft.Json;
 using Ninject;
 using Ninject.Extensions.ChildKernel;
@@ -35,6 +36,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		private readonly IList<int> _runningMongoPorts = new List<int>();
 		private readonly IDictionary<string, string> _runningMongoUrls = new Dictionary<string, string>();
+		private NancyHost _nancy;
 
 		public DroneActions(IKernel kernel, ITaskManager taskManager, ITaskExecutor taskExecutor, IScheduledTaskManager scheduledTaskManager)
 			: base(kernel, taskManager, taskExecutor, scheduledTaskManager)
@@ -200,6 +202,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			func(manager.Collection.FindOneAs<T>()).Should().BeTrue();
 
 			st.Stop();
+		}
+
+		public void StartDroneEndpoints()
+		{
+			var scheduler = Kernel.Get<IScheduler>();
+
+			_nancy = new NancyHost(new Uri(Kernel.Get<DroneSettings>().BaseUrl), new DroneNancyNinjectBootstrapperForTesting(scheduler));
+			_nancy.Start();
 		}
 	}
 }

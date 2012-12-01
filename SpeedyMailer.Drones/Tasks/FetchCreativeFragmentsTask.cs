@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
@@ -70,6 +71,7 @@ namespace SpeedyMailer.Drones.Tasks
 					return;
 
 				SaveCurrentCreativeFragment(creativeFragment);
+				SaveCurrentCreativeToDealMap(creativeFragment);
 
 				var recipiens = creativeFragment.Recipients;
 				var creativePackages = recipiens.Select(x => ToCreativePackage(creativeFragment, x)).ToList();
@@ -77,6 +79,15 @@ namespace SpeedyMailer.Drones.Tasks
 				_creativePackagesStore.BatchInsert(creativePackages);
 
 				StartGroupSendingJobs(creativePackages, groupsSendingPolicies);
+			}
+
+			private void SaveCurrentCreativeToDealMap(CreativeFragment creativeFragment)
+			{
+				_omniRecordManager.UpdateOrInsert(new CreativeToDealMap
+					                                  {
+						                                  Id = creativeFragment.CreativeId,
+														  DealUrl = creativeFragment.DealUrl
+					                                  });
 			}
 
 			private void SaveCurrentCreativeFragment(CreativeFragment creativeFragment)
@@ -87,10 +98,10 @@ namespace SpeedyMailer.Drones.Tasks
 				_omniRecordManager.UpdateOrInsert(currentExecutingCreativeFragment);
 			}
 
-			private CreativePackage ToCreativePackage(CreativeFragment creativeFragment, Recipient x)
+			private CreativePackage ToCreativePackage(CreativeFragment creativeFragment, Recipient recipient)
 			{
 				_mapToCreativePackageCommand.CreativeFragment = creativeFragment;
-				_mapToCreativePackageCommand.Recipient = x;
+				_mapToCreativePackageCommand.Recipient = recipient;
 				return _mapToCreativePackageCommand.Execute();
 			}
 

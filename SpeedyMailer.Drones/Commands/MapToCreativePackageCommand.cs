@@ -3,6 +3,7 @@ using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Emails;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
 using Template = Antlr4.StringTemplate.Template;
 
@@ -12,12 +13,14 @@ namespace SpeedyMailer.Drones.Commands
 	{
 		private readonly CreativeBodySourceWeaver _creativeBodySourceWeaver;
 		private readonly UrlBuilder _urlBuilder;
+		private readonly DroneSettings _droneSettings;
 
 		public Recipient Recipient { get; set; }
 		public CreativeFragment CreativeFragment { get; set; }
 
-		public MapToCreativePackageCommand(UrlBuilder urlBuilder, CreativeBodySourceWeaver creativeBodySourceWeaver)
+		public MapToCreativePackageCommand(UrlBuilder urlBuilder, CreativeBodySourceWeaver creativeBodySourceWeaver, DroneSettings droneSettings)
 		{
+			_droneSettings = droneSettings;
 			_urlBuilder = urlBuilder;
 			_creativeBodySourceWeaver = creativeBodySourceWeaver;
 		}
@@ -41,22 +44,15 @@ namespace SpeedyMailer.Drones.Commands
 					};
 		}
 
-		private string ServiceEndpoint(Service service, Func<Service, string> endpointSelector)
-		{
-			return string.Format("{0}/{1}", service.BaseUrl, endpointSelector(service));
-		}
-
 		private string PersonalizeBody(CreativeFragment fragment, Recipient contact)
 		{
-			var service = fragment.Service;
-
 			var dealUrl = _urlBuilder
-				.Base(ServiceEndpoint(service, x => x.DealsEndpoint))
+				.Base(_droneSettings.BaseUrl + "/deals")
 				.AddObject(GetDealUrlData(fragment, contact))
 				.AppendAsSlashes();
 
 			var unsubsribeUrl = _urlBuilder
-				.Base(ServiceEndpoint(service, x => x.UnsubscribeEndpoint))
+				.Base(_droneSettings.BaseUrl + "/unsubscribe")
 				.AddObject(GetDealUrlData(fragment, contact))
 				.AppendAsSlashes();
 

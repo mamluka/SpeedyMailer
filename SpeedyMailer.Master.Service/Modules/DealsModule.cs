@@ -18,7 +18,7 @@ namespace SpeedyMailer.Master.Service.Modules
 	public class DealsModule : NancyModule
 	{
 		public DealsModule(IDocumentStore documentStore, Framework framework)
-			: base("/deals")
+			: base("/deals-old")
 		{
 			Get["/"] = call =>
 						   {

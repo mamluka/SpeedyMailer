@@ -113,8 +113,10 @@ namespace SpeedyMailer.Core.Apis
 		private RestRequest SetupApiCall(ApiCall apiCall)
 		{
 			var endpoint = ParseArguments(apiCall);
-			var restRequest = new RestRequest(endpoint);
-			restRequest.JsonSerializer = new RestSharpJsonNetSerializer();
+			var restRequest = new RestRequest(endpoint)
+				                  {
+					                  JsonSerializer = new RestSharpJsonNetSerializer()
+				                  };
 
 			var method = Translate(apiCall);
 			restRequest.Method = method;

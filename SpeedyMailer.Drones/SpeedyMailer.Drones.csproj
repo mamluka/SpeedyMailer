@@ -136,6 +136,7 @@
     <Compile Include="Events\DeliveryRealTimeDecision.cs" />
     <Compile Include="Events\ReinstateRecipientsForSending.cs" />
     <Compile Include="Modules\AdminModule.cs" />
+    <Compile Include="Modules\DealsModule.cs" />
     <Compile Include="Storage\CreativePackagesStore.cs" />
     <Compile Include="Storage\IntervalRulesStore.cs" />
     <Compile Include="Storage\LogsStore.cs" />

@@ -38,5 +38,11 @@ namespace SpeedyMailer.Drones.Storage
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
 			return specificRecordManager.Collection.FindAllAs<T>().ToList();
 		}
+
+		public T Load<T>(string documentId) where T : class
+		{
+			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
+			return specificRecordManager.GetById(documentId);
+		}
 	}
 }

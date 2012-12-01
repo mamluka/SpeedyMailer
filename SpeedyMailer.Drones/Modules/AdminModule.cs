@@ -8,14 +8,13 @@ using Nancy;
 using Quartz;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Tasks;
-using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler, LogsStore logsStore, SendCreativePackageCommand sendCreativePackageCommand)
+		public AdminModule(IScheduler scheduler, LogsStore logsStore)
 			: base("/admin")
 		{
 

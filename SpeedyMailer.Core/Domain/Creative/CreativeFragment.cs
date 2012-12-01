@@ -20,8 +20,8 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public FragmentStatus Status { get; set; }
 
 		public string FromName { get; set; }
-
 		public string FromAddressDomainPrefix { get; set; }
+		public string DealUrl { get; set; }
 	}
 
 	public class Recipient
