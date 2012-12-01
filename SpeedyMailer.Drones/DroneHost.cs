@@ -84,9 +84,10 @@ namespace SpeedyMailer.Drones
 		public void Start()
 		{
 			Trace.WriteLine("Drone started:" + _droneSettings.BaseUrl);
-			_logger.Info("Drone started, master host is: {0}, drone host is: {1}", _apiCallsSettings.ApiBaseUri, _droneSettings.BaseUrl);
 
 			_nancy.Start();
+
+			_logger.Info("Drone started, master host is: {0}, drone host is: {1}", _apiCallsSettings.ApiBaseUri, new Uri(_droneSettings.BaseUrl).ToString());
 		}
 
 		public void Stop()
