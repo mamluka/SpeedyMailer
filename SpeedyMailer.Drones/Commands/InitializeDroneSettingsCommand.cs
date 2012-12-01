@@ -30,7 +30,7 @@ namespace SpeedyMailer.Drones.Commands
 			_framework.EditJsonSettings<ApiCallsSettings>(x => x.ApiBaseUri = response.ServiceBaseUrl);
 			_framework.EditJsonSettings<DroneSettings>(x =>
 				{
-					x.BaseUrl = string.Format("http://{0}", GetDomain());
+					x.BaseUrl = string.Format("http://{0}:8080", GetDomain());
 					x.Domain = GetDomain();
 					x.Identifier = GetDomain();
 					x.Ip = GetIp();
