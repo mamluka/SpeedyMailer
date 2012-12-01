@@ -23,7 +23,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			if (count == 0)
 				return Count() > 0;
 
-			return Count() >= count;
+			return Count() == count;
 		}
 	}
 }

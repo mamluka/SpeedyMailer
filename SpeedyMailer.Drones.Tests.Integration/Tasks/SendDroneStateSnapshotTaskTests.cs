@@ -7,6 +7,7 @@ using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Drones.Storage;
 using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -33,9 +34,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             new MailLogEntry { msg = "message 1" },
-					                             new MailLogEntry { msg = "message 2" },
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
 				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
 
 
 			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
@@ -66,7 +72,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenExecuted_ShouldSendAllOfTheLogFilesCurrentlyInStore()
+		public void Execute_WhenExecuted_ShouldSendAllOfTheLogFilesCurrentlyInStoreAndWereAlreadyProcessed()
 		{
 			DroneActions.EditSettings<DroneSettings>(x =>
 														 {
@@ -82,14 +88,59 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             new MailLogEntry { msg = "message 1" },
-					                             new MailLogEntry { msg = "message 2" },
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
+					                             new MailLogEntry {msg = "message 3 unprocessed", time = DateTime.UtcNow.AddMinutes(30), level = "INFO"},
+
 				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+								   {
+									   Time = DateTime.UtcNow.AddMinutes(-45)
+								   });
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 
 			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.RawLogs[0].Message == "message 1" &&
-																				x.RawLogs[1].Message == "message 2");
+																				x.RawLogs[1].Message == "message 2" &&
+																				x.RawLogs.Count == 2);
+		}
+		
+		[Test]
+		public void Execute_WhenExecuted_ShouldDeleteOnlyTheProcessedLogs()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+														 {
+															 x.Identifier = "drone1";
+															 x.BaseUrl = "http://base.com";
+															 x.StoreHostname = DefaultHostUrl;
+														 });
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
+					                             new MailLogEntry {msg = "message 3 unprocessed", time = DateTime.UtcNow.AddMinutes(30), level = "INFO"},
+
+				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+								   {
+									   Time = DateTime.UtcNow.AddMinutes(-45)
+								   });
+
+			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
+
+			DroneActions.WaitForDocumentToExist<MailLogEntry>();
+
+			var result = DroneActions.FindSingle<MailLogEntry>();
+
+			result.msg.Should().Be("message 3 unprocessed");
 		}
 
 		[Test]
@@ -109,8 +160,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             new MailLogEntry { msg = "message 1" },
-					                             new MailLogEntry { msg = "message 2" },
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
 				                             }, "log");
 
 			DroneActions.StoreCollection(new[]
@@ -130,6 +181,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 												 new MailDeferred { Recipient = "deferred@deferred.com" },
 												 new MailDeferred { Recipient = "deferred2@deferred.com" }
 				                             });
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 
@@ -155,9 +211,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             new MailLogEntry { msg = "message 1" },
-					                             new MailLogEntry { msg = "message 2" },
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
 				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
 
 			DroneActions.Store(new ClickAction
 								   {
@@ -233,9 +294,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             new MailLogEntry { msg = "message 1" },
-					                             new MailLogEntry { msg = "message 2" },
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
 				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 

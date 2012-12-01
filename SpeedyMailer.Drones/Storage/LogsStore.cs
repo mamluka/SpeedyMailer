@@ -38,6 +38,17 @@ namespace SpeedyMailer.Drones.Storage
 			.ToList();
 		}
 
+		public IList<MailLogEntry> GetProcessedLogs()
+		{
+			var last = _omniRecordManager.GetSingle<LastProcessedLog>();
+
+			if (last == null)
+				return new MailLogEntry[0];
+
+			return Find(Query.EQ("level", "INFO").And(Query.LTE("time", last.Time)))
+			.ToList();
+		}
+
 		public IList<MailLogEntry> GetAllLogs()
 		{
 			return Find(Query.Null).ToList();
@@ -56,6 +67,16 @@ namespace SpeedyMailer.Drones.Storage
 			_logger.Info("After processing postfix logs the last log is from: {0}", last.Time.ToLongTimeString());
 
 			_omniRecordManager.UpdateOrInsert(last);
+		}
+
+		public void DeleteProcessedLogs()
+		{
+			var last = _omniRecordManager.GetSingle<LastProcessedLog>();
+
+			if (last == null)
+				return;
+
+			Collection.Remove(Query.LTE("time", last.Time));
 		}
 	}
 

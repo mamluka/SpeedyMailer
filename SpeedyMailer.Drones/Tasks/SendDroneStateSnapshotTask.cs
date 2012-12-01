@@ -41,7 +41,7 @@ namespace SpeedyMailer.Drones.Tasks
 			public void Execute(IJobExecutionContext context)
 			{
 				var reducedLogs = _logsStore
-					.GetAllLogs()
+					.GetProcessedLogs()
 					.Select(x => new ReducedMailLogEntry
 									 {
 										 Level = x.level,
@@ -73,7 +73,7 @@ namespace SpeedyMailer.Drones.Tasks
 				if (_api.ResponseStatus.DidAnErrorOccured())
 					return;
 
-				_omniRecordManager.DeleteConnection<MailLogEntry>();
+				_logsStore.DeleteProcessedLogs();
 				_omniRecordManager.DeleteConnection<MailSent>();
 				_omniRecordManager.DeleteConnection<MailDeferred>();
 				_omniRecordManager.DeleteConnection<MailBounced>();

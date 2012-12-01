@@ -179,7 +179,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 
 			st.Stop();
-			manager.Exists().Should().BeTrue("Waiting for {0} to exist in the database", typeof(T).Name);
+			manager.Exists().Should().BeTrue("Waiting for {0} to exist in the database {1} times but found {2}", typeof(T).Name, count, manager.Collection.Count());
 		}
 
 		public T FindSingle<T>(string collectionName = null) where T : class
