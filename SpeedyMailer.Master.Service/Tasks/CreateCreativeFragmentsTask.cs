@@ -92,19 +92,15 @@ namespace SpeedyMailer.Master.Service.Tasks
 					var fragment = new CreativeFragment
 									   {
 										   Body = creative.Body,
+										   DealUrl = creative.DealUrl,
 										   CreativeId = creative.Id,
 										   Subject = creative.Subject,
 										   Recipients = recipients,
 										   UnsubscribeTemplate = unsubscribeTempalte.Body,
 										   FromAddressDomainPrefix = creative.FromAddressDomainPrefix,
 										   FromName = creative.FromName,
-										   Service = new Core.Domain.Master.Service
-														 {
-															 BaseUrl = _serviceSettings.BaseUrl,
-															 DealsEndpoint = _creativeEndpointsSettings.Deal,
-															 UnsubscribeEndpoint = _creativeEndpointsSettings.Unsubscribe
-														 }
 									   };
+
 					session.Store(fragment);
 					session.SaveChanges();
 				}

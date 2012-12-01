@@ -103,6 +103,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 														  x.UnsubscribeTemplateId = templateId;
 														  x.FromAddressDomainPrefix = "sales";
 														  x.FromName = "david";
+														  x.DealUrl = "http://deal.com";
 														  x.Lists = new List<string> { listId };
 													  });
 
@@ -120,41 +121,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			result.FromName.Should().Be("david");
 			result.FromAddressDomainPrefix.Should().Be("sales");
 			result.UnsubscribeTemplate.Should().Be("Body");
-
+			result.DealUrl.Should().Be("http://deal.com");
 		}
-
-		[Test]
-		public void Execute_WhenACreativeIsGiven_ShouldReturnTheServiceEndpoints()
-		{
-			ServiceActions.EditSettings<CreativeFragmentSettings>(x => x.RecipientsPerFragment = 1000);
-			ServiceActions.EditSettings<ServiceSettings>(x => x.BaseUrl = DefaultBaseUrl);
-
-			var listId = UiActions.CreateListWithRandomContacts("MyList", 700);
-
-			var templateId = CreateTemplate("Body");
-
-			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
-													  {
-														  x.Body = "Body";
-														  x.Subject = "Subject";
-														  x.UnsubscribeTemplateId = templateId;
-														  x.Lists = new List<string> { listId };
-													  });
-
-			var task = new CreateCreativeFragmentsTask
-						{
-							CreativeId = creativeId,
-						};
-
-			ServiceActions.ExecuteTask(task);
-
-			var result = Store.Query<CreativeFragment>().First();
-
-			result.Service.BaseUrl.Should().Be(DefaultBaseUrl);
-			result.Service.DealsEndpoint.Should().Be("deals");
-			result.Service.UnsubscribeEndpoint.Should().Be("lists/unsubscribe");
-		}
-
+		
 		[Test]
 		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervalsAndGroup()
 		{

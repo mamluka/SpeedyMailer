@@ -49,6 +49,28 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenCalledAndFoundSentMailToPostFixPostMaster_ShouldFilterItOut()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			ListenToEvent<AggregatedMailSent>();
+
+			var logEntries = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {msg = "B1C9512E19CF: to=<root@xomixinc.com>, relay=local, delay=0.01, delays=0/0.01/0/0, dsn=2.0.0, status=sent (delivered to mailbox)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+				                 };
+
+			DroneActions.StoreCollection(logEntries, "log");
+
+			var task = new AnalyzePostfixLogsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			AssertEventWasNotPublished<AggregatedMailSent>();
+
+		}
+
+		[Test]
 		public void Execute_WhenThereAreManyEntriesInTheLog_ShouldGrabOnlyTheOneThatWasNotProcesses()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);

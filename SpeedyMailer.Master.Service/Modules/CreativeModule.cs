@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -68,7 +69,7 @@ namespace SpeedyMailer.Master.Service.Modules
 												try
 												{
 													var creativeFragment = session.Query<CreativeFragment>()
-													.Customize(x => x.WaitForNonStaleResults())
+													.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
 													.Where(x => x.Status == FragmentStatus.Pending)
 													.ToList()
 													.FirstOrDefault();

@@ -50,6 +50,9 @@ namespace SpeedyMailer.Drones.Tasks
 									 })
 					.ToList();
 
+				if (!reducedLogs.Any())
+					return;
+
 				_api.Call<ServiceEndpoints.Drones.SendStateSnapshot>(x =>
 																		 {
 																			 x.Drone = new Drone

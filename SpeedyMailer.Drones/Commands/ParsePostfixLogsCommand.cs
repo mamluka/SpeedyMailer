@@ -4,12 +4,20 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Commands
 {
 	public class ParsePostfixLogsCommand : Command<IList<MailEvent>>
 	{
+		private DroneSettings _droneSettings;
+
 		public IList<MailLogEntry> Logs { get; set; }
+
+		public ParsePostfixLogsCommand(DroneSettings droneSettings)
+		{
+			_droneSettings = droneSettings;
+		}
 
 		public override IList<MailEvent> Execute()
 		{
@@ -24,18 +32,23 @@ namespace SpeedyMailer.Drones.Commands
 				return null;
 
 			var msg = mailLogEntry.msg;
-			return new MailEvent
-					   {
-						   Level = TryParse(mailLogEntry),
-						   Recipient = ParseRegexWithOneGroup(msg, "to=<(.+?)>"),
-						   RelayHost = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 1),
-						   RelayIp = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 3),
-						   Time = mailLogEntry.time,
-						   Type = ParseType(mailLogEntry.msg),
-						   DelayBreakDown = ParseDelayBreakdown(mailLogEntry.msg),
-						   TotalDelay = ParseRegexWithOneGroup(msg, "delay=(.+?),"),
-						   RelayMessage = ParseRegexWithOneGroup(msg, "status.+?\\((.+?)\\)$")
-					   };
+			var mailEvent = new MailEvent
+								{
+									Level = TryParse(mailLogEntry),
+									Recipient = ParseRegexWithOneGroup(msg, "to=<(.+?)>"),
+									RelayHost = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 1),
+									RelayIp = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 3),
+									Time = mailLogEntry.time,
+									Type = ParseType(mailLogEntry.msg),
+									DelayBreakDown = ParseDelayBreakdown(mailLogEntry.msg),
+									TotalDelay = ParseRegexWithOneGroup(msg, "delay=(.+?),"),
+									RelayMessage = ParseRegexWithOneGroup(msg, "status.+?\\((.+?)\\)$")
+								};
+
+			if (string.IsNullOrEmpty(mailEvent.Recipient) || mailEvent.Recipient.Contains(_droneSettings.Domain))
+				return null;
+
+			return mailEvent;
 		}
 
 		private bool ThisMailLogEntryDoesntHaveSendingInformation(MailLogEntry mailLogEntry)

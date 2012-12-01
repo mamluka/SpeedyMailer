@@ -31,6 +31,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             new MailLogEntry { msg = "message 1" },
+					                             new MailLogEntry { msg = "message 2" },
+				                             }, "log");
+
 
 			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
 
@@ -38,6 +44,25 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Drone.Id == "drone1" &&
 																				x.Drone.BaseUrl == "http://base.com");
+		}
+
+		[Test]
+		public void Execute_WhenExecutedAndNoLogEventsWereFound_ShouldNotSendAnythingToTheMaster()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+														 {
+															 x.Identifier = "drone1";
+															 x.BaseUrl = "http://base.com";
+															 x.StoreHostname = DefaultHostUrl;
+														 });
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
+
+			Api.AssertApiWasntCalled<ServiceEndpoints.Drones.SendStateSnapshot>();
 		}
 
 		[Test]
@@ -84,6 +109,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
+					                             new MailLogEntry { msg = "message 1" },
+					                             new MailLogEntry { msg = "message 2" },
+				                             }, "log");
+
+			DroneActions.StoreCollection(new[]
+				                             {
 												 new MailSent { Recipient = "sent@sent.com" },
 												 new MailSent { Recipient = "sent2@sent.com" }
 				                             });
@@ -121,6 +152,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 
 			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             new MailLogEntry { msg = "message 1" },
+					                             new MailLogEntry { msg = "message 2" },
+				                             }, "log");
 
 			DroneActions.Store(new ClickAction
 								   {
