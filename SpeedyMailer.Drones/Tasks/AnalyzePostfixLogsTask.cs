@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Quartz;
-using Raven.Client.Util;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Settings;
