@@ -208,7 +208,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			var scheduler = Kernel.Get<IScheduler>();
 
-			_nancy = new NancyHost(new Uri(Kernel.Get<DroneSettings>().BaseUrl), new DroneNancyNinjectBootstrapperForTesting(Kernel,scheduler));
+			_nancy = new NancyHost(new Uri(Kernel.Get<DroneSettings>().BaseUrl), new DroneNancyNinjectBootstrapperForTesting(Kernel, scheduler));
 			_nancy.Start();
 		}
 
@@ -218,6 +218,22 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				return;
 
 			_nancy.Stop();
+		}
+
+		public void WaitForEmptyListOf<T>(string collectionName = null) where T : class
+		{
+			var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, collectionName);
+
+			var st = new Stopwatch();
+			st.Start();
+
+			while (st.ElapsedMilliseconds < 30 * 1000 && manager.Exists())
+			{
+				Thread.Sleep(500);
+			}
+
+			st.Stop();
+			manager.Exists().Should().BeTrue("The collection had elements of type {0}", typeof(T).Name);
 		}
 	}
 }

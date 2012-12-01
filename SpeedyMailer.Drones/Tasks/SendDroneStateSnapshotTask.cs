@@ -1,7 +1,9 @@
 using System.Linq;
 using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Drones;
+using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
@@ -48,9 +50,6 @@ namespace SpeedyMailer.Drones.Tasks
 									 })
 					.ToList();
 
-				var sent = _omniRecordManager.GetAll<MailSent>();
-
-
 				_api.Call<ServiceEndpoints.Drones.SendStateSnapshot>(x =>
 																		 {
 																			 x.Drone = new Drone
@@ -64,6 +63,8 @@ namespace SpeedyMailer.Drones.Tasks
 																			 x.MailSent = _omniRecordManager.GetAll<MailSent>();
 																			 x.MailBounced = _omniRecordManager.GetAll<MailBounced>();
 																			 x.MailDeferred = _omniRecordManager.GetAll<MailDeferred>();
+																			 x.UnsubscribeRequests = _omniRecordManager.GetAll<UnsubscribeRequest>();
+																			 x.ClickActions = _omniRecordManager.GetAll<ClickAction>();
 																		 });
 			}
 		}
