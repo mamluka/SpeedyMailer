@@ -78,7 +78,7 @@ namespace SpeedyMailer.Drones
 
 			_framework.StartTasks(tasks);
 
-			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
+			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl + ":80"), _nancyBootstrapper);
 		}
 
 		public void Start()
