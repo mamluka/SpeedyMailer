@@ -24,10 +24,10 @@ namespace SpeedyMailer.Drones
 		[Option("b", "drone-base-url", HelpText = "The base url of the service to register the drone with", Required = false)]
 		public string BaseUrl { get; set; }
 
-		[Option("N", "no-tasks", HelpText = "The base url of the service to register the drone with", Required = false)]
+		[Option("N", "no-tasks", DefaultValue = false, HelpText = "The base url of the service to register the drone with", Required = false)]
 		public bool NoTasks { get; set; }
 
-		[Option("P", "port", HelpText = "The base url of the service to register the drone with", Required = false)]
+		[Option("P", "port", DefaultValue = 8080, HelpText = "The base url of the service to register the drone with", Required = false)]
 		public int RedirectedToListeningPort { get; set; }
 	}
 	public class DroneHost
