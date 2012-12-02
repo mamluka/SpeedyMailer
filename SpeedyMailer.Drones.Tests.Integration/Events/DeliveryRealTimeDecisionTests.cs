@@ -21,14 +21,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounce_ShouldStopSendingForTheGivenGroup()
 		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
-
-			DroneActions.EditSettings<EmailingSettings>(x =>
-															{
-																x.WritingEmailsToDiskPath = "dev/null";
-																x.MailingDomain = "example.com";
-
-															});
+			SetSettings();
 
 			DroneActions.StoreCollection(new[]
 				                             {
@@ -75,6 +68,56 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
+		}
+		
+		[Test]
+		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounceAndTheGroupIsDefault_ShouldDoNothing()
+		{
+			SetSettings();
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("$default$"),
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "$default";
+																	},
+																x => x.WithIntervalInHours(1).RepeatForever()
+				);
+
+
+			DroneActions.StartScheduledTask(task1);
+			Jobs.Drone().WaitForJobToStart(task1);
+
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
+																		   {
+																			   x.MailEvents = new List<MailBounced>
+						                                                                          {
+							                                                                          new MailBounced
+								                                                                          {
+									                                                                          DomainGroup = "$default$",
+									                                                                          Recipient = "david@somedomain.com",
+									                                                                          Message = "message meaning its a bad bounce"
+								                                                                          }
+						                                                                          };
+																		   });
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "$default$");
+		}
+
+		private void SetSettings()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.EditSettings<EmailingSettings>(x =>
+				                                            {
+					                                            x.WritingEmailsToDiskPath = "dev/null";
+					                                            x.MailingDomain = "example.com";
+				                                            });
 		}
 
 		private void StoreClassificationRules(string bounceCondition, HeuristicRule heuristicRule)

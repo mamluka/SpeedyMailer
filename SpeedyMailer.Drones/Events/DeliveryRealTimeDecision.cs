@@ -63,7 +63,7 @@ namespace SpeedyMailer.Drones.Events
 																								};
 										 });
 
-			_omniRecordManager.BatchInsert(new[] { groupsSendingPolicies });
+			_omniRecordManager.UpdateOrInsert(groupsSendingPolicies);
 
 			foreach (var badBounce in bouncesGroups)
 			{
