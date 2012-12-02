@@ -26,6 +26,9 @@ namespace SpeedyMailer.Drones
 
 		[Option("N", "no-tasks", HelpText = "The base url of the service to register the drone with", Required = false)]
 		public bool NoTasks { get; set; }
+
+		[Option("P", "port", HelpText = "The base url of the service to register the drone with", Required = false)]
+		public int RedirectedToListeningPort { get; set; }
 	}
 	public class DroneHost
 	{
@@ -44,7 +47,7 @@ namespace SpeedyMailer.Drones
 
 				var drone = kernel.Get<TopDrone>();
 
-				drone.Initialize(options.NoTasks);
+				drone.Initialize(options.RedirectedToListeningPort, options.NoTasks);
 				drone.Start();
 
 				Console.WriteLine("Starting drone...");
@@ -70,7 +73,7 @@ namespace SpeedyMailer.Drones
 			_nancyBootstrapper = nancyBootstrapper;
 		}
 
-		public void Initialize(bool noTasks = false)
+		public void Initialize(int redirectedToListeningPort = 8080, bool noTasks = false)
 		{
 			if (!noTasks)
 			{
@@ -88,7 +91,7 @@ namespace SpeedyMailer.Drones
 				_framework.StartTasks(tasks);
 			}
 
-			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
+			_nancy = new NancyHost(new Uri(string.Format("{0}:{1}", _droneSettings.BaseUrl, redirectedToListeningPort)), _nancyBootstrapper);
 		}
 
 		public void Start()
