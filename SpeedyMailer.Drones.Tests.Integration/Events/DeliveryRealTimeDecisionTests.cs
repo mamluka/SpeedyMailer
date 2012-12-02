@@ -108,6 +108,44 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "$default$");
 		}
+		[Test]
+		public void Inspect_WhenGivenADeferredMailEventAndTheAnalyzerSayingItsBlockingIpDeferAndTheGroupIsDefault_ShouldDoNothing()
+		{
+			SetSettings();
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             AddCreativePackage("$default$"),
+				                             });
+
+			var task1 = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "$default";
+																	},
+																x => x.WithIntervalInHours(1).RepeatForever()
+				);
+
+
+			DroneActions.StartScheduledTask(task1);
+			Jobs.Drone().WaitForJobToStart(task1);
+
+			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+
+			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
+																		   {
+																			   x.MailEvents = new List<MailDeferred>
+						                                                                          {
+							                                                                          new MailDeferred()
+								                                                                          {
+									                                                                          DomainGroup = "$default$",
+									                                                                          Recipient = "david@somedomain.com",
+									                                                                          Message = "message meaning its a bad bounce"
+								                                                                          }
+						                                                                          };
+																		   });
+
+			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "$default$");
+		}
 
 		private void SetSettings()
 		{
