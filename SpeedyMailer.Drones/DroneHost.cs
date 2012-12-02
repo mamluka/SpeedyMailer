@@ -23,6 +23,9 @@ namespace SpeedyMailer.Drones
 
 		[Option("b", "drone-base-url", HelpText = "The base url of the service to register the drone with", Required = false)]
 		public string BaseUrl { get; set; }
+
+		[Option("NT", "np-tasks", HelpText = "The base url of the service to register the drone with", Required = false)]
+		public bool NoTasks { get; set; }
 	}
 	public class DroneHost
 	{
@@ -41,7 +44,7 @@ namespace SpeedyMailer.Drones
 
 				var drone = kernel.Get<TopDrone>();
 
-				drone.Initialize();
+				drone.Initialize(options.NoTasks);
 				drone.Start();
 
 				Console.WriteLine("Starting drone...");
@@ -67,9 +70,11 @@ namespace SpeedyMailer.Drones
 			_nancyBootstrapper = nancyBootstrapper;
 		}
 
-		public void Initialize()
+		public void Initialize(bool noTasks = false)
 		{
-			var tasks = new List<ScheduledTask>
+			if (noTasks)
+			{
+				var tasks = new List<ScheduledTask>
 				{
 					new BroadcastDroneToServiceTask().DelayFor(TimeSpan.FromSeconds(30)),
 					new FetchCreativeFragmentsTask().DelayFor(TimeSpan.FromMinutes(1)),
@@ -80,7 +85,8 @@ namespace SpeedyMailer.Drones
 					new ResumePausedGroupsTask(),
 				};
 
-			_framework.StartTasks(tasks);
+				_framework.StartTasks(tasks);
+			}
 
 			_nancy = new NancyHost(new Uri(_droneSettings.BaseUrl), _nancyBootstrapper);
 		}
