@@ -12,6 +12,8 @@ namespace SpeedyMailer.Drones.Commands
 	{
 		public string RemoteConfigurationServiceBaseUrl { get; set; }
 
+		public string DroneBaseUrl { get; set; }
+
 		private readonly Api _api;
 		private readonly Framework _framework;
 		private readonly IRestClient _restClient;
@@ -30,7 +32,7 @@ namespace SpeedyMailer.Drones.Commands
 			_framework.EditJsonSettings<ApiCallsSettings>(x => x.ApiBaseUri = response.ServiceBaseUrl);
 			_framework.EditJsonSettings<DroneSettings>(x =>
 				{
-					x.BaseUrl = string.Format("http://{0}", GetDomain());
+					x.BaseUrl = DroneBaseUrl ?? string.Format("http://{0}", GetDomain());
 					x.Domain = GetDomain();
 					x.Identifier = GetDomain();
 					x.Ip = GetIp();

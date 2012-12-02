@@ -18,8 +18,11 @@ namespace SpeedyMailer.Drones
 {
 	public class DroneCommandOptions : CommandLineOptionsBase
 	{
-		[Option("s", "service-base-url", HelpText = "The base url of the service to register the drone with")]
+		[Option("s", "service-base-url", HelpText = "The base url of the service to register the drone with", Required = true)]
 		public string ServiceBaseUrl { get; set; }
+
+		[Option("b", "drone-base-url", HelpText = "The base url of the service to register the drone with", Required = false)]
+		public string BaseUrl { get; set; }
 	}
 	public class DroneHost
 	{
@@ -33,6 +36,7 @@ namespace SpeedyMailer.Drones
 			{
 				var initializeDroneSettingsCommand = kernel.Get<InitializeDroneSettingsCommand>();
 				initializeDroneSettingsCommand.RemoteConfigurationServiceBaseUrl = options.ServiceBaseUrl;
+				initializeDroneSettingsCommand.DroneBaseUrl = options.BaseUrl;
 				initializeDroneSettingsCommand.Execute();
 
 				var drone = kernel.Get<TopDrone>();
