@@ -24,7 +24,7 @@ namespace SpeedyMailer.Drones
 		[Option("b", "drone-base-url", HelpText = "The base url of the service to register the drone with", Required = false)]
 		public string BaseUrl { get; set; }
 
-		[Option("NT", "np-tasks", HelpText = "The base url of the service to register the drone with", Required = false)]
+		[Option("N", "no-tasks", HelpText = "The base url of the service to register the drone with", Required = false)]
 		public bool NoTasks { get; set; }
 	}
 	public class DroneHost
@@ -72,7 +72,7 @@ namespace SpeedyMailer.Drones
 
 		public void Initialize(bool noTasks = false)
 		{
-			if (noTasks)
+			if (!noTasks)
 			{
 				var tasks = new List<ScheduledTask>
 				{
