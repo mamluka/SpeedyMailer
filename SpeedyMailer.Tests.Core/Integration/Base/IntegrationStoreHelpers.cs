@@ -6,7 +6,9 @@ using System.Linq.Expressions;
 using System.Threading;
 using EqualityComparer;
 using Raven.Client;
+using Raven.Client.Indexes;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Master.Service.Storage.Indexes;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -72,6 +74,18 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
+		public IList<T> Query<T, TIndex>(Expression<Func<T, bool>> expression) where TIndex : AbstractIndexCreationTask, new()
+		{
+			using (var session = _documentStore.OpenSession())
+			{
+				return session.Query<T, TIndex>()
+					.Customize(x => x.WaitForNonStaleResults())
+					.Where(expression)
+					.Take(1024)
+					.ToList();
+			}
+		}
+
 		public void Delete<T>(string entityId)
 		{
 			using (var session = _documentStore.OpenSession())
@@ -126,6 +140,26 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 					Thread.Sleep(500);
 				}
 			}
+		}
+
+		public void WaitForIndexNotToBeStale<TIndexResult, T>() where T : AbstractIndexCreationTask, new()
+		{
+			var stopwatch = new Stopwatch();
+			stopwatch.Start();
+
+			using (var session = _documentStore.OpenSession())
+			{
+				RavenQueryStatistics stats;
+
+				session.Query<TIndexResult, T>().Statistics(out stats);
+				while (stats.IsStale)
+				{
+					session.Query<T>().Statistics(out stats);
+					Thread.Sleep(500);
+				}
+			}
+
+			stopwatch.Stop();
 		}
 	}
 }

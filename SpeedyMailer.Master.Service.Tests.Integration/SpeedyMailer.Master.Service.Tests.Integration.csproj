@@ -105,6 +105,7 @@
     <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
     <Compile Include="Commands\SendCreativeCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
+    <Compile Include="Indexes\ClickActionsIndexTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Modules\DealsModuleTests.cs" />

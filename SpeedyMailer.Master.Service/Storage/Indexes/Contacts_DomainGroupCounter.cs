@@ -21,10 +21,7 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 
 			Reduce = results => results
 				.GroupBy(x => new { x.ListId, x.DomainGroup })
-				.Select(x => new { x.Key.ListId, x.Key.DomainGroup, Count = x.Sum(m => m.Count) });
-
-
-
+				.Select(x => new {x.Key.DomainGroup, Count = x.Sum(m => m.Count), x.Key.ListId});
 		}
 	}
 }

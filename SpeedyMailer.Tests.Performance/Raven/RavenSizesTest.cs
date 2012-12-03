@@ -89,6 +89,20 @@ namespace SpeedyMailer.Tests.Performance.Raven
 		}
 
 		[Test]
+		public void Given_WhenWhensdfdsdf_ShouldExpectedResultdfdd()
+		{
+			var documentStore = new DocumentStore { Url = "http://mamluka-pc:4253" };
+			documentStore.Initialize();
+
+			documentStore.DatabaseCommands.PutIndex("Count_Contacts", new IndexDefinitionBuilder<Contact>
+			{
+				Map = contacts => contacts.Select(x => new { x.MemberOf })
+
+			}, true);
+
+		}
+
+		[Test]
 		public void DNS_WhenWhen_ShouldExpectedResult()
 		{
 			Trace.WriteLine(Dns.GetHostEntry("88.213.179.79.zen.spamhaus.org").AddressList.First());

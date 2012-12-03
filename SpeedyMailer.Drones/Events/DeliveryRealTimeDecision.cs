@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
@@ -13,9 +14,11 @@ namespace SpeedyMailer.Drones.Events
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly PauseSpecificSendingJobsCommand _pauseSpecificSendingJobsCommand;
 		private readonly OmniRecordManager _omniRecordManager;
+		private CreativeFragmentSettings _creativeFragmentSettings;
 
-		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager)
+		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager, CreativeFragmentSettings creativeFragmentSettings)
 		{
+			_creativeFragmentSettings = creativeFragmentSettings;
 			_omniRecordManager = omniRecordManager;
 			_pauseSpecificSendingJobsCommand = pauseSpecificSendingJobsCommand;
 			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
@@ -42,7 +45,7 @@ namespace SpeedyMailer.Drones.Events
 								return new { MailClassfication = mailClassfication, x.DomainGroup };
 							})
 				.Where(x => x.MailClassfication.BounceType == BounceType.Blocked)
-				.Where(x => !string.IsNullOrEmpty(x.DomainGroup))
+				.Where(x => ValidDomainGroupsForPausing(x.DomainGroup))
 				.ToList();
 
 			if (!bouncesGroups.Any())
@@ -70,6 +73,11 @@ namespace SpeedyMailer.Drones.Events
 				_pauseSpecificSendingJobsCommand.Group = badBounce.DomainGroup;
 				_pauseSpecificSendingJobsCommand.Execute();
 			}
+		}
+
+		private bool ValidDomainGroupsForPausing(string domainGroup)
+		{
+			return !string.IsNullOrEmpty(domainGroup) && domainGroup != _creativeFragmentSettings.DefaultGroup;
 		}
 	}
 }
