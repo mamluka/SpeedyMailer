@@ -51,7 +51,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenCalledAndFoundSentMailToPostFixPostMaster_ShouldFilterItOut()
 		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+			DroneActions.EditSettings<DroneSettings>(x =>
+			    {
+			        x.StoreHostname = DefaultHostUrl;
+			        x.Domain = "xomixinc.com";
+			    });
 
 			ListenToEvent<AggregatedMailSent>();
 

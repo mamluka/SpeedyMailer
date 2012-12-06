@@ -113,9 +113,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Recipients.Should().HaveCount(100);
 			result.FromName.Should().Be("david");
 			result.FromAddressDomainPrefix.Should().Be("sales");
-			result.Service.BaseUrl.Should().Be(DefaultBaseUrl);
-			result.Service.DealsEndpoint.Should().Be("deals");
-			result.Service.UnsubscribeEndpoint.Should().Be("lists/unsubscribe");
+		    result.DealUrl.Should().Be("dealUrl");
 		}
 
 		[Test]

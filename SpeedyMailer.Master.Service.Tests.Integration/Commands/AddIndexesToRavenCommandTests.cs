@@ -18,7 +18,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 
 			var indexes = DocumentStore.DatabaseCommands.GetIndexNames(0, 100);
 
-			indexes.Should().BeEquivalentTo(new[] { "Contacts/DomainGroupCounter", "Contacts/ByMemberOf" });
+            indexes.Should().BeEquivalentTo(new[] { "Contacts/DomainGroupCounter", "Contacts/ByMemberOf", "Creatives/ClickActions" });
 		}
 	}
 }

@@ -10,41 +10,51 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Storage
 {
-	public class CreativePackagesStore : RecordManager<CreativePackage>
-	{
-		public CreativePackagesStore(DroneSettings droneSettings)
-			: base(droneSettings.StoreHostname)
-		{
+    public class CreativePackagesStore : RecordManager<CreativePackage>
+    {
+        private readonly CreativeFragmentSettings _creativeFragmentSettings;
 
-		}
-		public CreativePackage GetPackageForGroup(string group)
-		{
-			return AsQueryable.FirstOrDefault(x => x.Group == @group && x.Processed == false);
-		}
+        public CreativePackagesStore(DroneSettings droneSettings, CreativeFragmentSettings creativeFragmentSettings)
+            : base(droneSettings.StoreHostname)
+        {
+            _creativeFragmentSettings = creativeFragmentSettings;
+        }
 
-		public IList<string> GetPackageGroups()
-		{
-			return AsQueryable
-				.GroupBy(x => x.Group)
-				.Select(x => x.Key)
-				.ToList();
-		}
+        public CreativePackage GetPackageForGroup(string group)
+        {
+            return Find(Query.EQ(PropertyName(x => x.Group), group)
+                             .And(Query.EQ(PropertyName(x => x.Processed), false))).FirstOrDefault();
 
-		public bool AreThereAnyNonProcessedPackages()
-		{
-			return Count() > 0;
-		}
+        }
 
-		public IList<CreativePackage> GetAll()
-		{
-			return Collection
-				.Find(Query.EQ(PropertyName(x => x.Processed), false))
-				.ToList();
-		}
+        public IList<string> GetPackageGroups()
+        {
+            return AsQueryable
+                .GroupBy(x => x.Group)
+                .Select(x => x.Key)
+                .ToList();
+        }
 
-		public List<CreativePackage> GetByEmail(IEnumerable<string> emails)
-		{
-			return AsQueryable.Where(x => emails.Contains(x.To)).ToList();
-		}
-	}
+        public bool AreThereAnyNonProcessedPackages()
+        {
+            return Count() > 0;
+        }
+
+        public IList<CreativePackage> GetAll()
+        {
+            return Collection
+                .Find(Query.EQ(PropertyName(x => x.Processed), false))
+                .ToList();
+        }
+
+        public List<CreativePackage> GetByEmail(IEnumerable<string> emails)
+        {
+            return Collection.Find(Query.In(PropertyName(x => x.To), emails.Select(x => (BsonString)x))).ToList();
+        }
+
+        public IList<CreativePackage> GetUnprocessedDefaultGroupPackages()
+        {
+            return Collection.Find(Query.EQ(PropertyName(x => x.Group), _creativeFragmentSettings.DefaultGroup).And(Query.EQ(PropertyName(x => x.Processed), false))).ToList();
+        }
+    }
 }

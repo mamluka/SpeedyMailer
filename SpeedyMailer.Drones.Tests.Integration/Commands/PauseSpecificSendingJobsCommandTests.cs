@@ -95,6 +95,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			DroneActions.StartScheduledTask(task2);
 			DroneActions.StartScheduledTask(anotherTask);
 
+            Jobs.Drone().WaitForJobToStart(task1);
+            Jobs.Drone().WaitForJobToStart(task2);
+            Jobs.Drone().WaitForJobToStart(anotherTask);
+
 			DroneActions.ExecuteCommand<PauseSpecificSendingJobsCommand>(x => x.Group = "gmail");
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");

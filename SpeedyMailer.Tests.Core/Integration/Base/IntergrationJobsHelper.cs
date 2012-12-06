@@ -53,7 +53,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			data.Should().NotContain(assertFunc);
 		}
 
-		public void WaitForJobToStart(SendCreativePackagesWithIntervalTask task, int waitFor = 30)
+		public void WaitForJobToStart(ScheduledTask task, int waitFor = 30)
 		{
 			var st = new Stopwatch();
 			st.Start();
@@ -66,7 +66,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			GetJobKeys().SingleOrDefault(x => x.Name == GetFullJobName(task)).Should().NotBeNull("Job did not start");
 		}
 
-		private static string GetFullJobName(SendCreativePackagesWithIntervalTask task)
+		private static string GetFullJobName(ScheduledTask task)
 		{
 			return task.GetNamePrefix() + "Job";
 		}

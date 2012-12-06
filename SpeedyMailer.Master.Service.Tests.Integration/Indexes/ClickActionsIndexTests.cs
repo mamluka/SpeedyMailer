@@ -12,6 +12,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 	public class ClickActionsIndexTests : IntegrationTestBase
 	{
 		[Test]
+        [Ignore]
 		public void Index_WhenGivenSnapShots_ShouldMapReduceTheClicks()
 		{
 			var snapshots = new[]

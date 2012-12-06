@@ -14,6 +14,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 	public class DnsBlackListingIpNotificationTaskTests : IntegrationTestBase
 	{
 		[Test]
+        [Ignore]
 		public void Execute_WhenDNSBLArePresentInTheJson_ShouldQueryThemForTheCurrentIp()
 		{
 			DroneActions.EditSettings<DroneSettings>(x =>

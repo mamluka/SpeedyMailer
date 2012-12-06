@@ -64,7 +64,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, MailClassfication>(x => x.Message = message);
 
-			result.BounceType.Should().Be(BounceType.HardBounce);
+			result.BounceType.Should().Be(BounceType.Blocked);
 		}
 
 		[Test]

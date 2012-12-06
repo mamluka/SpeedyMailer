@@ -108,7 +108,6 @@
     <Compile Include="Indexes\ClickActionsIndexTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
-    <Compile Include="Modules\DealsModuleTests.cs" />
     <Compile Include="Modules\DronesModuleTests.cs" />
     <Compile Include="Modules\HeuristicsModuleTests.cs" />
     <Compile Include="Modules\ListsModuleTests.cs" />

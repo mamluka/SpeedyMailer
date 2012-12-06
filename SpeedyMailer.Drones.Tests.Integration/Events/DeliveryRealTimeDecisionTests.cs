@@ -120,7 +120,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var task1 = new SendCreativePackagesWithIntervalTask(x =>
 																	{
-																		x.Group = "$default";
+																		x.Group = "$default$";
 																	},
 																x => x.WithIntervalInHours(1).RepeatForever()
 				);

@@ -114,13 +114,13 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var groups = GetActiveGroups(recipiens, sendingPolicies);
 
-				foreach (var group in groups)
+				foreach (var domainGroup in groups)
 				{
 					_framework.StartTasks(new SendCreativePackagesWithIntervalTask(x =>
 						                                                               {
-							                                                               x.Group = @group.Group;
+							                                                               x.Group = domainGroup.Group;
 						                                                               },
-					                                                               x => x.WithIntervalInSeconds(@group.Interval).RepeatForever()
+					                                                               x => x.WithIntervalInSeconds(domainGroup.Interval).RepeatForever()
 						                      ));
 				}
 			}

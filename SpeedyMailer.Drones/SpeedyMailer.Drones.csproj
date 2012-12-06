@@ -134,6 +134,7 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Events\DeliveryRealTimeDecision.cs" />
+    <Compile Include="Events\MarkDefaultGroupdPackagesAsUndeliverable.cs" />
     <Compile Include="Events\ReinstateRecipientsForSending.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\DealsModule.cs" />
