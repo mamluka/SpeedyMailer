@@ -30,7 +30,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsSendingPolicies>();
+				var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>();
 
 				if (groupsSendingPolicies == null)
 					return;

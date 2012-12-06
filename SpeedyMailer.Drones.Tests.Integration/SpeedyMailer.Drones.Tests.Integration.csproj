@@ -132,6 +132,7 @@
     <Compile Include="Tasks\FetchDeliveryClassificationHeuristicsTaskTests.cs" />
     <Compile Include="Tasks\FetchIntervalRulesTaskTests.cs" />
     <Compile Include="Tasks\ResumePausedGroupsTaskTests.cs" />
+    <Compile Include="Tasks\ResumeSendingForIndividualDomainsTests.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTaskTests.cs" />
     <Compile Include="Tasks\SendDroneStateSnapshotTaskTests.cs" />
   </ItemGroup>

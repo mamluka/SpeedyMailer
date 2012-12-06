@@ -468,9 +468,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						                                                                          };
 																		   });
 
-			DroneActions.WaitForDocumentToExist<GroupsSendingPolicies>();
+			DroneActions.WaitForDocumentToExist<GroupsAndIndividualDomainsSendingPolicies>();
 
-			var result = DroneActions.FindSingle<GroupsSendingPolicies>();
+			var result = DroneActions.FindSingle<GroupsAndIndividualDomainsSendingPolicies>();
 
 			result.GroupSendingPolicies.Should().ContainKey("gmail");
 		}
@@ -530,9 +530,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						                                                                          };
 																		   });
 
-			DroneActions.WaitForDocumentToExist<GroupsSendingPolicies>();
+			DroneActions.WaitForDocumentToExist<GroupsAndIndividualDomainsSendingPolicies>();
 
-			var result = DroneActions.FindSingle<GroupsSendingPolicies>();
+			var result = DroneActions.FindSingle<GroupsAndIndividualDomainsSendingPolicies>();
 
 			result.GroupSendingPolicies.Should().ContainKey("gmail");
 		}

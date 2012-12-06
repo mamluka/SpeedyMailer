@@ -204,6 +204,22 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
             st.Stop();
         }
 
+        public void WaitForChangeOnStoredObject<T>(Func<T, bool> condition, Func<T, bool> func, int waitFor = 30) where T : class
+        {
+            var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, null);
+            var st = new Stopwatch();
+            st.Start();
+
+            while (!func(manager.AsQueryable.Where(condition).SingleOrDefault()) && st.ElapsedMilliseconds < waitFor * 1000)
+            {
+                Thread.Sleep(500);
+            }
+
+            func(manager.AsQueryable.Where(condition).SingleOrDefault()).Should().BeTrue();
+
+            st.Stop();
+        }
+
         public void StartDroneEndpoints()
         {
             var scheduler = Kernel.Get<IScheduler>();

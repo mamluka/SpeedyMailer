@@ -466,11 +466,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 															 x.StoreHostname = DefaultHostUrl;
 														 });
 
-			DroneActions.Store(new GroupsSendingPolicies
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
 								   {
-									   GroupSendingPolicies = new Dictionary<string, GroupSendingPolicy>
+									   GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
 						                                          {
-							                                          { "yahoo",new GroupSendingPolicy { ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(4)} }
+							                                          { "yahoo",new ResumeSendingPolicy { ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(4)} }
 						                                          }
 								   });
 
@@ -526,11 +526,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 															 x.StoreHostname = DefaultHostUrl;
 														 });
 
-			DroneActions.Store(new GroupsSendingPolicies
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
 								   {
-									   GroupSendingPolicies = new Dictionary<string, GroupSendingPolicy>
+									   GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
 						                                          {
-							                                          { "yahoo",new GroupSendingPolicy { ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(4)} }
+							                                          { "yahoo",new ResumeSendingPolicy { ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(4)} }
 						                                          }
 								   });
 

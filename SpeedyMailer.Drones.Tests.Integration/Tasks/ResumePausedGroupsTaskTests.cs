@@ -24,12 +24,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			DroneActions.Store(new GroupsSendingPolicies
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
 								   {
-									   GroupSendingPolicies = new Dictionary<string, GroupSendingPolicy>
+									   GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
 						                                          {
 							                                          {
-								                                          "gmail", new GroupSendingPolicy
+								                                          "gmail", new ResumeSendingPolicy
 									                                                   {
 										                                                   ResumeAt = DateTime.UtcNow - TimeSpan.FromHours(1)
 									                                                   }
@@ -39,7 +39,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(new ResumePausedGroupsTask());
 
-			DroneActions.WaitForChangeOnStoredObject<GroupsSendingPolicies>(x => !x.GroupSendingPolicies.ContainsKey("gmail"));
+			DroneActions.WaitForChangeOnStoredObject<GroupsAndIndividualDomainsSendingPolicies>(x => !x.GroupSendingPolicies.ContainsKey("gmail"));
 		}
 	}
 }

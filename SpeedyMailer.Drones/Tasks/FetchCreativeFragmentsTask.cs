@@ -50,7 +50,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 			public void Execute(IJobExecutionContext context)
 			{
-				var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsSendingPolicies>() ?? new GroupsSendingPolicies();
+				var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? new GroupsAndIndividualDomainsSendingPolicies();
 
 				if (_creativePackagesStore.AreThereAnyNonProcessedPackages())
 				{
@@ -105,14 +105,14 @@ namespace SpeedyMailer.Drones.Tasks
 				return _mapToCreativePackageCommand.Execute();
 			}
 
-			private bool AreThereActiveGroups(IEnumerable<CreativePackage> packages, GroupsSendingPolicies groupsSendingPolicies)
+			private bool AreThereActiveGroups(IEnumerable<CreativePackage> packages, GroupsAndIndividualDomainsSendingPolicies groupsAndIndividualDomainsSendingPolicies)
 			{
-				return GetActiveGroups(packages, groupsSendingPolicies).Any();
+				return GetActiveGroups(packages, groupsAndIndividualDomainsSendingPolicies).Any();
 			}
 
-			private void StartGroupSendingJobs(IEnumerable<CreativePackage> recipiens, GroupsSendingPolicies sendingPolicies)
+			private void StartGroupSendingJobs(IEnumerable<CreativePackage> recipiens, GroupsAndIndividualDomainsSendingPolicies andIndividualDomainsSendingPolicies)
 			{
-				var groups = GetActiveGroups(recipiens, sendingPolicies);
+				var groups = GetActiveGroups(recipiens, andIndividualDomainsSendingPolicies);
 
 				foreach (var domainGroup in groups)
 				{
@@ -125,12 +125,12 @@ namespace SpeedyMailer.Drones.Tasks
 				}
 			}
 
-			private static IEnumerable<PackageInfo> GetActiveGroups(IEnumerable<CreativePackage> recipiens, GroupsSendingPolicies sendingPolicies)
+			private static IEnumerable<PackageInfo> GetActiveGroups(IEnumerable<CreativePackage> recipiens, GroupsAndIndividualDomainsSendingPolicies andIndividualDomainsSendingPolicies)
 			{
 				return recipiens
 					.GroupBy(x => x.Group)
 					.Select(x => new PackageInfo { Group = x.Key, Interval = x.First().Interval, Count = x.Count() })
-					.Where(x => !sendingPolicies
+					.Where(x => !andIndividualDomainsSendingPolicies
 									 .GroupSendingPolicies
 									 .EmptyIfNull()
 									 .ContainsKey(x.Group))

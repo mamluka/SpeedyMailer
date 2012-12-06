@@ -56,5 +56,10 @@ namespace SpeedyMailer.Drones.Storage
         {
             return Collection.Find(Query.EQ(PropertyName(x => x.Group), _creativeFragmentSettings.DefaultGroup).And(Query.EQ(PropertyName(x => x.Processed), false))).ToList();
         }
+
+        public IList<CreativePackage> GetByDomains(IList<string> domains)
+        {
+            return Find(Query.Matches(PropertyName(x => x.To), new BsonRegularExpression(string.Join("|", domains)))).ToList();
+        }
     }
 }

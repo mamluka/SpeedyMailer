@@ -134,7 +134,7 @@
     <Compile Include="Configurations\PoolOporationsUrls.cs" />
     <Compile Include="DroneAssemblyMarker.cs" />
     <Compile Include="Events\DeliveryRealTimeDecision.cs" />
-    <Compile Include="Events\MarkDefaultGroupdPackagesAsUndeliverable.cs" />
+    <Compile Include="Events\PauseSendingForIndividualDomains.cs" />
     <Compile Include="Events\ReinstateRecipientsForSending.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\DealsModule.cs" />
@@ -153,6 +153,7 @@
     <Compile Include="Tasks\FetchDeliveryClassificationHeuristicsTask.cs" />
     <Compile Include="Tasks\FetchIntervalRulesTask.cs" />
     <Compile Include="Tasks\ResumePausedGroupsTask.cs" />
+    <Compile Include="Tasks\ResumeSendingForIndividualDomains.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTask.cs" />
     <Compile Include="Tasks\SendDroneStateSnapshotTask.cs" />
   </ItemGroup>

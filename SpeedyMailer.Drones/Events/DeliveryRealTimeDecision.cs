@@ -51,16 +51,16 @@ namespace SpeedyMailer.Drones.Events
 			if (!bouncesGroups.Any())
 				return;
 
-			var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsSendingPolicies>() ?? new GroupsSendingPolicies();
+			var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? new GroupsAndIndividualDomainsSendingPolicies();
 
-			groupsSendingPolicies.GroupSendingPolicies = groupsSendingPolicies.GroupSendingPolicies ?? new Dictionary<string, GroupSendingPolicy>();
+			groupsSendingPolicies.GroupSendingPolicies = groupsSendingPolicies.GroupSendingPolicies ?? new Dictionary<string, ResumeSendingPolicy>();
 
 			bouncesGroups.ForEach(x =>
 										 {
 											 if (groupsSendingPolicies.GroupSendingPolicies.ContainsKey(x.DomainGroup))
 												 return;
 
-											 groupsSendingPolicies.GroupSendingPolicies[x.DomainGroup] = new GroupSendingPolicy
+											 groupsSendingPolicies.GroupSendingPolicies[x.DomainGroup] = new ResumeSendingPolicy
 																								{
 																									ResumeAt = DateTime.UtcNow + x.MailClassfication.TimeSpan
 																								};
