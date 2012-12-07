@@ -122,8 +122,9 @@
     <Compile Include="Modules\TemplatesModule.cs" />
     <Compile Include="Storage\Indexes\Contacts_ByMemberOf.cs" />
     <Compile Include="Storage\Indexes\Contacts_DomainGroupCounter.cs" />
+    <Compile Include="Storage\Indexes\Creative_RawLogs.cs" />
     <Compile Include="Storage\Indexes\Creative_UnsubscribeRequests.cs" />
-    <Compile Include="Storage\Indexes\Creatives_ClickActions.cs" />
+    <Compile Include="Storage\Indexes\Creative_ClickActions.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />

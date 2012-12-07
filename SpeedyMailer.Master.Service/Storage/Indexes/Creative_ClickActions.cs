@@ -6,14 +6,14 @@ using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Master.Service.Storage.Indexes
 {
-	public class Creatives_ClickActions : AbstractIndexCreationTask<DroneStateSnapshoot, Creatives_ClickActions.ReduceResult>
+	public class Creative_ClickActions : AbstractIndexCreationTask<DroneStateSnapshoot, Creative_ClickActions.ReduceResult>
 	{
 		public class ReduceResult
 		{
 			public string CreativeId { get; set; }
 			public string[] ClickedBy { get; set; }
 		}
-		public Creatives_ClickActions()
+		public Creative_ClickActions()
 		{
 			Map = snapshots => snapshots
 				                   .SelectMany(x => x.ClickActions, (snapshot, x) => new

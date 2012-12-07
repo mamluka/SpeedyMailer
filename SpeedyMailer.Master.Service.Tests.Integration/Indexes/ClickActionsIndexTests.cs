@@ -52,9 +52,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 
 			snapshots.ForEach(Store.Store);
 
-			Store.WaitForIndexNotToBeStale<Creatives_ClickActions.ReduceResult,Creatives_ClickActions>();
+			Store.WaitForIndexNotToBeStale<Creative_ClickActions.ReduceResult,Creative_ClickActions>();
 
-			var result = Store.Query<Creatives_ClickActions.ReduceResult, Creatives_ClickActions>(x => x.CreativeId == "creative/1");
+			var result = Store.Query<Creative_ClickActions.ReduceResult, Creative_ClickActions>(x => x.CreativeId == "creative/1");
 
 			result.Should().Contain(x => x.CreativeId == "creative/1");
 			result.Should().OnlyContain(x => x.ClickedBy.Count() == 4);

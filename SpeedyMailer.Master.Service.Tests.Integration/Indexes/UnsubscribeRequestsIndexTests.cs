@@ -13,7 +13,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 	public class UnsubscribeRequestsIndex : IntegrationTestBase
 	{
 		[Test]
-		public void Index_WhenGivenSnapShots_ShouldMapReduceTheClicks()
+		public void Index_WhenGivenSnapShots_ShouldMapReduceUnsubscribeRequests()
 		{
 			var snapshots = new[]
 				                {
@@ -21,32 +21,32 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 						                {
 							                UnsubscribeRequests = new List<UnsubscribeRequest>
 								                                      {
-									                                      new UnsubscribeRequest() {ContactId = "contact/1", CreativeId = "creative/1"},
-									                                      new UnsubscribeRequest() {ContactId = "contact/2", CreativeId = "creative/1"}
+									                                      new UnsubscribeRequest {ContactId = "contact/1", CreativeId = "creative/1"},
+									                                      new UnsubscribeRequest {ContactId = "contact/2", CreativeId = "creative/1"}
 								                                      }
 						                },
 					                new DroneStateSnapshoot
 						                {
 							                UnsubscribeRequests = new List<UnsubscribeRequest>
 								                                      {
-									                                      new UnsubscribeRequest() {ContactId = "contact/100", CreativeId = "creative/1"},
-									                                      new UnsubscribeRequest() {ContactId = "contact/200", CreativeId = "creative/1"}
+									                                      new UnsubscribeRequest {ContactId = "contact/100", CreativeId = "creative/1"},
+									                                      new UnsubscribeRequest {ContactId = "contact/200", CreativeId = "creative/1"}
 								                                      }
 						                },
 					                new DroneStateSnapshoot
 						                {
 							                UnsubscribeRequests = new List<UnsubscribeRequest>
 								                                      {
-									                                      new UnsubscribeRequest() {ContactId = "contact/1", CreativeId = "creative/2"},
-									                                      new UnsubscribeRequest() {ContactId = "contact/2", CreativeId = "creative/2"}
+									                                      new UnsubscribeRequest {ContactId = "contact/1", CreativeId = "creative/2"},
+									                                      new UnsubscribeRequest {ContactId = "contact/2", CreativeId = "creative/2"}
 								                                      }
 						                },
 					                new DroneStateSnapshoot
 						                {
 							                UnsubscribeRequests = new List<UnsubscribeRequest>
 								                                      {
-									                                      new UnsubscribeRequest() {ContactId = "contact/1000", CreativeId = "creative/1"},
-									                                      new UnsubscribeRequest() {ContactId = "contact/2", CreativeId = "creative/2"}
+									                                      new UnsubscribeRequest {ContactId = "contact/1000", CreativeId = "creative/1"},
+									                                      new UnsubscribeRequest {ContactId = "contact/2", CreativeId = "creative/2"}
 								                                      }
 						                },
 				                }.ToList();
