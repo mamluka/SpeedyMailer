@@ -12,7 +12,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 	public class ClickActionsIndexTests : IntegrationTestBase
 	{
 		[Test]
-        [Ignore]
 		public void Index_WhenGivenSnapShots_ShouldMapReduceTheClicks()
 		{
 			var snapshots = new[]
@@ -58,8 +57,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 			var result = Store.Query<Creatives_ClickActions.ReduceResult, Creatives_ClickActions>(x => x.CreativeId == "creative/1");
 
 			result.Should().Contain(x => x.CreativeId == "creative/1");
-			result.Should().Contain(x => x.CreativeId == "creative/2");
-			result.Should().OnlyContain(x => x.ClickedBy.Count() == 2);
+			result.Should().OnlyContain(x => x.ClickedBy.Count() == 4);
 		}
 	}
 }

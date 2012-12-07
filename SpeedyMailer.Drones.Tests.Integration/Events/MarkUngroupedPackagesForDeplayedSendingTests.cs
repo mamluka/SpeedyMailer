@@ -52,6 +52,48 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
             result.GroupSendingPolicies["blocked.com"].ResumeAt.Should().BeAtLeast(TimeSpan.FromHours(3));
             result.GroupSendingPolicies["suck.com"].ResumeAt.Should().BeAtLeast(TimeSpan.FromHours(3));
         }
+		
+		[Test]
+        public void Inspect_GroupPoliciesAreAlreadyInTheStore_ShouldSetTheDomainsAreUndelierable()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.Store(new DeliverabilityClassificationRules
+			{
+				HardBounceRules = new List<string> { "not a rule" },
+				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
+			});
+
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
+				                   {
+					                   GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>()
+				                   });
+
+            var creativePackages = new[]
+                {
+                    new CreativePackage { To = "david@blocked.com" ,Group = "$default$" ,Processed = true},
+                    new CreativePackage { To = "another-david@blocked.com" ,Group = "$default$",Processed = true},
+                    new CreativePackage { To = "another-david@suck.com" ,Group = "$default$",Processed = true}
+                };
+
+            DroneActions.StoreCollection(creativePackages);
+
+            FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
+                {
+                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
+                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@suck.com"},
+                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
+                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
+                });
+
+
+
+            var result = DroneActions.FindSingle<GroupsAndIndividualDomainsSendingPolicies>();
+
+            result.GroupSendingPolicies.Should().ContainKeys(new[] { "blocked.com", "suck.com" });
+            result.GroupSendingPolicies["blocked.com"].ResumeAt.Should().BeAtLeast(TimeSpan.FromHours(3));
+            result.GroupSendingPolicies["suck.com"].ResumeAt.Should().BeAtLeast(TimeSpan.FromHours(3));
+        }
 
         [Test]
         public void Inspect_WhenOnlyPartOfThePackagesInDefaultGroupNeedsToBePaused_ShouldOnlySetThatDomainAsUndeliverable()

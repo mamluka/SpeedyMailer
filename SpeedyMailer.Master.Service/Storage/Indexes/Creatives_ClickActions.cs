@@ -16,8 +16,11 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 		public Creatives_ClickActions()
 		{
 			Map = snapshots => snapshots
-								   .SelectMany(x => x.ClickActions)
-								   .Select(x => new { ClickedBy = x.ContactId, x.CreativeId });
+				                   .SelectMany(x => x.ClickActions, (snapshot, x) => new
+					                                                                     {
+						                                                                     ClickedBy = new[] {x.ContactId},
+						                                                                     x.CreativeId
+					                                                                     });
 
 			Reduce = result => result
 								   .GroupBy(x => x.CreativeId)
