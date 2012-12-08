@@ -106,6 +106,8 @@
     <Compile Include="Commands\SendCreativeCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Indexes\ClickActionsIndexTests.cs" />
+    <Compile Include="Indexes\Creative_ExtendedSendingReportIndexTests.cs" />
+    <Compile Include="Indexes\Creative_SendingReportIndexTests.cs" />
     <Compile Include="Indexes\RawLogsIndexTests.cs" />
     <Compile Include="Indexes\UnsubscribeRequestsIndexTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />

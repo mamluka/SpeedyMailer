@@ -201,6 +201,7 @@
     <Compile Include="Domain\Mail\DeliverabilityClassificationRules.cs" />
     <Compile Include="Domain\Mail\BounceType.cs" />
     <Compile Include="Domain\Mail\DroneStateSnapshoot.cs" />
+    <Compile Include="Domain\Mail\GenericMailEvent.cs" />
     <Compile Include="Domain\Mail\GroupsAndIndividualDomainsSendingPolicies.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
