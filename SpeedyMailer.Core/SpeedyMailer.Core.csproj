@@ -206,6 +206,7 @@
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
     <Compile Include="Domain\Mail\MailEventType.cs" />
+    <Compile Include="Domain\Mail\MailIdCreativeIdMap.cs" />
     <Compile Include="Domain\Mail\MailLogEntry.cs" />
     <Compile Include="Domain\Mail\AggregatedMailSent.cs" />
     <Compile Include="Domain\Mail\ReducedMailLogEntry.cs" />

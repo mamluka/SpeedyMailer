@@ -26,6 +26,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string Recipient { get; set; }
 		public DateTime Time { get; set; }
 		public string DomainGroup { get; set; }
+	    public string CreativeId { get; set; }
 	}
 
 	public class MailBounced : IHasDomainGroup, IHasRecipient, IHasRelayMessage
@@ -37,6 +38,8 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public DateTime Time { get; set; }
 		public string DomainGroup { get; set; }
 		public string Message { get; set; }
+
+	    public string CreativeId { get; set; }
 	}
 
 	public class MailDeferred : IHasDomainGroup, IHasRecipient, IHasRelayMessage
@@ -48,6 +51,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public DateTime Time { get; set; }
 		public string DomainGroup { get; set; }
 		public string Message { get; set; }
+	    public string CreativeId { get; set; }
 	}
 
 	public interface IHasDomainGroup

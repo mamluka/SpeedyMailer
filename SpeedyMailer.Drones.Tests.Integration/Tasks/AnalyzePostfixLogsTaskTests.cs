@@ -11,322 +11,452 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
-	public class AnalyzePostfixLogsTaskTests : IntegrationTestBase
-	{
-		public AnalyzePostfixLogsTaskTests()
-			: base(x => x.UseMongo = true)
-		{ }
+    public class AnalyzePostfixLogsTaskTests : IntegrationTestBase
+    {
+        public AnalyzePostfixLogsTaskTests()
+            : base(x => x.UseMongo = true)
+        { }
 
-		[Test]
-		public void Execute_WhenCalledAndFoundSentStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenCalledAndFoundSentStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			ListenToEvent<AggregatedMailSent>();
+            ListenToEvent<AggregatedMailSent>();
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " 6715DAE777: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<bianca23518@yahoo.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 6715DAE777: to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 6715DAE362: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a66122s@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EECBDAE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pkaraszewski@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.StoreCollection(logEntries, "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			AssertEventWasPublished<AggregatedMailSent>(x =>
-															{
-																x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
-																x.MailEvents
-																	.Select(mailEvent => mailEvent.Recipient)
-																	.Should()
-																	.BeEquivalentTo(new[] { "bianca23518@yahoo.com", "a66122s@aol.com", "pkaraszewski@gmail.com" });
-															});
+            AssertEventWasPublished<AggregatedMailSent>(x =>
+                                                            {
+                                                                x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
+                                                                x.MailEvents
+                                                                    .Select(mailEvent => mailEvent.Recipient)
+                                                                    .Should()
+                                                                    .BeEquivalentTo(new[] { "bianca23518@yahoo.com", "a66122s@aol.com", "pkaraszewski@gmail.com" });
+                                                                x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.CreativeId == "creative/1");
+                                                            });
 
-		}
+        }
 
-		[Test]
-		public void Execute_WhenCalledAndFoundSentMailToPostFixPostMaster_ShouldFilterItOut()
-		{
-			DroneActions.EditSettings<DroneSettings>(x =>
-			    {
-			        x.StoreHostname = DefaultHostUrl;
-			        x.Domain = "xomixinc.com";
-			    });
+        [Test]
+        public void Execute_WhenTwoLogsHaveDifferentCreativeIds_ShouldCoupleCreativeWithTheRightMail()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			ListenToEvent<AggregatedMailSent>();
+            ListenToEvent<AggregatedMailSent>();
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
+				                 {
+                                     new MailLogEntry {msg = " 6715DAE777: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<bianca23518@yahoo.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE777: to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EECBDAE8E7: info: header Speedy-Creative-Id: creative/2 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pkaraszewski@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+				                 };
+
+            DroneActions.StoreCollection(logEntries, "log");
+
+            var task = new AnalyzePostfixLogsTask();
+
+            DroneActions.StartScheduledTask(task);
+
+            AssertEventWasPublished<AggregatedMailSent>(x =>
+                {
+                    x.MailEvents.Should().Contain(mailSent => mailSent.CreativeId == "creative/1" && mailSent.Recipient == "bianca23518@yahoo.com");
+                    x.MailEvents.Should().Contain(mailSent => mailSent.CreativeId == "creative/2" && mailSent.Recipient == "pkaraszewski@gmail.com");
+                });
+
+        }
+
+        [Test]
+        public void Execute_WhenCalledAndFoundSentMailToPostFixPostMaster_ShouldFilterItOut()
+        {
+            DroneActions.EditSettings<DroneSettings>(x =>
+                {
+                    x.StoreHostname = DefaultHostUrl;
+                    x.Domain = "xomixinc.com";
+                });
+
+            ListenToEvent<AggregatedMailSent>();
+
+            var logEntries = new List<MailLogEntry>
 				                 {
 					                 new MailLogEntry {msg = "B1C9512E19CF: to=<root@xomixinc.com>, relay=local, delay=0.01, delays=0/0.01/0/0, dsn=2.0.0, status=sent (delivered to mailbox)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.StoreCollection(logEntries, "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			AssertEventWasNotPublished<AggregatedMailSent>();
+            AssertEventWasNotPublished<AggregatedMailSent>();
 
-		}
+        }
 
-		[Test]
-		public void Execute_WhenThereAreManyEntriesInTheLog_ShouldGrabOnlyTheOneThatWasNotProcesses()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenThereAreManyEntriesInTheLog_ShouldGrabOnlyTheOneThatWasNotProcesses()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			ListenToEvent<AggregatedMailSent>();
+            ListenToEvent<AggregatedMailSent>();
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = LogTimeOffset(0), level = "INFO"},
-					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = LogTimeOffset(1), level = "INFO"},
-					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = LogTimeOffset(2), level = "INFO"},
+                                     new MailLogEntry {msg = " 6715DAE777: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<bianca23518@yahoo.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE777: to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 6715DAE362: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a66122s@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EECBDAE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pkaraszewski@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.StoreCollection(logEntries, "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<MailSent>(3);
+            DroneActions.WaitForDocumentToExist<MailSent>(3);
 
-			EventRegistry.Clear();
+            EventRegistry.Clear();
 
-			var logEntries2 = new List<MailLogEntry>
+            var logEntries2 = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = "to=<xbianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = LogTimeOffset(3), level = "INFO"},
-					                 new MailLogEntry {msg = " 6715DAE362: to=<xa66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = LogTimeOffset(4), level = "INFO"},
-					                 new MailLogEntry {msg = " EECBDAE8E7: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = LogTimeOffset(5), level = "INFO"},
+                                     new MailLogEntry {msg = " 6715DAE777: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<xbianca23518@yahoo.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE777: to=<xbianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 6715DAE362: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<xa66122s@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE362: to=<xa66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EECBDAE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<xpkaraszewski@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " EECBDAE8E7: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries2, "log");
+            DroneActions.StoreCollection(logEntries2, "log");
 
-			DroneActions.FireExistingTask(task);
+            DroneActions.FireExistingTask(task);
 
-			AssertEventWasPublished<AggregatedMailSent>(x =>
-															{
-																x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
-																x.MailEvents
-																	.Select(mailEvent => mailEvent.Recipient)
-																	.Should()
-																	.BeEquivalentTo(new[] { "xbianca23518@yahoo.com", "xa66122s@aol.com", "xpkaraszewski@gmail.com" });
-															});
+            AssertEventWasPublished<AggregatedMailSent>(x =>
+                                                            {
+                                                                x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
+                                                                x.MailEvents
+                                                                    .Select(mailEvent => mailEvent.Recipient)
+                                                                    .Should()
+                                                                    .BeEquivalentTo(new[] { "xbianca23518@yahoo.com", "xa66122s@aol.com", "xpkaraszewski@gmail.com" });
+                                                                x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.CreativeId == "creative/1");
+                                                            });
 
-		}
+        }
 
-		private static DateTime LogTimeOffset(int offset)
-		{
-			return new DateTime(2012, 1, 1, 1, 1, 1, DateTimeKind.Utc) + TimeSpan.FromMinutes(offset);
-		}
+        [Test]
+        public void Execute_WhenWeCantFindTheMailEventForACreativeIdHeaderEven_ShouldNotMakeThatCreativeHeaderLogAsProcessed()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-		[Test]
-		public void Execute_WhenCalledAndFoundBounceStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+            ListenToEvent<AggregatedMailSent>();
 
-			ListenToEvent<AggregatedMailBounced>();
-
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = "to=<a11eng@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1, delays=0.04/0/0.67/0.29, dsn=5.1.1, status=bounced (host mailin-03.mx.aol.com[64.12.90.33] said: 550 5.1.1 <a11eng@aol.com>: Recipient address rejected: aol.com (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+                                     new MailLogEntry {msg = " 6715DAE777: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<bianca23518@yahoo.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 1, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE777: to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 2, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 6715DAE362: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a66122s@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1, 3, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1,4, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EECBDAE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pkaraszewski@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 1, 1,5, 0, 0,DateTimeKind.Utc), level = "INFO"},
+				                 };
+
+            DroneActions.StoreCollection(logEntries, "log");
+
+            var task = new AnalyzePostfixLogsTask();
+
+            DroneActions.StartScheduledTask(task);
+
+            DroneActions.WaitForDocumentToExist<MailSent>(3);
+
+            EventRegistry.Clear();
+
+            var logEntries2 = new List<MailLogEntry>
+				                 {
+					                 new MailLogEntry {msg = " EECBDAE8E7: to=<pkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 1, 1, 6, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " DFREAE777: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<xbianca23518@yahoo.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " DFREAE777: to=<xbianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 1115DAE362: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<xa66122s@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " 1115DAE362: to=<xa66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EECBDAEQWE: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<xpkaraszewski@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " EECBDAEQWE: to=<xpkaraszewski@gmail.com>, relay=gmail-smtp-in.l.google.com[173.194.65.27]:25, delay=0.53, delays=0.04/0/0.06/0.42, dsn=2.0.0, status=sent (250 2.0.0 OK 1351377742 f7si8928630eeo.82)", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+				                 };
+
+            DroneActions.StoreCollection(logEntries2, "log");
+
+            DroneActions.FireExistingTask(task);
+
+            AssertEventWasPublished<AggregatedMailSent>(x =>
+                                                            {
+                                                                x.MailEvents.Should().ContainItemsAssignableTo<MailSent>();
+                                                                x.MailEvents
+                                                                    .Select(mailEvent => mailEvent.Recipient)
+                                                                    .Should()
+                                                                    .BeEquivalentTo(new[] { "pkaraszewski@gmail.com", "xbianca23518@yahoo.com", "xa66122s@aol.com", "xpkaraszewski@gmail.com" });
+                                                                x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.CreativeId == "creative/1");
+                                                            });
+
+        }
+
+        private static DateTime LogTimeOffset(int offset)
+        {
+            return new DateTime(2012, 1, 1, 1, 1, 1, DateTimeKind.Utc) + TimeSpan.FromMinutes(offset);
+        }
+
+        [Test]
+        public void Execute_WhenCalledAndFoundBounceStatusesInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+            ListenToEvent<AggregatedMailBounced>();
+
+            var logEntries = new List<MailLogEntry>
+				                 {
+                                     new MailLogEntry {msg = " PFGMDADWE7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a11eng@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " PFGMDADWE7: to=<a11eng@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1, delays=0.04/0/0.67/0.29, dsn=5.1.1, status=bounced (host mailin-03.mx.aol.com[64.12.90.33] said: 550 5.1.1 <a11eng@aol.com>: Recipient address rejected: aol.com (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " EF7B3AE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = " EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 5CDF7AE39E: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a.villa767@verizon.net> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 5CDF7AE39E: to=<a.villa767@verizon.net>, relay=relay.verizon.net[206.46.232.11]:25, delay=0.55, delays=0.04/0/0.38/0.13, dsn=5.0.0, status=bounced (host relay.verizon.net[206.46.232.11] said: 550 4.2.1 mailbox temporarily disabled: a.villa767@verizon.net (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, collectionName: "log");
+            DroneActions.StoreCollection(logEntries, collectionName: "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			AssertEventWasPublished<AggregatedMailBounced>(x =>
-															   {
-																   x.MailEvents.Should().ContainItemsAssignableTo<MailBounced>();
-																   x.MailEvents
-																	   .Select(mailEvent => mailEvent.Recipient)
-																	   .Should()
-																	   .BeEquivalentTo(new[] { "a11eng@aol.com", "pnc211@gmail.com", "a.villa767@verizon.net" });
-															   });
+            AssertEventWasPublished<AggregatedMailBounced>(x =>
+                                                               {
+                                                                   x.MailEvents.Should().ContainItemsAssignableTo<MailBounced>();
+                                                                   x.MailEvents
+                                                                       .Select(mailEvent => mailEvent.Recipient)
+                                                                       .Should()
+                                                                       .BeEquivalentTo(new[] { "a11eng@aol.com", "pnc211@gmail.com", "a.villa767@verizon.net" });
+                                                                   x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.CreativeId == "creative/1");
+                                                               });
 
-		}
+        }
 
-		[Test]
-		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			ListenToEvent<AggregatedMailDeferred>();
+            ListenToEvent<AggregatedMailDeferred>();
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " 5CB0EAE39D: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<aabubars@sbcglobal.net> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"},
+
+                                     new MailLogEntry {msg = " B1F58AE39F: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<lorihooks@5aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " B1F58AE39F: to=<lorihooks@5aol.com>, relay=none, delay=36378, delays=36273/0/105/0, dsn=4.4.1, status=deferred (connect to 5aol.com[205.188.101.24]:25: Connection timed out)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 67253AE3A7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a336448@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.StoreCollection(logEntries, "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			AssertEventWasPublished<AggregatedMailDeferred>(x =>
-															{
-																x.MailEvents.Should().ContainItemsAssignableTo<MailDeferred>();
-																x.MailEvents
-																	.Select(mailEvent => mailEvent.Recipient)
-																	.Should()
-																	.BeEquivalentTo(new[] { "aabubars@sbcglobal.net", "lorihooks@5aol.com", "a336448@aol.com" });
-															});
+            AssertEventWasPublished<AggregatedMailDeferred>(x =>
+                                                            {
+                                                                x.MailEvents.Should().ContainItemsAssignableTo<MailDeferred>();
+                                                                x.MailEvents
+                                                                    .Select(mailEvent => mailEvent.Recipient)
+                                                                    .Should()
+                                                                    .BeEquivalentTo(new[] { "aabubars@sbcglobal.net", "lorihooks@5aol.com", "a336448@aol.com" });
+                                                                x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.CreativeId == "creative/1");
+                                                            });
 
-		}
+        }
 
-		[Test]
-		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldOnlyPublshTheDeferredEvent()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldOnlyPublshTheDeferredEvent()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			ListenToEvent<AggregatedMailDeferred>();
-			ListenToEvent<AggregatedMailBounced>();
-			ListenToEvent<AggregatedMailSent>();
+            ListenToEvent<AggregatedMailDeferred>();
+            ListenToEvent<AggregatedMailBounced>();
+            ListenToEvent<AggregatedMailSent>();
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " 5CB0EAE39D: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<aabubars@sbcglobal.net> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"},
+
+                                     new MailLogEntry {msg = " B1F58AE39F: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<lorihooks@5aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " B1F58AE39F: to=<lorihooks@5aol.com>, relay=none, delay=36378, delays=36273/0/105/0, dsn=4.4.1, status=deferred (connect to 5aol.com[205.188.101.24]:25: Connection timed out)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+
+                                     new MailLogEntry {msg = " 67253AE3A7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a336448@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.StoreCollection(logEntries, "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			AssertEventWasPublished<AggregatedMailDeferred>();
-			AssertEventWasNotPublished<AggregatedMailBounced>();
-			AssertEventWasNotPublished<AggregatedMailSent>();
-		}
+            AssertEventWasPublished<AggregatedMailDeferred>();
+            AssertEventWasNotPublished<AggregatedMailBounced>();
+            AssertEventWasNotPublished<AggregatedMailSent>();
+        }
 
-		[Test]
-		public void Execute_WhenStatusLogsfound_ShouldStoreBouncesMails()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenStatusLogsfound_ShouldStoreBouncesMails()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " EF7B3AE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
-			DroneActions.Store(new IntervalRule
-								   {
-									   Conditons = new List<string> { "gmail.com" },
-									   Group = "gmail"
-								   });
+            DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.Store(new IntervalRule
+                                   {
+                                       Conditons = new List<string> { "gmail.com" },
+                                       Group = "gmail"
+                                   });
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<MailBounced>();
+            DroneActions.WaitForDocumentToExist<MailBounced>();
 
-			var result = DroneActions.FindAll<MailBounced>().First();
+            var result = DroneActions.FindAll<MailBounced>().First();
 
-			result.Recipient.Should().Be("pnc211@gmail.com");
-			result.DomainGroup.Should().Be("gmail");
-			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
-		}
+            result.Recipient.Should().Be("pnc211@gmail.com");
+            result.DomainGroup.Should().Be("gmail");
+            result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
+            result.CreativeId.Should().Be("creative/1");
+        }
 
-		[Test]
-		public void Execute_WhenStatusLogsFoundButThereAreNoIntervalRules_ShouldStoreWithDefaultDomainGroup()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenStatusLogsFoundButThereAreNoIntervalRules_ShouldStoreWithDefaultDomainGroup()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " EF7B3AE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.StoreCollection(logEntries, "log");
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<MailBounced>();
+            DroneActions.WaitForDocumentToExist<MailBounced>();
 
-			var result = DroneActions.FindAll<MailBounced>().First();
+            var result = DroneActions.FindAll<MailBounced>().First();
 
-			result.Recipient.Should().Be("pnc211@gmail.com");
-			result.DomainGroup.Should().Be("$default$");
-			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
-		}
+            result.Recipient.Should().Be("pnc211@gmail.com");
+            result.DomainGroup.Should().Be("$default$");
+            result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
+            result.CreativeId.Should().Be("creative/1");
+        }
 
-		[Test]
-		public void Execute_WhenStatusLogsFoundButThereAreNoInervalRules_ShouldStoreSentMails()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenStatusLogsFound_ShouldStoreSentMails()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " 6715DAE362: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 6715DAE362: to=<a66122s@aol.com>, relay=mailin-03.mx.aol.com[64.12.90.33]:25, delay=1.8, delays=0.04/0/1/0.73, dsn=2.0.0, status=sent (250 2.0.0 Ok: queued as 3E373380000BC)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
-			DroneActions.Store(new IntervalRule
-			{
-				Conditons = new List<string> { "aol.com" },
-				Group = "aol"
-			});
+            DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.Store(new IntervalRule
+            {
+                Conditons = new List<string> { "aol.com" },
+                Group = "aol"
+            });
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<MailSent>();
+            DroneActions.WaitForDocumentToExist<MailSent>();
 
-			var result = DroneActions.FindAll<MailSent>().First();
+            var result = DroneActions.FindAll<MailSent>().First();
 
-			result.Recipient.Should().Be("a66122s@aol.com");
-			result.DomainGroup.Should().Be("aol");
-			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
-		}
+            result.Recipient.Should().Be("a66122s@aol.com");
+            result.DomainGroup.Should().Be("aol");
+            result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
+            result.CreativeId.Should().Be("creative/1");
+        }
 
-		[Test]
-		public void Execute_WhenStatusLogsfound_ShouldStoreDeferredMails()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+        [Test]
+        public void Execute_WhenStatusLogsfound_ShouldStoreDeferredMails()
+        {
+            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			var logEntries = new List<MailLogEntry>
+            var logEntries = new List<MailLogEntry>
 				                 {
+                                     new MailLogEntry {msg = " 5CB0EAE39D: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
 				                 };
 
-			DroneActions.StoreCollection(logEntries, "log");
-			DroneActions.Store(new IntervalRule
-			{
-				Conditons = new List<string> { "sbcglobal.net" },
-				Group = "sbcglobal"
-			});
+            DroneActions.StoreCollection(logEntries, "log");
+            DroneActions.Store(new IntervalRule
+            {
+                Conditons = new List<string> { "sbcglobal.net" },
+                Group = "sbcglobal"
+            });
 
-			var task = new AnalyzePostfixLogsTask();
+            var task = new AnalyzePostfixLogsTask();
 
-			DroneActions.StartScheduledTask(task);
+            DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<MailDeferred>();
+            DroneActions.WaitForDocumentToExist<MailDeferred>();
 
-			var result = DroneActions.FindAll<MailDeferred>().First();
+            var result = DroneActions.FindAll<MailDeferred>().First();
 
-			result.Recipient.Should().Be("aabubars@sbcglobal.net");
-			result.DomainGroup.Should().Be("sbcglobal");
-			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
-		}
-	}
+            result.Recipient.Should().Be("aabubars@sbcglobal.net");
+            result.DomainGroup.Should().Be("sbcglobal");
+            result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
+            result.CreativeId.Should().Be("creative/1");
+        }
+    }
 }

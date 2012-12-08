@@ -13,145 +13,170 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Tasks
 {
-	public class AnalyzePostfixLogsTask : ScheduledTask
-	{
-		public override IJobDetail ConfigureJob()
-		{
-			return SimpleJob<Job>();
-		}
+    public class AnalyzePostfixLogsTask : ScheduledTask
+    {
+        public override IJobDetail ConfigureJob()
+        {
+            return SimpleJob<Job>();
+        }
 
-		public override ITrigger ConfigureTrigger()
-		{
-			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(10).RepeatForever());
-		}
+        public override ITrigger ConfigureTrigger()
+        {
+            return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(10).RepeatForever());
+        }
 
-		[DisallowConcurrentExecution]
-		public class Job : IJob
-		{
-			private readonly EventDispatcher _eventDispatcher;
-			private readonly ParsePostfixLogsCommand _parsePostfixLogsCommand;
-			private readonly LogsStore _logsStore;
-			private readonly OmniRecordManager _omniRecordManager;
-			private readonly IntervalRulesStore _intervalRulesStore;
-			private readonly CreativeFragmentSettings _creativeFragmentSettings;
-			private readonly Logger _logger;
+        [DisallowConcurrentExecution]
+        public class Job : IJob
+        {
+            private readonly EventDispatcher _eventDispatcher;
+            private readonly ParseLogsCommand _parseLogsCommand;
+            private readonly LogsStore _logsStore;
+            private readonly OmniRecordManager _omniRecordManager;
+            private readonly IntervalRulesStore _intervalRulesStore;
+            private readonly CreativeFragmentSettings _creativeFragmentSettings;
+            private readonly Logger _logger;
+            private readonly ParseCreativeIdFromLogsCommand _parseCreativeIdFromLogsCommand;
 
-			public Job(EventDispatcher eventDispatcher,
-				ParsePostfixLogsCommand parsePostfixLogsCommand,
-				LogsStore logsStore,
-				OmniRecordManager omniRecordManager,
-				IntervalRulesStore intervalRulesStore,
-				CreativeFragmentSettings creativeFragmentSettings,
-				Logger logger)
-			{
-				_logger = logger;
-				_creativeFragmentSettings = creativeFragmentSettings;
-				_intervalRulesStore = intervalRulesStore;
-				_omniRecordManager = omniRecordManager;
-				_logsStore = logsStore;
-				_parsePostfixLogsCommand = parsePostfixLogsCommand;
-				_eventDispatcher = eventDispatcher;
-			}
+            public Job(EventDispatcher eventDispatcher,
+                ParseLogsCommand parseLogsCommand,
+                ParseCreativeIdFromLogsCommand parseCreativeIdFromLogsCommand,
+                LogsStore logsStore,
+                OmniRecordManager omniRecordManager,
+                IntervalRulesStore intervalRulesStore,
+                CreativeFragmentSettings creativeFragmentSettings,
+                Logger logger)
+            {
+                _parseCreativeIdFromLogsCommand = parseCreativeIdFromLogsCommand;
+                _logger = logger;
+                _creativeFragmentSettings = creativeFragmentSettings;
+                _intervalRulesStore = intervalRulesStore;
+                _omniRecordManager = omniRecordManager;
+                _logsStore = logsStore;
+                _parseLogsCommand = parseLogsCommand;
+                _eventDispatcher = eventDispatcher;
+            }
 
-			public void Execute(IJobExecutionContext context)
-			{
-				var mailLogEntries = _logsStore.GetUnprocessedLogs();
+            public void Execute(IJobExecutionContext context)
+            {
+                var mailLogEntries = _logsStore.GetUnprocessedLogs();
 
-				_logger.Info("Found {0} postfix log entries to analyze", mailLogEntries.Count);
+                _logger.Info("Found {0} postfix log entries to analyze", mailLogEntries.Count);
 
-				_parsePostfixLogsCommand.Logs = mailLogEntries;
-				var parsedLogs = _parsePostfixLogsCommand.Execute();
+                _parseLogsCommand.Logs = mailLogEntries;
+                var parsedLogs = _parseLogsCommand.Execute();
 
-				var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
+                _parseCreativeIdFromLogsCommand.Logs = mailLogEntries;
+                var mailIdCreativeIdMaps = _parseCreativeIdFromLogsCommand.Execute();
 
-				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent, parsedLogsDomainGroups);
-				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups);
-				var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred, parsedLogsDomainGroups);
+                parsedLogs = parsedLogs.Join(mailIdCreativeIdMaps, x => x.MessageId, y => y.MessageId, (x, y) =>
+                    {
+                        x.CreaiveId = y.CreativeId;
+                        return x;
+                    }).ToList();
 
-				_logger.Info("postfix log contained: send: {0},bounced: {1}, deferred: {2}", mailSent.Count, mailBounced.Count, mailDeferred.Count);
+                parsedLogs = parsedLogs
+                    .OrderBy(x => x.Time)
+                    .ToList();
 
-				_omniRecordManager.BatchInsert(mailSent);
-				_omniRecordManager.BatchInsert(mailBounced);
-				_omniRecordManager.BatchInsert(mailDeferred);
+                var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
 
-				_logger.Info("entries were saved to database");
+                var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent, parsedLogsDomainGroups);
+                var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups);
+                var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred, parsedLogsDomainGroups);
 
-				_logsStore.MarkProcessed(mailLogEntries);
+                _logger.Info("postfix log contained: send: {0},bounced: {1}, deferred: {2}", mailSent.Count, mailBounced.Count, mailDeferred.Count);
 
-				DispatchEvent<AggregatedMailBounced, MailBounced>(mailBounced);
-				DispatchEvent<AggregatedMailSent, MailSent>(mailSent);
-				DispatchEvent<AggregatedMailDeferred, MailDeferred>(mailDeferred);
-			}
+                _omniRecordManager.BatchInsert(mailSent);
+                _omniRecordManager.BatchInsert(mailBounced);
+                _omniRecordManager.BatchInsert(mailDeferred);
 
-			private IDictionary<string, string> CalculateDomainGroupFor(IEnumerable<MailEvent> mailEvents)
-			{
-				var conditions = _intervalRulesStore
-					.GetAll()
-					.SelectMany(intervalRule => intervalRule.Conditons.Select(x => new { Condition = x, intervalRule.Group }))
-					.ToList();
+                _logger.Info("entries were saved to database");
 
-				return mailEvents
-					.Distinct(new LambdaComparer<MailEvent>((x, y) => x.Recipient == y.Recipient))
-					.Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).FirstOrDefault(), x.Recipient })
-					.ToDictionary(x => x.Recipient, x => x.Group);
-			}
+                _logsStore.MarkProcessedFrom(LastProcessedMailingEvent(parsedLogs));
 
-			private List<TEventData> ParseToSpecificMailEvent<TEventData>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IDictionary<string, string> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
-			{
-				return parsedLogs
-					.Where(x => x.Type == mailEventType)
-					.Select(convertFunction)
-					.Join(parsedLogsDomainGroups, x => x.Recipient, y => y.Key, SetDomainGroup)
-					.ToList();
-			}
+                DispatchEvent<AggregatedMailBounced, MailBounced>(mailBounced);
+                DispatchEvent<AggregatedMailSent, MailSent>(mailSent);
+                DispatchEvent<AggregatedMailDeferred, MailDeferred>(mailDeferred);
+            }
 
-			private TEventData SetDomainGroup<TEventData>(TEventData x, KeyValuePair<string, string> y) where TEventData : IHasDomainGroup, IHasRecipient
-			{
-				x.DomainGroup = y.Value ?? _creativeFragmentSettings.DefaultGroup;
-				return x;
-			}
+            private static DateTime LastProcessedMailingEvent(IList<MailEvent> parsedLogs)
+            {
+                return parsedLogs.Last().Time;
+            }
 
-			private static MailDeferred ToMailDeferred(MailEvent x)
-			{
-				return new MailDeferred
-						   {
-							   Recipient = x.Recipient,
-							   Time = x.Time,
-							   Message = x.RelayMessage
-						   };
-			}
+            private IDictionary<string, string> CalculateDomainGroupFor(IEnumerable<MailEvent> mailEvents)
+            {
+                var conditions = _intervalRulesStore
+                    .GetAll()
+                    .SelectMany(intervalRule => intervalRule.Conditons.Select(x => new { Condition = x, intervalRule.Group }))
+                    .ToList();
 
-			private static MailBounced ToMailBounced(MailEvent x)
-			{
-				return new MailBounced
-						   {
-							   Recipient = x.Recipient,
-							   Time = x.Time,
-							   Message = x.RelayMessage
-						   };
-			}
+                return mailEvents
+                    .Distinct(new LambdaComparer<MailEvent>((x, y) => x.Recipient == y.Recipient))
+                    .Select(x => new { Group = conditions.Where(m => x.Recipient.Contains(m.Condition)).Select(m => m.Group).FirstOrDefault(), x.Recipient })
+                    .ToDictionary(x => x.Recipient, x => x.Group);
+            }
 
-			private static MailSent ToMailSent(MailEvent x)
-			{
-				return new MailSent
-						   {
-							   Recipient = x.Recipient,
-							   Time = x.Time
-						   };
-			}
+            private List<TEventData> ParseToSpecificMailEvent<TEventData>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IDictionary<string, string> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
+            {
+                return parsedLogs
+                    .Where(x => x.Type == mailEventType)
+                    .Select(convertFunction)
+                    .Join(parsedLogsDomainGroups, x => x.Recipient, y => y.Key, SetDomainGroup)
+                    .ToList();
+            }
 
-			private void DispatchEvent<TEvent, TEventData>(IList<TEventData> mailEvents) where TEvent : AggregatedMailEvents<TEventData>, new()
-			{
-				if (!mailEvents.Any())
-					return;
+            private TEventData SetDomainGroup<TEventData>(TEventData x, KeyValuePair<string, string> y) where TEventData : IHasDomainGroup, IHasRecipient
+            {
+                x.DomainGroup = y.Value ?? _creativeFragmentSettings.DefaultGroup;
+                return x;
+            }
 
-				var mailEvent = new TEvent
-									{
-										MailEvents = mailEvents
-									};
+            private static MailDeferred ToMailDeferred(MailEvent x)
+            {
+                return new MailDeferred
+                           {
+                               Recipient = x.Recipient,
+                               Time = x.Time,
+                               Message = x.RelayMessage,
+                               CreativeId = x.CreaiveId
+                           };
+            }
 
-				_eventDispatcher.ExecuteAll(mailEvent);
-			}
-		}
-	}
+            private static MailBounced ToMailBounced(MailEvent x)
+            {
+                return new MailBounced
+                           {
+                               Recipient = x.Recipient,
+                               Time = x.Time,
+                               Message = x.RelayMessage,
+                               CreativeId = x.CreaiveId
+
+                           };
+            }
+
+            private static MailSent ToMailSent(MailEvent x)
+            {
+                return new MailSent
+                           {
+                               Recipient = x.Recipient,
+                               Time = x.Time,
+                               CreativeId = x.CreaiveId
+                           };
+            }
+
+            private void DispatchEvent<TEvent, TEventData>(IList<TEventData> mailEvents) where TEvent : AggregatedMailEvents<TEventData>, new()
+            {
+                if (!mailEvents.Any())
+                    return;
+
+                var mailEvent = new TEvent
+                                    {
+                                        MailEvents = mailEvents
+                                    };
+
+                _eventDispatcher.ExecuteAll(mailEvent);
+            }
+        }
+    }
 }

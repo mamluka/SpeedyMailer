@@ -8,13 +8,13 @@ using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Commands
 {
-	public class ParsePostfixLogsCommand : Command<IList<MailEvent>>
+	public class ParseLogsCommand : Command<IList<MailEvent>>
 	{
 		private readonly DroneSettings _droneSettings;
 
 		public IList<MailLogEntry> Logs { get; set; }
 
-		public ParsePostfixLogsCommand(DroneSettings droneSettings)
+		public ParseLogsCommand(DroneSettings droneSettings)
 		{
 			_droneSettings = droneSettings;
 		}

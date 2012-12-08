@@ -15,5 +15,6 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public IList<double> DelayBreakDown { get; set; }
 		public string RelayMessage { get; set; }
 	    public string MessageId { get; set; }
+	    public string CreaiveId { get; set; }
 	}
 }

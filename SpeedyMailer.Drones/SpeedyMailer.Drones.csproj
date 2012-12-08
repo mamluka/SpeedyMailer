@@ -126,7 +126,8 @@
     <Compile Include="Commands\ClassifyBouncedMailCommand.cs" />
     <Compile Include="Commands\InitializeDroneSettingsCommand.cs" />
     <Compile Include="Commands\MapToCreativePackageCommand.cs" />
-    <Compile Include="Commands\ParsePostfixLogsCommand.cs" />
+    <Compile Include="Commands\ParseCreativeIdFromLogsCommand.cs" />
+    <Compile Include="Commands\ParseLogsCommand.cs" />
     <Compile Include="Commands\SendCreativePackageCommand.cs" />
     <Compile Include="Commands\PauseSpecificSendingJobsCommand.cs" />
     <Compile Include="Configurations\DroneConfigurationManager.cs" />
