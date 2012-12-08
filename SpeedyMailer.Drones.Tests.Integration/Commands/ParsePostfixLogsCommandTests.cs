@@ -22,7 +22,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = "to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
+					                 new MailLogEntry {msg = " 59C18AE11B: to=<bianca23518@yahoo.com>, relay=mta7.am0.yahoodns.net[98.136.216.26]:25, delay=1.7, delays=0.04/0/0.63/1, dsn=2.0.0, status=sent (250 ok dirdel)", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
@@ -34,7 +34,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										 x.RelayHost == "mta7.am0.yahoodns.net" &&
 										 x.RelayIp == "98.136.216.26" &&
 										 x.TotalDelay == "1.7" &&
-										 x.RelayMessage == "250 ok dirdel"
+										 x.RelayMessage == "250 ok dirdel" &&
+                                         x.MessageId == "59C18AE11B"
 				);
 
 			result[0].DelayBreakDown.Should().Contain(new[] { 0.04, 0, 0.63, 1 });
@@ -47,7 +48,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var logEntries = new List<MailLogEntry>
 				                 {
-					                 new MailLogEntry {msg = " 59C18AE39B: to=<a.and@comcast.net>, relay=mx2.comcast.net[2001:558:fe2d:70::22]:25, delay=0.95, delays=0.04/0/0.46/0.44, dsn=5.1.1, status=bounced (host mx2.comcast.net[2001:558:fe2d:70::22] said: 550 5.1.1 Not our Customer (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
+					                 new MailLogEntry {msg = "59C18AE39B: to=<a.and@comcast.net>, relay=mx2.comcast.net[2001:558:fe2d:70::22]:25, delay=0.95, delays=0.04/0/0.46/0.44, dsn=5.1.1, status=bounced (host mx2.comcast.net[2001:558:fe2d:70::22] said: 550 5.1.1 Not our Customer (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParsePostfixLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);
@@ -59,7 +60,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										 x.RelayHost == "mx2.comcast.net" &&
 										 x.RelayIp == "2001:558:fe2d:70::22" &&
 										 x.TotalDelay == "0.95" &&
-										 x.RelayMessage == "host mx2.comcast.net[2001:558:fe2d:70::22] said: 550 5.1.1 Not our Customer (in reply to RCPT TO command)"
+										 x.RelayMessage == "host mx2.comcast.net[2001:558:fe2d:70::22] said: 550 5.1.1 Not our Customer (in reply to RCPT TO command)" &&
+                                         x.MessageId == "59C18AE39B"
 				);
 
 			result[0].DelayBreakDown.Should().Contain(new[] { 0.04, 0, 0.46, 0.44 });
@@ -84,7 +86,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										 x.RelayHost == "mx2.sbcglobal.am0.yahoodns.net" &&
 										 x.RelayIp == "98.136.217.192" &&
 										 x.TotalDelay == "2.5" &&
-										 x.RelayMessage == "host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command)"
+										 x.RelayMessage == "host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command)" &&
+                                         x.MessageId == "64210AE3A5"
 				);
 
 			result[0].DelayBreakDown.Should().Contain(new[] { 0.04, 0, 1.9, 0.54 });

@@ -10,7 +10,7 @@ namespace SpeedyMailer.Drones.Commands
 {
 	public class ParsePostfixLogsCommand : Command<IList<MailEvent>>
 	{
-		private DroneSettings _droneSettings;
+		private readonly DroneSettings _droneSettings;
 
 		public IList<MailLogEntry> Logs { get; set; }
 
@@ -36,13 +36,14 @@ namespace SpeedyMailer.Drones.Commands
 								{
 									Level = TryParse(mailLogEntry),
 									Recipient = ParseRegexWithOneGroup(msg, "to=<(.+?)>"),
-									RelayHost = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 1),
-									RelayIp = ParseRegexWithMiltipleGroup(msg, "relay=(.+?)(\\[(.+?)\\]:\\d{0,2})?,", 3),
+									RelayHost = ParseRegexWithMiltipleGroup(msg, @"relay=(.+?)(\[(.+?)\]:\d{0,2})?,", 1),
+									RelayIp = ParseRegexWithMiltipleGroup(msg, @"relay=(.+?)(\[(.+?)\]:\d{0,2})?,", 3),
 									Time = mailLogEntry.time,
 									Type = ParseType(mailLogEntry.msg),
 									DelayBreakDown = ParseDelayBreakdown(mailLogEntry.msg),
 									TotalDelay = ParseRegexWithOneGroup(msg, "delay=(.+?),"),
-									RelayMessage = ParseRegexWithOneGroup(msg, "status.+?\\((.+?)\\)$")
+									RelayMessage = ParseRegexWithOneGroup(msg, @"status.+?\((.+?)\)$"),
+                                    MessageId = ParseRegexWithOneGroup(mailLogEntry.msg, @"^\s?(.+?):\s")
 								};
 
 			if (string.IsNullOrEmpty(mailEvent.Recipient) || mailEvent.Recipient.Contains(_droneSettings.Domain))
