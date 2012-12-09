@@ -17,8 +17,16 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
         }
         public Creative_ExtendedSendingReport()
         {
-            Map = snapshots => snapshots
-                                   .Select(x => new { CreativeId = x.CurrentCreativeId, Sends = x.MailSent, Bounces = x.MailBounced, Defers = x.MailDeferred });
+            Map = snapshots => snapshots.SelectMany(x => x.MailSent.Select(m => new {CreativeId = m.CreativeId, Sends = m, TotalBounces = 0, TotalDefers = 0})
+                                                          .Concat(x.MailBounced.Select(m => new {CreativeId = m.CreativeId, TotalSends = 0, TotalBounces = 1, TotalDefers = 0}))
+                                                          .Concat(x.MailDeferred.Select(m => new {CreativeId = m.CreativeId, TotalSends = 0, TotalBounces = 0, TotalDefers = 1})),
+                                                    (snapshot, m) => new
+                                                        {
+                                                            m.CreativeId,
+                                                            m.TotalSends,
+                                                            m.TotalBounces,
+                                                            m.TotalDefers
+                                                        });
 
             Reduce = result => result
                                    .GroupBy(x => x.CreativeId)

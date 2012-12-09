@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Raven.Client.Indexes;
 using SpeedyMailer.Core.Domain.Contacts;
@@ -17,12 +18,15 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
         }
         public Creative_SendingReport()
         {
-            Map = snapshots => snapshots
-                                   .SelectMany(x => x.MailSent.GroupBy(m => m.CreativeId).Select(m => new { CreativeId = m.Key, Type = "Sent", Total = m.Count() }))
-                                   .Concat(snapshots.SelectMany(x => x.MailBounced.GroupBy(m => m.CreativeId).Select(m => new { CreativeId = m.Key, Type = "Bounced", Total = m.Count() })))
-                                   .Concat(snapshots.SelectMany(x => x.MailDeferred.GroupBy(m => m.CreativeId).Select(m => new { CreativeId = m.Key, Type = "Deferred", Total = m.Count() })))
-                                   .GroupBy(x => x.CreativeId)
-                                   .Select(x => new { CreativeId = x.Key, TotalSends = x.Count(m => m.Type == "Sent"), TotalBounces = x.Count(m => m.Type == "Bounced"), TotalDefers = x.Count(m => m.Type == "Deferred") });
+            Map = snapshots => snapshots.SelectMany(x => x.MailSent.Select(m => new { CreativeId = m.CreativeId, TotalSends = 1, TotalBounces = 0, TotalDefers = 0 })
+                .Concat(x.MailBounced.Select(m => new { CreativeId = m.CreativeId, TotalSends = 0, TotalBounces = 1, TotalDefers = 0 }))
+                .Concat(x.MailDeferred.Select(m => new { CreativeId = m.CreativeId, TotalSends = 0, TotalBounces = 0, TotalDefers = 1 })),(snapshot, m) => new
+                    {
+                        m.CreativeId,
+                        m.TotalSends,
+                        m.TotalBounces,
+                        m.TotalDefers
+                    });
 
             Reduce = result => result
                                    .GroupBy(x => x.CreativeId)

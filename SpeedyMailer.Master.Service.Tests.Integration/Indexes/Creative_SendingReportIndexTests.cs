@@ -40,20 +40,20 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
                         {
                             MailSent = new List<MailSent>
                                 {
-                                    new MailSent {DomainGroup = "gmail", Recipient = "moshe@gmail.com", CreativeId = "creative/1"},
+                                    new MailSent {DomainGroup = "gmail", Recipient = "moshe@gmail.com", CreativeId = "creative/2"},
                                 },
                             MailDeferred = new List<MailDeferred>
                                 {
                                     new MailDeferred {DomainGroup = "aol", Recipient = "shit@aol.com", CreativeId = "creative/1"},
                                     new MailDeferred {DomainGroup = "aol", Recipient = "mother@aol.com", CreativeId = "creative/1"},
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "fucker@aol.com", CreativeId = "creative/1"}
+                                    new MailDeferred {DomainGroup = "aol", Recipient = "fucker@aol.com", CreativeId = "creative/2"}
                                 },
                             MailBounced = new List<MailBounced>
                                 {
                                     new MailBounced {DomainGroup = "msn", Recipient = "david@msn.com", CreativeId = "creative/1"},
                                     new MailBounced {DomainGroup = "msn", Recipient = "ohh@msn.com", CreativeId = "creative/1"},
                                     new MailBounced {DomainGroup = "msn", Recipient = "yeah@msn.com", CreativeId = "creative/1"},
-                                    new MailBounced {DomainGroup = "msn", Recipient = "cool@msn.com", CreativeId = "creative/1"}
+                                    new MailBounced {DomainGroup = "msn", Recipient = "cool@msn.com", CreativeId = "creative/2"}
                                 }
                         }
                 }.ToList();
@@ -65,9 +65,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
             var result = Store.Query<Creative_SendingReport.ReduceResult, Creative_SendingReport>(x => x.CreativeId == "creative/1");
 
             result.Should().Contain(x => x.CreativeId == "creative/1");
-            result.Should().Contain(x => x.TotalBounces == 6);
-            result.Should().Contain(x => x.TotalDefers == 5);
-            result.Should().Contain(x => x.TotalSends == 3);
+            result.Should().Contain(x => x.TotalBounces == 5);
+            result.Should().Contain(x => x.TotalDefers == 4);
+            result.Should().Contain(x => x.TotalSends == 2);
         }
     }
 }
