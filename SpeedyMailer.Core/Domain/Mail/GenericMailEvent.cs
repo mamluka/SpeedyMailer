@@ -12,5 +12,6 @@ namespace SpeedyMailer.Core.Domain.Mail
         public string Recipient { get; set; }
         public DateTime Time { get; set; }
         public string DomainGroup { get; set; }
+	    public string CreativeId { get; set; }
     }
 }
