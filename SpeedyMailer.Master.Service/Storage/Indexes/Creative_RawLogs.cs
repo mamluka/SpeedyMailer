@@ -10,17 +10,17 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
     {
         public class ReduceResult
         {
-            public string CreativeId { get; set; }
             public List<ReducedMailLogEntry> RawLogs { get; set; }
+            public string DroneId { get; set; }
         }
         public Creative_RawLogs()
         {
             Map = snapshots => snapshots
-                .Select(x => new { CreativeId = x.CurrentCreativeId, x.RawLogs });
+                .Select(x => new { DroneId = x.Drone.Id, x.RawLogs });
 
             Reduce = result => result
-                .GroupBy(x => x.CreativeId)
-                .Select(x => new { CreativeId = x.Key, RawLogs = x.SelectMany(m => m.RawLogs).ToList() });
+                .GroupBy(x => x.DroneId )
+                .Select(x => new { DroneId = x.Key, RawLogs = x.SelectMany(m => m.RawLogs).ToList() });
         }
     }
 }
