@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Apis
 
 			public class SetDeliveryRules:ApiCall
 			{
-				public DeliverabilityClassificationRules Rules { get; set; }
+				public DeliverabilityClassificationRules DeliverabilityClassificationRules { get; set; }
 
 				public SetDeliveryRules()
 					: base("/heuritics/delivery")

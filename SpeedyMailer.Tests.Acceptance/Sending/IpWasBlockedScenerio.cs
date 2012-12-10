@@ -132,7 +132,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 		{
 			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x =>
 																	{
-																		x.Rules = new DeliverabilityClassificationRules
+																		x.DeliverabilityClassificationRules = new DeliverabilityClassificationRules
 																					  {
 																						  BlockingRules = new List<HeuristicRule> { new HeuristicRule
 																							                                              {

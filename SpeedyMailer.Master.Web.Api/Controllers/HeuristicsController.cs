@@ -22,7 +22,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("heuristics/delivery")]
 		public void SetDelivery(DeliverabilityClassificationRules model)
 		{
-			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = model);
+			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = model);
 		}
 
 		[GET("heuristics/delivery")]

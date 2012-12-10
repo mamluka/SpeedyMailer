@@ -48,7 +48,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = new DeliverabilityClassificationRules
+			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = new DeliverabilityClassificationRules
 			{
 				HardBounceRules = new List<string> { "yeah" },
 				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
@@ -79,7 +79,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var api = MasterResolve<Api>();
 
-			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.Rules = new DeliverabilityClassificationRules
+			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = new DeliverabilityClassificationRules
 			{
 				HardBounceRules = new List<string> { "yeah" },
 				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
