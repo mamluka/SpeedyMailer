@@ -2,7 +2,7 @@
     <h2>Add heuristics</h2>
     
     <label>Hard bouce</label>
-    <input type="text" ng-model="hardBounce" />
+    <input type="text" ng-model="hardBounce.condition" />
     <button ng-click="addHardBounce(hardBounce)">Add</button>
     <br />
 
@@ -11,7 +11,8 @@
     </ul>
     
     <label>Hard bouce</label>
-    <input type="text" ng-model="ipBlock" />
+    <input type="text" ng-model="ipBlock.condition" />
+    <input type="text" ng-model="ipBlock.delay" />
     <button ng-click="addIpBlock(ipBlock)">Add</button>
     <br />
 

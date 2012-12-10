@@ -119,10 +119,13 @@
     <Compile Include="Modules\CreativeModule.cs" />
     <Compile Include="Modules\DronesModule.cs" />
     <Compile Include="Modules\RulesModule.cs" />
+    <Compile Include="Modules\StatisticsModule.cs" />
     <Compile Include="Modules\TemplatesModule.cs" />
     <Compile Include="Storage\Indexes\Contacts_ByMemberOf.cs" />
     <Compile Include="Storage\Indexes\Contacts_DomainGroupCounter.cs" />
-    <Compile Include="Storage\Indexes\Creative_ExtendedSendingReport.cs" />
+    <Compile Include="Storage\Indexes\Creative_DeferredEmails.cs" />
+    <Compile Include="Storage\Indexes\Creative_BouncedEmails.cs" />
+    <Compile Include="Storage\Indexes\Creative_SentEmails.cs" />
     <Compile Include="Storage\Indexes\Creative_SendingReport.cs" />
     <Compile Include="Storage\Indexes\Creative_RawLogs.cs" />
     <Compile Include="Storage\Indexes\Creative_UnsubscribeRequests.cs" />

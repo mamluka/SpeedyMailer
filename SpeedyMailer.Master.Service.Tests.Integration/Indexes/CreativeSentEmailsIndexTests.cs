@@ -10,7 +10,7 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 {
-    public class CreativeExtendedSendingReportIndexTests : IntegrationTestBase
+    public class CreativeSentEmailsIndexTests : IntegrationTestBase
     {
         [Test]
         public void Index_WhenGivenSnapShots_ShouldMapReduceAllRawLogs()
@@ -60,14 +60,12 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 
             snapshots.ForEach(Store.Store);
 
-            Store.WaitForIndexNotToBeStale<Creative_ExtendedSendingReport.ReduceResult, Creative_ExtendedSendingReport>();
+            Store.WaitForIndexNotToBeStale<Creative_SentEmails.ReduceResult, Creative_SentEmails>();
 
-            var result = Store.Query<Creative_ExtendedSendingReport.ReduceResult, Creative_ExtendedSendingReport>(x => x.CreativeId == "creative/1");
+            var result = Store.Query<Creative_SentEmails.ReduceResult, Creative_SentEmails>(x => x.CreativeId == "creative/1");
 
             result.Should().Contain(x => x.CreativeId == "creative/1");
             result[0].Sends.Select(x => x.Recipient).Should().BeEquivalentTo(new[] { "david@gmail.com", "david@hotmail.com"});
-            result[0].Bounces.Select(x => x.Recipient).Should().BeEquivalentTo(new[] { "david@msn.com", "smith@msn.com", "david@msn.com", "ohh@msn.com", "yeah@msn.com" });
-            result[0].Defers.Select(x => x.Recipient).Should().BeEquivalentTo(new[] { "david@aol.com", "smith@aol.com", "shit@aol.com", "mother@aol.com" });
         }
     }
 }
