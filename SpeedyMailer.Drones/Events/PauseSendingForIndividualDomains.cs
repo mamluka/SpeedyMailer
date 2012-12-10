@@ -43,13 +43,13 @@ namespace SpeedyMailer.Drones.Events
                         _classifyNonDeliveredMailCommand.Message = x.Message;
                         var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
 
-                        return new {mailClassfication.BounceType, Time = mailClassfication.TimeSpan, x.Recipient};
+                        return new { mailClassfication.BounceType, Time = mailClassfication.TimeSpan, x.Recipient };
                     })
                 .Where(x => x.BounceType == BounceType.Blocked)
-                .Select(x => new {x.Time, Domain = GetDomain(x.Recipient)})
+                .Select(x => new { x.Time, Domain = GetDomain(x.Recipient) })
                 .Where(x => !string.IsNullOrEmpty(x.Domain))
                 .GroupBy(x => x.Domain)
-                .Select(x => new {x.First().Time, Domain = x.Key})
+                .Select(x => new { x.First().Time, Domain = x.Key })
                 .ToList();
 
             if (!domainToUndeliver.Any())
@@ -59,7 +59,7 @@ namespace SpeedyMailer.Drones.Events
 
             domainToUndeliver.ForEach(x =>
                 {
-                    sendingPolicies.GroupSendingPolicies[x.Domain] = new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + x.Time};
+                    sendingPolicies.GroupSendingPolicies[x.Domain] = new ResumeSendingPolicy { ResumeAt = DateTime.UtcNow + x.Time };
                 });
 
             _omniRecordManager.UpdateOrInsert(sendingPolicies);
