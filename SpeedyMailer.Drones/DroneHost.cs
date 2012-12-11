@@ -87,6 +87,7 @@ namespace SpeedyMailer.Drones
 					new FetchIntervalRulesTask().DelayFor(TimeSpan.FromSeconds(30)),
 					new SendDroneStateSnapshotTask().DelayFor(TimeSpan.FromSeconds(45)),
 					new ResumePausedGroupsTask(),
+                    new ResumeSendingForIndividualDomains(),
 				};
 
                 _framework.StartTasks(tasks);
