@@ -35,7 +35,7 @@ namespace SpeedyMailer.Master.Service.Modules
                     }
                 };
 
-            Get["logs/{drone}"] = call =>
+            Get["/logs/{drone}"] = call =>
                 {
                     using (var session = documentStore.OpenSession())
                     {
@@ -46,7 +46,7 @@ namespace SpeedyMailer.Master.Service.Modules
                     }
                 };
 
-            Get["sent/{creative}"] = call =>
+            Get["/sent/{creative}"] = call =>
                 {
                     using (var session = documentStore.OpenSession())
                     {
@@ -57,7 +57,7 @@ namespace SpeedyMailer.Master.Service.Modules
                     }
                 };
 
-            Get["bounced/{creative}"] = call =>
+            Get["/bounced/{creative}"] = call =>
                 {
                     using (var session = documentStore.OpenSession())
                     {
@@ -68,7 +68,7 @@ namespace SpeedyMailer.Master.Service.Modules
                     }
                 };
 
-            Get["deferred/{creative}"] = call =>
+            Get["/deferred/{creative}"] = call =>
                 {
                     using (var session = documentStore.OpenSession())
                     {
@@ -79,7 +79,7 @@ namespace SpeedyMailer.Master.Service.Modules
                     }
                 };
 
-            Get["sending-report/{creative}"] = call =>
+            Get["/sending-report/{creative}"] = call =>
                 {
                     using (var session = documentStore.OpenSession())
                     {
