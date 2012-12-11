@@ -59,7 +59,7 @@ namespace SpeedyMailer.Drones.Storage
 
 		public IList<CreativePackage> GetByDomains(IList<string> domains)
 		{
-			return Find(Query.Matches(PropertyName(x => x.To), new BsonRegularExpression(string.Join("|", domains))).And(Query.EQ(PropertyName(x => x.Processed), false))).ToList();
+			return Find(Query.Matches(PropertyName(x => x.To), new BsonRegularExpression(string.Join("|", domains)))).ToList();
 		}
 	}
 }
