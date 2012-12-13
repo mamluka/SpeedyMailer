@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NLog;
 using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
@@ -11,11 +12,13 @@ namespace SpeedyMailer.Drones.Commands
 	public class ParseLogsCommand : Command<IList<MailEvent>>
 	{
 		private readonly DroneSettings _droneSettings;
+		private Logger _logger;
 
 		public IList<MailLogEntry> Logs { get; set; }
 
-		public ParseLogsCommand(DroneSettings droneSettings)
+		public ParseLogsCommand(DroneSettings droneSettings, Logger logger)
 		{
+			_logger = logger;
 			_droneSettings = droneSettings;
 		}
 
@@ -43,7 +46,7 @@ namespace SpeedyMailer.Drones.Commands
 									DelayBreakDown = ParseDelayBreakdown(mailLogEntry.msg),
 									TotalDelay = ParseRegexWithOneGroup(msg, "delay=(.+?),"),
 									RelayMessage = ParseRegexWithOneGroup(msg, @"status.+?\((.+?)\)$"),
-                                    MessageId = ParseRegexWithOneGroup(mailLogEntry.msg, @"^\s?(.+?):\s")
+									MessageId = ParseRegexWithOneGroup(mailLogEntry.msg, @"^\s?(.+?):\s")
 								};
 
 			if (string.IsNullOrEmpty(mailEvent.Recipient) || mailEvent.Recipient.Contains(_droneSettings.Domain))
@@ -70,7 +73,12 @@ namespace SpeedyMailer.Drones.Commands
 
 		private double ParseDelaysArrayItem(string msg, int groupId)
 		{
-			return double.Parse(ParseRegexWithMiltipleGroup(msg, "delays=(\\d*?\\.?\\d*?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?),", groupId));
+			double result;
+			if (double.TryParse(ParseRegexWithMiltipleGroup(msg, "delays=(\\d*?\\.?\\d*?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?),", groupId), out result))
+				return result;
+
+			_logger.Info("Was unable to parse delay from messsage", msg);
+			return 0;
 		}
 
 		private MailEventType ParseType(string msg)
