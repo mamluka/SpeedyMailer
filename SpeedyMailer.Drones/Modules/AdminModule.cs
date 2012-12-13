@@ -68,7 +68,7 @@ namespace SpeedyMailer.Drones.Modules
                             var value = (string)x.value;
                             return new MailLogEntry
                                 {
-                                    msg = mailEvent.MessageId + ": " + header + " " + value + " ",
+                                    msg = mailEvent.MessageId + ": " + header + ": " + value + " ",
                                     level = "INFO",
                                     pid = "1235",
                                     procid = "postfix",
