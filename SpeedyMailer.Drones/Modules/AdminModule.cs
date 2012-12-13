@@ -84,7 +84,7 @@ namespace SpeedyMailer.Drones.Modules
 
                     logsStore.BatchInsert(fakeLogs);
 
-                    return Response.AsText("OK");
+                    return Response.AsJson(fakeLogs);
                 };
 
         }
