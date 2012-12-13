@@ -56,29 +56,25 @@ namespace SpeedyMailer.Drones.Modules
 
             Get["/write-headers"] = x =>
                 {
-                    var logs = logsStore.GetUnprocessedLogs();
+                    var logs = logsStore.GetAllLogs();
                     parseLogsCommand.Logs = logs;
                     var parsedLogs = parseLogsCommand.Execute();
 
 
                     var fakeLogs = parsedLogs.Select(
-                        mailEvent =>
-                        {
-                            return new MailLogEntry
-                                {
-                                    msg = mailEvent.MessageId + @": info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<approval-department@xomixinc.com> to=<harveypchs@yahoo.com> proto=ESMTP helo=<mail>",
-                                    level = "INFO",
-                                    pid = "1235",
-                                    procid = "postfix",
-                                    sys = "mail",
-                                    syslog_fac = 2,
-                                    syslog_sever = 6,
-                                    syslog_tag = "postfix/smtpd[27723]:",
-                                    time = DateTime.UtcNow.AddDays(-10),
-                                    time_rcvd = DateTime.UtcNow.AddDays(-10)
-                                };
-                        }
-                        ).ToList();
+                        mailEvent => new MailLogEntry
+	                        {
+		                        msg = mailEvent.MessageId + @": info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<approval-department@xomixinc.com> to=<harveypchs@yahoo.com> proto=ESMTP helo=<mail>",
+		                        level = "INFO",
+		                        pid = "1235",
+		                        procid = "postfix",
+		                        sys = "mail",
+		                        syslog_fac = 2,
+		                        syslog_sever = 6,
+		                        syslog_tag = "postfix/smtpd[27723]:",
+		                        time = DateTime.UtcNow.AddDays(-10),
+		                        time_rcvd = DateTime.UtcNow.AddDays(-10)
+	                        }).ToList();
 
                     logsStore.BatchInsert(fakeLogs);
 
