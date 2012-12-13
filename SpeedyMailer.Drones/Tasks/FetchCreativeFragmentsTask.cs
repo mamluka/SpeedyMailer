@@ -5,7 +5,6 @@ using Quartz;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
@@ -75,7 +74,6 @@ namespace SpeedyMailer.Drones.Tasks
                 if (creativeFragment == null)
                     return;
 
-                SaveCurrentCreativeFragment(creativeFragment);
                 SaveCurrentCreativeToDealMap(creativeFragment);
 
                 var recipiens = creativeFragment.Recipients;
@@ -111,14 +109,6 @@ namespace SpeedyMailer.Drones.Tasks
                                                           Id = creativeFragment.CreativeId,
                                                           DealUrl = creativeFragment.DealUrl
                                                       });
-            }
-
-            private void SaveCurrentCreativeFragment(CreativeFragment creativeFragment)
-            {
-                var currentExecutingCreativeFragment = _omniRecordManager.GetSingle<CurrentExecutingCreativeFragment>() ?? new CurrentExecutingCreativeFragment();
-                currentExecutingCreativeFragment.CreativeFragment = creativeFragment;
-
-                _omniRecordManager.UpdateOrInsert(currentExecutingCreativeFragment);
             }
 
             private CreativePackage ToCreativePackage(CreativeFragment creativeFragment, Recipient recipient)
