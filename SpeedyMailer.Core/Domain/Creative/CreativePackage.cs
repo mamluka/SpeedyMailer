@@ -22,5 +22,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public int Interval { get; set; }
 
 		public bool Processed { get; set; }
+
+	    public string CreativeId { get; set; }
 	}
 }

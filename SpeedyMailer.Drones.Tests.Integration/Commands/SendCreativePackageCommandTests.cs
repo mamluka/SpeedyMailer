@@ -44,6 +44,37 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 			Email.AssertEmailSent(x => x.Body == "test body");
 			Email.AssertEmailSent(x => x.Subject == "test subject");
 		}
+        
+        [Test]
+		public void Execute_WhenSendingTheCreative_ShouldSetCreativeIdHeader()
+		{
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+
+															});
+
+			var creativePackage = new CreativePackage
+									{
+										Body = "test body",
+										Subject = "test subject",
+										To = "test@test",
+                                        CreativeId = "creative/1"
+									};
+
+			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>
+																		{
+																			x.Package = creativePackage;
+																			x.FromName = "david";
+																			x.FromAddressDomainPrefix = "sales";
+																		});
+
+			Email.AssertEmailSent(x => x.To.Any(address => address.Address == "test@test"));
+			Email.AssertEmailSent(x => x.Body == "test body");
+			Email.AssertEmailSent(x => x.Subject == "test subject");
+            Email.AssertEmailSent(x => x.TestHeaders["Speedy-Creative-Id"] == "creative/1");
+		}
 
 		[Test]
 		public void Execute_WhenGivenFromInformation_ShouldSendTheEmailWithThatFromAddress()

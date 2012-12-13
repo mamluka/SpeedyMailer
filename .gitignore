@@ -34,4 +34,3 @@ RavenDB/Server/*.xml
 packages/*.exe
 SpeedyMailer.Master.Web.Api/BodyPart*
 logs/*
-*.rar
