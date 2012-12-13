@@ -54,7 +54,7 @@ namespace SpeedyMailer.Drones.Modules
                                            return Response.AsText(string.Join(Environment.NewLine, lines));
                                        };
 
-            Get["/write-headers/{header}/{value}"] = x =>
+            Get["/write-headers"] = x =>
                 {
                     var logs = logsStore.GetUnprocessedLogs();
                     parseLogsCommand.Logs = logs;
@@ -64,11 +64,9 @@ namespace SpeedyMailer.Drones.Modules
                     var fakeLogs = parsedLogs.Select(
                         mailEvent =>
                         {
-                            var header = (string)x.header;
-                            var value = (string)x.value;
                             return new MailLogEntry
                                 {
-                                    msg = mailEvent.MessageId + ": " + header + ": " + value + " ",
+                                    msg = mailEvent.MessageId + @": info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<approval-department@xomixinc.com> to=<harveypchs@yahoo.com> proto=ESMTP helo=<mail>",
                                     level = "INFO",
                                     pid = "1235",
                                     procid = "postfix",
