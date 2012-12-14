@@ -26,6 +26,7 @@ namespace SpeedyMailer.Master.Web.Api
 
 
             GlobalConfiguration.Configuration.Formatters.XmlFormatter.SupportedMediaTypes.Clear();
+			GlobalConfiguration.Configuration.IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.Always;
 		}
 	}
 }

@@ -10,46 +10,56 @@ using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Master.Web.Api.Controllers
 {
-    public class HeuristicsController : ApiController
-    {
-        private readonly SpeedyMailer.Core.Apis.Api _api;
+	public class HeuristicsController : ApiController
+	{
+		private readonly SpeedyMailer.Core.Apis.Api _api;
 
-        public HeuristicsController(SpeedyMailer.Core.Apis.Api api)
-        {
-            _api = api;
-        }
+		public HeuristicsController(SpeedyMailer.Core.Apis.Api api)
+		{
+			_api = api;
+		}
 
-        [POST("heuristics/delivery")]
-        public void SetDelivery(DeliverabilityClassificationRulesModel model)
-        {
-            _api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = ToHeuristicsRules(model));
-        }
+		[POST("heuristics/delivery")]
+		public void SetDelivery(DeliverabilityClassificationRulesModel model)
+		{
+			_api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = ToHeuristicsRules(model));
+		}
 
-        private DeliverabilityClassificationRules ToHeuristicsRules(DeliverabilityClassificationRulesModel model)
-        {
-            return new DeliverabilityClassificationRules
-                {
-                    HardBounceRules = model.HardBounceRules,
-                    BlockingRules = model.BlockingRules.Select(x =>
-                        {
-                            string condition = x.Condition;
-                            int timeSpan = x.TimeSpan;
-                            return new HeuristicRule { Condition = condition, TimeSpan = TimeSpan.FromHours(timeSpan) };
-                        }).ToList()
-                };
-        }
+		private DeliverabilityClassificationRules ToHeuristicsRules(DeliverabilityClassificationRulesModel model)
+		{
+			return new DeliverabilityClassificationRules
+				{
+					HardBounceRules = model.HardBounceRules,
+					BlockingRules = model.BlockingRules.Select(x => new HeuristicRule { Condition = x.Condition, TimeSpan = TimeSpan.FromHours(x.TimeSpan) }).ToList()
+				};
+		}
 
-        [GET("heuristics/delivery")]
-        public IList<DeliverabilityClassificationRules> GetDelivery()
-        {
-            var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
-            return new[] { result };
-        }
-    }
+		[GET("heuristics/delivery")]
+		public IList<DeliverabilityClassificationRulesModel> GetDelivery()
+		{
+			var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
+			return new[] { ToHeuristicsModel(result) };
+		}
 
-    public class DeliverabilityClassificationRulesModel
-    {
-        public List<string> HardBounceRules { get; set; }
-        public List<dynamic> BlockingRules { get; set; }
-    }
+		private DeliverabilityClassificationRulesModel ToHeuristicsModel(DeliverabilityClassificationRules result)
+		{
+			return new DeliverabilityClassificationRulesModel
+				{
+					HardBounceRules = result.HardBounceRules,
+					BlockingRules = result.BlockingRules.Select(x => new BlockingRulesModel { Condition = x.Condition, TimeSpan = x.TimeSpan.TotalHours }).ToList()
+				};
+		}
+	}
+
+	public class BlockingRulesModel
+	{
+		public string Condition { get; set; }
+		public double TimeSpan { get; set; }
+	}
+
+	public class DeliverabilityClassificationRulesModel
+	{
+		public List<string> HardBounceRules { get; set; }
+		public List<BlockingRulesModel> BlockingRules { get; set; }
+	}
 }

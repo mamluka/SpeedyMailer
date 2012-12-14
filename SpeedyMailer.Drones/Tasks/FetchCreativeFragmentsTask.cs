@@ -34,7 +34,7 @@ namespace SpeedyMailer.Drones.Tasks
             private readonly CreativePackagesStore _creativePackagesStore;
             private readonly OmniRecordManager _omniRecordManager;
             private readonly MapToCreativePackageCommand _mapToCreativePackageCommand;
-            private Logger _logger;
+            private readonly Logger _logger;
 
             public Job(Framework framework,
                        Api api,
