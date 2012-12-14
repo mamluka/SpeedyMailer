@@ -25,12 +25,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				DeliverabilityClassificationRules>(x =>
-					                                   {
-						                                   x.HardBounceRules = new List<string>
+													   {
+														   x.HardBounceRules = new List<string>
 							                                                       {
 								                                                       "hard bounce rule",
 							                                                       };
-						                                   x.BlockingRules = new List<HeuristicRule>
+														   x.BlockingRules = new List<HeuristicRule>
 							                                                     {
 								                                                     new HeuristicRule
 									                                                     {
@@ -38,7 +38,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										                                                     TimeSpan = TimeSpan.FromHours(4)
 									                                                     }
 							                                                     };
-					                                   });
+													   });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
 
@@ -60,14 +60,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				DeliverabilityClassificationRules>(x =>
-					                                   {
-						                                   x.HardBounceRules = new List<string>
+													   {
+														   x.HardBounceRules = new List<string>
 							                                                       {
 								                                                       "hard bounce rule",
 
 
 							                                                       };
-						                                   x.BlockingRules = new List<HeuristicRule>
+														   x.BlockingRules = new List<HeuristicRule>
 							                                                     {
 								                                                     new HeuristicRule
 									                                                     {
@@ -75,7 +75,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 										                                                     TimeSpan = TimeSpan.FromHours(4)
 									                                                     }
 							                                                     };
-					                                   });
+													   });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
 
