@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Settings;
@@ -16,9 +17,11 @@ namespace SpeedyMailer.Drones.Events
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly CreativePackagesStore _creativePackagesStore;
+		private Logger _logger;
 
-		public PauseSendingForIndividualDomains(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, CreativeFragmentSettings creativeFragmentSettings)
+		public PauseSendingForIndividualDomains(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, CreativeFragmentSettings creativeFragmentSettings, Logger logger)
 		{
+			_logger = logger;
 			_creativePackagesStore = creativePackagesStore;
 			_omniRecordManager = omniRecordManager;
 			_creativeFragmentSettings = creativeFragmentSettings;
@@ -54,16 +57,18 @@ namespace SpeedyMailer.Drones.Events
 				.Select(x => new { x.First().Time, Domain = x.Key })
 				.ToList();
 
+			_logger.Info("Paused the following domains: {0}", string.Join(",", domainToUndeliver.Select(x => x.Domain).ToList()));
+
 			if (!domainToUndeliver.Any())
 				return;
 
-			var creativePackagesToUndeliver =_creativePackagesStore.GetByDomains(domainToUndeliver.Select(x => x.Domain).ToList());
+			var creativePackagesToUndeliver = _creativePackagesStore.GetByDomains(domainToUndeliver.Select(x => x.Domain).ToList());
 
 			creativePackagesToUndeliver.ToList().ForEach(x =>
-				                                             {
-					                                             x.Processed = true;
-					                                             _creativePackagesStore.Save(x);
-				                                             });
+															 {
+																 x.Processed = true;
+																 _creativePackagesStore.Save(x);
+															 });
 
 			var sendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? NewGroupsAndIndividualDomainsSendingPolicies();
 

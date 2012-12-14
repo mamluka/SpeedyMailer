@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Settings;
@@ -15,9 +16,11 @@ namespace SpeedyMailer.Drones.Events
 		private readonly PauseSpecificSendingJobsCommand _pauseSpecificSendingJobsCommand;
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
+		private readonly Logger _logger;
 
-		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager, CreativeFragmentSettings creativeFragmentSettings)
+		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager, CreativeFragmentSettings creativeFragmentSettings, Logger logger)
 		{
+			_logger = logger;
 			_creativeFragmentSettings = creativeFragmentSettings;
 			_omniRecordManager = omniRecordManager;
 			_pauseSpecificSendingJobsCommand = pauseSpecificSendingJobsCommand;
@@ -50,6 +53,8 @@ namespace SpeedyMailer.Drones.Events
 
 			if (!bouncesGroups.Any())
 				return;
+
+			_logger.Info("Paused the following domains: {0}", string.Join(",", bouncesGroups.Select(x => x.DomainGroup).ToList()));
 
 			var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? new GroupsAndIndividualDomainsSendingPolicies();
 

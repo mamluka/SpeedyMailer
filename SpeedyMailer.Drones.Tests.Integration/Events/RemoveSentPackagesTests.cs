@@ -6,6 +6,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Events;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
@@ -20,6 +21,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		[Test]
 		public void Inspect_WhenAnPackageWasSent_ShouldRemoveItFromTheStore()
 		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
 			var package = new CreativePackage
 				{
 					To = "david@david.com",
