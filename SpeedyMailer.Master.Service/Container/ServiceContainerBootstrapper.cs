@@ -39,10 +39,11 @@ namespace SpeedyMailer.Master.Service.Container
     {
         public override void Load()
         {
+	        var scheduler = Kernel.Get<IScheduler>();
             Kernel.Bind<INancyBootstrapper>().ToProvider(new NancyBootstrapperProvider(
                                                             kernel =>
                                                             ServiceContainerBootstrapper
-                                                                .ApplyBindLogic(ContainerBootstrapper.Bootstrap(kernel)))
+	                                                            .ApplyBindLogic(ContainerBootstrapper.Bootstrap(kernel)), scheduler)
                 );
         }
     }

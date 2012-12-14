@@ -37,6 +37,7 @@ namespace SpeedyMailer.Drones.Bootstrappers
 	{
 		public override void Load()
 		{
+			var scheduler = Kernel.Get<IScheduler>();
 			Kernel
 				.Bind<INancyBootstrapper>()
 				.ToProvider(new NancyBootstrapperProvider(
@@ -54,7 +55,7 @@ namespace SpeedyMailer.Drones.Bootstrappers
 						            .DefaultConfiguration()
 						            .NoDatabase()
 						            .Settings(x => x.UseJsonFiles())
-						            .Done())
+						            .Done(),scheduler)
 				);
 		}
 	}
