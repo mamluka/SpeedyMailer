@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using Nancy;
 using Quartz;
-using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;

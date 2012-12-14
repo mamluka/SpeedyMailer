@@ -20,6 +20,27 @@ namespace SpeedyMailer.Core.Domain.Mail
 
 	public class MailSent : IHasDomainGroup, IHasRecipient
 	{
+		protected bool Equals(MailSent other)
+		{
+			return string.Equals(Recipient, other.Recipient) && string.Equals(CreativeId, other.CreativeId);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((MailSent) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				return ((Recipient != null ? Recipient.GetHashCode() : 0)*397) ^ (CreativeId != null ? CreativeId.GetHashCode() : 0);
+			}
+		}
+
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
 
