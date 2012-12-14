@@ -77,7 +77,7 @@ namespace SpeedyMailer.Drones.Commands
 			if (double.TryParse(ParseRegexWithMiltipleGroup(msg, "delays=(\\d*?\\.?\\d*?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?)/(\\d*\\.?\\d+?),", groupId), out result))
 				return result;
 
-			_logger.Info("Was unable to parse delay from messsage", msg);
+			_logger.Info("Was unable to parse delay from messsage: {0}", msg);
 			return 0;
 		}
 

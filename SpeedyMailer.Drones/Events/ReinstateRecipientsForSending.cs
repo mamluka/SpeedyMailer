@@ -1,4 +1,5 @@
 using System.Linq;
+using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Drones.Commands;
@@ -10,9 +11,11 @@ namespace SpeedyMailer.Drones.Events
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly CreativePackagesStore _creativePackagesStore;
+		private Logger _logger;
 
-		public ReinstateRecipientsForSending(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, CreativePackagesStore creativePackagesStore)
+		public ReinstateRecipientsForSending(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, CreativePackagesStore creativePackagesStore, Logger logger)
 		{
+			_logger = logger;
 			_creativePackagesStore = creativePackagesStore;
 			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 		}
@@ -38,6 +41,8 @@ namespace SpeedyMailer.Drones.Events
 			var creativePackages = _creativePackagesStore.GetByEmail(mails);
 
 			creativePackages.ForEach(x => x.Processed = false);
+
+			_logger.Info("Reinstated the following emails: {0}", string.Join(",", creativePackages.Select(x => x.To)));
 
 			creativePackages.ForEach(x => _creativePackagesStore.Save(x));
 		}
