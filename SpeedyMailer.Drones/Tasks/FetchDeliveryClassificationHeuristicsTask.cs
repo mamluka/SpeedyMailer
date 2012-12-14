@@ -40,7 +40,7 @@ namespace SpeedyMailer.Drones.Tasks
 				rules.HardBounceRules = result.HardBounceRules;
 				rules.BlockingRules = result.BlockingRules;
 
-				_omniRecordManager.BatchInsert(new[] { result });
+				_omniRecordManager.UpdateOrInsert(result);
 			}
 		}
 	}

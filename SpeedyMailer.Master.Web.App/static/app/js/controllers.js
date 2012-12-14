@@ -105,7 +105,7 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
     
     var deliveryHeuristics = deliveryHeuristicsResource.query(function () {
         $scope.hardBounces = deliveryHeuristics[0].HardBounceRules || [];
-        $scope.ipBlocks = deliveryHeuristics[0].IpBlockingRules || [];
+        $scope.ipBlocks = deliveryHeuristics[0].BlockingRules || [];
         $scope.Id = deliveryHeuristics[0].Id;
 
         hardBounces = $scope.hardBounces;
@@ -134,7 +134,7 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
     $scope.saveHeuristics = function () {
         var rule = new deliveryHeuristicsResource({
             HardBounceRules: hardBounces,
-            IpBlockingRules: ipBlocks,
+            BlockingRules: ipBlocks,
             Id: $scope.Id
         });
 
