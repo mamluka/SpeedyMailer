@@ -24,7 +24,7 @@ namespace SpeedyMailer.Drones.Tasks
 		{
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly CreativePackagesStore _creativePackagesStore;
-			private Logger _logger;
+			private readonly Logger _logger;
 
 			public Job(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, Logger logger)
 			{
@@ -44,6 +44,9 @@ namespace SpeedyMailer.Drones.Tasks
 					.Where(x => x.Value.ResumeAt < DateTime.UtcNow)
 					.Select(x => x.Key)
 					.ToList();
+
+				if (!domainToResume.Any())
+					return;
 
 				_logger.Info("Resuming domains for sending: {0}", string.Join(",", domainToResume));
 
