@@ -122,6 +122,7 @@
     <Compile Include="Events\DeliveryRealTimeDecisionTests.cs" />
     <Compile Include="Events\MarkUngroupedPackagesForDeplayedSendingTests.cs" />
     <Compile Include="Events\ReinstateRecipientsForSendingTests.cs" />
+    <Compile Include="Events\RemoveSentPackagesTests.cs" />
     <Compile Include="Modules\DealsModuleTests.cs" />
     <Compile Include="Modules\ListsModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
