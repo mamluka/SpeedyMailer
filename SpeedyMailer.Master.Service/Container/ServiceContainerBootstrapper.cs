@@ -16,6 +16,12 @@ namespace SpeedyMailer.Master.Service.Container
         static ServiceContainerBootstrapper()
         {
             Kernel = ApplyBindLogic(ContainerBootstrapper.Bootstrap());
+
+			var scheduler = Kernel.Get<IScheduler>();
+			Kernel.Bind<INancyBootstrapper>().ToProvider(new NancyBootstrapperProvider(
+															kernel =>
+															ApplyBindLogic(ContainerBootstrapper.Bootstrap(kernel)), scheduler)
+				);
         }
 
         public static IKernel ApplyBindLogic(AssemblyGatherer assemblyGatherer)
@@ -32,19 +38,6 @@ namespace SpeedyMailer.Master.Service.Container
                 .Storage<IDocumentStore>(x=> x.Provider<RavenDocumentStoreProvider>())
                 .Settings(x => x.UseDocumentDatabase())
                 .Done();
-        }
-    }
-
-    public class NancyFxModule : NinjectModule
-    {
-        public override void Load()
-        {
-	        var scheduler = Kernel.Get<IScheduler>();
-            Kernel.Bind<INancyBootstrapper>().ToProvider(new NancyBootstrapperProvider(
-                                                            kernel =>
-                                                            ServiceContainerBootstrapper
-	                                                            .ApplyBindLogic(ContainerBootstrapper.Bootstrap(kernel)), scheduler)
-                );
         }
     }
 }

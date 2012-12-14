@@ -9,7 +9,7 @@ namespace SpeedyMailer.Core.Container
 	public class NancyBootstrapperProvider : Provider<INancyBootstrapper>
 	{
 		private readonly Action<IKernel> _action;
-		private IScheduler _scheduler;
+		private readonly IScheduler _scheduler;
 
 		public NancyBootstrapperProvider(Action<IKernel> action, IScheduler scheduler)
 		{

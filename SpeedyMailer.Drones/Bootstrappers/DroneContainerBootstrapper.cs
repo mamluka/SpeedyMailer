@@ -30,20 +30,14 @@ namespace SpeedyMailer.Drones.Bootstrappers
 				.NoDatabase()
 				.Settings(x => x.UseJsonFiles())
 				.Done();
-		}
-	}
 
-	public class NancyFxModule : NinjectModule
-	{
-		public override void Load()
-		{
 			var scheduler = Kernel.Get<IScheduler>();
 			Kernel
 				.Bind<INancyBootstrapper>()
 				.ToProvider(new NancyBootstrapperProvider(
-					            kernel =>
-					            ContainerBootstrapper.Bootstrap(kernel).Analyze(
-						            x => x.AssembiesContaining(new[]
+								kernel =>
+								ContainerBootstrapper.Bootstrap(kernel).Analyze(
+									x => x.AssembiesContaining(new[]
 							            {
 								            typeof (DroneAssemblyMarker),
 								            typeof (CoreAssemblyMarker),
@@ -51,12 +45,13 @@ namespace SpeedyMailer.Drones.Bootstrappers
 								            typeof (IRestClient),
 								            typeof (IDocumentStore)
 							            }))
-						            .BindInterfaceToDefaultImplementation()
-						            .DefaultConfiguration()
-						            .NoDatabase()
-						            .Settings(x => x.UseJsonFiles())
-						            .Done(),scheduler)
+									.BindInterfaceToDefaultImplementation()
+									.DefaultConfiguration()
+									.NoDatabase()
+									.Settings(x => x.UseJsonFiles())
+									.Done(), scheduler)
 				);
+
 		}
 	}
 }
