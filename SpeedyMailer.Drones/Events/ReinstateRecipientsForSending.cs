@@ -11,7 +11,7 @@ namespace SpeedyMailer.Drones.Events
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly CreativePackagesStore _creativePackagesStore;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public ReinstateRecipientsForSending(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, CreativePackagesStore creativePackagesStore, Logger logger)
 		{
@@ -52,7 +52,7 @@ namespace SpeedyMailer.Drones.Events
 			_classifyNonDeliveredMailCommand.Message = x.Message;
 			var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
 			var bounceType = mailClassfication.BounceType;
-			return bounceType == BounceType.Blocked || bounceType == BounceType.NotClassified;
+			return bounceType == BounceType.NotClassified;
 		}
 	}
 }

@@ -17,7 +17,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		{ }
 
 		[Test]
-		public void Happend_WhenBouncedMailIsClassifiedAsBlocked_ShouldSetThePastCreativePackageToBeNotProcessed()
+		public void Happend_WhenBouncedMailIsClassifiedAsBlocked_ShouldKeepThePackageProcessed()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
@@ -48,7 +48,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var result = DroneActions.FindSingle<CreativePackage>();
 
-			result.Processed.Should().BeFalse();
+			result.Processed.Should().BeTrue();
 			result.To.Should().Be("david@david.com");
 		}
 
@@ -183,7 +183,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			var result = DroneActions.FindSingle<CreativePackage>();
 
-			result.Processed.Should().BeFalse();
+			result.Processed.Should().BeTrue();
 			result.To.Should().Be("david@david.com");
 		}
 
