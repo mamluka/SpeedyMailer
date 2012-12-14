@@ -64,6 +64,8 @@ namespace SpeedyMailer.Drones.Events
 
 			var creativePackagesToUndeliver = _creativePackagesStore.GetByDomains(domainToUndeliver.Select(x => x.Domain).ToList());
 
+			_logger.Info("Paused the following packages: {0}", string.Join(",", creativePackagesToUndeliver.Select(x => x.To).ToList()));
+
 			creativePackagesToUndeliver.ToList().ForEach(x =>
 															 {
 																 x.Processed = true;

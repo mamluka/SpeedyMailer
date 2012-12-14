@@ -107,6 +107,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 					                 new MailLogEntry {msg = " 67E3DAE362: removed", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
 					                 new MailLogEntry {msg = " disconnect from localhost.localdomain[127.0.0.1]", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
 					                 new MailLogEntry {msg = " B1C9512E19CF: to=<root@xomixinc.com>, relay=local, delay=0.01, delays=0/0.01/0/0, dsn=2.0.0, status=sent (delivered to mailbox)", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
+					                 new MailLogEntry {msg = " 7B3281626A5: from=<approval-department@xomixinc.com>, status=expired, returned to sender", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"}, 
 				                 };
 
 			var result = DroneActions.ExecuteCommand<ParseLogsCommand, IList<MailEvent>>(x=> x.Logs = logEntries);

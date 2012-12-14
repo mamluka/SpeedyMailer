@@ -12,7 +12,7 @@ namespace SpeedyMailer.Drones.Commands
 	public class ParseLogsCommand : Command<IList<MailEvent>>
 	{
 		private readonly DroneSettings _droneSettings;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public IList<MailLogEntry> Logs { get; set; }
 
