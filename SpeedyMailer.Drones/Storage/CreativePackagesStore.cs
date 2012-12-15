@@ -37,7 +37,7 @@ namespace SpeedyMailer.Drones.Storage
 
 		public bool AreThereAnyNonProcessedPackages()
 		{
-			return Count() > 0;
+			return Find(Query.EQ(PropertyName(x=> x.Processed),false)).Any();
 		}
 
 		public IList<CreativePackage> GetAll()
