@@ -13,18 +13,18 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
-    public class ResumeSendingForIndividualDomainsTests : IntegrationTestBase
-    {
-        public ResumeSendingForIndividualDomainsTests()
-            : base(x => x.UseMongo = true)
-        { }
+	public class ResumeSendingForIndividualDomainsTests : IntegrationTestBase
+	{
+		public ResumeSendingForIndividualDomainsTests()
+			: base(x => x.UseMongo = true)
+		{ }
 
-        [Test]
-        public void Execute_WhenThereAreProcessedMailThatWasPausedAndItsTimeToResumeIt_ShouldMakeAsUnprocessed()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenThereAreProcessedMailThatWasPausedAndItsTimeToResumeIt_ShouldMakeAsUnprocessed()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            var creativePackage = new List<CreativePackage>
+			var creativePackage = new List<CreativePackage>
                 {
                     new CreativePackage
                         {
@@ -40,32 +40,55 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
                         },
                 };
 
-            DroneActions.StoreCollection(creativePackage);
+			DroneActions.StoreCollection(creativePackage);
 
-            DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
-                {
-                    GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
+				{
+					GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
                         {
                             {"david.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(-4)}},
                             {"cookie.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(-2)}}
                         }
-                });
+				});
 
-            var task = new ResumeSendingForIndividualDomains();
+			var task = new ResumeSendingForIndividualDomains();
 
-            DroneActions.StartScheduledTask(task);
-            Jobs.Drone().WaitForJobToStart(task);
+			DroneActions.StartScheduledTask(task);
+			Jobs.Drone().WaitForJobToStart(task);
 
-            DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "david@david.com", x => x.Processed == false);
-            DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "cookie@cookie.com", x => x.Processed == false);
-        } 
-		
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "david@david.com", x => x.Processed == false);
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "cookie@cookie.com", x => x.Processed == false);
+		}
+
 		[Test]
-        public void Execute_WhenThereAreProcessedMailAndThereAreNoMatchesOfDomainsToBeResumed_ShouldDoNothing()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		public void Execute_WhenThereAreDomainsToResume_ShouldFireAnEvent()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            var creativePackage = new List<CreativePackage>
+			ListenToEvent<ResumingGroups>();
+
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
+				{
+					GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
+                        {
+                            {"david.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(-4)}},
+                            {"cookie.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(-2)}}
+                        }
+				});
+
+			var task = new ResumeSendingForIndividualDomains();
+
+			DroneActions.StartScheduledTask(task);
+
+			AssertEventWasPublished<ResumingGroups>(x => x.Groups.Should().BeEquivalentTo(new[] { "david.com", "cookie.com" }));
+		}
+
+		[Test]
+		public void Execute_WhenThereAreProcessedMailAndThereAreNoMatchesOfDomainsToBeResumed_ShouldDoNothing()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			var creativePackage = new List<CreativePackage>
                 {
                     new CreativePackage
                         {
@@ -81,34 +104,34 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
                         },
                 };
 
-            DroneActions.StoreCollection(creativePackage);
+			DroneActions.StoreCollection(creativePackage);
 
-            DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
-                {
-                    GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
+				{
+					GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
                         {
                             {"david.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(4)}},
                             {"cookie.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(2)}}
                         }
-                });
+				});
 
-            var task = new ResumeSendingForIndividualDomains();
+			var task = new ResumeSendingForIndividualDomains();
 
-            DroneActions.StartScheduledTask(task);
-            Jobs.Drone().WaitForJobToStart(task);
+			DroneActions.StartScheduledTask(task);
+			Jobs.Drone().WaitForJobToStart(task);
 
 			Thread.Sleep(1000);
 
-            DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "david@david.com", x => x.Processed);
-            DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "cookie@cookie.com", x => x.Processed);
-        }
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "david@david.com", x => x.Processed);
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "cookie@cookie.com", x => x.Processed);
+		}
 
-        [Test]
-        public void Execute_WhenNotAllPackagesNeedsToBeResume_ShouldOnlyResumeTheOnesThatAreAtTheRightTime()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenNotAllPackagesNeedsToBeResume_ShouldOnlyResumeTheOnesThatAreAtTheRightTime()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            var creativePackage = new List<CreativePackage>
+			var creativePackage = new List<CreativePackage>
                 {
                     new CreativePackage
                         {
@@ -124,24 +147,24 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
                         },
                 };
 
-            DroneActions.StoreCollection(creativePackage);
+			DroneActions.StoreCollection(creativePackage);
 
-            DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
-                {
-                    GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
+			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
+				{
+					GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>
                         {
                             {"david.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(-4)}},
                             {"cookie.com", new ResumeSendingPolicy {ResumeAt = DateTime.UtcNow + TimeSpan.FromHours(2)}}
                         }
-                });
+				});
 
-            var task = new ResumeSendingForIndividualDomains();
+			var task = new ResumeSendingForIndividualDomains();
 
-            DroneActions.StartScheduledTask(task);
-            Jobs.Drone().WaitForJobToStart(task);
+			DroneActions.StartScheduledTask(task);
+			Jobs.Drone().WaitForJobToStart(task);
 
-            DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "david@david.com", x => x.Processed == false);
-            DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "cookie@cookie.com", x => x.Processed);
-        }
-    }
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "david@david.com", x => x.Processed == false);
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.To == "cookie@cookie.com", x => x.Processed);
+		}
+	}
 }

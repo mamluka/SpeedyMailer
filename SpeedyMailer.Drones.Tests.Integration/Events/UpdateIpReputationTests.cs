@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Mail;
@@ -27,19 +25,36 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
 				});
 
-			FireEvent<UpdateIpReputation, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
+			FireEvent<UpdateIpReputation, BlockingGroups>(x => x.Groups = new List<string>
 				{
-					new MailBounced
-						{
-							DomainGroup = "yahoo",
-							Message = "this is a block"
-						}
+					"yahoo"
 				});
 
 			var result = DroneActions.FindSingle<IpReputation>();
 
-			result.GroupReputation.Should().ContainKey("yahoo");
-			result.GroupReputation["yahoo"].Should().OnlyContain(x => x > DateTime.UtcNow.AddSeconds(-20));
+			result.BlockingHistory.Should().ContainKey("yahoo");
+			result.BlockingHistory["yahoo"].Should().OnlyContain(x => x > DateTime.UtcNow.AddSeconds(-20));
+		}
+
+		[Test]
+		public void Inspect_WhenSendingIsResumed_ShouldUpdateReputationForThatGroup()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.Store(new DeliverabilityClassificationRules
+				{
+					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
+				});
+
+			FireEvent<UpdateIpReputation, ResumingGroups>(x => x.Groups = new List<string>
+				{
+					"yahoo"
+				});
+
+			var result = DroneActions.FindSingle<IpReputation>();
+
+			result.ResumingHistory.Should().ContainKey("yahoo");
+			result.ResumingHistory["yahoo"].Should().OnlyContain(x => x > DateTime.UtcNow.AddSeconds(-20));
 		}
 
 		[Test]
@@ -54,26 +69,52 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new IpReputation
 				{
-					GroupReputation = new Dictionary<string, List<DateTime>>
+					BlockingHistory = new Dictionary<string, List<DateTime>>
 						{
 							{ "yahoo",new List<DateTime> { new DateTime(1999,1,1,0,0,0,DateTimeKind.Utc)} }
 						}
 				});
 
-			FireEvent<UpdateIpReputation, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
+			FireEvent<UpdateIpReputation, BlockingGroups>(x => x.Groups = new List<string>
 				{
-					new MailBounced
-						{
-							DomainGroup = "yahoo",
-							Message = "this is a block"
-						}
+					"yahoo"
 				});
 
 			var result = DroneActions.FindSingle<IpReputation>();
 
-			result.GroupReputation.Should().ContainKey("yahoo");
-			result.GroupReputation["yahoo"].Should().Contain(x => x > DateTime.UtcNow.AddSeconds(-20));
-			result.GroupReputation["yahoo"].Should().Contain(x => x == new DateTime(1999, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+			result.BlockingHistory.Should().ContainKey("yahoo");
+			result.BlockingHistory["yahoo"].Should().Contain(x => x > DateTime.UtcNow.AddSeconds(-20));
+			result.BlockingHistory["yahoo"].Should().Contain(x => x == new DateTime(1999, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+		}
+
+		[Test]
+		public void Inspect_WhenResumingGroupAlreadyExists_ShouldAddANewTimeStep()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.Store(new DeliverabilityClassificationRules
+				{
+					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
+				});
+
+			DroneActions.Store(new IpReputation
+				{
+					ResumingHistory = new Dictionary<string, List<DateTime>>
+						{
+							{ "yahoo",new List<DateTime> { new DateTime(1999,1,1,0,0,0,DateTimeKind.Utc)} }
+						}
+				});
+
+			FireEvent<UpdateIpReputation, ResumingGroups>(x => x.Groups = new List<string>
+				{
+					"yahoo"
+				});
+
+			var result = DroneActions.FindSingle<IpReputation>();
+
+			result.ResumingHistory.Should().ContainKey("yahoo");
+			result.ResumingHistory["yahoo"].Should().Contain(x => x > DateTime.UtcNow.AddSeconds(-20));
+			result.ResumingHistory["yahoo"].Should().Contain(x => x == new DateTime(1999, 1, 1, 0, 0, 0, DateTimeKind.Utc));
 		}
 	}
 }

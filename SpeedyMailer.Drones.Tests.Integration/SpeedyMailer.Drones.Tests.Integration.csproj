@@ -120,7 +120,7 @@
     <Compile Include="Commands\SendCreativePackageCommandTests.cs" />
     <Compile Include="Commands\PauseSpecificSendingJobsCommandTests.cs" />
     <Compile Include="Events\DeliveryRealTimeDecisionTests.cs" />
-    <Compile Include="Events\MarkUngroupedPackagesForDeplayedSendingTests.cs" />
+    <Compile Include="Events\PauseSendingForIndividualDomainsTests.cs" />
     <Compile Include="Events\ReinstateRecipientsForSendingTests.cs" />
     <Compile Include="Events\RemoveSentPackagesTests.cs" />
     <Compile Include="Events\UpdateIpReputationTests.cs" />

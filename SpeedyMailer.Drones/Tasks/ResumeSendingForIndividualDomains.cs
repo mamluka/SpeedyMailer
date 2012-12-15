@@ -3,6 +3,7 @@ using System.Linq;
 using NLog;
 using Quartz;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Storage;
 
@@ -25,9 +26,11 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly CreativePackagesStore _creativePackagesStore;
 			private readonly Logger _logger;
+			private EventDispatcher _eventDispatcher;
 
-			public Job(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, Logger logger)
+			public Job(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, EventDispatcher eventDispatcher, Logger logger)
 			{
+				_eventDispatcher = eventDispatcher;
 				_logger = logger;
 				_creativePackagesStore = creativePackagesStore;
 				_omniRecordManager = omniRecordManager;
@@ -47,6 +50,8 @@ namespace SpeedyMailer.Drones.Tasks
 
 				if (!domainToResume.Any())
 					return;
+
+				_eventDispatcher.ExecuteAll(new ResumingGroups { Groups = domainToResume });
 
 				_logger.Info("Resuming domains for sending: {0}", string.Join(",", domainToResume));
 

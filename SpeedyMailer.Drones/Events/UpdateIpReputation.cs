@@ -3,53 +3,60 @@ using System.Collections.Generic;
 using System.Linq;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
-using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class UpdateIpReputation : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
+	public class UpdateIpReputation : IHappendOn<BlockingGroups>, IHappendOn<ResumingGroups>
 	{
-		private ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
-		private OmniRecordManager _omniRecordManager;
+		private readonly OmniRecordManager _omniRecordManager;
 
-		public UpdateIpReputation(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager)
+		public UpdateIpReputation(OmniRecordManager omniRecordManager)
 		{
 			_omniRecordManager = omniRecordManager;
-			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 		}
 
-		public void Inspect(AggregatedMailBounced data)
+		public void Inspect(BlockingGroups data)
 		{
-			var ipReputation = _omniRecordManager.GetSingle<IpReputation>() ?? new IpReputation() { GroupReputation = new Dictionary<string, List<DateTime>>() };
-			data.MailEvents.Select(x =>
-				{
-					_classifyNonDeliveredMailCommand.Message = x.Message;
-					var classfication = _classifyNonDeliveredMailCommand.Execute();
-					return new { Clasification = classfication.BounceType, x.DomainGroup };
-				})
-				.Where(x => x.Clasification == BounceType.Blocked)
-				.ToList()
-				.ForEach(x =>
-					{
-						var newKey = ipReputation.GroupReputation.ContainsKey(x.DomainGroup);
-						if (newKey)
-						{
-							ipReputation.GroupReputation[x.DomainGroup].Add(DateTime.UtcNow);
-						}
-						else
-						{
-							ipReputation.GroupReputation.Add(x.DomainGroup, new List<DateTime> { DateTime.UtcNow });
-						}
+			UpdateReputation(data.Groups, x => x.BlockingHistory);
+		}
 
-					});
+		public void Inspect(ResumingGroups data)
+		{
+			UpdateReputation(data.Groups, x => x.ResumingHistory);
+		}
+
+		private void UpdateReputation(IEnumerable<string> groups, Func<IpReputation, IDictionary<string, List<DateTime>>> selector)
+		{
+			var ipReputation = _omniRecordManager.GetSingle<IpReputation>() ?? NewIpReputation();
+
+			groups
+			.ToList()
+			.ForEach(x =>
+							 {
+								 var dictionary = selector(ipReputation);
+								 var containsKey = dictionary.ContainsKey(x);
+
+								 if (containsKey)
+								 {
+									 dictionary[x].Add(DateTime.UtcNow);
+								 }
+								 else
+								 {
+									 dictionary.Add(x, new List<DateTime> { DateTime.UtcNow });
+								 }
+							 });
 
 			_omniRecordManager.UpdateOrInsert(ipReputation);
 		}
 
-		public void Inspect(AggregatedMailDeferred data)
+		private static IpReputation NewIpReputation()
 		{
-
+			return new IpReputation
+					   {
+						   BlockingHistory = new Dictionary<string, List<DateTime>>(),
+						   ResumingHistory = new Dictionary<string, List<DateTime>>()
+					   };
 		}
 	}
 }
