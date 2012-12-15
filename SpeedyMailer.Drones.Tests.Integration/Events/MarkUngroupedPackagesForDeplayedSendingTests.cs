@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Creative;
@@ -54,6 +55,41 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		}
 
 		[Test]
+		public void Inspect_WhenPausingAnEvent_ShouldFireAnEvent()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			ListenToEvent<BlockingGroups>();
+
+			DroneActions.Store(new DeliverabilityClassificationRules
+			{
+				HardBounceRules = new List<string> { "not a rule" },
+				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
+			});
+
+
+			var creativePackages = new[]
+                {
+                    new CreativePackage { To = "david@blocked.com" ,Group = "$default$" ,},
+                    new CreativePackage { To = "another-david@blocked.com" ,Group = "$default$",},
+                    new CreativePackage { To = "another-david@suck.com" ,Group = "$default$",}
+                };
+
+			DroneActions.StoreCollection(creativePackages);
+
+			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
+                {
+                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
+                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@suck.com"},
+                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
+                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
+                });
+
+			AssertEventWasPublished<BlockingGroups>(x => x.Groups.Any(s => s == "suck.com"));
+			AssertEventWasPublished<BlockingGroups>(x => x.Groups.Any(s => s == "blocked.com"));
+		}
+
+		[Test]
 		public void Inspect_WhenSomeMassesgesWereFoundToBeBlocking_ShouldSetThemAsProcessed()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
@@ -82,7 +118,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				                                                                                       });
 
 			var result = DroneActions.FindAll<CreativePackage>();
-			
+
 			result.Should().Contain(x => x.To == "david@blocked.com" && x.Processed);
 			result.Should().Contain(x => x.To == "another-david@blocked.com" && x.Processed);
 			result.Should().Contain(x => x.To == "another-david@suck.com" && x.Processed);

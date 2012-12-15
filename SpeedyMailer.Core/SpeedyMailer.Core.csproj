@@ -196,6 +196,7 @@
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
+    <Compile Include="Domain\Mail\BlockingGroups.cs" />
     <Compile Include="Domain\Mail\Dnsbl.cs" />
     <Compile Include="Domain\Mail\DnsnlType.cs" />
     <Compile Include="Domain\Mail\DeliverabilityClassificationRules.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Domain\Mail\DroneStateSnapshoot.cs" />
     <Compile Include="Domain\Mail\GenericMailEvent.cs" />
     <Compile Include="Domain\Mail\GroupsAndIndividualDomainsSendingPolicies.cs" />
+    <Compile Include="Domain\Mail\IpReputation.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
     <Compile Include="Domain\Mail\MailEventType.cs" />

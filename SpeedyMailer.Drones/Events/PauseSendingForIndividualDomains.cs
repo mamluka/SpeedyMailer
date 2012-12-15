@@ -17,7 +17,7 @@ namespace SpeedyMailer.Drones.Events
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly CreativePackagesStore _creativePackagesStore;
-		private Logger _logger;
+		private readonly Logger _logger;
 
 		public PauseSendingForIndividualDomains(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, CreativeFragmentSettings creativeFragmentSettings, Logger logger)
 		{

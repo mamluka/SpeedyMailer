@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Creative;
@@ -69,7 +68,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
 		}
-		
+
 		[Test]
 		public void Inspect_WhenGivenABounceMailEventAndTheAnalyzerSayingItsBlockingIpBounceAndTheGroupIsDefault_ShouldDoNothing()
 		{
@@ -152,10 +151,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.EditSettings<EmailingSettings>(x =>
-				                                            {
-					                                            x.WritingEmailsToDiskPath = "dev/null";
-					                                            x.MailingDomain = "example.com";
-				                                            });
+															{
+																x.WritingEmailsToDiskPath = "dev/null";
+																x.MailingDomain = "example.com";
+															});
 		}
 
 		private void StoreClassificationRules(string bounceCondition, HeuristicRule heuristicRule)
