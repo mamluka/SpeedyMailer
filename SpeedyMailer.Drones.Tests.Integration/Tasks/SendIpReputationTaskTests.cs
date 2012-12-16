@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
-	class SendIpReputationTaskTests
+	public class SendIpReputationTaskTests
 	{
 	}
 }
