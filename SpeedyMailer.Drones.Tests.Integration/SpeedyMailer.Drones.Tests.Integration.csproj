@@ -137,7 +137,6 @@
     <Compile Include="Tasks\ResumeSendingForIndividualDomainsTests.cs" />
     <Compile Include="Tasks\SendCreativePackagesWithIntervalTaskTests.cs" />
     <Compile Include="Tasks\SendDroneStateSnapshotTaskTests.cs" />
-    <Compile Include="Tasks\SendIpReputationTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SpeedyMailer.Drones\NLog.config">

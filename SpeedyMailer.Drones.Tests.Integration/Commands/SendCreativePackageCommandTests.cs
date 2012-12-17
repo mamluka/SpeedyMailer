@@ -30,7 +30,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 									{
 										Body = "test body",
 										Subject = "test subject",
-										To = "test@test"
+										To = "test@test",
+										CreativeId = "creative/1"
 									};
 
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>
@@ -90,7 +91,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 									{
 										Body = "test body",
 										Subject = "test subject",
-										To = "test@test"
+										To = "test@test",
+										CreativeId = "creative/1"
 									};
 
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>

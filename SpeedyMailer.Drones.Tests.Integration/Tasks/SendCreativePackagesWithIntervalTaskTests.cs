@@ -216,6 +216,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
                            FromAddressDomainPrefix = "david",
                            Interval = 10,
                            FromName = "sales",
+						   CreativeId = "creative/1"
                        };
         }
     }
