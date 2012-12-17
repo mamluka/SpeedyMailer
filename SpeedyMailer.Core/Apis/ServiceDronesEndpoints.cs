@@ -28,6 +28,8 @@ namespace SpeedyMailer.Core.Apis
 				public string LastUpdate { get; set; }
 
 				public string Domain { get; set; }
+
+				public IpReputation IpReputation { get; set; }
 			}
 
 			public class GetDnsblData : ApiCall

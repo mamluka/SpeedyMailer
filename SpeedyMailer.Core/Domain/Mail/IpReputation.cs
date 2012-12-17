@@ -8,8 +8,8 @@ namespace SpeedyMailer.Core.Domain.Mail
 {
 	public class IpReputation
 	{
-		[BsonId(IdGenerator = typeof(BsonObjectIdGenerator))]
-		public virtual BsonObjectId Id { get; set; }
+		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+		public virtual string Id { get; set; }
 
 		public IDictionary<string, List<DateTime>> BlockingHistory { get; set; }
 		public IDictionary<string, List<DateTime>> ResumingHistory { get; set; }

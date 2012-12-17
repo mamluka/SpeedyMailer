@@ -1,8 +1,10 @@
 using System;
 using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Tasks
 {
@@ -25,9 +27,11 @@ namespace SpeedyMailer.Drones.Tasks
 		{
 			private readonly Api _api;
 			private readonly DroneSettings _droneSettings;
+			private readonly OmniRecordManager _omniRecordManager;
 
-			public Job(Api api,DroneSettings droneSettings)
+			public Job(Api api,DroneSettings droneSettings, OmniRecordManager omniRecordManager)
 			{
+				_omniRecordManager = omniRecordManager;
 				_droneSettings = droneSettings;
 				_api = api;
 			}
@@ -40,6 +44,7 @@ namespace SpeedyMailer.Drones.Tasks
 						x.BaseUrl = _droneSettings.BaseUrl;
 						x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 						x.Domain = _droneSettings.Domain;
+						x.IpReputation = _omniRecordManager.GetSingle<IpReputation>();
 					});
 			}
 		}
