@@ -8,6 +8,7 @@ using Raven.Client;
 using Raven.Client.Linq;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Master.Service.Storage.Indexes;
 
@@ -43,6 +44,19 @@ namespace SpeedyMailer.Master.Service.Modules
 														.Select(result => new { result.Count, result.DomainGroup, ravenQueryStatistics.IsStale }));
 												}
 											};
+
+			Get["/drone-domains"] = x =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						return
+							Response.AsText(string.Join(Environment.NewLine, session
+								                                                 .Query<Drone>()
+								                                                 .ToList()
+								                                                 .Select(drone => drone.BaseUrl)
+								                                                 .ToList()));
+					}
+				};
 		}
 	}
 }
