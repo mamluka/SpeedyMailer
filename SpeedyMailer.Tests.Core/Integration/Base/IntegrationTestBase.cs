@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Common.Logging;
 using FluentAssertions;
 using NUnit.Framework;
 using Ninject;
