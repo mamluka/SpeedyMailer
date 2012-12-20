@@ -18,6 +18,9 @@ namespace SpeedyMailer.Master.Ray
 		{
 			[Option("p", "process-csv", HelpText = "The base url of the service to register the drone with")]
 			public string CsvFile { get; set; }
+			
+			[Option("c", "create-list", HelpText = "The base url of the service to register the drone with")]
+			public string InputF‎Ile { get; set; }
 
 			[Option("T", "top", HelpText = "The base url of the service to register the drone with")]
 			public bool ListTopDomains { get; set; }
@@ -50,6 +53,29 @@ namespace SpeedyMailer.Master.Ray
 
 					if (!string.IsNullOrEmpty(rayCommandOptions.EstimationParameters))
 						CalculateSendingTime(rows, rayCommandOptions.EstimationParameters);
+				}
+
+				if (!string.IsNullOrEmpty(rayCommandOptions.InputF‎Ile))
+				{
+					using (var fr = new StreamReader(rayCommandOptions.InputF‎Ile))
+					{
+						var data = fr.ReadToEnd();
+						var emails = data.Split(Convert.ToChar(Environment.NewLine));
+						var csvRows = emails.Select(x => new ContactsListCsvRow
+							{
+								Email = x,
+								City = "foo",
+								Country = "foo",
+								Firstname = "foo",
+								Ip = "foo",
+								Lastname = "foo",
+								Phone = "foo",
+								State = "foo",
+								Zip = "foo",
+							});
+
+						
+					}
 				}
 
 			}
