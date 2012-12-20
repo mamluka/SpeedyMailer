@@ -7,12 +7,11 @@ namespace SpeedyMailer.Core.Logging
 	{
 		public override void Load()
 		{
-
 			Kernel.Bind<Logger>().ToMethod(x =>
-											   {
-												   var className = x.Request.Target != null ? x.Request.Target.Member.DeclaringType.FullName : "RootType";
-												   return LogManager.GetLogger(className);
-											   });
+				{
+					var className = x.Request.Target != null ? x.Request.Target.Member.DeclaringType.FullName : "RootType";
+					return LogManager.GetLogger(className);
+				});
 		}
 	}
 }

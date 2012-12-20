@@ -1,4 +1,5 @@
 using System;
+using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Core.Domain.Drones
 {
@@ -9,5 +10,7 @@ namespace SpeedyMailer.Core.Domain.Drones
 		public DroneStatus Status { get; set; }
 		public DateTime LastUpdated { get; set; }
 		public string Domain { get; set; }
+
+		public IpReputation IpReputation { get; set; }
 	}
 }

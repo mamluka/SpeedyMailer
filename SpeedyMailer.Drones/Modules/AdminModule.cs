@@ -36,6 +36,11 @@ namespace SpeedyMailer.Drones.Modules
 
 					return Response.AsJson(data);
 				};
+
+			Get["/exception"] = x =>
+				{
+					throw new Exception("Here");
+				};
 		}
 	}
 }

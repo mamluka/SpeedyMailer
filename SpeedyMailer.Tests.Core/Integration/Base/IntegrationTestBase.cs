@@ -24,7 +24,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 	[TestFixture]
 	public class IntegrationTestBase : AutoMapperAndFixtureBase
 	{
-		private int _mongoRandomPort;
+		private int _mongoPort;
 
 		public IKernel DroneKernel { get; private set; }
 
@@ -78,9 +78,9 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			DefaultBaseUrl = IntergrationHelpers.GenerateRandomLocalhostAddress();
 
-			_mongoRandomPort = IntergrationHelpers.RandomPort() + 1;
+			_mongoPort = _options.UseDefaultMongoPort ? 27027 : IntergrationHelpers.RandomPort() + 1;
 
-			DefaultHostUrl = IntergrationHelpers.DefaultStoreUri(_mongoRandomPort);
+			DefaultHostUrl = IntergrationHelpers.DefaultStoreUri(_mongoPort);
 
 			Api = new IntegrationApiHelpers(DefaultBaseUrl);
 			Email = new IntegrationEmailHelpers();
@@ -90,7 +90,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			IntergrationHelpers.ValidateSettingClasses();
 
 			if (_options.UseMongo)
-				MongoDb.StartMongo(_mongoRandomPort);
+				MongoDb.StartMongo(_mongoPort);
 		}
 
 
@@ -172,7 +172,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			DeleteJsonSettingFiles();
 
 			if (_options.UseMongo)
-				MongoDb.ShutdownMongo(_mongoRandomPort);
+				MongoDb.ShutdownMongo(_mongoPort);
 		}
 
 		private void ClearJobsFromSchedulers()

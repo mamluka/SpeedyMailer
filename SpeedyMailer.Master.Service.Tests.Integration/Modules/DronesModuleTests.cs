@@ -32,6 +32,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 					x.BaseUrl = "baseurl";
 					x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 					x.Domain = "example.com";
+					x.IpReputation = new IpReputation { BlockingHistory = new Dictionary<string, List<DateTime>> { { "gmail", new List<DateTime> { new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) } } } };
 				});
 
 			Store.WaitForEntitiesToExist<Drone>();
@@ -41,6 +42,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Id.Should().Be("droneip");
 			result.LastUpdated.Should().BeAfter(DateTime.UtcNow.AddSeconds(-30));
 			result.Domain.Should().Be("example.com");
+			result.IpReputation.BlockingHistory["gmail"].Should().Contain(x => x == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc));
 		}
 
 		[Test]

@@ -32,7 +32,8 @@ namespace SpeedyMailer.Master.Service.Modules
 								BaseUrl = model.BaseUrl,
 								Id = model.Identifier,
 								LastUpdated = DateTime.Parse(model.LastUpdate),
-								Domain = model.Domain
+								Domain = model.Domain,
+								IpReputation = model.IpReputation
 							});
 						session.SaveChanges();
 					}
