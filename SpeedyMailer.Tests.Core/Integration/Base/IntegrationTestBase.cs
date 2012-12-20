@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using Common.Logging;
 using FluentAssertions;
+using NLog;
 using NUnit.Framework;
 using Ninject;
 using Quartz;
@@ -15,6 +15,7 @@ using Raven.Client.Document;
 using Raven.Client.Embedded;
 using Rhino.Mocks;
 using SpeedyMailer.Core.Evens;
+using SpeedyMailer.Core.Logging;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service;
 using SpeedyMailer.Tests.Core.Unit.Base;
@@ -71,6 +72,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
+			LogManager.Configuration.AddTarget("mongo",new MongoTarget());
+
 			MasterKernel = ContainersConfigurationsForTesting.Service();
 			DroneKernel = ContainersConfigurationsForTesting.Drone();
 
