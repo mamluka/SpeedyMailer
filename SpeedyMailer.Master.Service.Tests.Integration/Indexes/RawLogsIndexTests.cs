@@ -32,9 +32,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 
 			Store.WaitForIndexNotToBeStale<Creative_RawLogs.ReduceResult, Creative_RawLogs>();
 
-			var result = Store.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>();
+			var result = Store.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>(x => x.Group == "All");
 
-			result.Select(x => x.Log).Should().BeEquivalentTo(new[] { "log1", "log2", "log3" });
+			result[0].Logs.Should().BeEquivalentTo(new[] { "log1", "log2", "log3" });
 		}
 	}
 }

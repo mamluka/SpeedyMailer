@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using Raven.Client.Indexes;
-using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Master.Service.Storage.Indexes
@@ -10,16 +10,18 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 	{
 		public class ReduceResult
 		{
-			public string Log { get; set; }
+			public List<string> Logs { get; set; }
+			public string Group { get; set; }
 		}
 
 		public Creative_RawLogs()
 		{
 			Map = snapshots => snapshots
-				.SelectMany(x => x.RawLogs, (x, m) => new { Log = m });
+				.Select(x => new { Logs = x.RawLogs, Group = "All" });
 
-			Reduce = result =>
-					 result.Select(x => new { Log = x.Log });
+			Reduce = result => result
+								   .GroupBy(x => x.Group == "All")
+								   .Select(x => new { Logs = x.SelectMany(r => r.Logs, (p, m) => m).ToList(), Group = "All" });
 		}
 	}
 }
