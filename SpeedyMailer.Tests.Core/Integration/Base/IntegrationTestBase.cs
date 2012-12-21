@@ -73,8 +73,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			
-
 			MasterKernel = ContainersConfigurationsForTesting.Service();
 			DroneKernel = ContainersConfigurationsForTesting.Drone();
 

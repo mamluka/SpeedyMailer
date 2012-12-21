@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using SpeedyMailer.Core.Domain.Mail;
 
 namespace SpeedyMailer.Core.Domain.Drones
@@ -12,5 +13,7 @@ namespace SpeedyMailer.Core.Domain.Drones
 		public string Domain { get; set; }
 
 		public IpReputation IpReputation { get; set; }
+
+		public List<DroneException> Exceptions { get; set; }
 	}
 }
