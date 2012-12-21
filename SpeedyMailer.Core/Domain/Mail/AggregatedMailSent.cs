@@ -30,14 +30,14 @@ namespace SpeedyMailer.Core.Domain.Mail
 			if (ReferenceEquals(null, obj)) return false;
 			if (ReferenceEquals(this, obj)) return true;
 			if (obj.GetType() != this.GetType()) return false;
-			return Equals((MailSent) obj);
+			return Equals((MailSent)obj);
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked
 			{
-				return ((Recipient != null ? Recipient.GetHashCode() : 0)*397) ^ (CreativeId != null ? CreativeId.GetHashCode() : 0);
+				return ((Recipient != null ? Recipient.GetHashCode() : 0) * 397) ^ (CreativeId != null ? CreativeId.GetHashCode() : 0);
 			}
 		}
 
@@ -47,10 +47,10 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string Recipient { get; set; }
 		public DateTime Time { get; set; }
 		public string DomainGroup { get; set; }
-	    public string CreativeId { get; set; }
+		public string CreativeId { get; set; }
 	}
 
-	public class MailBounced : IHasDomainGroup, IHasRecipient, IHasRelayMessage
+	public class MailBounced : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasTime, IHasCreativeId
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
@@ -60,10 +60,10 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string DomainGroup { get; set; }
 		public string Message { get; set; }
 
-	    public string CreativeId { get; set; }
+		public string CreativeId { get; set; }
 	}
 
-	public class MailDeferred : IHasDomainGroup, IHasRecipient, IHasRelayMessage
+	public class MailDeferred : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasTime, IHasCreativeId
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
@@ -72,7 +72,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public DateTime Time { get; set; }
 		public string DomainGroup { get; set; }
 		public string Message { get; set; }
-	    public string CreativeId { get; set; }
+		public string CreativeId { get; set; }
 	}
 
 	public interface IHasDomainGroup
@@ -90,8 +90,20 @@ namespace SpeedyMailer.Core.Domain.Mail
 		string Message { get; set; }
 	}
 
+	public interface IHasTime
+	{
+		DateTime Time { get; set; }
+	}
+
+	public interface IHasCreativeId
+	{
+		string CreativeId { get; set; }
+	}
+
 	public class AggregatedMailEvents<T>
 	{
 		public IList<T> MailEvents { get; set; }
 	}
+
+
 }

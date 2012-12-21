@@ -215,6 +215,7 @@
     <Compile Include="Domain\Mail\AggregatedMailSent.cs" />
     <Compile Include="Domain\Mail\ReducedMailLogEntry.cs" />
     <Compile Include="Domain\Mail\ResumingGroups.cs" />
+    <Compile Include="Domain\Mail\UnclassfiedMailEvent.cs" />
     <Compile Include="Domain\Master\Service.cs" />
     <Compile Include="Emails\AddEmailToPoolResults.cs" />
     <Compile Include="Emails\EmailBodyElements.cs" />

@@ -73,6 +73,8 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
+			LogManager.Configuration.RemoveTarget("MongoDB");
+
 			MasterKernel = ContainersConfigurationsForTesting.Service();
 			DroneKernel = ContainersConfigurationsForTesting.Drone();
 

@@ -141,6 +141,7 @@
     <Compile Include="Events\PauseSendingForIndividualDomains.cs" />
     <Compile Include="Events\ReinstateRecipientsForSending.cs" />
     <Compile Include="Events\RemoveSentPackages.cs" />
+    <Compile Include="Events\StoreUnclassifiedMailEvents.cs" />
     <Compile Include="Events\UpdateIpReputation.cs" />
     <Compile Include="Modules\AdminModule.cs" />
     <Compile Include="Modules\DealsModule.cs" />

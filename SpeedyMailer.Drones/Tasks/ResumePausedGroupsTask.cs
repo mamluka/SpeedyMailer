@@ -38,14 +38,14 @@ namespace SpeedyMailer.Drones.Tasks
 				if (groupsSendingPolicies == null)
 					return;
 
-				var resumedDomain = groupsSendingPolicies.GroupSendingPolicies.Where(x => x.Value.ResumeAt < DateTime.UtcNow).Select(x => x.Key).ToList();
+				var resumedDomains = groupsSendingPolicies.GroupSendingPolicies.Where(x => x.Value.ResumeAt < DateTime.UtcNow).Select(x => x.Key).ToList();
 
 				groupsSendingPolicies.GroupSendingPolicies = groupsSendingPolicies
 					.GroupSendingPolicies
 					.Where(x => x.Value.ResumeAt >= DateTime.UtcNow)
 					.ToDictionary(x => x.Key, x => x.Value);
 
-				_eventDispatcher.ExecuteAll(new ResumingGroups { Groups = resumedDomain });
+				_eventDispatcher.ExecuteAll(new ResumingGroups { Groups = resumedDomains });
 
 				_omniRecordManager.UpdateOrInsert(groupsSendingPolicies);
 			}
