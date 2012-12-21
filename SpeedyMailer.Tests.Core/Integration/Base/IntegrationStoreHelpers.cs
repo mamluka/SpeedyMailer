@@ -74,18 +74,21 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		public IList<T> Query<T, TIndex>(Expression<Func<T, bool>> expression) where TIndex : AbstractIndexCreationTask, new()
+		public IList<T> Query<T, TIndex>(Expression<Func<T, bool>> expression = null) where TIndex : AbstractIndexCreationTask, new()
 		{
 			using (var session = _documentStore.OpenSession())
 			{
-				return session.Query<T, TIndex>()
-					.Customize(x => x.WaitForNonStaleResults())
+				var ravenQueryable = session.Query<T, TIndex>().Customize(x => x.WaitForNonStaleResults());
+				
+				if (expression == null)
+					return ravenQueryable.ToList();
+
+				return ravenQueryable
 					.Where(expression)
-					.Take(1024)
 					.ToList();
 			}
 		}
-
+		
 		public void Delete<T>(string entityId)
 		{
 			using (var session = _documentStore.OpenSession())

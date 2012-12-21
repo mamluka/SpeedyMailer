@@ -86,13 +86,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																				                new MailSent { Recipient = "sent@sent.com"}
 																			                };
 
-																		x.RawLogs = new List<ReducedMailLogEntry>
-																			            {
-																				            new ReducedMailLogEntry
-																					            {
-																						            Message = "log message"
-																					            }
-																			            };
+																		x.RawLogs = new List<string> { "log message" };
 
 																		x.ClickActions = new List<ClickAction>
 																			                 {
@@ -120,7 +114,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Drone.BaseUrl.Should().Be("baseurl.com");
 			result.Drone.Domain.Should().Be("example.com");
 
-			result.RawLogs.Should().OnlyContain(x => x.Message == "log message");
+			result.RawLogs.Should().OnlyContain(x => x == "log message");
 			result.MailSent.Should().OnlyContain(x => x.Recipient == "sent@sent.com");
 			result.MailBounced.Should().OnlyContain(x => x.Message == "mail bounced");
 			result.MailDeferred.Should().OnlyContain(x => x.Message == "mail deferred");

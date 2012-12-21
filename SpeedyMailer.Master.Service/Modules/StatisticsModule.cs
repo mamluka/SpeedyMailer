@@ -37,26 +37,12 @@ namespace SpeedyMailer.Master.Service.Modules
 					}
 				};
 
-			Get["/raw-logs/{drone}"] = call =>
+			Get["/logs"] = call =>
 				{
 					using (var session = documentStore.OpenSession())
 					{
-						var drone = (string)call.drone;
-						var results = session.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>().Where(x => x.DroneId == drone).ToList();
-
-						return Response.AsJson(results);
-					}
-				};
-
-			Get["/logs/{drone}"] = call =>
-				{
-					using (var session = documentStore.OpenSession())
-					{
-						var drone = (string)call.drone;
-						var results = session.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>().Where(x => x.DroneId == drone).ToList();
-
-						var lines = results.SelectMany(x => x.RawLogs).Select(x => x.Time.ToLongTimeString() + " " + x.Message).ToList();
-						return Response.AsText(string.Join(Environment.NewLine, lines));
+						var results = session.Query<string, Creative_RawLogs>().ToList();
+						return Response.AsText(string.Join(Environment.NewLine, results));
 					}
 				};
 
