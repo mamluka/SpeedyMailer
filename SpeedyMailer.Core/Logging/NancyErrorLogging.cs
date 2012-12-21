@@ -22,9 +22,6 @@ namespace SpeedyMailer.Core.Logging
 			var error = errorObject as Exception;
 
 			_logger.ErrorException("Nancy Unhandled error:", error);
-			_logger.Error("Nancy error message: {0}", error.Message);
-			_logger.Error("Nancy error stacktrace: {0}", error.StackTrace);
-			_logger.Error("Nancy error inner exception message: {0}", error.InnerException.Message);
 		}
 	}
 }

@@ -5,6 +5,7 @@ using NLog;
 using NLog.Config;
 using Nancy;
 using Quartz;
+using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Logging;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Commands;
