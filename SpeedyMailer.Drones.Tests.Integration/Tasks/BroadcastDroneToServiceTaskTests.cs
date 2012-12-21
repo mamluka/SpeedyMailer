@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Logging;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Tasks;
@@ -51,6 +52,36 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 															x.BaseUrl == "http://192.168.1.1:2589" &&
 															DateTime.Parse(x.LastUpdate) > DateTime.UtcNow.AddSeconds(-30) &&
 															x.Domain == "example.com"
+				);
+		}
+
+		[Test]
+		public void Start_WhenCalled_ShouldBroadCastAllExceptions()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+														{
+															x.Identifier = "drone1";
+															x.BaseUrl = "http://192.168.1.1:2589";
+															x.Domain = "example.com";
+															x.StoreHostname = DefaultHostUrl;
+														});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x =>
+															{
+																x.ApiBaseUri = DefaultBaseUrl;
+															});
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.RegisterDrone>();
+
+			DroneActions.Store(new DroneExceptionLogEntry { component = "c", message = "message", time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc), exception = "exception" });
+
+			var task = new BroadcastDroneToServiceTask();
+			_scheduledTaskManager.AddAndStart(task);
+
+			Api.AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x => x.Exceptions[0].Component == "c" &&
+																			x.Exceptions[0].Exception == "exception" &&
+																			x.Exceptions[0].Message == "message" &&
+																			x.Exceptions[0].Time == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)
 				);
 		}
 

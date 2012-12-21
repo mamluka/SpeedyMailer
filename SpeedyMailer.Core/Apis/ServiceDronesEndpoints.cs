@@ -6,6 +6,7 @@ using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Logging;
 
 namespace SpeedyMailer.Core.Apis
 {
@@ -30,6 +31,8 @@ namespace SpeedyMailer.Core.Apis
 				public string Domain { get; set; }
 
 				public IpReputation IpReputation { get; set; }
+
+				public List<DroneException> Exceptions { get; set; }
 			}
 
 			public class GetDnsblData : ApiCall

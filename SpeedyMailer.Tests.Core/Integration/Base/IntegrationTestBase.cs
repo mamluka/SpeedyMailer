@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading;
 using FluentAssertions;
 using NLog;
+using NLog.Config;
 using NUnit.Framework;
 using Ninject;
 using Quartz;
@@ -72,7 +73,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			LogManager.Configuration.AddTarget("mongo",new MongoTarget());
+			
 
 			MasterKernel = ContainersConfigurationsForTesting.Service();
 			DroneKernel = ContainersConfigurationsForTesting.Drone();

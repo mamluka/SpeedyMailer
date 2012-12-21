@@ -1,7 +1,10 @@
 using System;
+using System.Linq;
 using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Logging;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Storage;
@@ -45,6 +48,10 @@ namespace SpeedyMailer.Drones.Tasks
 						x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 						x.Domain = _droneSettings.Domain;
 						x.IpReputation = _omniRecordManager.GetSingle<IpReputation>();
+						x.Exceptions =
+							_omniRecordManager.GetAll<DroneExceptionLogEntry>()
+							                  .Select(entry => new DroneException {Component = entry.component, Time = entry.time, Message = entry.message, Exception = entry.exception})
+							                  .ToList();
 					});
 			}
 		}

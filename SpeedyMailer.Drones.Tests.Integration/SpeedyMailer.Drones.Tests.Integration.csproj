@@ -124,7 +124,6 @@
     <Compile Include="Events\ReinstateRecipientsForSendingTests.cs" />
     <Compile Include="Events\RemoveSentPackagesTests.cs" />
     <Compile Include="Events\UpdateIpReputationTests.cs" />
-    <Compile Include="General\MongoLoggingTargetTests.cs" />
     <Compile Include="Modules\DealsModuleTests.cs" />
     <Compile Include="Modules\ListsModuleTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

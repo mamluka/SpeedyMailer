@@ -192,6 +192,7 @@
     <Compile Include="Domain\Creative\TemplateType.cs" />
     <Compile Include="Domain\Drones\CurrentExecutingCreativeFragment.cs" />
     <Compile Include="Domain\Drones\Drone.cs" />
+    <Compile Include="Domain\Drones\DroneException.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
     <Compile Include="Domain\Emails\ClickAction.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
@@ -227,8 +228,8 @@
     <Compile Include="Helpers\ControlRoomConfigurationManager.cs" />
     <Compile Include="Helpers\ControlRoomConfigurations.cs" />
     <Compile Include="Helpers\IConfigurationManager.cs" />
+    <Compile Include="Logging\DroneExceptionLogEntry.cs" />
     <Compile Include="Logging\LoggingModule.cs" />
-    <Compile Include="Logging\MongoTarget.cs" />
     <Compile Include="Logging\NancyErrorLogging.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rules\How.cs" />
