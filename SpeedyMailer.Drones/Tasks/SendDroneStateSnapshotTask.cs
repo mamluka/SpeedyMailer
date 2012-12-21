@@ -42,12 +42,7 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var reducedLogs = _logsStore
 					.GetProcessedLogs()
-					.Select(x => new ReducedMailLogEntry
-									 {
-										 Level = x.level,
-										 Message = x.msg,
-										 Time = x.time
-									 })
+					.Select(x => string.Format("{0} {1} {2}", x.time.ToLongTimeString(), x.level, x.msg))
 					.ToList();
 
 				if (!reducedLogs.Any())
@@ -68,6 +63,7 @@ namespace SpeedyMailer.Drones.Tasks
 																			 x.MailDeferred = _omniRecordManager.GetAll<MailDeferred>();
 																			 x.UnsubscribeRequests = _omniRecordManager.GetAll<UnsubscribeRequest>();
 																			 x.ClickActions = _omniRecordManager.GetAll<ClickAction>();
+																			 x.Unclassified = _omniRecordManager.GetAll<UnclassfiedMailEvent>();
 																		 });
 
 				if (_api.ResponseStatus.DidAnErrorOccured())
@@ -79,6 +75,7 @@ namespace SpeedyMailer.Drones.Tasks
 				_omniRecordManager.DeleteConnection<MailBounced>();
 				_omniRecordManager.DeleteConnection<ClickAction>();
 				_omniRecordManager.DeleteConnection<UnsubscribeRequest>();
+				_omniRecordManager.DeleteConnection<UnclassfiedMailEvent>();
 			}
 		}
 	}

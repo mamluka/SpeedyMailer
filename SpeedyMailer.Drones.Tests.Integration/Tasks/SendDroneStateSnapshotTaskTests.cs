@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using MongoDB.Bson;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
@@ -50,6 +49,42 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Drone.Id == "drone1" &&
 																				x.Drone.BaseUrl == "http://base.com");
+		}
+		
+		[Test]
+		public void Execute_WhenExecuted_ShouldSendTheUnclassifiedMails()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+														 {
+															 x.Identifier = "drone1";
+															 x.BaseUrl = "http://base.com";
+															 x.StoreHostname = DefaultHostUrl;
+														 });
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
+				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
+
+			DroneActions.Store(new UnclassfiedMailEvent
+				{
+					Message = "message"
+				});
+
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
+
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Unclassified[0].Message == "message" );
 		}
 
 		[Test]
@@ -101,8 +136,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.RawLogs[0].Message == "message 1" &&
-																				x.RawLogs[1].Message == "message 2" &&
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.RawLogs[0] == "message 1" &&
+																				x.RawLogs[1] == "message 2" &&
 																				x.RawLogs.Count == 2);
 		}
 		
@@ -311,6 +346,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.WaitForEmptyListOf<MailSent>();
 			DroneActions.WaitForEmptyListOf<MailBounced>();
 			DroneActions.WaitForEmptyListOf<MailDeferred>();
+			DroneActions.WaitForEmptyListOf<UnclassfiedMailEvent>();
 		}
 	}
 }
