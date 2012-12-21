@@ -27,7 +27,7 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
                                        x => new
                                            {
                                                CreativeId = x.Key,
-                                               Deferred = x.SelectMany(m => m.Deferred).Select(m => new { DomainGroup = m.DomainGroup, Recipient = m.Recipient, Time = m.Time }),
+											   Deferred = x.SelectMany(m => m.Deferred).Select(m => new { DomainGroup = m.DomainGroup, Recipient = m.Recipient, Time = m.Time, CreativeId = m.CreativeId }),
                                            });
         }
     }

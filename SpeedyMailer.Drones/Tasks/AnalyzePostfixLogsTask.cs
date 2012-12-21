@@ -99,7 +99,7 @@ namespace SpeedyMailer.Drones.Tasks
                 DispatchEvent<AggregatedMailDeferred, MailDeferred>(mailDeferred);
             }
 
-            private static DateTime LastProcessedMailingEvent(IList<MailEvent> parsedLogs)
+            private static DateTime LastProcessedMailingEvent(IEnumerable<MailEvent> parsedLogs)
             {
                 return parsedLogs.Last().Time;
             }
@@ -117,7 +117,7 @@ namespace SpeedyMailer.Drones.Tasks
                     .ToDictionary(x => x.Recipient, x => x.Group);
             }
 
-            private List<TEventData> ParseToSpecificMailEvent<TEventData>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IDictionary<string, string> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
+            private List<TEventData> ParseToSpecificMailEvent<TEventData>(IEnumerable<MailEvent> parsedLogs, MailEventType mailEventType, Func<MailEvent, TEventData> convertFunction, IEnumerable<KeyValuePair<string, string>> parsedLogsDomainGroups) where TEventData : IHasDomainGroup, IHasRecipient
             {
                 return parsedLogs
                     .Where(x => x.Type == mailEventType)
