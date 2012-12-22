@@ -13,7 +13,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
     public class Creative_BouncedEmailsIndexTests : IntegrationTestBase
     {
         [Test]
-        public void Index_WhenGivenSnapShots_ShouldMapReduceAllRawLogs()
+        public void Index_WhenGivenSnapShots_ShouldMapReduceAllBounces()
         {
             var snapshots = new[]
                 {

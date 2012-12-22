@@ -14,7 +14,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public IList<MailDeferred> MailDeferred { get; set; }
 		public IList<ClickAction> ClickActions { get; set; }
 		public IList<UnsubscribeRequest> UnsubscribeRequests { get; set; }
-
-	    public string CurrentCreativeId { get; set; }
+		public IList<UnclassfiedMailEvent> Unclassified { get; set; }
+		public string CurrentCreativeId { get; set; }
 	}
 }

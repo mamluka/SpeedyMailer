@@ -105,6 +105,13 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																												CreativeId = "creative/2"
 																					                        }
 																			                        };
+																		x.Unclassified = new List<UnclassfiedMailEvent>
+																			{
+																				new UnclassfiedMailEvent
+																					{
+																						Message = "unclassified"
+																					}
+																			};
 																	});
 
 			Store.WaitForEntitiesToExist<DroneStateSnapshoot>();
@@ -120,6 +127,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.MailDeferred.Should().OnlyContain(x => x.Message == "mail deferred");
 			result.ClickActions.Should().OnlyContain(x => x.ContactId == "contacts/1");
 			result.UnsubscribeRequests.Should().OnlyContain(x => x.ContactId == "contacts/2");
+			result.Unclassified.Should().OnlyContain(x => x.Message == "unclassified");
 		}
 
 		[Test]

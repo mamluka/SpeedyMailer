@@ -10,10 +10,10 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 {
-    public class CreativeSentEmailsIndexTests : IntegrationTestBase
+    public class Creative_SentEmailsIndexTests : IntegrationTestBase
     {
         [Test]
-        public void Index_WhenGivenSnapShots_ShouldMapReduceAllRawLogs()
+        public void Index_WhenGivenSnapShots_ShouldMapReduceAllSentEmails()
         {
             var snapshots = new[]
                 {

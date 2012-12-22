@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
-using NLog;
-using NLog.Config;
 using Nancy;
 using Quartz;
-using SpeedyMailer.Core.Container;
-using SpeedyMailer.Core.Logging;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
