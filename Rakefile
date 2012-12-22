@@ -11,7 +11,12 @@ namespace :windows do
 
   SERVICE_SOLUTION_FILE = "SpeedyMailer.Master.Service\\SpeedyMailer.Master.Service.csproj"
   SERVICE_OUTPUT_FOLDER = "..\\Out\\Service"
+  
+  API_SOLUTION_FILE = "SpeedyMailer.Master.Web.Api\\SpeedyMailer.Master.Web.Api.csproj"
+  API_OUTPUT_FOLDER = "C:\\SpeedyMailer\\Api"
 
+  APP_FOLDER = "SpeedyMailer.Master.Web.App\\SpeedyMailer.Master.Web.App.csproj"
+  APP_OUTPUT_FOLDER = "C:\\SpeedyMailer\\App"
 
   desc "Clean solution"
   msbuild :clean, [:solution] do |msb,args|
@@ -25,6 +30,18 @@ namespace :windows do
     msb.targets :Rebuild
     msb.solution  = args[:solution]
   end
+  
+  desc "Publish website"
+  msbuild :publish, [:solution,:output_folder] do |msb,args|
+    msb.properties = { :configuration=>:Release }
+	msb.targets [:Rebuild,:ResolveReferences,:_CopyWebApplication]
+	msb.properties = {
+			:webprojectoutputdir=> args[:output_folder],
+			:outdir => args[:output_folder] + "\\bin"
+		}
+	msb.solution = args[:solution]
+  end
+
 
   desc "Build drone from project file"
   task :build_drone do
@@ -37,6 +54,21 @@ namespace :windows do
     puts "Start building service..."
     Rake::Task["windows:build"].invoke(SERVICE_SOLUTION_FILE,SERVICE_OUTPUT_FOLDER)
   end
+  
+  desc "Build API"
+  task :build_api do
+    puts "Start building api..."
+    Rake::Task["windows:publish"].invoke(API_SOLUTION_FILE,API_OUTPUT_FOLDER)
+  end
+  
+  desc "Build App"
+  task :build_app do
+    puts "Start building app..."
+		FileUtils.cp_r '', 'target'
+	end
+  end
+  
+  
 end
 
 namespace :mono do
