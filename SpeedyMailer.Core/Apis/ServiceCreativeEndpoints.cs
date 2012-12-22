@@ -24,15 +24,14 @@ namespace SpeedyMailer.Core.Apis
 
 			public class SaveCreative : ApiCall
 			{
-				public string Body { get; set; }
+				public string HtmlBody { get; set; }
 				public string ListId { get; set; }
 				public string Subject { get; set; }
 				public string DealUrl { get; set; }
 				public string UnsubscribeTemplateId { get; set; }
-
 				public string FromName { get; set; }
-
 				public string FromAddressDomainPrefix { get; set; }
+				public string TextBody { get; set; }
 
 				public SaveCreative()
 					: base("/creative/save")

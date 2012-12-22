@@ -21,7 +21,8 @@ namespace SpeedyMailer.Master.Service.Commands
             {
                 var creative = new Creative
                                    {
-                                       Body = Body,
+                                       HtmlBody = HtmlBody,
+									   TextBody = TextBody,
                                        Lists = Lists.ToList(),
                                        Subject = Subject,
                                        UnsubscribeTemplateId = UnsubscribeTemplateId,
@@ -36,10 +37,11 @@ namespace SpeedyMailer.Master.Service.Commands
             }
         }
 
-        public string Body { get; set; }
-        public string Subject { get; set; }
-        public IList<string> Lists { get; set; }
-        public string UnsubscribeTemplateId { get; set; }
+        public string HtmlBody { get; set; }
+	    public string TextBody { get; set; }
+	    public string Subject { get; set; }
+	    public IList<string> Lists { get; set; }
+	    public string UnsubscribeTemplateId { get; set; }
 	    public string DealUrl { get; set; }
 	    public string FromName { get; set; }
 	    public string FromAddressDomainPrefix { get; set; }

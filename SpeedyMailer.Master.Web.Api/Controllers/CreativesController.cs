@@ -24,7 +24,8 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		{
 			_api.Call<ServiceEndpoints.Creative.SaveCreative>(x =>
 														 {
-															 x.Body = creativeModel.Body;
+															 x.HtmlBody = creativeModel.HtmlBody;
+															 x.TextBody = creativeModel.TextBody;
 															 x.DealUrl = creativeModel.DealUrl;
 															 x.Subject = creativeModel.Subject;
 															 x.ListId = creativeModel.ListId;
@@ -54,7 +55,8 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		{
 			return new CreativeModel
 					   {
-						   Body = creative.Body,
+						   HtmlBody = creative.HtmlBody,
+						   TextBody = creative.TextBody,
 						   DealUrl = creative.DealUrl,
 						   ListId = creative.Lists.FirstOrDefault(),
 						   Subject = creative.Subject,
@@ -66,7 +68,8 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 
 	public class CreativeModel
 	{
-		public string Body { get; set; }
+		public string HtmlBody { get; set; }
+		public string TextBody { get; set; }
 		public string DealUrl { get; set; }
 		public string Subject { get; set; }
 		public string ListId { get; set; }

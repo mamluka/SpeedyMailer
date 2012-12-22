@@ -29,7 +29,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 													  {
-														  x.Body = "Body";
+														  x.HtmlBody = "Body";
+														  x.TextBody = "text body";
 														  x.Subject = "Subject";
 														  x.UnsubscribeTemplateId = templateId;
 														  x.Lists = new List<string> { listId };
@@ -62,7 +63,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 													  {
-														  x.Body = "Body";
+														  x.HtmlBody = "Body";
 														  x.Subject = "Subject";
 														  x.UnsubscribeTemplateId = templateId;
 														  x.Lists = new List<string> { listId };
@@ -98,7 +99,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 													  {
-														  x.Body = "Body";
+														  x.HtmlBody = "Body";
+														  x.TextBody = "Body text";
 														  x.Subject = "Subject";
 														  x.UnsubscribeTemplateId = templateId;
 														  x.FromAddressDomainPrefix = "sales";
@@ -116,7 +118,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var result = Store.Query<CreativeFragment>(x => x.CreativeId == creativeId).First();
 
-			result.Body.Should().Be("Body");
+			result.HtmlBody.Should().Be("Body");
+			result.TextBody.Should().Be("Body text");
 			result.Subject.Should().Be("Subject");
 			result.FromName.Should().Be("david");
 			result.FromAddressDomainPrefix.Should().Be("sales");
@@ -155,7 +158,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
-				x.Body = "Body";
+				x.HtmlBody = "Body";
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = templateId;
 				x.Lists = new List<string> { listId };
@@ -212,7 +215,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
-				x.Body = "Body";
+				x.HtmlBody = "Body";
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = templateId;
 				x.Lists = new List<string> { listId };
@@ -249,7 +252,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
-				x.Body = "Body";
+				x.HtmlBody = "Body";
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = templateId;
 				x.Lists = new List<string> { listId };
@@ -290,7 +293,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
-				x.Body = "Body";
+				x.HtmlBody = "Body";
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = templateId;
 				x.Lists = new List<string> { listId };
@@ -356,7 +359,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 			var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
-				x.Body = "Body";
+				x.HtmlBody = "Body";
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = templateId;
 				x.Lists = new List<string> { listId };

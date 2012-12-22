@@ -142,6 +142,7 @@
   <ItemGroup>
     <None Include="..\SpeedyMailer.Drones\NLog.config">
       <Link>NLog.config</Link>
+      <SubType>Designer</SubType>
     </None>
     <None Include="App.config" />
     <None Include="packages.config" />

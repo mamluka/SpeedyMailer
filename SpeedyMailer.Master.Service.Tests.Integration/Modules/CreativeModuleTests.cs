@@ -50,7 +50,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var creativeId = api.Call<ServiceEndpoints.Creative.SaveCreative, ApiStringResult>(x =>
 														{
-															x.Body = "body";
+															x.HtmlBody = "body";
+															x.TextBody = "text body";
 															x.DealUrl = "dealUrl";
 															x.ListId = "list/1";
 															x.Subject = "subject";
@@ -63,7 +64,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var result = Store.Load<Creative>(creativeId);
 
-			result.Body.Should().Be("body");
+			result.HtmlBody.Should().Be("body");
+			result.TextBody.Should().Be("text body");
 			result.DealUrl.Should().Be("dealUrl");
 			result.Lists.Should().Contain("list/1");
 			result.Subject.Should().Be("subject");
@@ -108,7 +110,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			var result = api.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
-			result.Body.Should().Be("body");
+			result.HtmlBody.Should().Be("body");
 			result.CreativeId.Should().Be(creativeId);
 			result.Recipients.Should().HaveCount(100);
 			result.FromName.Should().Be("david");

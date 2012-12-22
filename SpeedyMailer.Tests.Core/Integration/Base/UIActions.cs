@@ -56,7 +56,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			return ExecuteCommand<AddCreativeCommand, string>(x =>
 			{
-				x.Body = "body";
+				x.HtmlBody = "body";
 				x.Lists = lists.ToList();
 				x.Subject = "Subject";
 				x.UnsubscribeTemplateId = unsubscribeTemplateId;

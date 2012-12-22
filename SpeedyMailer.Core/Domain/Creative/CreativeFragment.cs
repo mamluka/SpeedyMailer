@@ -11,7 +11,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public string Id { get; set; }
 		public string UnsubscribeTemplate { get; set; }
 		public List<Recipient> Recipients { get; set; }
-		public string Body { get; set; }
+		public string HtmlBody { get; set; }
 		public string Subject { get; set; }
 		public Service Service { get; set; }
 		public string CreativeId { get; set; }
@@ -22,6 +22,8 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public string FromName { get; set; }
 		public string FromAddressDomainPrefix { get; set; }
 		public string DealUrl { get; set; }
+
+		public string TextBody { get; set; }
 	}
 
 	public class Recipient

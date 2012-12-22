@@ -16,7 +16,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 	        var creativeId = UiActions.ExecuteCommand<AddCreativeCommand, string>(x =>
                                                                                    {
                                                                                        x.Subject = "Subject";
-                                                                                       x.Body = "Body";
+                                                                                       x.HtmlBody = "Body";
                                                                                        x.Lists = new List<string>
 	                                                                                                 {
 		                                                                                                 "list1",
@@ -29,7 +29,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
 
             var result = Store.Load<Creative>(creativeId);
 
-            result.Body.Should().Be("Body");
+            result.HtmlBody.Should().Be("Body");
             result.Subject.Should().Be("Subject");
             result.Lists.Should().Contain(new List<string> { "list1","list2" });
 			result.DealUrl.Should().Be("dealUrl");
