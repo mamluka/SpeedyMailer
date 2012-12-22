@@ -59,6 +59,11 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		{
 			return UrlBuilder.ToBase64(obj);
 		}
+		
+		public static string Encode(string obj)
+		{	
+			return UrlBuilder.ToBase64(obj);
+		}
 
 		private static int RandomNumber()
 		{

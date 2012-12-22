@@ -5,6 +5,7 @@ using SpeedyMailer.Core.Domain.Master;
 using SpeedyMailer.Core.Emails;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Core.Utilities.Extentions;
 using Template = Antlr4.StringTemplate.Template;
 
 namespace SpeedyMailer.Drones.Commands
@@ -41,7 +42,7 @@ namespace SpeedyMailer.Drones.Commands
 						FromName = creativeFragment.FromName,
 						FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix,
 						Interval = recipient.Interval,
-                        CreativeId = creativeFragment.CreativeId
+						CreativeId = creativeFragment.CreativeId
 					};
 		}
 
@@ -49,12 +50,12 @@ namespace SpeedyMailer.Drones.Commands
 		{
 			var dealUrl = _urlBuilder
 				.Base(_droneSettings.BaseUrl + "/deals")
-				.AddObject(GetDealUrlData(fragment, contact))
+				.AddString(GetDealUrlData(fragment, contact))
 				.AppendAsSlashes();
 
 			var unsubsribeUrl = _urlBuilder
 				.Base(_droneSettings.BaseUrl + "/unsubscribe")
-				.AddObject(GetDealUrlData(fragment, contact))
+				.AddString(GetDealUrlData(fragment, contact))
 				.AppendAsSlashes();
 
 			var bodyTemplateEngine = new Template(fragment.Body, '^', '^');
@@ -72,13 +73,9 @@ namespace SpeedyMailer.Drones.Commands
 			return weavedBody + template;
 		}
 
-		private static DealUrlData GetDealUrlData(CreativeFragment fragment, Recipient contact)
+		private static string GetDealUrlData(CreativeFragment fragment, Recipient contact)
 		{
-			return new DealUrlData
-					{
-						CreativeId = fragment.CreativeId,
-						ContactId = contact.ContactId
-					};
+			return fragment.CreativeId.StripRavenId() + "," + contact.ContactId.StripRavenId();
 		}
 	}
 

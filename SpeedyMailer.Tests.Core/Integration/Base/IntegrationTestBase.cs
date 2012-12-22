@@ -63,18 +63,17 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		public IntegrationTestBase()
 		{
-
+			LogManager.Configuration.RemoveTarget("MongoDB");
 		}
 		protected IntegrationTestBase(Action<IntegrationTestsOptions> action)
 		{
 			action(_options);
+			LogManager.Configuration.RemoveTarget("MongoDB");
 		}
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
 		{
-			LogManager.Configuration.RemoveTarget("MongoDB");
-
 			MasterKernel = ContainersConfigurationsForTesting.Service();
 			DroneKernel = ContainersConfigurationsForTesting.Drone();
 

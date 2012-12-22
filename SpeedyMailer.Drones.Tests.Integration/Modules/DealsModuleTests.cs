@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using FluentAssertions;
 using NUnit.Framework;
 using RestSharp;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain;
-using SpeedyMailer.Core.Domain.Contacts;
-using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
@@ -35,7 +30,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 
 			DroneActions.Store(new CreativeToDealMap
 								   {
-									   Id = "creative/1",
+									   Id = "creatives/1",
 									   DealUrl = "http://m.microsoft.com/en-us/default.mspx"
 								   });
 
@@ -57,7 +52,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 
 			DroneActions.Store(new CreativeToDealMap
 			{
-				Id = "creative/1",
+				Id = "creatives/1",
 				DealUrl = "http://m.microsoft.com/en-us/default.mspx"
 			});
 
@@ -68,7 +63,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 			var result = DroneActions.FindSingle<ClickAction>();
 
 			result.ContactId.Should().Be("contacts/1");
-			result.CreativeId.Should().Be("creative/1");
+			result.CreativeId.Should().Be("creatives/1");
 			result.Date.Should().BeAfter(DateTime.UtcNow.AddMinutes(-1));
 		}
 
@@ -82,11 +77,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 
 		private RestRequest CreateRestRequest()
 		{
-			var resource = DefaultBaseUrl + "/deals/" + UrlBuilder.ToBase64(new DealUrlData
-																				{
-																					ContactId = "contacts/1",
-																					CreativeId = "creative/1"
-																				});
+			var resource = DefaultBaseUrl + "/deals/" + UrlBuilder.ToBase64("1,1");
 
 			var restRequest = new RestRequest(resource)
 								  {

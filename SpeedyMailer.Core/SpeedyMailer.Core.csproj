@@ -274,6 +274,7 @@
     <Compile Include="Utilities\Domain\Contacts\InitialContactsBatchOptions.cs" />
     <Compile Include="Utilities\Domain\Email\UrlCreator.cs" />
     <Compile Include="Utilities\Extentions\LinqExtentions.cs" />
+    <Compile Include="Utilities\Extentions\StringExtentions.cs" />
     <Compile Include="Utilities\Framework.cs" />
     <Compile Include="Utilities\General\IReportResults.cs" />
     <Compile Include="Utilities\LambdaComparer.cs" />

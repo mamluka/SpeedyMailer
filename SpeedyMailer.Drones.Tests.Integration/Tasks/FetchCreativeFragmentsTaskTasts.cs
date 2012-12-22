@@ -564,12 +564,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+			var recipients = new List<Recipient> { AddRecipient("contacts/12345678", "test@test.com") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																								  {
 																									  x.Id = "fragment/1";
-																									  x.CreativeId = "creative/1";
+																									  x.CreativeId = "creative/1234";
 																									  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
@@ -583,11 +583,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertBodyContains("htto://drone.com/deals/" + IntergrationHelpers.Encode(new DealUrlData
-																			{
-																				ContactId = "contacts/1",
-																				CreativeId = "creative/1"
-																			}));
+			AssertBodyContains("htto://drone.com/deals/" + IntergrationHelpers.Encode("1234,12345678"));
 		}
 
 		[Test]
@@ -647,12 +643,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 
-			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+			var recipients = new List<Recipient> { AddRecipient("contacts/12345678", "test@test.com") };
 
 			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
 																								  {
 																									  x.Id = "fragment/1";
-																									  x.CreativeId = "creative/1";
+																									  x.CreativeId = "creative/1234";
 																									  x.Body = CreateBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
@@ -667,11 +663,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			AssertBodyContains("here  is a template");
-			AssertBodyContains("htto://drone.com/unsubscribe/" + IntergrationHelpers.Encode(new UnsubscribeUrlData
-										{
-											CreativeId = "creative/1",
-											ContactId = "contacts/1"
-										}));
+			AssertBodyContains("htto://drone.com/unsubscribe/" + IntergrationHelpers.Encode("1234,12345678"));
 		}
 
 
