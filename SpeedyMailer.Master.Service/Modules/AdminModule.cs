@@ -8,15 +8,24 @@ using Raven.Client;
 using Raven.Client.Linq;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Container;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Storage.Indexes;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(ServiceSettings serviceSettings, IKernel kernel, IDocumentStore documentStore)
+		public AdminModule(ServiceSettings serviceSettings,
+			IKernel kernel,
+			IDocumentStore documentStore,
+			AddContactsCommand addContactsCommand,
+			CreateListCommand createListCommand,
+			CreateTemplateCommand createTemplateCommand,
+			AddCreativeCommand addCreativeCommand
+			)
 			: base("/admin")
 		{
 			Get["/settings"] = x =>
@@ -51,10 +60,10 @@ namespace SpeedyMailer.Master.Service.Modules
 					{
 						return
 							Response.AsText(string.Join(Environment.NewLine, session
-								                                                 .Query<Drone>()
-								                                                 .ToList()
-								                                                 .Select(drone => drone.BaseUrl)
-								                                                 .ToList()));
+																				 .Query<Drone>()
+																				 .ToList()
+																				 .Select(drone => drone.BaseUrl)
+																				 .ToList()));
 					}
 				};
 		}
