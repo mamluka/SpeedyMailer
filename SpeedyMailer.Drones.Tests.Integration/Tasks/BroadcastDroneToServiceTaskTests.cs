@@ -73,7 +73,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.ListenToApiCall<ServiceEndpoints.Drones.RegisterDrone>();
 
-			DroneActions.Store(new DroneExceptionLogEntry { component = "c", message = "message", time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc), exception = "exception" });
+			DroneActions.Store(new DroneExceptionLogEntry { component = "c", message = "message", time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(), exception = "exception" });
 
 			var task = new BroadcastDroneToServiceTask();
 			_scheduledTaskManager.AddAndStart(task);
@@ -81,7 +81,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Api.AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x => x.Exceptions[0].Component == "c" &&
 																			x.Exceptions[0].Exception == "exception" &&
 																			x.Exceptions[0].Message == "message" &&
-																			x.Exceptions[0].Time == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+																			x.Exceptions[0].Time == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString()
 				);
 		}
 

@@ -9,7 +9,7 @@ namespace SpeedyMailer.Core.Domain.Drones
 	{
 		public string Message { get; set; }
 		public string Exception { get; set; }
-		public DateTime Time { get; set; }
+		public string Time { get; set; }
 		public string Component { get; set; }
 	}
 }

@@ -33,7 +33,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 					x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 					x.Domain = "example.com";
 					x.IpReputation = new IpReputation { BlockingHistory = new Dictionary<string, List<DateTime>> { { "gmail", new List<DateTime> { new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) } } } };
-					x.Exceptions = new List<DroneException> { new DroneException { Component = "c", Time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc), Message = "message", Exception = "exception" } };
+					x.Exceptions = new List<DroneException> { new DroneException { Component = "c", Time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(), Message = "message", Exception = "exception" } };
 				});
 
 			Store.WaitForEntitiesToExist<Drone>();
@@ -49,7 +49,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 						   x.Component == "c" &&
 						   x.Exception == "exception" &&
 						   x.Message == "message" &&
-						   x.Time == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+						   x.Time == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString());
 		}
 
 		[Test]

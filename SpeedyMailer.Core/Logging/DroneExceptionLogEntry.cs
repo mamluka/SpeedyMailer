@@ -15,7 +15,7 @@ namespace SpeedyMailer.Core.Logging
 
 		public string message { get; set; }
 		public string exception { get; set; }
-		public DateTime time { get; set; }
+		public string time { get; set; }
 		public string component { get; set; }
 	}
 }
