@@ -51,10 +51,11 @@ namespace SpeedyMailer.Drones.Modules
 					var creativeId = (string) Request.Query["creativeId"];
 					var htmlBody = (string) Request.Query["html"];
 					var textBody = (string) Request.Query["text"];
+					var to = (string) Request.Query["to"];
 
 					sendCreativePackageCommand.Package = new CreativePackage
 						{
-							To = Request.Query["to"],
+							To = to,
 							CreativeId = creativeId,
 							Subject = "test subject",
 							FromAddressDomainPrefix = "david",
