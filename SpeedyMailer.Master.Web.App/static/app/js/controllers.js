@@ -19,7 +19,8 @@ function CreativeController($scope, $http, listResource, creativeResource, templ
             dealUrl: creativeModel.dealUrl,
             fromName: creativeModel.fromName,
             fromAddress: creativeModel.fromAddress,
-            body: creativeModel.body,
+            htmlBody: creativeModel.htmlBody,
+            textBody: creativeModel.textBody,
             templateId: creativeModel.unsubscribeTemplate.Id
         });
 
