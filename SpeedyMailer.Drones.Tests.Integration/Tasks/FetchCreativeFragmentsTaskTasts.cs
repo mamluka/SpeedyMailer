@@ -4,7 +4,6 @@ using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Tasks;
@@ -50,7 +49,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var creativePackage = new CreativePackage
 									  {
 										  Group = "$default$",
-										  Body = "body",
+										  HtmlBody = "body",
 										  Subject = "subject",
 										  To = "david@david.com",
 										  FromAddressDomainPrefix = "david",
@@ -67,7 +66,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Email.AssertEmailsSentTo(new[] { "david@david.com" });
 		}
-		
+
 		[Test]
 		public void Execute_WhenNotAllCreativePackagesAreSentAndSendingJobsAreRunningAndAllGroupsAreActive_ShouldNotFetchTheFragment()
 		{
@@ -84,7 +83,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var creativePackage = new CreativePackage
 									  {
 										  Group = "$default$",
-										  Body = "body",
+										  HtmlBody = "body",
 										  Subject = "subject",
 										  To = "david@david.com",
 										  FromAddressDomainPrefix = "david",
@@ -117,7 +116,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var creativePackage = new CreativePackage
 									  {
 										  Group = "$default$",
-										  Body = "body",
+										  HtmlBody = "body",
 										  Subject = "subject",
 										  To = "david@david.com",
 										  FromAddressDomainPrefix = "david",
@@ -155,7 +154,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1";
-																									  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -191,7 +190,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																							  {
 																								  x.Id = "fragment/1";
 																								  x.CreativeId = "creative/1";
-																								  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.DealUrl = "http://www.dealexpress.com/deal";
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -237,7 +236,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																							  {
 																								  x.Id = "fragment/1";
 																								  x.CreativeId = "creative/1";
-																								  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.DealUrl = "http://www.dealexpress.com/deal";
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -282,7 +281,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																							  {
 																								  x.Id = "fragment/1";
 																								  x.CreativeId = "creative/1";
-																								  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.DealUrl = "http://www.dealexpress.com/deal";
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -330,7 +329,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																							  {
 																								  x.Id = "fragment/1";
 																								  x.CreativeId = "creative/1";
-																								  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																								  x.DealUrl = "http://www.dealexpress.com/deal";
 																								  x.Subject = "hello world subject";
 																								  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -381,7 +380,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1";
-																									  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -443,7 +442,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1";
-																									  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -489,7 +488,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 					                             new CreativePackage
 						                             {
 							                             Group = "yahoo",
-														 Body = "body",
+														 HtmlBody = "body",
 														 FromAddressDomainPrefix = "sales",
 														 FromName = "david",
 														 Interval = 3,
@@ -514,7 +513,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1";
-																									  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -553,7 +552,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenWeObtainAFragment_ShouldReplaceTheDealLinksWithRediractableServiceLinks()
+		public void Execute_WhenWeObtainAFragment_ShouldReplaceTheDealLinksWithRediractableServiceLinksForBothViews()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
 			DroneActions.EditSettings<EmailingSettings>(x =>
@@ -570,7 +569,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1234";
-																									  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.TextBody = CreateTextBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -583,7 +583,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertBodyContains("htto://drone.com/deals/" + IntergrationHelpers.Encode("1234,12345678"));
+			AssertHtmlBodyContains("htto://drone.com/deals/" + IntergrationHelpers.Encode("1234,12345678"));
+			AssertTextBodyContains("htto://drone.com/deals/" + IntergrationHelpers.Encode("1234,12345678"));
 		}
 
 		[Test]
@@ -604,7 +605,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1";
-																									  x.HtmlBody = CreateBodyWithLinkAndEmailTemplating("http://www.dealexpress.com/deal");
+																									  x.TextBody = CreateTextBodyWithLinkAndEmailTemplating("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLinkAndEmailTemplating("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -617,12 +619,18 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertBodyContains("also we have the email here test@test.com");
+			AssertHtmlBodyContains("also we have the email here test@test.com");
+			AssertTextBodyContains("also we have the email here test@test.com");
 		}
 
-		private string CreateBodyWithLinkAndEmailTemplating(string link)
+		private string CreateHtmlBodyWithLinkAndEmailTemplating(string link)
 		{
-			return CreateBodyWithLink(link) + " also we have the email here ^email^";
+			return CreateHtmlBodyWithLink(link) + " also we have the email here ^email^";
+		}
+		
+		private string CreateTextBodyWithLinkAndEmailTemplating(string link)
+		{
+			return CreateTextBodyWithLink(link) + " also we have the email here ^email^";
 		}
 
 		[Test]
@@ -649,7 +657,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																								  {
 																									  x.Id = "fragment/1";
 																									  x.CreativeId = "creative/1234";
-																									  x.HtmlBody = CreateBodyWithLink("http://www.dealexpress.com/deal");
+																									  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
 																									  x.DealUrl = "http://www.dealexpress.com/deal";
 																									  x.Subject = "hello world subject";
 																									  x.UnsubscribeTemplate = "here  is a template ^url^";
@@ -662,20 +670,33 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertBodyContains("here  is a template");
-			AssertBodyContains("htto://drone.com/unsubscribe/" + IntergrationHelpers.Encode("1234,12345678"));
+			AssertHtmlBodyContains("here  is a template");
+			AssertTextBodyContains("here  is a template");
+
+			AssertHtmlBodyContains("htto://drone.com/unsubscribe/" + IntergrationHelpers.Encode("1234,12345678"));
+			AssertTextBodyContains("htto://drone.com/unsubscribe/" + IntergrationHelpers.Encode("1234,12345678"));
 		}
 
 
 
-		private void AssertBodyContains(string text)
+		private void AssertTextBodyContains(string text)
 		{
 			Email.AssertEmailSent(x => x.Body.Should().Contain(text));
 		}
 
-		private string CreateBodyWithLink(string link)
+		private void AssertHtmlBodyContains(string text)
+		{
+			Email.AssertEmailSent(x => x.AlternateViews.Should().Contain(s=> s.Contains(text)));
+		}
+
+		private string CreateHtmlBodyWithLink(string link)
 		{
 			return string.Format(@"<html><body>this email has a link inside of it <a href="" {0} "" >test link</as>""</body></html>", link);
+		}
+
+		private string CreateTextBodyWithLink(string link)
+		{
+			return string.Format(@"Here is a text email with link {0}", link);
 		}
 
 		private static Recipient AddRecipient(string contactId, string email)

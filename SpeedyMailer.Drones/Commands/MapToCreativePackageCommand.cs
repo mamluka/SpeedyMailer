@@ -36,7 +36,8 @@ namespace SpeedyMailer.Drones.Commands
 			return new CreativePackage
 					{
 						Subject = creativeFragment.Subject,
-						Body = PersonalizeBody(creativeFragment, recipient),
+						HtmlBody = PersonalizeBody(creativeFragment, recipient),
+						TextBody = PersonalizeBody(creativeFragment, recipient),
 						To = recipient.Email,
 						Group = recipient.Group,
 						FromName = creativeFragment.FromName,

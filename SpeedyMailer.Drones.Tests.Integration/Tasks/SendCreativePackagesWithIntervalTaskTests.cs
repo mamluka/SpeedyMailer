@@ -209,7 +209,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
         {
             return new CreativePackage
                        {
-                           Body = "body",
+                           HtmlBody = "body",
                            Group = group,
                            Subject = "subject",
                            To = email,

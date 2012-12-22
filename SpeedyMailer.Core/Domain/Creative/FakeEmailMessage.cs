@@ -27,6 +27,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public bool IsBodyHtml { get; set; }
 		public string DroneId { get; set; }
         public IDictionary<string,string> TestHeaders { get; set; }
+		public IList<string> AlternateViews { get; set; }
 
 		[JsonConverter(typeof(IsoDateTimeConverter))]
 		public DateTime DeliveryDate { get; set; }

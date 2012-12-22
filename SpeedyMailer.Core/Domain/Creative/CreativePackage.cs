@@ -10,7 +10,8 @@ namespace SpeedyMailer.Core.Domain.Creative
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
 
-		public string Body { get; set; }
+		public string HtmlBody { get; set; }
+		public string TextBody { get; set; }
 		public string Subject { get; set; }
 		public string To { get; set; }
 		public string Group { get; set; }

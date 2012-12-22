@@ -92,6 +92,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 					var fragment = new CreativeFragment
 									   {
 										   HtmlBody = creative.HtmlBody,
+										   TextBody = creative.TextBody,
 										   DealUrl = creative.DealUrl,
 										   CreativeId = creative.Id,
 										   Subject = creative.Subject,

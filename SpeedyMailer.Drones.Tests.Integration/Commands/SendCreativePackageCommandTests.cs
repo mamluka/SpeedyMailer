@@ -28,7 +28,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var creativePackage = new CreativePackage
 									{
-										Body = "test body",
+										HtmlBody = "test body",
 										Subject = "test subject",
 										To = "test@test",
 										CreativeId = "creative/1"
@@ -58,7 +58,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var creativePackage = new CreativePackage
 									{
-										Body = "test body",
+										HtmlBody = "test body",
 										Subject = "test subject",
 										To = "test@test",
                                         CreativeId = "creative/1"
@@ -89,7 +89,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			var creativePackage = new CreativePackage
 									{
-										Body = "test body",
+										HtmlBody = "test body",
 										Subject = "test subject",
 										To = "test@test",
 										CreativeId = "creative/1"

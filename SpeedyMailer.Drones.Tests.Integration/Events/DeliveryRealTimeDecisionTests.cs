@@ -542,7 +542,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					   {
 						   Group = domainGroup,
 						   Subject = "test",
-						   Body = "body",
+						   HtmlBody = "body",
 						   To = "david@david.com",
 						   FromAddressDomainPrefix = "david",
 						   Interval = 10,
