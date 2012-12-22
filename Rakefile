@@ -1,8 +1,8 @@
 require 'albacore'
 require 'nokogiri'
 require 'open-uri'
-require 'fileutils'
 require 'socket'
+require 'FileUtils'
 
 namespace :windows do
 
@@ -13,10 +13,12 @@ namespace :windows do
   SERVICE_OUTPUT_FOLDER = "..\\Out\\Service"
   
   API_SOLUTION_FILE = "SpeedyMailer.Master.Web.Api\\SpeedyMailer.Master.Web.Api.csproj"
-  API_OUTPUT_FOLDER = "C:\\SpeedyMailer\\Api"
+  API_OUTPUT_FOLDER = "Api"
+  
+  MASTER_FOLDER = "C:/SpeedyMailer"
 
-  APP_FOLDER = "SpeedyMailer.Master.Web.App\\SpeedyMailer.Master.Web.App.csproj"
-  APP_OUTPUT_FOLDER = "C:\\SpeedyMailer\\App"
+  APP_FOLDER = "SpeedyMailer.Master.Web.App\\static\\app"
+  APP_OUTPUT_FOLDER = "App"
 
   desc "Clean solution"
   msbuild :clean, [:solution] do |msb,args|
@@ -36,8 +38,8 @@ namespace :windows do
     msb.properties = { :configuration=>:Release }
 	msb.targets [:Rebuild,:ResolveReferences,:_CopyWebApplication]
 	msb.properties = {
-			:webprojectoutputdir=> args[:output_folder],
-			:outdir => args[:output_folder] + "\\bin"
+			:webprojectoutputdir=> File.join(MASTER_FOLDER,args[:output_folder]),
+			:outdir => File.join(MASTER_FOLDER,args[:output_folder],"bin")
 		}
 	msb.solution = args[:solution]
   end
@@ -64,10 +66,10 @@ namespace :windows do
   desc "Build App"
   task :build_app do
     puts "Start building app..."
-		FileUtils.cp_r '', 'target'
-	end
+	app_folder = File.join(MASTER_FOLDER,APP_OUTPUT_FOLDER)
+	FileUtils.mkdir_p(app_folder)
+	FileUtils.cp_r APP_FOLDER + "\\.", app_folder
   end
-  
   
 end
 

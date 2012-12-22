@@ -5,10 +5,7 @@
 // Demonstrate how to register services
 // In this case it is a simple value service.
 
-String.prototype.Apify = function () { return 'http://speedymailer.api' + this; };
-
-angular.module('SpeedyMailer.services', []).
-  value('version', '0.1');
+String.prototype.Apify = function () { return config.apiUrl + this; };
 
 angular.module('SpeedyMailer.settings', []).
   value('apiSettings', { baseUrl: "http://speedymailer.api" });

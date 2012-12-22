@@ -56,10 +56,10 @@
     <Content Include="static\app\index-async.html" />
     <Content Include="static\app\index.html" />
     <Content Include="static\app\js\app.js" />
+    <Content Include="static\app\js\config.js" />
     <Content Include="static\app\js\controllers.js" />
     <Content Include="static\app\js\directives.js" />
     <Content Include="static\app\js\filters.js" />
-    <Content Include="static\app\js\resources.js" />
     <Content Include="static\app\js\services.js" />
     <Content Include="static\app\lib\angular\angular-cookies.js" />
     <Content Include="static\app\lib\angular\angular-cookies.min.js" />
