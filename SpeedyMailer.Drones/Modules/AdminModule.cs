@@ -47,16 +47,21 @@ namespace SpeedyMailer.Drones.Modules
 				{
 					sendCreativePackageCommand.FromAddressDomainPrefix = "david";
 					sendCreativePackageCommand.FromName = "david";
+
+					var creativeId = (string) Request.Query["creativeId"];
+					var htmlBody = (string) Request.Query["html"];
+					var textBody = (string) Request.Query["text"];
+
 					sendCreativePackageCommand.Package = new CreativePackage
 						{
 							To = Request.Query["to"],
-							CreativeId = (string)Request.Query["creativeId"],
+							CreativeId = creativeId,
 							Subject = "test subject",
 							FromAddressDomainPrefix = "david",
 							FromName = "david",
 							Group = "test",
-							HtmlBody = (string)Request.Query["html"],
-							TextBody = (string)Request.Query["text"],
+							HtmlBody = htmlBody,
+							TextBody = textBody,
 						};
 
 					sendCreativePackageCommand.Execute();
