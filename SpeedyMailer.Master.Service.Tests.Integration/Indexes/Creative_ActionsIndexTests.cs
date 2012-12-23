@@ -9,7 +9,7 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 {
-	public class ClickActionsIndexTests : IntegrationTestBase
+	public class Creative_ActionsIndexTests : IntegrationTestBase
 	{
 		[Test]
 		public void Index_WhenGivenSnapShots_ShouldMapReduceTheClicks()

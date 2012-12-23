@@ -131,6 +131,7 @@
     <Compile Include="Storage\Indexes\Creative_RawLogs.cs" />
     <Compile Include="Storage\Indexes\Creative_UnsubscribeRequests.cs" />
     <Compile Include="Storage\Indexes\Creative_ClickActions.cs" />
+    <Compile Include="Storage\Indexes\Drones_Exceptions.cs" />
     <Compile Include="Tasks\CreateCreativeFragmentsTask.cs" />
     <Compile Include="Container\ServiceContainerBootstrapper.cs" />
     <Compile Include="ServiceAssemblyMarker.cs" />

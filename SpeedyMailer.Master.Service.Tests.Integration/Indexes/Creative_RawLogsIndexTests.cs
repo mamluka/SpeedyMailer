@@ -11,7 +11,7 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 {
-	public class RawLogsIndexTests : IntegrationTestBase
+	public class Creative_RawLogsIndexTests : IntegrationTestBase
 	{
 		[Test]
 		public void Index_WhenGivenSnapShots_ShouldMapReduceAllRawLogs()

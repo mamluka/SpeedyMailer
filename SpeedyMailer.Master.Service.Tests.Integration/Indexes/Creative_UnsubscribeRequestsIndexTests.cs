@@ -10,7 +10,7 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 {
-	public class UnsubscribeRequestsIndex : IntegrationTestBase
+	public class Creawtive_UnsubscribeRequestsIndex : IntegrationTestBase
 	{
 		[Test]
 		public void Index_WhenGivenSnapShots_ShouldMapReduceUnsubscribeRequests()

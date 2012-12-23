@@ -2,7 +2,7 @@ namespace SpeedyMailer.Core.Settings
 {
     public class CreativeFragmentSettings
     {
-        [Default(1000)]
+        [Default(200)]
         public virtual int RecipientsPerFragment { get; set; }
 
 		[Default(120)]

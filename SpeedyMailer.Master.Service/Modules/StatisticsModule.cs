@@ -42,7 +42,7 @@ namespace SpeedyMailer.Master.Service.Modules
 					using (var session = documentStore.OpenSession())
 					{
 						var results = session.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>().Where(x => x.Group == "All").ToList();
-						return Response.AsText(string.Join(Environment.NewLine, results));
+						return Response.AsText(string.Join(Environment.NewLine, results[0].Logs));
 					}
 				};
 
