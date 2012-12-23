@@ -78,6 +78,17 @@ namespace SpeedyMailer.Master.Service.Modules
 						return Response.AsJson(results);
 					}
 				};
+			
+			Get["/unclassified"] = call =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var creativeId = (string)Request.Query["creativeid"];
+						var results = session.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>().Where(x => x.CreativeId == creativeId);
+
+						return Response.AsJson(results);
+					}
+				};
 
 			Get["/sending-report"] = call =>
 				{
@@ -106,12 +117,12 @@ namespace SpeedyMailer.Master.Service.Modules
 
 						return Response.AsJson(new
 							{
+								TotalSent = sanitizedSends.Count,
+								TotalBounces = sanitizedBounces.Count,
+								TotalDeferres = sanitizedDeferres.Count,
 								Sent = sanitizedSends,
 								Bounced = sanitizedBounces,
 								Deferred = sanitizedDeferres,
-								TotalSent = sanitizedSends.Count,
-								TotalBounces = sanitizedBounces.Count,
-								TotalDeferres = sanitizedDeferres.Count
 							});
 					}
 				};

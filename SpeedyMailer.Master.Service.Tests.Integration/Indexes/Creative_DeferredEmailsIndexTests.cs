@@ -10,12 +10,12 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 {
-    public class Creative_DeferredEmailsIndexTests : IntegrationTestBase
-    {
-        [Test]
-        public void Index_WhenGivenSnapShots_ShouldMapReduceAllDeferredMails()
-        {
-            var snapshots = new[]
+	public class Creative_DeferredEmailsIndexTests : IntegrationTestBase
+	{
+		[Test]
+		public void Index_WhenGivenSnapShots_ShouldMapReduceAllDeferredMails()
+		{
+			var snapshots = new[]
                 {
                      new DroneStateSnapshoot
                         {
@@ -26,8 +26,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
                                 },
                             MailDeferred = new List<MailDeferred>
                                 {
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "david@aol.com", CreativeId = "creative/1"},
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "smith@aol.com", CreativeId = "creative/1"}
+                                    new MailDeferred {DomainGroup = "aol", Recipient = "david@aol.com", CreativeId = "creative/1",Message = "this message is deferred1"},
+                                    new MailDeferred {DomainGroup = "aol", Recipient = "smith@aol.com", CreativeId = "creative/1",Message = "this message is deferred2"}
                                 },
                             MailBounced = new List<MailBounced>
                                 {
@@ -44,8 +44,8 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
                                 },
                             MailDeferred = new List<MailDeferred>
                                 {
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "shit@aol.com", CreativeId = "creative/1"},
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "mother@aol.com", CreativeId = "creative/1"},
+                                    new MailDeferred {DomainGroup = "aol", Recipient = "shit@aol.com", CreativeId = "creative/1",Message = "this message is deferred3"},
+                                    new MailDeferred {DomainGroup = "aol", Recipient = "mother@aol.com", CreativeId = "creative/1",Message = "this message is deferred4"},
                                     new MailDeferred {DomainGroup = "aol", Recipient = "fucker@aol.com", CreativeId = "creative/2"}
                                 },
                             MailBounced = new List<MailBounced>
@@ -58,14 +58,15 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
                         }
                 }.ToList();
 
-            snapshots.ForEach(Store.Store);
+			snapshots.ForEach(Store.Store);
 
-            Store.WaitForIndexNotToBeStale<Creative_DeferredEmails.ReduceResult, Creative_DeferredEmails>();
+			Store.WaitForIndexNotToBeStale<Creative_DeferredEmails.ReduceResult, Creative_DeferredEmails>();
 
-            var result = Store.Query<Creative_DeferredEmails.ReduceResult, Creative_DeferredEmails>(x => x.CreativeId == "creative/1");
+			var result = Store.Query<Creative_DeferredEmails.ReduceResult, Creative_DeferredEmails>(x => x.CreativeId == "creative/1");
 
-            result.Should().Contain(x => x.CreativeId == "creative/1");
-            result[0].Deferred.Select(x => x.Recipient).Should().BeEquivalentTo(new[] {"david@aol.com", "smith@aol.com", "shit@aol.com", "mother@aol.com"});
-        }
-    }
+			result.Should().Contain(x => x.CreativeId == "creative/1");
+			result[0].Deferred.Select(x => x.Recipient).Should().BeEquivalentTo(new[] { "david@aol.com", "smith@aol.com", "shit@aol.com", "mother@aol.com" });
+			result[0].Deferred.Select(x => x.Message).Should().BeEquivalentTo(new[] { "this message is deferred1", "this message is deferred2", "this message is deferred3", "this message is deferred4" });
+		}
+	}
 }

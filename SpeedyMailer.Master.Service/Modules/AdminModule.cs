@@ -66,6 +66,18 @@ namespace SpeedyMailer.Master.Service.Modules
 																				 .ToList()));
 					}
 				};
+
+			Get["/drone-exceptions"] = x =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						return
+							Response.AsText(string.Join(Environment.NewLine, session
+								                                                 .Query<Drones_Exceptions.ReduceResult, Drones_Exceptions>()
+																				 .First(result => result.Group == "All")
+																				 .Exceptions));
+					}
+				};
 		}
 	}
 }
