@@ -34,6 +34,9 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var intervalRules = _api.Call<ServiceEndpoints.Rules.GetIntervalRules, List<IntervalRule>>();
 
+				if (intervalRules == null)
+					return;
+
 				_intervalRulesStore.RemoveAll();
 				_intervalRulesStore.BatchInsert(intervalRules);
 			}
