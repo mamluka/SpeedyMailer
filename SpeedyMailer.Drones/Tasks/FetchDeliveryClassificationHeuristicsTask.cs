@@ -15,7 +15,7 @@ namespace SpeedyMailer.Drones.Tasks
 
 		public override ITrigger ConfigureTrigger()
 		{
-			return TriggerWithTimeCondition(x => x.WithIntervalInHours(2).RepeatForever());
+			return TriggerWithTimeCondition(x => x.WithIntervalInMinutes(10).RepeatForever());
 		}
 
 		public class Job : IJob
