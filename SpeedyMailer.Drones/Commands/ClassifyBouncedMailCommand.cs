@@ -36,7 +36,7 @@ namespace SpeedyMailer.Drones.Commands
 						   .Select(x => new { x.Condition, Classification = new MailClassfication { BounceType = BounceType.Blocked, TimeSpan = x.TimeSpan } })
 				);
 
-			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Condition).Success);
+			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Condition, RegexOptions.IgnoreCase).Success);
 
 			return hardBounce != null ? hardBounce.Classification : new MailClassfication { BounceType = BounceType.NotClassified };
 		}

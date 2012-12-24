@@ -34,6 +34,24 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			result.BounceType.Should().Be(BounceType.HardBounce);
 		}
+		
+		[Test]
+		public void Execute_WhenGivenAMessageThatMatchesHardBounceWithConditionInDifferentCase_ShouldReturnHardBounce()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			const string message = "host mta6.am0.yahoodns.net[98.139.54.60] said: 554 delivery error: dd Sorry your message to bigluke89@yahoo.com cannot be delivered. This account has been disabled or discontinued [#102]. - mta1221.mail.ac4.yahoo.com (in reply to end of DATA command)";
+
+			StoreClassficationRules(new[]
+				                        {
+					                        "Account.+?Disabled",
+					                        "doesn't have.+?account",
+				                        });
+
+			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, MailClassfication>(x => x.Message = message);
+
+			result.BounceType.Should().Be(BounceType.HardBounce);
+		}
 
 		[Test]
 		public void Execute_WhenGivenAMessageThatDoesntMatchHardBounce_ShouldReturnNotClassified()

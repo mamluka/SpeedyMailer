@@ -64,7 +64,8 @@ namespace SpeedyMailer.Master.Service.Modules
 																		MailSent = model.MailSent,
 																		MailDeferred = model.MailDeferred,
 																		ClickActions = model.ClickActions,
-																		UnsubscribeRequests = model.UnsubscribeRequests
+																		UnsubscribeRequests = model.UnsubscribeRequests,
+																		Unclassified =  model.Unclassified
 													                });
 
 												  session.SaveChanges();

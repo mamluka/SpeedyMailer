@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using NLog;
 using Quartz;
+using RestSharp;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain;
 using SpeedyMailer.Core.Domain.Creative;
@@ -74,7 +75,7 @@ namespace SpeedyMailer.Drones.Tasks
 				var creativeFragment = _api
 					.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
 
-				if (creativeFragment == null)
+				if (creativeFragment == null || _api.ResponseStatus != ResponseStatus.Completed)
 					return;
 
 				SaveCurrentCreativeToDealMap(creativeFragment);
