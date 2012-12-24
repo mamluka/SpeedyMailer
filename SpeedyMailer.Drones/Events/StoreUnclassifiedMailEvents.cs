@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Drones.Commands;
@@ -10,9 +12,11 @@ namespace SpeedyMailer.Drones.Events
 	{
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
+		private CreativePackagesStore _creativePackagesStore;
 
-		public StoreUnclassifiedMailEvents(OmniRecordManager omniRecordManager, ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand)
+		public StoreUnclassifiedMailEvents(OmniRecordManager omniRecordManager,CreativePackagesStore creativePackagesStore, ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand)
 		{
+			_creativePackagesStore = creativePackagesStore;
 			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 			_omniRecordManager = omniRecordManager;
 		}
@@ -49,6 +53,18 @@ namespace SpeedyMailer.Drones.Events
 
 			if (!unclassified.Any())
 				return;
+
+			var emails = unclassified.Select(x => x.Recipient);
+
+			var creativePackages = _creativePackagesStore.GetByEmail(emails);
+			
+			creativePackages
+				.ToList()
+				.ForEach(x =>
+					{
+						x.TouchTime = DateTime.UtcNow;
+						_creativePackagesStore.Save(x);
+					});
 
 			_omniRecordManager.BatchInsert(unclassified);
 		}

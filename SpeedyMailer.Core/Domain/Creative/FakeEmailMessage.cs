@@ -31,5 +31,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 
 		[JsonConverter(typeof(IsoDateTimeConverter))]
 		public DateTime DeliveryDate { get; set; }
+
+		public DateTime SendTime { get; set; }
 	}
 }

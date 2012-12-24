@@ -14,210 +14,247 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
-    public class SendCreativePackagesWithIntervalTaskTests : IntegrationTestBase
-    {
-        public SendCreativePackagesWithIntervalTaskTests()
-            : base(x => x.UseMongo = true)
-        { }
+	public class SendCreativePackagesWithIntervalTaskTests : IntegrationTestBase
+	{
+		public SendCreativePackagesWithIntervalTaskTests()
+			: base(x => x.UseMongo = true)
+		{ }
 
-        [Test]
-        public void Execute_WhenTaskHasAnInterval_ShouldSendThePackagesAccordingToTheIntervalSpecified()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenTaskHasAnInterval_ShouldSendThePackagesAccordingToTheIntervalSpecified()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            DroneActions.EditSettings<EmailingSettings>(x =>
-                                                            {
-                                                                x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-                                                                x.MailingDomain = "example.com";
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-                                                            });
+															});
 
-            var creativePackages = new[]
+			var creativePackages = new[]
 				                       {
 					                       CreatePackage("david@gmail.com", "gmail"), 
 										   CreatePackage("david2@gmail.com", "gmail"), 
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-            DroneActions.StoreCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
-            var task = new SendCreativePackagesWithIntervalTask(x =>
-                                                                    {
-                                                                        x.Group = "gmail";
-                                                                    },
-                                                                x => x.WithIntervalInSeconds(5).RepeatForever()
-                );
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
-            DroneActions.StartScheduledTask(task);
+			DroneActions.StartScheduledTask(task);
 
-            var recipients = creativePackages.Select(x => x.To).ToList();
-            Email.AssertEmailsSentWithInterval(recipients, 5);
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients, 5);
 
-        }
+		}
 
-        [Test]
-        public void Execute_WhenTheGroupIsDefaultAndSomePackagesAreNotDeliverable_ShouldNotSendThatPackages()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenThereIsATaskThatWasRecentlyTouched_ShouldSendItLast()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            DroneActions.EditSettings<EmailingSettings>(x =>
-                                                            {
-                                                                x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-                                                                x.MailingDomain = "example.com";
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-                                                            });
+															});
+			var creativePackages = new[]
+				{
+					CreatePackage("david@gmail.com", "gmail", DateTime.UtcNow.AddMinutes(-10)),
+					CreatePackage("david3@gmail.com", "gmail", DateTime.UtcNow.AddMinutes(-30)),
+					CreatePackage("david2@gmail.com", "gmail", DateTime.UtcNow.AddMinutes(-20)),
+				};
 
-            var creativePackages = new[]
+
+			DroneActions.StoreCollection(creativePackages);
+
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
+
+			DroneActions.StartScheduledTask(task);
+
+			var recipients = new[] {"david3@gmail.com", "david2@gmail.com", "david@gmail.com"};
+			Email.AssertEmailsSentInOrder(recipients);
+
+		}
+
+		[Test]
+		public void Execute_WhenTheGroupIsDefaultAndSomePackagesAreNotDeliverable_ShouldNotSendThatPackages()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+
+															});
+
+			var creativePackages = new[]
 				                       {
 										   CreatePackage("david2@money.com", "$default$"), 
 										   CreatePackage("david3@verygood.com", "$default$")
 				                       };
 
-            creativePackages[1].Processed = true;
+			creativePackages[1].Processed = true;
 
-            DroneActions.StoreCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
-            var task = new SendCreativePackagesWithIntervalTask(x =>
-                                                                    {
-                                                                        x.Group = "$default$";
-                                                                    },
-                                                                x => x.WithIntervalInSeconds(5).RepeatForever()
-                );
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "$default$";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
-            DroneActions.StartScheduledTask(task);
+			DroneActions.StartScheduledTask(task);
 
-            var recipients = creativePackages.Select(x => x.To).ToList();
+			var recipients = creativePackages.Select(x => x.To).ToList();
 
-            Email.AssertEmailsSentTo(new[] { recipients[0] });
-            Email.AssertEmailNotSent(new[] { recipients[1] });
+			Email.AssertEmailsSentTo(new[] { recipients[0] });
+			Email.AssertEmailNotSent(new[] { recipients[1] });
 
-        }
+		}
 
-        [Test]
-        public void Execute_WhenThereAreProcessedAndNonProcessed_ShouldSendOnlyTheUnprocessedPackages()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenThereAreProcessedAndNonProcessed_ShouldSendOnlyTheUnprocessedPackages()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            DroneActions.EditSettings<EmailingSettings>(x =>
-                                                            {
-                                                                x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-                                                                x.MailingDomain = "example.com";
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-                                                            });
+															});
 
-            var creativePackages = new[]
+			var creativePackages = new[]
 				                       {
 					                       CreatePackage("david@gmail.com", "gmail"), 
 										   CreatePackage("david2@gmail.com", "gmail"), 
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-            creativePackages[2].Processed = true;
+			creativePackages[2].Processed = true;
 
-            DroneActions.StoreCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
-            var task = new SendCreativePackagesWithIntervalTask(x =>
-                                                                    {
-                                                                        x.Group = "gmail";
-                                                                    },
-                                                                x => x.WithIntervalInSeconds(5).RepeatForever()
-                );
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
-            DroneActions.StartScheduledTask(task);
+			DroneActions.StartScheduledTask(task);
 
-            var recipients = creativePackages.Select(x => x.To).ToList();
-            Email.AssertEmailsSentWithInterval(recipients.Take(2).ToList(), 5);
-            Email.AssertEmailNotSent(new[] { recipients[2] });
-        }
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients.Take(2).ToList(), 5);
+			Email.AssertEmailNotSent(new[] { recipients[2] });
+		}
 
-        [Test]
-        public void Execute_WhenPckagesArePresent_ShouldSetThemAsProcessed()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenPckagesArePresent_ShouldSetThemAsProcessed()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            DroneActions.EditSettings<EmailingSettings>(x =>
-                                                            {
-                                                                x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-                                                                x.MailingDomain = "example.com";
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-                                                            });
+															});
 
-            var creativePackages = new[]
+			var creativePackages = new[]
 				                       {
 					                       CreatePackage("david@gmail.com", "gmail"), 
 										   CreatePackage("david2@gmail.com", "gmail"), 
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-            DroneActions.StoreCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
-            var task = new SendCreativePackagesWithIntervalTask(x =>
-                                                                    {
-                                                                        x.Group = "gmail";
-                                                                    },
-                                                                x => x.WithIntervalInSeconds(5).RepeatForever()
-                );
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
-            DroneActions.StartScheduledTask(task);
+			DroneActions.StartScheduledTask(task);
 
-            var recipients = creativePackages.Select(x => x.To).ToList();
-            Email.AssertEmailsSentWithInterval(recipients, 5);
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients, 5);
 
-            var packages = DroneActions.FindAll<CreativePackage>();
-            packages.Should().OnlyContain(x => x.Processed);
-        }
+			var packages = DroneActions.FindAll<CreativePackage>();
+			packages.Should().OnlyContain(x => x.Processed);
+		}
 
-        [Test]
-        public void Execute_WhenTaskHasAnIntervalAndNoPackagesWereFound_ShouldStopExecutingTheTaskAndRemoveIt()
-        {
-            DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+		[Test]
+		public void Execute_WhenTaskHasAnIntervalAndNoPackagesWereFound_ShouldStopExecutingTheTaskAndRemoveIt()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-            DroneActions.EditSettings<EmailingSettings>(x =>
-                                                            {
-                                                                x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
-                                                                x.MailingDomain = "example.com";
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
 
-                                                            });
+															});
 
-            var creativePackages = new[]
+			var creativePackages = new[]
 				                       {
 					                       CreatePackage("david@gmail.com", "gmail"), 
 										   CreatePackage("david2@gmail.com", "gmail"), 
 										   CreatePackage("david3@gmail.com", "gmail")
 				                       };
 
-            DroneActions.StoreCollection(creativePackages);
+			DroneActions.StoreCollection(creativePackages);
 
-            var task = new SendCreativePackagesWithIntervalTask(x =>
-                                                                    {
-                                                                        x.Group = "gmail";
-                                                                    },
-                                                                x => x.WithIntervalInSeconds(5).RepeatForever()
-                );
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
 
-            DroneActions.StartScheduledTask(task);
+			DroneActions.StartScheduledTask(task);
 
-            var recipients = creativePackages.Select(x => x.To).ToList();
-            Email.AssertEmailsSentWithInterval(recipients, 5);
+			var recipients = creativePackages.Select(x => x.To).ToList();
+			Email.AssertEmailsSentWithInterval(recipients, 5);
 
-            Thread.Sleep(6000);
+			Thread.Sleep(6000);
 
-            Tasks.AssertTaskIsNotRunning(task);
-        }
+			Tasks.AssertTaskIsNotRunning(task);
+		}
 
-        private static CreativePackage CreatePackage(string email, string group)
-        {
-            return new CreativePackage
-                       {
-                           HtmlBody = "body",
-                           Group = group,
-                           Subject = "subject",
-                           To = email,
-                           FromAddressDomainPrefix = "david",
-                           Interval = 10,
-                           FromName = "sales",
-						   CreativeId = "creative/1"
-                       };
-        }
-    }
+		private static CreativePackage CreatePackage(string email, string group, DateTime touchDate = default(DateTime))
+		{
+			return new CreativePackage
+					   {
+						   HtmlBody = "body",
+						   Group = group,
+						   Subject = "subject",
+						   To = email,
+						   FromAddressDomainPrefix = "david",
+						   Interval = 10,
+						   FromName = "sales",
+						   CreativeId = "creative/1",
+						   TouchTime = touchDate
+
+					   };
+		}
+	}
 }

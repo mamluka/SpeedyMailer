@@ -25,5 +25,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public bool Processed { get; set; }
 
 	    public string CreativeId { get; set; }
+
+		public DateTime TouchTime { get; set; }
 	}
 }

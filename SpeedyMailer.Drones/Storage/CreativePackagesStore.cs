@@ -23,7 +23,9 @@ namespace SpeedyMailer.Drones.Storage
 		public CreativePackage GetPackageForGroup(string group)
 		{
 			return Find(Query.EQ(PropertyName(x => x.Group), group)
-							 .And(Query.EQ(PropertyName(x => x.Processed), false))).FirstOrDefault();
+							 .And(Query.EQ(PropertyName(x => x.Processed), false))
+							 ,SortBy.Ascending(PropertyName(x => x.TouchTime)))
+							 .FirstOrDefault();
 
 		}
 
@@ -37,7 +39,7 @@ namespace SpeedyMailer.Drones.Storage
 
 		public bool AreThereAnyNonProcessedPackages()
 		{
-			return Find(Query.EQ(PropertyName(x=> x.Processed),false)).Any();
+			return Find(Query.EQ(PropertyName(x => x.Processed), false)).Any();
 		}
 
 		public IList<CreativePackage> GetAll()

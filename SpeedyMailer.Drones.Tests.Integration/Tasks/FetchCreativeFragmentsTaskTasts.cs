@@ -172,6 +172,45 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenWeObtainAFragment_ShouldStoreThePackagesCurrentTime()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+																							  {
+																								  x.Id = "fragment/1";
+																								  x.CreativeId = "creative/1";
+																								  x.HtmlBody = CreateHtmlBodyWithLink("http://www.dealexpress.com/deal");
+																								  x.DealUrl = "http://www.dealexpress.com/deal";
+																								  x.Subject = "hello world subject";
+																								  x.UnsubscribeTemplate = "here  is a template ^url^";
+																								  x.Recipients = recipients;
+																								  x.FromName = "david";
+																								  x.FromAddressDomainPrefix = "sales";
+																							  });
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+			DroneActions.WaitForDocumentToExist<CreativePackage>();
+
+			var result = DroneActions.FindSingle<CreativePackage>();
+
+			result.TouchTime.Should().BeAfter(DateTime.UtcNow + TimeSpan.FromSeconds(-10));
+
+		}
+
+		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldSaveDealUrlCreativeIdMap()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
@@ -627,7 +666,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		{
 			return CreateHtmlBodyWithLink(link) + " also we have the email here ^email^";
 		}
-		
+
 		private string CreateTextBodyWithLinkAndEmailTemplating(string link)
 		{
 			return CreateTextBodyWithLink(link) + " also we have the email here ^email^";
@@ -686,7 +725,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 		private void AssertHtmlBodyContains(string text)
 		{
-			Email.AssertEmailSent(x => x.AlternateViews.Should().Contain(s=> s.Contains(text)));
+			Email.AssertEmailSent(x => x.AlternateViews.Should().Contain(s => s.Contains(text)));
 		}
 
 		private string CreateHtmlBodyWithLink(string link)

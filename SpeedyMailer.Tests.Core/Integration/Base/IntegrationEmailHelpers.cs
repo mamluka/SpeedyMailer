@@ -209,5 +209,13 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			var deliveryTimes = OrderByDeliveryTimes(emails);
 			deliveryTimes.AssertTimesAreTheSameInRange(200);
 		}
+
+		public void AssertEmailsSentInOrder(IList<string> recipients, int waitFor = 30)
+		{
+			var emails =  WaitForEmailsWithCondition(waitFor,
+									   messages => messages.OrderBy(x => x.SendTime).Select(x => x.To[0].Address).SequenceEqual(recipients));
+
+			emails.OrderBy(x=> x.SendTime).Select(x=> x.To[0].Address).Should().ContainInOrder(recipients);
+		}
 	}
 }

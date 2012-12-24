@@ -44,7 +44,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 			snapshots.ForEach(Store.Store);
 
 			Store.WaitForIndexNotToBeStale<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>();
-
+				
 			var result = Store.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>(x => x.CreativeId == "creatives/1");
 
 			result.Should().Contain(x => x.CreativeId == "creatives/1");

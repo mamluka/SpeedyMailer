@@ -75,6 +75,7 @@ namespace SpeedyMailer.Drones.Commands
 			var tmpEmailFile = SerializeObject(email);
 			var fakeEmailFile = JsonConvert.DeserializeObject<FakeEmailMessage>(tmpEmailFile);
 			fakeEmailFile.DroneId = _droneSettings.Identifier;
+			fakeEmailFile.SendTime = DateTime.UtcNow;
 			fakeEmailFile.DeliveryDate = DateTime.UtcNow;
 			fakeEmailFile.TestHeaders = email.Headers.AllKeys.ToDictionary(x => x, x => email.Headers[x]);
 

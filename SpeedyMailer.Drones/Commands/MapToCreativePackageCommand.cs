@@ -43,7 +43,8 @@ namespace SpeedyMailer.Drones.Commands
 						FromName = creativeFragment.FromName,
 						FromAddressDomainPrefix = creativeFragment.FromAddressDomainPrefix,
 						Interval = recipient.Interval,
-						CreativeId = creativeFragment.CreativeId
+						CreativeId = creativeFragment.CreativeId,
+						TouchTime = DateTime.UtcNow
 					};
 		}
 
