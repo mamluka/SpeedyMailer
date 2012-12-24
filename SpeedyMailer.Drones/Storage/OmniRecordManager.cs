@@ -1,5 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
+using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.Wrappers;
 using Mongol;
 using SpeedyMailer.Core.Settings;
 
@@ -49,6 +54,12 @@ namespace SpeedyMailer.Drones.Storage
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
 			specificRecordManager.Collection.Drop();
+		}
+
+		public void EnsureIndex<T>(params Expression<Func<T,object>>[] keys) where T : class
+		{
+			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
+			specificRecordManager.Collection.EnsureIndex(new IndexKeysDocument());
 		}
 	}
 }
