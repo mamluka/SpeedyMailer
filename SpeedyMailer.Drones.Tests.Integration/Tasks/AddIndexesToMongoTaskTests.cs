@@ -38,7 +38,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 		public class Job : IJob
 		{
-			private OmniRecordManager _omniRecordManager;
+			private readonly OmniRecordManager _omniRecordManager;
 
 			public Job(OmniRecordManager omniRecordManager)
 			{
