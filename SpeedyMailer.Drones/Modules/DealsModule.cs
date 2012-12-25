@@ -7,6 +7,7 @@ using Nancy.Responses;
 using SpeedyMailer.Core.Domain;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Emails;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Storage;
@@ -15,7 +16,7 @@ namespace SpeedyMailer.Drones.Modules
 {
 	public class DealsModule : NancyModule
 	{
-		public DealsModule(OmniRecordManager omniRecordManager)
+		public DealsModule(OmniRecordManager omniRecordManager,DroneSettings droneSettings)
 			: base("/deals")
 		{
 			Get["/{data}"] = call =>
@@ -32,7 +33,8 @@ namespace SpeedyMailer.Drones.Modules
 																		   {
 																			   ContactId = contactId,
 																			   CreativeId = creativeId,
-																			   Date = DateTime.UtcNow
+																			   Date = DateTime.UtcNow,
+																			   Domain = droneSettings.Domain
 																		   });
 
 									 return new RedirectResponse(creativeToDealMap.DealUrl, RedirectResponse.RedirectType.Permanent);

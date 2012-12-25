@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Raven.Client.Indexes;
 using SpeedyMailer.Core.Domain.Contacts;
@@ -11,16 +12,24 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 		public class ReduceResult
 		{
 			public string CreativeId { get; set; }
-			public string[] ClickedBy { get; set; }
+			public ClickReduceResult[] ClickedBy { get; set; }
+
+			public class ClickReduceResult
+			{
+				public string Domain { get; set; }
+				public DateTime Time { get; set; }
+				public string Contactid { get; set; }
+			}
+
 		}
 		public Creative_ClickActions()
 		{
 			Map = snapshots => snapshots
-				                   .SelectMany(x => x.ClickActions, (snapshot, x) => new
-					                                                                     {
-						                                                                     ClickedBy = new[] {x.ContactId},
-						                                                                     x.CreativeId
-					                                                                     });
+								   .SelectMany(x => x.ClickActions, (snapshot, x) => new
+																						 {
+																							 ClickedBy = new[] { new ReduceResult.ClickReduceResult { Contactid = x.ContactId, Time = x.Date, Domain = x.Domain } },
+																							 x.CreativeId
+																						 });
 
 			Reduce = result => result
 								   .GroupBy(x => x.CreativeId)

@@ -46,6 +46,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 			{
 				x.BaseUrl = DefaultBaseUrl;
 				x.StoreHostname = DefaultHostUrl;
+				x.Domain = "drone1.com";
 			});
 
 			DroneActions.StartDroneEndpoints();
@@ -64,6 +65,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 
 			result.ContactId.Should().Be("contacts/1");
 			result.CreativeId.Should().Be("creatives/1");
+			result.Domain.Should().Be("drone1.com");
 			result.Date.Should().BeAfter(DateTime.UtcNow.AddMinutes(-1));
 		}
 

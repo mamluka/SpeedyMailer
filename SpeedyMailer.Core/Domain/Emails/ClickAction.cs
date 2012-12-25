@@ -13,5 +13,6 @@ namespace SpeedyMailer.Core.Domain.Emails
 		public string ContactId { get; set; }
 		public string CreativeId { get; set; }
 		public DateTime Date { get; set; }
+		public string Domain { get; set; }
 	}
 }
