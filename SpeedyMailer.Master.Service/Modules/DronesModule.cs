@@ -51,28 +51,39 @@ namespace SpeedyMailer.Master.Service.Modules
 								};
 
 			Post["/state-snapshot"] = x =>
-				                          {
-					                          var model = this.Bind<ServiceEndpoints.Drones.SendStateSnapshot>();
+										  {
+											  var model = this.Bind<ServiceEndpoints.Drones.SendStateSnapshot>();
 
 											  using (var session = documentStore.OpenSession())
 											  {
 												  session.Store(new DroneStateSnapshoot
-													                {
-														                Drone = model.Drone,
+																	{
+																		Drone = model.Drone,
 																		RawLogs = model.RawLogs,
 																		MailBounced = model.MailBounced,
 																		MailSent = model.MailSent,
 																		MailDeferred = model.MailDeferred,
 																		ClickActions = model.ClickActions,
 																		UnsubscribeRequests = model.UnsubscribeRequests,
-																		Unclassified =  model.Unclassified
-													                });
+																		Unclassified = model.Unclassified
+																	});
 
 												  session.SaveChanges();
 											  }
 
 											  return Response.AsText("OK");
 										  };
+
+			Get["/drone-reputation"] = x =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var drones = session.Query<Drone>().Select(drone => new { drone.IpReputation, drone.Domain });
+						return Response.AsJson(drones);
+					}
+				};
+
+
 		}
 	}
 }
