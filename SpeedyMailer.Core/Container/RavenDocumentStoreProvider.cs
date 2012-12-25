@@ -27,8 +27,10 @@ namespace SpeedyMailer.Core.Container
 					}
 	            };
 
-            store.Initialize();
-            return store;
+	        store.Initialize();
+
+	        store.JsonRequestFactory.ConfigureRequest += (sender, e) => { e.Request.Timeout = 500000; /*ms*/ };
+	        return store;
         }
     }
 }
