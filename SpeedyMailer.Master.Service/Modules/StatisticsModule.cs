@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Nancy;
 using Raven.Client;
 using SpeedyMailer.Core.Domain.Mail;
@@ -78,13 +79,17 @@ namespace SpeedyMailer.Master.Service.Modules
 						return Response.AsJson(results);
 					}
 				};
-			
+
 			Get["/unclassified"] = call =>
 				{
 					using (var session = documentStore.OpenSession())
 					{
 						var creativeId = (string)Request.Query["creativeid"];
-						var results = session.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>().Where(x => x.CreativeId == creativeId);
+						var classificationRules = session.Query<DeliverabilityClassificationRules>().First();
+						var rules = classificationRules.BlockingRules.Select(x => x.Condition).Union(classificationRules.HardBounceRules);
+
+						var results = session.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>().Where(x => x.CreativeId == creativeId).ToList();
+						results[0].Unclassified = results[0].Unclassified.Where(x => !rules.Any(m => Regex.Match(x.Message, m).Success)).ToList();
 
 						return Response.AsJson(results);
 					}
