@@ -5,6 +5,7 @@
 
 function UploadListController($scope, $http, listResource) {
     $scope.lists = listResource.query();
+    $scope.baseUrl = config.apiUrl;
 }
 UploadListController.$inject = ['$scope', '$http', 'List'];
 

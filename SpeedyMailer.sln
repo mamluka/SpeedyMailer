@@ -50,6 +50,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Tests.Performa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Ray", "SpeedyMailer.Master.Ray\SpeedyMailer.Master.Ray.csproj", "{C326DC27-C2C4-4A81-B9FE-ED5131F14BF7}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Deploy", "Deploy", "{9F433887-2892-428B-AF43-C7C95139AD25}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Deploy", "SpeedyMailer.Master.Deploy\SpeedyMailer.Master.Deploy.csproj", "{16D90C88-5006-499B-8E51-E4162BAA2A10}"
+EndProject
 Global
 	GlobalSection(TestCaseManagementSettings) = postSolution
 		CategoryFile = SpeedyMailer.vsmdi
@@ -497,6 +501,31 @@ Global
 		{C326DC27-C2C4-4A81-B9FE-ED5131F14BF7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C326DC27-C2C4-4A81-B9FE-ED5131F14BF7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C326DC27-C2C4-4A81-B9FE-ED5131F14BF7}.Release|x86.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.AutomatedRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.AutomatedRelease|Any CPU.Build.0 = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.AutomatedRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.AutomatedRelease|Mixed Platforms.Build.0 = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.AutomatedRelease|x86.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoDebug|Any CPU.Build.0 = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoDebug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoDebug|x86.ActiveCfg = Debug|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoRelease|Mixed Platforms.Build.0 = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.MonoRelease|x86.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{16D90C88-5006-499B-8E51-E4162BAA2A10}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -522,5 +551,6 @@ Global
 		{69B34FBC-A9AD-4EE7-B450-E868BB4CF373} = {403DB2FF-5FE3-4A27-9F13-F10F46DF9990}
 		{9E6115E0-9A7B-42AB-B512-C8B251F4B3A3} = {A0AF2FB0-56C0-4614-AEE8-B969B08D8943}
 		{B706B158-5AC2-460D-A6A7-54AD16CE29AE} = {A0AF2FB0-56C0-4614-AEE8-B969B08D8943}
+		{16D90C88-5006-499B-8E51-E4162BAA2A10} = {9F433887-2892-428B-AF43-C7C95139AD25}
 	EndGlobalSection
 EndGlobal

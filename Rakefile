@@ -5,71 +5,143 @@ require 'socket'
 
 namespace :windows do
 
-  DRONE_SOLUTION_FILE = "SpeedyMailer.Drones\\SpeedyMailer.Drones.csproj"
-  DRONE_OUTPUT_FOLDER = "..\\Out\\Drone"
+  MASTER_PREDEPLOY_FOLDER = "C:/SpeedyMailer/Release"
+  WIN32_MASTER_DEPLOY_FOLDER = "C:\\SpeedyMailer"
 
-  SERVICE_SOLUTION_FILE = "SpeedyMailer.Master.Service\\SpeedyMailer.Master.Service.csproj"
-  SERVICE_OUTPUT_FOLDER = "..\\Out\\Service"
-  
-  API_SOLUTION_FILE = "SpeedyMailer.Master.Web.Api\\SpeedyMailer.Master.Web.Api.csproj"
+  DRONE_SOLUTION_FILE = "SpeedyMailer.Drones/SpeedyMailer.Drones.csproj"
+  DRONE_OUTPUT_FOLDER = "../Out/Drone"
+
+  SERVICE_SOLUTION_FILE = "SpeedyMailer.Master.Service/SpeedyMailer.Master.Service.csproj"
+  SERVICE_OUTPUT_FOLDER = MASTER_PREDEPLOY_FOLDER + "/Service"
+
+  DEPLOY_SOLUTION_FILE = "SpeedyMailer.Master.Deploy/SpeedyMailer.Master.Deploy.csproj"
+  DEPLOY_OUTPUT_FOLDER = MASTER_PREDEPLOY_FOLDER + "/Deploy"
+
+  DEPLOY_EXE = MASTER_PREDEPLOY_FOLDER + "/Deploy/SpeedyMailer.Master.Deploy.exe"
+
+  API_SOLUTION_FILE = "SpeedyMailer.Master.Web.Api/SpeedyMailer.Master.Web.Api.csproj"
   API_OUTPUT_FOLDER = "Api"
-  
-  MASTER_FOLDER = "C:/SpeedyMailer"
 
-  APP_FOLDER = "SpeedyMailer.Master.Web.App\\static\\app"
+  APP_FOLDER = "SpeedyMailer.Master.Web.App/static/app"
   APP_OUTPUT_FOLDER = "App"
 
+  MASTER_DOMAIN = "xomixfuture.com"
+
   desc "Clean solution"
-  msbuild :clean, [:solution] do |msb,args|
+  msbuild :clean, [:solution] do |msb, args|
     msb.targets :Clean
-    msb.solution  = args[:solution]
+    msb.solution = args[:solution]
   end
 
   desc "Build solution"
-  msbuild :build, [:solution,:output_folder] do |msb,args|
-    msb.properties :configurations => :Release,:OutputPath => args[:output_folder]
+  msbuild :build, [:solution, :output_folder] do |msb, args|
+    msb.properties :configurations => :Release, :OutputPath => args[:output_folder]
     msb.targets :Rebuild
-    msb.solution  = args[:solution]
-  end
-  
-  desc "Publish website"
-  msbuild :publish, [:solution,:output_folder] do |msb,args|
-    msb.properties = { :configuration=>:Release }
-	msb.targets [:Rebuild,:ResolveReferences,:_CopyWebApplication]
-	msb.properties = {
-			:webprojectoutputdir=> File.join(MASTER_FOLDER,args[:output_folder]),
-			:outdir => File.join(MASTER_FOLDER,args[:output_folder],"bin")
-		}
-	msb.solution = args[:solution]
+    msb.solution = args[:solution]
   end
 
+  desc "Build solution"
+  msbuild :build2, [:solution, :output_folder] do |msb, args|
+    msb.properties :configurations => :Release, :OutputPath => args[:output_folder]
+    msb.targets :Rebuild
+    msb.solution = args[:solution]
+  end
+
+  desc "Publish website"
+  msbuild :publish, [:solution, :output_folder] do |msb, args|
+    msb.properties = {:configuration => :Release}
+    msb.targets [:Rebuild, :ResolveReferences, :_CopyWebApplication]
+    msb.properties = {
+        :webprojectoutputdir => File.join(MASTER_PREDEPLOY_FOLDER, args[:output_folder]),
+        :outdir => File.join(MASTER_PREDEPLOY_FOLDER, args[:output_folder], "bin")
+    }
+    msb.solution = args[:solution]
+  end
 
   desc "Build drone from project file"
   task :build_drone do
     puts "Start building drone..."
-    Rake::Task["windows:build"].invoke(DRONE_SOLUTION_FILE,DRONE_OUTPUT_FOLDER)
-    end
+    Rake::Task["windows:build"].invoke(DRONE_SOLUTION_FILE, DRONE_OUTPUT_FOLDER)
+    Rake::Task["windows:build"].reenable
+  end
 
   desc "Build service from project file"
   task :build_service do
     puts "Start building service..."
-    Rake::Task["windows:build"].invoke(SERVICE_SOLUTION_FILE,SERVICE_OUTPUT_FOLDER)
+    Rake::Task["windows:build"].invoke(SERVICE_SOLUTION_FILE, SERVICE_OUTPUT_FOLDER)
+    Rake::Task["windows:build"].reenable
   end
-  
+
   desc "Build API"
   task :build_api do
     puts "Start building api..."
-    Rake::Task["windows:publish"].invoke(API_SOLUTION_FILE,API_OUTPUT_FOLDER)
+    Rake::Task["windows:publish"].invoke(API_SOLUTION_FILE, API_OUTPUT_FOLDER)
+    Rake::Task["windows:publish"].reenable
   end
-  
+
   desc "Build App"
   task :build_app do
     puts "Start building app..."
-	app_folder = File.join(MASTER_FOLDER,APP_OUTPUT_FOLDER)
-	FileUtils.mkdir_p(app_folder)
-	FileUtils.cp_r APP_FOLDER + "\\.", app_folder
+    app_folder = File.join(MASTER_PREDEPLOY_FOLDER, APP_OUTPUT_FOLDER)
+    FileUtils.mkdir_p(app_folder)
+    FileUtils.cp_r APP_FOLDER + "\\.", app_folder
   end
-  
+
+  desc "Build deploy program"
+  task :build_deploy do
+    puts "Build deploy executable"
+    Rake::Task["windows:build"].invoke(DEPLOY_SOLUTION_FILE, DEPLOY_OUTPUT_FOLDER)
+    Rake::Task["windows:build"].reenable
+  end
+
+  #Deploy commands
+
+  desc "Deploy service"
+  task :deploy_service => [:build_service, :build_deploy, :exec_deploy_service] do
+  end
+
+  desc "Deploy api"
+  task :deploy_api => [:build_api, :build_deploy, :exec_deploy_api] do
+  end
+
+  desc "Deploy app"
+  task :deploy_app => [:build_app, :build_deploy,:configure_app, :exec_deploy_app] do
+  end
+
+  desc "Execute deployment of service"
+  exec :exec_deploy_service do |cmd|
+    puts "Launching deployment command for service"
+
+    cmd.command=DEPLOY_EXE
+    cmd.parameters=["--deploy-service", "--base-url", MASTER_DOMAIN, "--base-directory", WIN32_MASTER_DEPLOY_FOLDER]
+  end
+
+  desc "Execute deployment of api"
+  exec :exec_deploy_api do |cmd|
+    puts "Launching deployment command for api"
+
+    cmd.command=DEPLOY_EXE
+    cmd.parameters=["--deploy-api", "--base-url", MASTER_DOMAIN, "--base-directory", WIN32_MASTER_DEPLOY_FOLDER]
+  end
+
+  desc "configure the app js file"
+  task :configure_app do
+    var configFile = File.join(MASTER_PREDEPLOY_FOLDER, APP_FOLDER, "js", "config.js")
+    File.rm configFile;
+
+    File.open(configFile, 'w') {
+        |file| file.write("config.apiUrl = 'http://api.#{MASTER_DOMAIN}'")
+    }
+  end
+
+  desc "Execute deployment of app"
+  exec :exec_deploy_app do |cmd|
+    puts "Launching deployment command for app"
+
+    cmd.command=DEPLOY_EXE
+    cmd.parameters=["--deploy-app", "--base-url", MASTER_DOMAIN, "--base-directory", WIN32_MASTER_DEPLOY_FOLDER]
+  end
+
 end
 
 namespace :mono do
@@ -80,75 +152,75 @@ namespace :mono do
   desc "clean the solution"
   xbuild :clean do |msb|
     msb.targets :Clean
-    msb.solution  = MONO_SOLUTION_FILE
+    msb.solution = MONO_SOLUTION_FILE
   end
 
   desc "Build the solution"
   xbuild :build => :clean do |msb|
-    msb.properties :configurations => :Release,:OutputPath => MONO_OUTPUT_FOLDER
+    msb.properties :configurations => :Release, :OutputPath => MONO_OUTPUT_FOLDER
     msb.targets :Rebuild
-    msb.solution  = MONO_SOLUTION_FILE
+    msb.solution = MONO_SOLUTION_FILE
   end
 end
 
 namespace :winrun do
 
-    BASE_FOLDER =  File.dirname(__FILE__)
+  BASE_FOLDER = File.dirname(__FILE__)
 
-    desc "Run ravendb server on the pre-configured url and port"
+  desc "Run ravendb server on the pre-configured url and port"
 
-    exec :run_raven do |cmd|
-	  puts "All data will be deleted..."
-	  FileUtils.rm_rf 'RavenDb\\Server\\Data'
-	
-      cmd.command="cmd.exe"
-      cmd.parameters=["/c","start","RavenDb\\Server\\Raven.Server.exe"]
-    end
+  exec :run_raven do |cmd|
+    puts "All data will be deleted..."
+    FileUtils.rm_rf 'RavenDb\\Server\\Data'
 
-    task :update_raven_url do |t|
-      puts "Opening app.config file for writing..."
+    cmd.command="cmd.exe"
+    cmd.parameters=["/c", "start", "RavenDb\\Server\\Raven.Server.exe"]
+  end
 
-      f = File.open("SpeedyMailer.Master.Service\\app.config")
-      xml = Nokogiri::XML(f)
-      f.close()
+  task :update_raven_url do |t|
+    puts "Opening app.config file for writing..."
 
-      connString = xml.xpath("//configuration/connectionStrings/add").first()
-      connString["connectionString"] =  "Url = http://localhost:4253"
+    f = File.open("SpeedyMailer.Master.Service\\app.config")
+    xml = Nokogiri::XML(f)
+    f.close()
 
-      puts "Updating app.config with the new raven url"
-      File.open("SpeedyMailer.Master.Service\\app.config",'w') {|f| xml.write_xml_to f}
-    end
+    connString = xml.xpath("//configuration/connectionStrings/add").first()
+    connString["connectionString"] = "Url = http://localhost:4253"
 
-    desc "Run service with database"
+    puts "Updating app.config with the new raven url"
+    File.open("SpeedyMailer.Master.Service\\app.config", 'w') { |f| xml.write_xml_to f }
+  end
 
-    exec :run_service,[:host] => [:update_raven_url,"windows:build_service",:run_raven] do |cmd,args|
-      cmd.command="cmd.exe"
-      cmd.parameters=["/c","start","Out\\Service\\SpeedyMailer.Master.Service.exe","-b",args[:host]]
-      cmd.log_level = :verbose
-    end
-	
-	desc "Run service bare"
+  desc "Run service with database"
 
-    exec :run_service_bare => ["windows:build_service"] do |cmd|
-      cmd.command="cmd.exe"
-      cmd.parameters=["/c","start","Out\\Service\\SpeedyMailer.Master.Service.exe","-b",local_host_url]
-      cmd.log_level = :verbose
-    end
+  exec :run_service, [:host] => [:update_raven_url, "windows:build_service", :run_raven] do |cmd, args|
+    cmd.command="cmd.exe"
+    cmd.parameters=["/c", "start", "Out\\Service\\SpeedyMailer.Master.Service.exe", "-b", args[:host]]
+    cmd.log_level = :verbose
+  end
+
+  desc "Run service bare"
+
+  exec :run_service_bare => ["windows:build_service"] do |cmd|
+    cmd.command="cmd.exe"
+    cmd.parameters=["/c", "start", "Out\\Service\\SpeedyMailer.Master.Service.exe", "-b", local_host_url]
+    cmd.log_level = :verbose
+  end
 
   desc "Run default service"
 
   task :run_default_service do
     puts local_ip
-	
+
     Rake::Task["winrun:run_service"].invoke(local_host_url)
   end
-  
+
   def local_host_url
-      "http://"+local_ip
+    "http://"+local_ip
   end
-  
+
   def local_ip
-    orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true  # turn off reverse DNS resolution temporarily
+    orig, Socket.do_not_reverse_lookup = Socket.do_not_reverse_lookup, true # turn off reverse DNS resolution temporarily
 
     UDPSocket.open do |s|
       s.connect '64.233.187.99', 1
