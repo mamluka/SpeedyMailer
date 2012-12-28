@@ -2,6 +2,7 @@ require 'albacore'
 require 'nokogiri'
 require 'open-uri'
 require 'socket'
+require 'json'
 
 require 'sys/proctable'
 include Sys
@@ -100,16 +101,21 @@ namespace :windows do
   #Deploy commands
 
   desc "Deploy service"
-  task :deploy_service => [:build_service, :build_deploy,:run_raven, :exec_deploy_service] do
+  task :deploy_service => [:build_service, :build_deploy, :run_raven, :exec_deploy_service] do
   end
 
   desc "Deploy api"
-  task :deploy_api => [:build_api, :build_deploy, :exec_deploy_api] do
+  task :deploy_api => [:build_api, :configure_api, :build_deploy, :exec_deploy_api] do
   end
 
   desc "Deploy app"
-  task :deploy_app => [:build_app, :build_deploy,:configure_app, :exec_deploy_app] do
+  task :deploy_app => [:build_app, :build_deploy, :configure_app, :exec_deploy_app] do
   end
+
+  desc "Deploy master applications"
+  task :deploy => [:deploy_service, :deploy_api, :deploy_app] do
+  end
+
 
   desc "Execute deployment of service"
   exec :exec_deploy_service do |cmd|
@@ -118,26 +124,25 @@ namespace :windows do
     cmd.command=DEPLOY_EXE
     cmd.parameters=["--deploy-service", "--base-url", MASTER_DOMAIN, "--base-directory", WIN32_MASTER_DEPLOY_FOLDER]
   end
-  
+
   desc "Copy RavenDB"
   task :copy_raven do
-    FileUtils.cp_r "RavenDB\\Server",WIN32_MASTER_DEPLOY_FOLDER + "\\Server"
+    FileUtils.cp_r "RavenDB\\Server", WIN32_MASTER_DEPLOY_FOLDER + "\\Server"
   end
-  
+
   desc "Run raven"
   task :run_raven do
-   ravenRunning =  ProcTable.ps.any?{ |p| p.name == "Raven.Server.exe" }
-   if !ravenRunning
-     Rake::Task["windows:exec_run_raven"].invoke
-   end
+    ravenRunning = ProcTable.ps.any? { |p| p.name == "Raven.Server.exe" }
+
+    if !ravenRunning
+      Rake::Task["windows:exec_run_raven"].invoke
+    end
   end
-  
+
   desc "Run raven32"
   exec :exec_run_raven => [:copy_raven] do |cmd|
-
-      cmd.command="cmd.exe"
-      cmd.parameters=["/c", "start", WIN32_MASTER_DEPLOY_FOLDER + "\\Server\\Raven.Server.exe"]
-	
+    cmd.command="cmd.exe"
+    cmd.parameters=["/c", "start", WIN32_MASTER_DEPLOY_FOLDER + "\\Server\\Raven.Server.exe"]
   end
 
   desc "Execute deployment of api"
@@ -151,13 +156,32 @@ namespace :windows do
   desc "configure the app js file"
   task :configure_app do
     configFile = File.join(MASTER_PREDEPLOY_FOLDER, APP_OUTPUT_FOLDER, "js", "config.js")
-	
-	puts configFile
+
+    puts configFile
     FileUtils.rm_rf configFile;
 
     File.open(configFile, 'w') {
         |file| file.write("config.apiUrl = 'http://api.#{MASTER_DOMAIN}'")
     }
+  end
+
+  desc "configure the app js file"
+  task :configure_api do
+    configFolder = File.join(MASTER_PREDEPLOY_FOLDER, API_OUTPUT_FOLDER, "settings")
+
+    configFile = File.join(configFolder, "ApiCalls.settings")
+
+    FileUtils.mkdir configFolder
+
+
+    tempHash = {
+        "ApiBaseUri" => "http://www.#{MASTER_DOMAIN}",
+    }
+
+    File.open(configFile, "w") do |f|
+      f.write(tempHash.to_json)
+    end
+
   end
 
   desc "Execute deployment of app"
@@ -219,10 +243,11 @@ namespace :winrun do
 
   desc "Run service with database"
 
-  exec :run_service, [:host] => [:update_raven_url, "windows:build_service", :run_raven] do |cmd, args|cmd.command="cmd.exe"
+  exec :run_service, [:host] => [:update_raven_url, "windows:build_service", :run_raven] do |cmd, args|
+    cmd.command="cmd.exe"
     cmd.parameters=["/c", "start", "Out\\Service\\SpeedyMailer.Master.Service.exe", "-b", args[:host]]
     cmd.log_level = :verbose
-    
+
   end
 
   desc "Run service bare"

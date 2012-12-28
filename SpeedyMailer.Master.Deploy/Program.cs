@@ -110,8 +110,12 @@ namespace SpeedyMailer.Master.Deploy
 			{
 				DeleteAppFolder(apiPath, apiPreReleasePath);
 
-				iisManager.ApplicationPools.Add(name);
-				iisManager.CommitChanges();
+				var hasPool = iisManager.ApplicationPools.Any(x => x.Name == name);
+				if (!hasPool)
+				{
+					iisManager.ApplicationPools.Add(name);
+					iisManager.CommitChanges();
+				}
 
 				var pool = iisManager.ApplicationPools[name];
 				pool.ManagedRuntimeVersion = "v4.0";
