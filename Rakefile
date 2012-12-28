@@ -3,6 +3,9 @@ require 'nokogiri'
 require 'open-uri'
 require 'socket'
 
+require 'sys/proctable'
+include Sys
+
 namespace :windows do
 
   MASTER_PREDEPLOY_FOLDER = "C:/SpeedyMailer/Release"
@@ -97,7 +100,7 @@ namespace :windows do
   #Deploy commands
 
   desc "Deploy service"
-  task :deploy_service => [:build_service, :build_deploy, :exec_deploy_service] do
+  task :deploy_service => [:build_service, :build_deploy,:run_raven, :exec_deploy_service] do
   end
 
   desc "Deploy api"
@@ -115,6 +118,27 @@ namespace :windows do
     cmd.command=DEPLOY_EXE
     cmd.parameters=["--deploy-service", "--base-url", MASTER_DOMAIN, "--base-directory", WIN32_MASTER_DEPLOY_FOLDER]
   end
+  
+  desc "Copy RavenDB"
+  task :copy_raven do
+    FileUtils.cp_r "RavenDB\\Server",WIN32_MASTER_DEPLOY_FOLDER + "\\Server"
+  end
+  
+  desc "Run raven"
+  task :run_raven do
+   ravenRunning =  ProcTable.ps.any?{ |p| p.name == "Raven.Server.exe" }
+   if !ravenRunning
+     Rake::Task["windows:exec_run_raven"].invoke
+   end
+  end
+  
+  desc "Run raven32"
+  exec :exec_run_raven => [:copy_raven] do |cmd|
+
+      cmd.command="cmd.exe"
+      cmd.parameters=["/c", "start", WIN32_MASTER_DEPLOY_FOLDER + "\\Server\\Raven.Server.exe"]
+	
+  end
 
   desc "Execute deployment of api"
   exec :exec_deploy_api do |cmd|
@@ -126,8 +150,10 @@ namespace :windows do
 
   desc "configure the app js file"
   task :configure_app do
-    var configFile = File.join(MASTER_PREDEPLOY_FOLDER, APP_FOLDER, "js", "config.js")
-    File.rm configFile;
+    configFile = File.join(MASTER_PREDEPLOY_FOLDER, APP_OUTPUT_FOLDER, "js", "config.js")
+	
+	puts configFile
+    FileUtils.rm_rf configFile;
 
     File.open(configFile, 'w') {
         |file| file.write("config.apiUrl = 'http://api.#{MASTER_DOMAIN}'")
@@ -193,10 +219,10 @@ namespace :winrun do
 
   desc "Run service with database"
 
-  exec :run_service, [:host] => [:update_raven_url, "windows:build_service", :run_raven] do |cmd, args|
-    cmd.command="cmd.exe"
+  exec :run_service, [:host] => [:update_raven_url, "windows:build_service", :run_raven] do |cmd, args|cmd.command="cmd.exe"
     cmd.parameters=["/c", "start", "Out\\Service\\SpeedyMailer.Master.Service.exe", "-b", args[:host]]
     cmd.log_level = :verbose
+    
   end
 
   desc "Run service bare"

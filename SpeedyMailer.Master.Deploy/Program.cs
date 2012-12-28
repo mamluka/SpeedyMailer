@@ -82,8 +82,6 @@ namespace SpeedyMailer.Master.Deploy
 				var site = iisManager.Sites[name];
 				
 				iisManager.CommitChanges();
-
-				site.Start();
 			}
 		}
 		
