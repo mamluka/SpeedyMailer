@@ -205,7 +205,7 @@ namespace :windows do
     FileUtils.rm_rf configFile;
 
     File.open(configFile, 'w') {
-        |file| file.write("config.apiUrl = 'http://api.#{MASTER_DOMAIN}'")
+        |file| file.write("config = {}; config.apiUrl = 'http://api.#{MASTER_DOMAIN};'")
     }
   end
 
