@@ -11,6 +11,7 @@ using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Storage.Indexes;
 
@@ -73,9 +74,9 @@ namespace SpeedyMailer.Master.Service.Modules
 					{
 						return
 							Response.AsText(string.Join(Environment.NewLine, session
-								                                                 .Query<Drones_Exceptions.ReduceResult, Drones_Exceptions>()
+																				 .Query<Drones_Exceptions.ReduceResult, Drones_Exceptions>()
 																				 .First(result => result.Group == "All")
-																				 .Exceptions));
+																				 .Exceptions.Distinct(new LambdaComparer<string>((m, n) => m.Substring(20) == n.Substring(20)))));
 					}
 				};
 		}
