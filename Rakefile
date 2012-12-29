@@ -184,7 +184,7 @@ namespace :windows do
   end
 
   desc "Run raven32"
-  exec :exec_run_raven => [:copy_raven] do |cmd|
+  exec :exec_run_raven  do |cmd|
     cmd.command="cmd.exe"
     cmd.parameters=["/c", "start", WIN32_MASTER_DEPLOY_FOLDER + "\\Server\\Raven.Server.exe"]
   end
