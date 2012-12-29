@@ -19,11 +19,17 @@ namespace SpeedyMailer.Master.Ray
 			[Option("p", "process-csv", HelpText = "The base url of the service to register the drone with")]
 			public string CsvFile { get; set; }
 			
+			[Option("o", "output-file", HelpText = "The base url of the service to register the drone with")]
+			public string OutputFile { get; set; }
+			
 			[Option("c", "create-list", HelpText = "The base url of the service to register the drone with")]
 			public string InputF‎Ile { get; set; }
 
 			[Option("T", "top", HelpText = "The base url of the service to register the drone with")]
 			public bool ListTopDomains { get; set; }
+			
+			[Option("M", "max-count", HelpText = "The base url of the service to register the drone with")]
+			public int MaximalCountOfContacts { get; set; }
 
 			[Option("E", "estimate", HelpText = "The base url of the service to register the drone with")]
 			public string EstimationParameters { get; set; }
@@ -53,6 +59,18 @@ namespace SpeedyMailer.Master.Ray
 
 					if (!string.IsNullOrEmpty(rayCommandOptions.EstimationParameters))
 						CalculateSendingTime(rows, rayCommandOptions.EstimationParameters);
+
+					if (rayCommandOptions.MaximalCountOfContacts > 0)
+					{
+						var removeDomains = GroupByDomain(rows)
+							.Where(x=> x.Count() > rayCommandOptions.MaximalCountOfContacts)
+							.Select(x=> x.Key)
+							.ToList();
+
+						var newRows = rows
+							.Where(x => !Regex.Match(x.Email, string.Join("|", removeDomains)).Success)
+							.ToList();
+					}
 				}
 
 				if (!string.IsNullOrEmpty(rayCommandOptions.InputF‎Ile))
@@ -83,9 +101,7 @@ namespace SpeedyMailer.Master.Ray
 
 		private static void CalculateSendingTime(IList<ContactsListCsvRow> rows, string parameters)
 		{
-			var domains = rows
-				.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
-				.GroupBy(x => x.ToLower())
+			var domains = GroupByDomain(rows)
 				.Select(x => new { x.Key, Count = x.Count() })
 				.OrderByDescending(x => x.Count)
 				.Where(x => x.Count > rows.Count() * 0.1)
@@ -101,6 +117,13 @@ namespace SpeedyMailer.Master.Ray
 			var speed = TimeSpan.FromSeconds(domains.First().Count * interval / numberOfDrones);
 
 			WriteToConsole("The sending will take minimum of {0} hours or {1} days", speed.TotalHours, speed.TotalDays);
+		}
+
+		private static IEnumerable<IGrouping<string, string>> GroupByDomain(IList<ContactsListCsvRow> rows)
+		{
+			return rows
+				.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
+				.GroupBy(x => x.ToLower());
 		}
 
 		private static void TopDomains(IEnumerable<ContactsListCsvRow> rows)
