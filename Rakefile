@@ -119,6 +119,10 @@ namespace :windows do
   desc "Deploy master applications"
   task :deploy => [:deploy_service, :deploy_api, :deploy_app] do
   end
+  
+  desc "Deploy web only"
+  task :deploy_web => [:deploy_api, :deploy_app] do
+  end
 
 
   desc "Execute deployment of service"
