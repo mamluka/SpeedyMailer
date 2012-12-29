@@ -115,15 +115,12 @@ namespace SpeedyMailer.Master.Deploy
 				{
 					iisManager.ApplicationPools.Add(name);
 					iisManager.CommitChanges();
+
+					var pool = iisManager.ApplicationPools[name];
+					pool.ManagedRuntimeVersion = "v4.0";
+
+					iisManager.CommitChanges();
 				}
-
-				var pool = iisManager.ApplicationPools[name];
-				pool.ManagedRuntimeVersion = "v4.0";
-
-				iisManager.CommitChanges();
-
-				pool.Start();
-
 
 				iisManager.Sites.Add(name, "http", string.Format("*:80:api.{0}", deployCommandOptions.BaseUrl), apiPath);
 				var site = iisManager.Sites[name];
@@ -131,9 +128,7 @@ namespace SpeedyMailer.Master.Deploy
 				var app = site.Applications["/"];
 				app.ApplicationPoolName = name;
 
-				iisManager.CommitChanges();
-
-				site.Start();
+				iisManager.CommitChanges();				
 			}
 		}
 

@@ -12,6 +12,8 @@ namespace :windows do
   MASTER_PREDEPLOY_FOLDER = "C:/SpeedyMailer/Release"
   WIN32_MASTER_DEPLOY_FOLDER = "C:\\SpeedyMailer"
 
+  BACKUP_FOLDER = "C:/Backup"
+
   DRONE_SOLUTION_FILE = "SpeedyMailer.Drones/SpeedyMailer.Drones.csproj"
   DRONE_OUTPUT_FOLDER = "../Out/Drone"
 
@@ -101,7 +103,7 @@ namespace :windows do
   #Deploy commands
 
   desc "Deploy service"
-  task :deploy_service => [:build_service, :build_deploy, :run_raven, :exec_deploy_service] do
+  task :deploy_service => [:build_service, :build_deploy, :deploy_raven, :exec_deploy_service] do
   end
 
   desc "Deploy api"
@@ -125,9 +127,34 @@ namespace :windows do
     cmd.parameters=["--deploy-service", "--base-url", MASTER_DOMAIN, "--base-directory", WIN32_MASTER_DEPLOY_FOLDER]
   end
 
+  desc "Deploy raven"
+  task :deploy_raven => [:backup_raven_db, :copy_raven, :restore_raven_db, :run_raven] do
+  end
+
   desc "Copy RavenDB"
   task :copy_raven do
-    FileUtils.cp_r "RavenDB\\Server", WIN32_MASTER_DEPLOY_FOLDER + "\\Server"
+    FileUtils.cp_r "RavenDB/Server", WIN32_MASTER_DEPLOY_FOLDER + "/Server"
+  end
+
+  desc "Backup ravendb data"
+  task :backup_raven_db do
+    FileUtils.mkdir_p(BACKUP_FOLDER + "/Database")
+    latest = BACKUP_FOLDER + "/Database/Latest"
+
+    if File.directory?(latest)
+      FileUtils.mv latest, BACKUP_FOLDER + "/Database/" + Time.now.strftime('%a-%b-%d-%H:%M:%S')
+    end
+
+    FileUtils.cp_r WIN32_MASTER_DEPLOY_FOLDER + "/Server/Data", latest
+
+  end
+
+  desc "Restore latest data"
+  task :restore_raven_db do
+    latest = BACKUP_FOLDER + "/Database/Latest"
+    if File.directory?(latest)
+      FileUtils.cp_r latest, WIN32_MASTER_DEPLOY_FOLDER + "/Server/Data"
+    end
   end
 
   desc "Run raven"
