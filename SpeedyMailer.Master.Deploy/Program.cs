@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using CommandLine;
 using Microsoft.Web.Administration;
 
@@ -45,7 +46,7 @@ namespace SpeedyMailer.Master.Deploy
 				{
 					DeployApi(deployCommandOptions);
 				}
-				
+
 				if (deployCommandOptions.DeployApp)
 				{
 					DeployApp(deployCommandOptions);
@@ -80,11 +81,11 @@ namespace SpeedyMailer.Master.Deploy
 
 				iisManager.Sites.Add(name, "http", string.Format("*:80:app.{0}", deployCommandOptions.BaseUrl), appPath);
 				var site = iisManager.Sites[name];
-				
+
 				iisManager.CommitChanges();
 			}
 		}
-		
+
 		private static void DeployApi(DeployCommandOptions deployCommandOptions)
 		{
 			var iisManager = new ServerManager();
@@ -128,7 +129,7 @@ namespace SpeedyMailer.Master.Deploy
 				var app = site.Applications["/"];
 				app.ApplicationPoolName = name;
 
-				iisManager.CommitChanges();				
+				iisManager.CommitChanges();
 			}
 		}
 
@@ -136,6 +137,8 @@ namespace SpeedyMailer.Master.Deploy
 		{
 			if (Directory.Exists(apiPath))
 				Directory.Delete(apiPath, true);
+
+			Thread.Sleep(1000);
 
 			Directory.Move(apiPreReleasePath, apiPath);
 		}
