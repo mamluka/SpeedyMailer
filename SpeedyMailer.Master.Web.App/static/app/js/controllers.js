@@ -62,7 +62,7 @@ function SendingController($scope, $http, creativeResource) {
     $scope.creatives = creativeResource.query();
 
     $scope.send = function (creativeModel) {
-        $http.post('/api/creatives/send'.Apify(), { Id: creativeModel.Id });
+        $http.post('/creatives/send'.Apify(), { Id: creativeModel.Id });
     };
 }
 SendingController.$inject = ['$scope', '$http', 'Creative'];
