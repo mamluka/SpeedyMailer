@@ -114,6 +114,7 @@
     <Compile Include="Indexes\Drones_ExceptionsIndexTests.cs" />
     <Compile Include="Indexes\Creative_RawLogsIndexTests.cs" />
     <Compile Include="Indexes\Creative_UnsubscribeRequestsIndexTests.cs" />
+    <Compile Include="Indexes\Fragments_ByCreativeIndexTests.cs" />
     <Compile Include="Modules\AdminModuleTests.cs" />
     <Compile Include="Modules\CreativeModuleTests.cs" />
     <Compile Include="Modules\DronesModuleTests.cs" />

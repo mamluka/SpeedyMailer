@@ -74,31 +74,39 @@ namespace SpeedyMailer.Master.Ray
 					{
 						var domains = GroupByDomain(rows).ToList();
 						var counter = 0;
-						var resolved = domains.AsParallel().Where(x =>
+						var total = new Stopwatch();
+						total.Start();
+
+						var badDomains = domains.AsParallel().Where(x =>
 							{
 								var s = new Stopwatch();
 								counter++;
 								try
 								{
-									
+
 									s.Start();
 									var hostInfo = Dns.GetHostEntry(x.Key);
 									s.Stop();
-									Console.WriteLine(counter +  " We are resolving domain:" + x.Key + " it took: " + s.ElapsedMilliseconds );
-									return hostInfo.AddressList.Any();
+									Console.WriteLine(counter + " We are resolving domain:" + x.Key + " it took: " + s.ElapsedMilliseconds);
+									return !hostInfo.AddressList.Any();
 								}
 								catch (Exception)
 								{
 									s.Stop();
-									Console.WriteLine(counter+ " We are resolving domain:" + x.Key + " resolve failed and it took: " + s.ElapsedMilliseconds);
-									return false;
+									Console.WriteLine(counter + " We are resolving domain:" + x.Key + " resolve failed and it took: " + s.ElapsedMilliseconds);
+									return true;
 								}
 							}).Select(x => x.Key)
 							.ToList();
 
-						var afterDns = GetRowsByDomains(rows, resolved);
+						var afterDns = RemoveRowsByDomains(rows, badDomains);
 
 						WriteCsv(rayCommandOptions, afterDns);
+
+						total.Stop();
+
+						Console.WriteLine("Total resolve took:" + total.ElapsedMilliseconds / (1000 * 60) + " m");
+						Console.ReadKey();
 					}
 				}
 
@@ -133,12 +141,12 @@ namespace SpeedyMailer.Master.Ray
 				.Select(x => x.Key)
 				.ToList();
 
-			var newRows = GetRowsByDomains(rows, removeDomains);
+			var newRows = RemoveRowsByDomains(rows, removeDomains);
 
 			WriteCsv(rayCommandOptions, newRows);
 		}
 
-		private static List<ContactsListCsvRow> GetRowsByDomains(List<ContactsListCsvRow> rows, List<string> removeDomains)
+		private static List<ContactsListCsvRow> RemoveRowsByDomains(List<ContactsListCsvRow> rows, List<string> removeDomains)
 		{
 			return rows
 				.Where(x => !Regex.Match(x.Email, string.Join("|", removeDomains)).Success)
