@@ -125,9 +125,9 @@ namespace SpeedyMailer.Master.Service.Modules
 								TotalSent = sanitizedSends.Count,
 								TotalBounces = sanitizedBounces.Count,
 								TotalDeferres = sanitizedDeferres.Count,
-								Sent = sanitizedSends,
-								Bounced = sanitizedBounces,
-								Deferred = sanitizedDeferres,
+//								Sent = sanitizedSends,
+//								Bounced = sanitizedBounces,
+//								Deferred = sanitizedDeferres,
 							});
 					}
 				};
