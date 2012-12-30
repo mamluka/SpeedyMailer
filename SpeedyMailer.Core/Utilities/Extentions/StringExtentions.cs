@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SpeedyMailer.Core.Utilities.Extentions
 {
@@ -17,6 +18,11 @@ namespace SpeedyMailer.Core.Utilities.Extentions
 		public static string BuildRavenId(this string target, string ravenCollectionName, int index)
 		{
 			return ravenCollectionName + RavenCollectionSeperator + target.Split(',')[index];
+		}
+
+		public static string GetDomain(this string target)
+		{
+			return Regex.Match(target, "@(.+?)$").Groups[1].Value;
 		}
 	}
 }

@@ -8,6 +8,7 @@ using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
@@ -142,7 +143,8 @@ namespace SpeedyMailer.Drones.Tasks
 							   Recipient = x.Recipient,
 							   Time = x.Time,
 							   Message = x.RelayMessage,
-							   CreativeId = x.CreaiveId
+							   CreativeId = x.CreaiveId,
+							   Domain = x.Recipient.GetDomain()
 						   };
 			}
 
@@ -153,8 +155,8 @@ namespace SpeedyMailer.Drones.Tasks
 							   Recipient = x.Recipient,
 							   Time = x.Time,
 							   Message = x.RelayMessage,
-							   CreativeId = x.CreaiveId
-
+							   CreativeId = x.CreaiveId,
+							   Domain = x.Recipient.GetDomain()
 						   };
 			}
 
@@ -164,7 +166,8 @@ namespace SpeedyMailer.Drones.Tasks
 						   {
 							   Recipient = x.Recipient,
 							   Time = x.Time,
-							   CreativeId = x.CreaiveId
+							   CreativeId = x.CreaiveId,
+							   Domain = x.Recipient.GetDomain()
 						   };
 			}
 

@@ -367,6 +367,34 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
             result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
             result.CreativeId.Should().Be("creative/1");
         }
+		
+		[Test]
+        public void Execute_WhenStatusLogsfound_ShouldStoreTheDomain()
+        {
+            DroneActions.EditSettings<DroneSettings>(x =>
+	                                                     {
+		                                                     x.StoreHostname = DefaultHostUrl;
+		                                                     x.Domain = "xomixinc.com";
+	                                                     });
+
+            var logEntries = new List<MailLogEntry>
+				                 {
+                                     new MailLogEntry {msg = " EF7B3AE8E7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+					                 new MailLogEntry {msg = "EF7B3AE8E7: to=<pnc211@gmail.com>, relay=gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a]:25, delay=3.2, delays=0.04/0/0.11/3.1, dsn=5.1.1, status=bounced (host gmail-smtp-in.l.google.com[2a00:1450:4013:c00::1a] said: 550-5.1.1 The email account that you tried to reach does not exist. Please try 550-5.1.1 double-checking the recipient's email address for typos or 550-5.1.1 unnecessary spaces. Learn more at 550 5.1.1 http://support.google.com/mail/bin/answer.py?answer=6596 f44si10015048eep.23 (in reply to RCPT TO command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
+				                 };
+
+            DroneActions.StoreCollection(logEntries, "log");
+
+            var task = new AnalyzePostfixLogsTask();
+
+            DroneActions.StartScheduledTask(task);
+
+            DroneActions.WaitForDocumentToExist<MailBounced>();
+
+            var result = DroneActions.FindAll<MailBounced>().First();
+
+			result.Domain.Should().Be("gmail.com");
+        }
 
         [Test]
         public void Execute_WhenStatusLogsFoundButThereAreNoIntervalRules_ShouldStoreWithDefaultDomainGroup()
