@@ -38,7 +38,10 @@ namespace SpeedyMailer.Drones.Commands
 			var email = new MailMessage();
 			email.To.Add(Package.To);
 			email.Body = Package.TextBody;
-			email.AlternateViews.Add(CreateHtmlView());
+
+			if (!string.IsNullOrEmpty(Package.HtmlBody))
+				email.AlternateViews.Add(CreateHtmlView());
+
 			email.Subject = Package.Subject;
 			email.From = new MailAddress(FromAddressDomainPrefix + "@" + _emailingSettings.MailingDomain, FromName);
 			email.IsBodyHtml = false;
@@ -68,7 +71,8 @@ namespace SpeedyMailer.Drones.Commands
 
 		private void WriteEmailToDisk(MailMessage email)
 		{
-			var htmlView = new StreamReader(email.AlternateViews[0].ContentStream).ReadToEnd();
+
+			var htmlView = email.AlternateViews.Any() ? new StreamReader(email.AlternateViews[0].ContentStream).ReadToEnd() : "";
 			email.AlternateViews.Clear();
 
 
