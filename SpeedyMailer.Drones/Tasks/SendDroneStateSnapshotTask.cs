@@ -42,7 +42,7 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var reducedLogs = _logsStore
 					.GetProcessedLogs()
-					.Select(x => string.Format("{0} {1} {2}", x.time.ToLongTimeString(), x.level, x.msg))
+					.Select(x => string.Format("{0} {1} {2}", x.time, x.level, x.msg))
 					.ToList();
 
 				if (!reducedLogs.Any())

@@ -22,7 +22,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 				{
-					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+						}
 				});
 
 			FireEvent<UpdateIpReputation, BlockingGroups>(x => x.Groups = new List<string>
@@ -43,7 +46,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 				{
-					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+						}
 				});
 
 			FireEvent<UpdateIpReputation, ResumingGroups>(x => x.Groups = new List<string>
@@ -64,7 +70,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 				{
-					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+						}
 				});
 
 			DroneActions.Store(new IpReputation
@@ -94,7 +103,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 				{
-					BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(48) } }
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+						}
 				});
 
 			DroneActions.Store(new IpReputation

@@ -37,8 +37,7 @@ namespace SpeedyMailer.Master.Service.Modules
 												.Customize(customization=> customization.WaitForNonStaleResults())
 												.SingleOrDefault() ?? new DeliverabilityClassificationRules();
 
-											rules.HardBounceRules = model.DeliverabilityClassificationRules.HardBounceRules;
-											rules.BlockingRules = model.DeliverabilityClassificationRules.BlockingRules;
+											rules.Rules = model.DeliverabilityClassificationRules.Rules;
 
 											session.Store(rules);
 											session.SaveChanges();

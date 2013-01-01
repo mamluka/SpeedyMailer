@@ -134,11 +134,10 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 																	{
 																		x.DeliverabilityClassificationRules = new DeliverabilityClassificationRules
 																					  {
-																						  BlockingRules = new List<HeuristicRule> { new HeuristicRule
-																							                                              {
-																								                                              Condition = rule,
-																																			  TimeSpan = TimeSpan.FromHours(3)
-																							                                              } }
+																						  Rules = new List<HeuristicRule>
+																							 {
+																								 new HeuristicRule { Condition = rule,Data = new { TimeSpan = TimeSpan.FromHours(3) }}
+																							 }
 																					  };
 																	});
 		}

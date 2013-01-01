@@ -384,7 +384,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var result = DroneActions.FindAll<MailBounced>().First();
 
-			result.Classification.BounceType.Should().Be(BounceType.HardBounce);
+			result.Classification.Classification.Should().Be(Classification.HardBounce);
 		}
 
 		[Test]
@@ -417,7 +417,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var result = DroneActions.FindAll<MailDeferred>().First();
 
-			result.Classification.BounceType.Should().Be(BounceType.HardBounce);
+			result.Classification.Classification.Should().Be(Classification.HardBounce);
 		}
 
 		[Test]

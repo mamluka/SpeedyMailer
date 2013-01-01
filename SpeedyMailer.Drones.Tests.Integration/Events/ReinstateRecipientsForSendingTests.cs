@@ -29,7 +29,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 								   {
-									   BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "bounced that blocked", TimeSpan = TimeSpan.FromHours(2) } }
+									   Rules = new List<HeuristicRule>
+										   {
+											   new HeuristicRule { Condition = "bounced that blocked",Type = Classification.TempBlock , Data = new { TimeSpan = TimeSpan.FromHours(2)}}
+										   }
 								   });
 
 
@@ -95,7 +98,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 								   {
-									   HardBounceRules = new List<string> { "bounced" }
+									   Rules = new List<HeuristicRule>
+										   {
+											   new HeuristicRule { Condition = "bounced",Type = Classification.HardBounce }
+										   }
 								   });
 
 			FireEvent<ReinstateRecipientsForSending,
@@ -129,9 +135,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								   });
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-								   {
-									   HardBounceRules = new List<string> { "deferred as bounced" }
-								   });
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "deferred as bounced", Type = Classification.HardBounce}
+						}
+				});
 
 			FireEvent<ReinstateRecipientsForSending,
 				AggregatedMailDeferred>(x => x.MailEvents = new List<MailDeferred>
@@ -164,9 +173,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								   });
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "bounced that blocked", TimeSpan = TimeSpan.FromHours(2) } }
-			});
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "bounced that blocked", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(2)}}
+						}
+				});
 
 			FireEvent<ReinstateRecipientsForSending,
 				AggregatedMailDeferred>(x => x.MailEvents = new List<MailDeferred>

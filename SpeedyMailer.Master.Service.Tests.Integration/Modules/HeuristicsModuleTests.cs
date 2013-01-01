@@ -23,18 +23,21 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			Store.Store(new DeliverabilityClassificationRules
 							{
-								HardBounceRules = new List<string> { "yeah" },
-								BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
+								Rules = new List<HeuristicRule>
+									{
+										new HeuristicRule { Condition = "yeah",Type = Classification.HardBounce},
+										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+									}
 							});
 
-			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>(1);
+			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
 
 			var api = MasterResolve<Api>();
 
 			var result = api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
 
-			result.HardBounceRules.Should().Contain(x => x == "yeah");
-			result.BlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
+			result.Rules.Should().Contain(x => x.Condition == "yeah" && x.Type == Classification.HardBounce);
+			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock && x.Data.TimeSpan == TimeSpan.FromHours(2));
 		}
 
 		[Test]
@@ -50,16 +53,19 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = new DeliverabilityClassificationRules
 			{
-				HardBounceRules = new List<string> { "yeah" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
+				Rules = new List<HeuristicRule>
+									{
+										new HeuristicRule { Condition = "yeah",Type = Classification.HardBounce},
+										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+									}
 			});
 
 			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
 
 			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 
-			result.HardBounceRules.Should().Contain(x => x == "yeah");
-			result.BlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
+			result.Rules.Should().Contain(x => x.Condition == "yeah" && x.Type == Classification.HardBounce);
+			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock && x.Data.TimeSpan == TimeSpan.FromHours(2));
 		}
 
 		[Test]
@@ -73,24 +79,30 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			Store.Store(new DeliverabilityClassificationRules
 							{
-								HardBounceRules = new List<string> { "old" },
-								BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "very old", TimeSpan = TimeSpan.FromHours(2) } }
+								Rules = new List<HeuristicRule>
+									{
+										new HeuristicRule { Condition = "old",Type = Classification.HardBounce},
+										new HeuristicRule { Condition = "very old",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+									}
 							});
 
 			var api = MasterResolve<Api>();
 
 			api.Call<ServiceEndpoints.Heuristics.SetDeliveryRules>(x => x.DeliverabilityClassificationRules = new DeliverabilityClassificationRules
 			{
-				HardBounceRules = new List<string> { "yeah" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "sexy", TimeSpan = TimeSpan.FromHours(2) } }
+				Rules = new List<HeuristicRule>
+									{
+										new HeuristicRule { Condition = "yeah",Type = Classification.HardBounce},
+										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+									}
 			});
 
 			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
 
 			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 
-			result.HardBounceRules.Should().Contain(x => x == "yeah");
-			result.BlockingRules.Should().Contain(x => x.Condition == "sexy" && x.TimeSpan == TimeSpan.FromHours(2));
+			result.Rules.Should().Contain(x => x.Condition == "yeah" && x.Type == Classification.HardBounce);
+			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock && x.Data.TimeSpan == TimeSpan.FromHours(2));
 		}
 	}
 }

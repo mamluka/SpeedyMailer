@@ -24,21 +24,21 @@ namespace SpeedyMailer.Drones.Commands
 			var heuristics = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>();
 
 			if (heuristics == null)
-				return new MailClassfication { BounceType = BounceType.NotClassified };
+				return new MailClassfication { Classification = Classification.NotClassified };
 
 			var rules = heuristics
 				.HardBounceRules
 				.EmptyIfNull()
-				.Select(x => new { Condition = x, Classification = new MailClassfication { BounceType = BounceType.HardBounce, TimeSpan = TimeSpan.FromHours(0) } })
+				.Select(x => new { Condition = x, Classification = new MailClassfication { Classification = Classification.HardBounce, TimeSpan = TimeSpan.FromHours(0) } })
 				.Union(heuristics
 						   .BlockingRules
 						   .EmptyIfNull()
-						   .Select(x => new { x.Condition, Classification = new MailClassfication { BounceType = BounceType.Blocked, TimeSpan = x.TimeSpan } })
+						   .Select(x => new { x.Condition, Classification = new MailClassfication { Classification = Classification.Blocked, TimeSpan = x.TimeSpan } })
 				);
 
 			var hardBounce = rules.FirstOrDefault(x => Regex.Match(Message, x.Condition, RegexOptions.IgnoreCase).Success);
 
-			return hardBounce != null ? hardBounce.Classification : new MailClassfication { BounceType = BounceType.NotClassified };
+			return hardBounce != null ? hardBounce.Classification : new MailClassfication { Classification = Classification.NotClassified };
 		}
 	}
 }

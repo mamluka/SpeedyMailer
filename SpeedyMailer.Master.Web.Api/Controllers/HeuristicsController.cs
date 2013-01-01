@@ -29,8 +29,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		{
 			return new DeliverabilityClassificationRules
 				{
-					HardBounceRules = model.HardBounceRules,
-					BlockingRules = model.BlockingRules.Select(x => new HeuristicRule { Condition = x.Condition, TimeSpan = TimeSpan.FromHours(x.TimeSpan) }).ToList()
+					Rules = model.Rules;
 				};
 		}
 
@@ -45,8 +44,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		{
 			return new DeliverabilityClassificationRulesModel
 				{
-					HardBounceRules = result.HardBounceRules,
-					BlockingRules = result.BlockingRules.Select(x => new BlockingRulesModel { Condition = x.Condition, TimeSpan = x.TimeSpan.TotalHours }).ToList()
+					Rules = result.Rules
 				};
 		}
 	}
@@ -59,7 +57,6 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 
 	public class DeliverabilityClassificationRulesModel
 	{
-		public List<string> HardBounceRules { get; set; }
-		public List<BlockingRulesModel> BlockingRules { get; set; }
+		public List<HeuristicRule> Rules { get; set; }
 	}
 }

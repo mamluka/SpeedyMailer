@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Creative;
@@ -50,7 +51,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -90,7 +95,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StartScheduledTask(task1);
 			Jobs.Drone().WaitForJobToStart(task1);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -128,7 +137,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StartScheduledTask(task1);
 			Jobs.Drone().WaitForJobToStart(task1);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {
@@ -157,18 +170,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 															});
 		}
 
-		private void StoreClassificationRules(string bounceCondition, HeuristicRule heuristicRule)
+		private void StoreClassificationRules(IEnumerable<HeuristicRule> heuristicRule)
 		{
 			DroneActions.Store(new DeliverabilityClassificationRules
 								   {
-									   HardBounceRules = new List<string>
-						                                     {
-							                                     bounceCondition,
-						                                     },
-									   BlockingRules = new List<HeuristicRule>
-						                                   {
-							                                   heuristicRule
-						                                   }
+									   Rules = heuristicRule.ToList()
 								   });
 		}
 
@@ -213,7 +219,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "DNSBL", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "DNSBL", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {
@@ -272,7 +282,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "DNSBL", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "DNSBL", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -332,7 +346,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "DNSBL", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "DNSBL", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																			{
@@ -452,7 +470,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "bad bounce", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
@@ -514,7 +536,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules("account.+?disabled", new HeuristicRule { Condition = "ip blocked", TimeSpan = TimeSpan.FromHours(2) });
+			StoreClassificationRules(new[]
+				{
+					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
+					new HeuristicRule {Condition = "ip blocked", Type = Classification.TempBlock, Data = new {Timespan = TimeSpan.FromHours(2)}}
+				});
 
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailDeferred>(x =>
 																		   {

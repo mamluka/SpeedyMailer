@@ -39,7 +39,7 @@ namespace SpeedyMailer.Drones.Events
 					{
 						_classifyNonDeliveredMailCommand.Message = x.Message;
 						var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-						return mailClassfication.BounceType == BounceType.NotClassified;
+						return mailClassfication.Classification == Classification.NotClassified;
 					})
 				.Select(x => new UnclassfiedMailEvent
 					{

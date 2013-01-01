@@ -202,7 +202,7 @@
     <Compile Include="Domain\Mail\Dnsbl.cs" />
     <Compile Include="Domain\Mail\DnsnlType.cs" />
     <Compile Include="Domain\Mail\DeliverabilityClassificationRules.cs" />
-    <Compile Include="Domain\Mail\BounceType.cs" />
+    <Compile Include="Domain\Mail\Classification.cs" />
     <Compile Include="Domain\Mail\DroneStateSnapshoot.cs" />
     <Compile Include="Domain\Mail\GenericMailEvent.cs" />
     <Compile Include="Domain\Mail\GroupsAndIndividualDomainsSendingPolicies.cs" />

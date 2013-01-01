@@ -24,8 +24,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 			{
-				HardBounceRules = new List<string> { "not a rule" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
+				Rules = new List<HeuristicRule>
+					{
+						new HeuristicRule { Condition =  "not a rule", Type = Classification.HardBounce},
+						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new { TimeSpan = TimeSpan.FromHours(4) }},
+					}
 			});
 
 			var creativePackages = new[]
@@ -63,8 +66,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 			{
-				HardBounceRules = new List<string> { "not a rule" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
+				Rules = new List<HeuristicRule>
+					{
+						new HeuristicRule { Condition =  "not a rule", Type = Classification.HardBounce},
+						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new { TimeSpan = TimeSpan.FromHours(4) }},
+					}
 			});
 
 
@@ -95,10 +101,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-								   {
-									   HardBounceRules = new List<string> { "not a rule" },
-									   BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
-								   });
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+						}
+				});
+			
 
 			var creativePackages = new[]
 				                       {
@@ -130,10 +140,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				HardBounceRules = new List<string> { "not a rule" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
-			});
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+						}
+				});
 
 			DroneActions.Store(new GroupsAndIndividualDomainsSendingPolicies
 								   {
@@ -172,10 +185,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				HardBounceRules = new List<string> { "not a rule" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
-			});
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+						}
+				});
 
 			var creativePackages = new[]
                 {
@@ -210,10 +226,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				HardBounceRules = new List<string> { "hard bounce" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
-			});
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+						}
+				});
 
 			var creativePackages = new[]
                 {
@@ -241,10 +260,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				HardBounceRules = new List<string> { "not a rule" },
-				BlockingRules = new List<HeuristicRule> { new HeuristicRule { Condition = "this is a block", TimeSpan = TimeSpan.FromHours(4) } }
-			});
+				{
+					Rules = new List<HeuristicRule>
+						{
+							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+						}
+				});
 
 			var creativePackages = new[]
                 {

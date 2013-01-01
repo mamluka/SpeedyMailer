@@ -50,9 +50,9 @@ namespace SpeedyMailer.Drones.Events
 						_classifyNonDeliveredMailCommand.Message = x.Message;
 						var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
 
-						return new { mailClassfication.BounceType, Time = mailClassfication.TimeSpan, x.Recipient };
+						return new { BounceType = mailClassfication.Classification, Time = mailClassfication.TimeSpan, x.Recipient };
 					})
-				.Where(x => x.BounceType == BounceType.Blocked)
+				.Where(x => x.BounceType == Classification.Blocked)
 				.Select(x => new { x.Time, Domain = GetDomain(x.Recipient) })
 				.Where(x => !string.IsNullOrEmpty(x.Domain))
 				.GroupBy(x => x.Domain)

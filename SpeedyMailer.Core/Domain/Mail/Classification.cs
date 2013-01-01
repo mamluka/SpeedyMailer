@@ -1,9 +1,10 @@
 namespace SpeedyMailer.Core.Domain.Mail
 {
-	public enum BounceType
+	public enum Classification
 	{
 		NotClassified,
 		HardBounce,
-		Blocked
+		Blocked,
+		TempBlock
 	}
 }

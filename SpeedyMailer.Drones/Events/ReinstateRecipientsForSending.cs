@@ -51,8 +51,8 @@ namespace SpeedyMailer.Drones.Events
 		{
 			_classifyNonDeliveredMailCommand.Message = x.Message;
 			var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-			var bounceType = mailClassfication.BounceType;
-			return bounceType == BounceType.NotClassified;
+			var bounceType = mailClassfication.Classification;
+			return bounceType == Classification.NotClassified;
 		}
 	}
 }
