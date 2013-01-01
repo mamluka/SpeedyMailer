@@ -32,7 +32,7 @@ namespace SpeedyMailer.Drones.Commands
 
 			var matchedRule = rules.FirstOrDefault(x => Regex.Match(Message, x.Condition, RegexOptions.IgnoreCase).Success);
 
-			return matchedRule != null ? new MailClassfication { Classification = matchedRule.Type, TimeSpan = matchedRule.Data.TimeSpan } : new MailClassfication { Classification = Classification.NotClassified };
+			return matchedRule != null ? new MailClassfication { Classification = matchedRule.Type, TimeSpan = matchedRule.Data != null ? matchedRule.Data.TimeSpan : default(TimeSpan) } : new MailClassfication { Classification = Classification.NotClassified };
 		}
 	}
 }

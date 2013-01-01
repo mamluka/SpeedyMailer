@@ -27,7 +27,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				Rules = new List<HeuristicRule>
 					{
 						new HeuristicRule { Condition =  "not a rule", Type = Classification.HardBounce},
-						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new { TimeSpan = TimeSpan.FromHours(4) }},
+						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(4) }},
 					}
 			});
 
@@ -69,7 +69,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				Rules = new List<HeuristicRule>
 					{
 						new HeuristicRule { Condition =  "not a rule", Type = Classification.HardBounce},
-						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new { TimeSpan = TimeSpan.FromHours(4) }},
+						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(4) }},
 					}
 			});
 
@@ -105,10 +105,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					Rules = new List<HeuristicRule>
 						{
 							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
 						}
 				});
-			
+
 
 			var creativePackages = new[]
 				                       {
@@ -144,7 +144,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					Rules = new List<HeuristicRule>
 						{
 							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
 						}
 				});
 
@@ -189,7 +189,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					Rules = new List<HeuristicRule>
 						{
 							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
 						}
 				});
 
@@ -230,7 +230,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					Rules = new List<HeuristicRule>
 						{
 							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
 						}
 				});
 
@@ -264,7 +264,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					Rules = new List<HeuristicRule>
 						{
 							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(4)}},
+							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData{TimeSpan = TimeSpan.FromHours(4)}},
 						}
 				});
 

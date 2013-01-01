@@ -47,7 +47,7 @@ namespace SpeedyMailer.Drones.Events
 								var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
 								return new { MailClassfication = mailClassfication, x.DomainGroup };
 							})
-				.Where(x => x.MailClassfication.Classification == Classification.Blocked)
+				.Where(x => x.MailClassfication.Classification == Classification.TempBlock)
 				.Where(x => ValidDomainGroupsForPausing(x.DomainGroup))
 				.ToList();
 

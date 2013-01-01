@@ -24,7 +24,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				{
 					Rules = new List<HeuristicRule>
 						{
-							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+							new HeuristicRule { Condition = "this is a block",Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(48)}}
 						}
 				});
 
@@ -48,7 +48,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				{
 					Rules = new List<HeuristicRule>
 						{
-							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+							new HeuristicRule { Condition = "this is a block",Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(48)}}
 						}
 				});
 
@@ -72,7 +72,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				{
 					Rules = new List<HeuristicRule>
 						{
-							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+							new HeuristicRule { Condition = "this is a block",Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(48)}}
 						}
 				});
 
@@ -105,7 +105,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				{
 					Rules = new List<HeuristicRule>
 						{
-							new HeuristicRule { Condition = "this is a block",Data = new { TimeSpan = TimeSpan.FromHours(48)}}
+							new HeuristicRule { Condition = "this is a block",Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(48)}}
 						}
 				});
 

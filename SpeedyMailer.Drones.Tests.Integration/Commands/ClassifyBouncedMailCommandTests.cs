@@ -81,11 +81,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			const string message = "host mailin-03.mx.aol.com[205.188.156.193] refused to talk to me: 421 4.7.1 : (DYN:T1) http://postmaster.info.aol.com/errors/421dynt1.html";
 
-			StoreClassficationRules(null, new[] {new HeuristicRule {Condition = "DYN:T1", Data = {TimeSpan = TimeSpan.FromHours(2)}}});
+			StoreClassficationRules(null, new[] { new HeuristicRule { Condition = "DYN:T1", Type = Classification.TempBlock, Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2) } } });
 
 			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, MailClassfication>(x => x.Message = message);
 
-			result.Classification.Should().Be(Classification.Blocked);
+			result.Classification.Should().Be(Classification.TempBlock);
 		}
 
 		[Test]
@@ -95,7 +95,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			const string message = "host mailin-03.mx.aol.com[205.188.156.193] refused to talk to me: 421 4.7.1 : (DYN:T1) http://postmaster.info.aol.com/errors/421dynt1.html";
 
-			StoreClassficationRules(null, new[] {new HeuristicRule {Condition = "Resources temporarily unavailable", Data = {TimeSpan = TimeSpan.FromHours(2)}}});
+			StoreClassficationRules(null, new[] {new HeuristicRule {Condition = "Resources temporarily unavailable",Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(2)}}});
 
 			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, MailClassfication>(x => x.Message = message);
 
@@ -118,7 +118,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 		{
 			DroneActions.Store(new DeliverabilityClassificationRules
 				{
-					Rules = hardBounceRules.Concat(blockingRules.EmptyIfNull()).ToList()
+					Rules = hardBounceRules
+					.EmptyIfNull()
+					.Concat(blockingRules
+					.EmptyIfNull())
+					.ToList()
 				});
 		}
 	}

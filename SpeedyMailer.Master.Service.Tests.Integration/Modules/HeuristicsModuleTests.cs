@@ -82,7 +82,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 								Rules = new List<HeuristicRule>
 									{
 										new HeuristicRule { Condition = "old",Type = Classification.HardBounce},
-										new HeuristicRule { Condition = "very old",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+										new HeuristicRule { Condition = "very old",Type = Classification.TempBlock,Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2) }},
 									}
 							});
 
@@ -93,7 +93,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 				Rules = new List<HeuristicRule>
 									{
 										new HeuristicRule { Condition = "yeah",Type = Classification.HardBounce},
-										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2) }},
 									}
 			});
 

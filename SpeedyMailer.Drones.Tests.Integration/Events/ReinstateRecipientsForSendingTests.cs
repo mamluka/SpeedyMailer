@@ -31,7 +31,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								   {
 									   Rules = new List<HeuristicRule>
 										   {
-											   new HeuristicRule { Condition = "bounced that blocked",Type = Classification.TempBlock , Data = new { TimeSpan = TimeSpan.FromHours(2)}}
+											   new HeuristicRule { Condition = "bounced that blocked",Type = Classification.TempBlock , Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2)}}
 										   }
 								   });
 
@@ -176,7 +176,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 				{
 					Rules = new List<HeuristicRule>
 						{
-							new HeuristicRule {Condition = "bounced that blocked", Type = Classification.TempBlock, Data = new {TimeSpan = TimeSpan.FromHours(2)}}
+							new HeuristicRule {Condition = "bounced that blocked", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(2)}}
 						}
 				});
 

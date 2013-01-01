@@ -52,7 +52,7 @@ namespace SpeedyMailer.Drones.Events
 
 						return new { BounceType = mailClassfication.Classification, Time = mailClassfication.TimeSpan, x.Recipient };
 					})
-				.Where(x => x.BounceType == Classification.Blocked)
+				.Where(x => x.BounceType == Classification.TempBlock)
 				.Select(x => new { x.Time, Domain = GetDomain(x.Recipient) })
 				.Where(x => !string.IsNullOrEmpty(x.Domain))
 				.GroupBy(x => x.Domain)
