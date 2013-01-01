@@ -207,6 +207,7 @@
     <Compile Include="Domain\Mail\GenericMailEvent.cs" />
     <Compile Include="Domain\Mail\GroupsAndIndividualDomainsSendingPolicies.cs" />
     <Compile Include="Domain\Mail\IpReputation.cs" />
+    <Compile Include="Domain\Mail\MailClassfication.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
     <Compile Include="Domain\Mail\MailEventType.cs" />

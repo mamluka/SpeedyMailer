@@ -66,7 +66,7 @@ namespace SpeedyMailer.Drones.Tasks
 																			 x.Unclassified = _omniRecordManager.GetAll<UnclassfiedMailEvent>();
 																		 });
 
-				if (_api.ResponseStatus.DidAnErrorOccured())
+				if (_api.ResponseStatus.DidAnErrorOccur())
 					return;
 
 				_logsStore.DeleteProcessedLogs();

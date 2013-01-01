@@ -65,6 +65,8 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string CreativeId { get; set; }
 
 		public string Domain { get; set; }
+
+		public MailClassfication Classification { get; set; }
 	}
 
 	public class MailDeferred : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasTime, IHasCreativeId
@@ -79,6 +81,8 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string CreativeId { get; set; }
 
 		public string Domain { get; set; }
+
+		public MailClassfication Classification { get; set; }
 	}
 
 	public interface IHasDomainGroup

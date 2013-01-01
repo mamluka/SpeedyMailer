@@ -216,7 +216,7 @@ namespace SpeedyMailer.Core.Apis
 
 	public static class ResponseStatusExtentions
 	{
-		public static bool DidAnErrorOccured(this ResponseStatus target)
+		public static bool DidAnErrorOccur(this ResponseStatus target)
 		{
 			return target != ResponseStatus.Completed;
 		}

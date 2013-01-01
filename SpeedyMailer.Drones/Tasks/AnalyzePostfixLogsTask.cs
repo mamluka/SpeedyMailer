@@ -37,6 +37,7 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly CreativeFragmentSettings _creativeFragmentSettings;
 			private readonly Logger _logger;
 			private readonly ParseCreativeIdFromLogsCommand _parseCreativeIdFromLogsCommand;
+			private ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 
 			public Job(EventDispatcher eventDispatcher,
 				ParseLogsCommand parseLogsCommand,
@@ -45,8 +46,10 @@ namespace SpeedyMailer.Drones.Tasks
 				OmniRecordManager omniRecordManager,
 				IntervalRulesStore intervalRulesStore,
 				CreativeFragmentSettings creativeFragmentSettings,
+				ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand,
 				Logger logger)
 			{
+				_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 				_parseCreativeIdFromLogsCommand = parseCreativeIdFromLogsCommand;
 				_logger = logger;
 				_creativeFragmentSettings = creativeFragmentSettings;
@@ -136,7 +139,7 @@ namespace SpeedyMailer.Drones.Tasks
 				return x;
 			}
 
-			private static MailDeferred ToMailDeferred(MailEvent x)
+			private MailDeferred ToMailDeferred(MailEvent x)
 			{
 				return new MailDeferred
 						   {
@@ -144,11 +147,12 @@ namespace SpeedyMailer.Drones.Tasks
 							   Time = x.Time,
 							   Message = x.RelayMessage,
 							   CreativeId = x.CreaiveId,
-							   Domain = x.Recipient.GetDomain()
+							   Domain = x.Recipient.GetDomain(),
+							   Classification = Classify(x)
 						   };
 			}
 
-			private static MailBounced ToMailBounced(MailEvent x)
+			private MailBounced ToMailBounced(MailEvent x)
 			{
 				return new MailBounced
 						   {
@@ -156,8 +160,16 @@ namespace SpeedyMailer.Drones.Tasks
 							   Time = x.Time,
 							   Message = x.RelayMessage,
 							   CreativeId = x.CreaiveId,
-							   Domain = x.Recipient.GetDomain()
+							   Domain = x.Recipient.GetDomain(),
+							   Classification = Classify(x)
 						   };
+			}
+
+			private MailClassfication Classify(MailEvent x)
+			{
+				_classifyNonDeliveredMailCommand.Message = x.RelayMessage;
+				var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
+				return mailClassfication;
 			}
 
 			private static MailSent ToMailSent(MailEvent x)

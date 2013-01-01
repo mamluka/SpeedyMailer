@@ -41,10 +41,4 @@ namespace SpeedyMailer.Drones.Commands
 			return hardBounce != null ? hardBounce.Classification : new MailClassfication { BounceType = BounceType.NotClassified };
 		}
 	}
-
-	public class MailClassfication
-	{
-		public BounceType BounceType { get; set; }
-		public TimeSpan TimeSpan { get; set; }
-	}
 }
