@@ -26,18 +26,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				DeliverabilityClassificationRules>(x =>
 													   {
-														   x.HardBounceRules = new List<string>
-							                                                       {
-								                                                       "hard bounce rule",
-							                                                       };
-														   x.BlockingRules = new List<HeuristicRule>
-							                                                     {
-								                                                     new HeuristicRule
-									                                                     {
-										                                                     Condition = "blocking rule",
-										                                                     TimeSpan = TimeSpan.FromHours(4)
-									                                                     }
-							                                                     };
+														   x.Rules = new List<HeuristicRule>
+							                                             {
+								                                             new HeuristicRule {Condition = "hard bounce rule", Type = Classification.HardBounce},
+								                                             new HeuristicRule {Condition = "blocking rule", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
+							                                             };
 													   });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();
@@ -48,8 +41,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var result = DroneActions.FindSingle<DeliverabilityClassificationRules>();
 
-			result.HardBounceRules.Should().Contain(x => x == "hard bounce rule");
-			result.BlockingRules.Should().Contain(x => x.Condition == "blocking rule" && x.TimeSpan == TimeSpan.FromHours(4));
+			result.Rules.Should().Contain(x => x.Condition == "hard bounce rule");
+			result.Rules.Should().Contain(x => x.Condition == "blocking rule");
 		}
 
 		[Test]
@@ -61,20 +54,11 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
 				DeliverabilityClassificationRules>(x =>
 													   {
-														   x.HardBounceRules = new List<string>
-							                                                       {
-								                                                       "hard bounce rule",
-
-
-							                                                       };
-														   x.BlockingRules = new List<HeuristicRule>
-							                                                     {
-								                                                     new HeuristicRule
-									                                                     {
-										                                                     Condition = "blocking rule",
-										                                                     TimeSpan = TimeSpan.FromHours(4)
-									                                                     }
-							                                                     };
+														   x.Rules = new List<HeuristicRule>
+							                                             {
+								                                             new HeuristicRule {Condition = "hard bounce rule", Type = Classification.HardBounce},
+								                                             new HeuristicRule {Condition = "blocking rule", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
+							                                             };
 													   });
 
 			var task = new FetchDeliveryClassificationHeuristicsTask();

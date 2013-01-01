@@ -364,9 +364,12 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 														 });
 
 			DroneActions.Store(new DeliverabilityClassificationRules
-				{
-					HardBounceRules = new List<string> { "The email account that you tried to reach does not exist" }
-				});
+				                   {
+					                   Rules = new List<HeuristicRule>
+						                           {
+							                           new HeuristicRule {Condition = "The email account that you tried to reach does not exist", Type = Classification.HardBounce}
+						                           }
+				                   });
 
 			var logEntries = new List<MailLogEntry>
 				                 {
@@ -398,7 +401,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.Store(new DeliverabilityClassificationRules
 				{
-					HardBounceRules = new List<string> { "Message temporarily deferred" }
+					Rules = new List<HeuristicRule>
+						        {
+							        new HeuristicRule { Condition = "Message temporarily deferred", Type = Classification.HardBounce}
+						        }
 				});
 
 			var logEntries = new List<MailLogEntry>

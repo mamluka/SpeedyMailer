@@ -29,7 +29,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		{
 			return new DeliverabilityClassificationRules
 				{
-					Rules = model.Rules;
+					Rules = model.Rules
 				};
 		}
 

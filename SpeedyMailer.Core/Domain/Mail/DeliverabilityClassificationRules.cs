@@ -30,6 +30,11 @@ namespace SpeedyMailer.Core.Domain.Mail
 	{
 		public string Condition { get; set; }
 		public Classification Type { get; set; }
-		public dynamic Data { get; set; }
+		public HeuristicData Data { get; set; }
+	}
+
+	public class HeuristicData
+	{
+		public TimeSpan TimeSpan { get; set; }
 	}
 }

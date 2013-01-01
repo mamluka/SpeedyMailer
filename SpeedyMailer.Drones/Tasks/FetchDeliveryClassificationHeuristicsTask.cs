@@ -37,8 +37,7 @@ namespace SpeedyMailer.Drones.Tasks
 					return;
 
 				var rules = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
-				rules.HardBounceRules = result.HardBounceRules;
-				rules.BlockingRules = result.BlockingRules;
+				rules.Rules = result.Rules;
 
 				_omniRecordManager.UpdateOrInsert(result);
 			}

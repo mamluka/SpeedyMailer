@@ -26,7 +26,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 								Rules = new List<HeuristicRule>
 									{
 										new HeuristicRule { Condition = "yeah",Type = Classification.HardBounce},
-										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2) }},
 									}
 							});
 
@@ -37,7 +37,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var result = api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
 
 			result.Rules.Should().Contain(x => x.Condition == "yeah" && x.Type == Classification.HardBounce);
-			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock && x.Data.TimeSpan == TimeSpan.FromHours(2));
+			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock);
 		}
 
 		[Test]
@@ -56,7 +56,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 				Rules = new List<HeuristicRule>
 									{
 										new HeuristicRule { Condition = "yeah",Type = Classification.HardBounce},
-										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new { TimeSpan = TimeSpan.FromHours(2) }},
+										new HeuristicRule { Condition = "sexy",Type = Classification.TempBlock,Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2) }},
 									}
 			});
 
@@ -65,7 +65,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 
 			result.Rules.Should().Contain(x => x.Condition == "yeah" && x.Type == Classification.HardBounce);
-			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock && x.Data.TimeSpan == TimeSpan.FromHours(2));
+			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock);
 		}
 
 		[Test]
@@ -102,7 +102,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 
 			result.Rules.Should().Contain(x => x.Condition == "yeah" && x.Type == Classification.HardBounce);
-			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock && x.Data.TimeSpan == TimeSpan.FromHours(2));
+			result.Rules.Should().Contain(x => x.Condition == "sexy" && x.Type == Classification.TempBlock);
 		}
 	}
 }

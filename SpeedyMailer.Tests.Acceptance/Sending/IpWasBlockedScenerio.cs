@@ -136,7 +136,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 																					  {
 																						  Rules = new List<HeuristicRule>
 																							 {
-																								 new HeuristicRule { Condition = rule,Data = new { TimeSpan = TimeSpan.FromHours(3) }}
+																								 new HeuristicRule { Condition = rule,Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(3) }}
 																							 }
 																					  };
 																	});
