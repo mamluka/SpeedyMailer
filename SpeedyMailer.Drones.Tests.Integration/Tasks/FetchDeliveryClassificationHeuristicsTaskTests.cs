@@ -37,7 +37,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>();
+			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>(1000);
 
 			var result = DroneActions.FindSingle<DeliverabilityClassificationRules>();
 

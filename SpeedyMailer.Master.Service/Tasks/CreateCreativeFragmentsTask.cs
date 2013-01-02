@@ -20,15 +20,11 @@ namespace SpeedyMailer.Master.Service.Tasks
 	public class CreateCreativeFragmentsTaskExecutor : PersistentTaskExecutor<CreateCreativeFragmentsTask>
 	{
 		private readonly IDocumentStore _documentStore;
-		private readonly CreativeEndpointsSettings _creativeEndpointsSettings;
-		private readonly ServiceSettings _serviceSettings;
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
 
-		public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore, CreativeEndpointsSettings creativeEndpointsSettings, ServiceSettings serviceSettings, CreativeFragmentSettings creativeFragmentSettings)
+		public CreateCreativeFragmentsTaskExecutor(IDocumentStore documentStore, CreativeFragmentSettings creativeFragmentSettings)
 		{
 			_creativeFragmentSettings = creativeFragmentSettings;
-			_serviceSettings = serviceSettings;
-			_creativeEndpointsSettings = creativeEndpointsSettings;
 			_documentStore = documentStore;
 		}
 
@@ -200,7 +196,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 				.Select(
 					domainGroup =>
 					session.Query<Contacts_DomainGroupCounter.ReduceResult, Contacts_DomainGroupCounter>()
-						.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5))).SingleOrDefault(x => x.DomainGroup == domainGroup && x.ListId == listId))
+						.Customize(x => x.WaitForNonStaleResults()).SingleOrDefault(x => x.DomainGroup == domainGroup && x.ListId == listId))
 				.Where(x => x != null)
 				.ToDictionary(x => x.DomainGroup, y => y.Count);
 		}

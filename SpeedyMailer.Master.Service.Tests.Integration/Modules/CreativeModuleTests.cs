@@ -33,7 +33,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			Store.WaitForEntitiesToExist<CreativeFragment>(1);
 			var result = Store.Query<CreativeFragment>().First();
 
-			result.Recipients.Should().HaveCount(1000);
+			result.Recipients.Should().HaveCount(200);
 			result.CreativeId.Should().Be(creativeId);
 		}
 

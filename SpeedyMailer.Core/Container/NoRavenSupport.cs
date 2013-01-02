@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Specialized;
+using Raven.Abstractions.Data;
 using Raven.Client;
 using Raven.Client.Changes;
 using Raven.Client.Connection;
@@ -69,6 +70,11 @@ namespace SpeedyMailer.Core.Container
 		}
 
 		public Guid? GetLastWrittenEtag()
+		{
+			throw new NotImplementedException();
+		}
+
+		public BulkInsertOperation BulkInsert(string database = null, BulkInsertOptions options = null)
 		{
 			throw new NotImplementedException();
 		}

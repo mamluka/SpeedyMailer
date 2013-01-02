@@ -136,8 +136,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.RawLogs[0] == "message 1" &&
-																				x.RawLogs[1] == "message 2" &&
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.RawLogs[0].Contains("message 1") &&
+																				x.RawLogs[1].Contains("message 2") &&
 																				x.RawLogs.Count == 2);
 		}
 		

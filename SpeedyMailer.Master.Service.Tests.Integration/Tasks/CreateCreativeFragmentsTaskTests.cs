@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using NUnit.Framework;
 using FluentAssertions;
@@ -126,7 +127,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			result.UnsubscribeTemplate.Should().Be("Body");
 			result.DealUrl.Should().Be("http://deal.com");
 		}
-		
+
 		[Test]
 		public void Execute_WhenGivenIntervalRules_ShouldSetTheCorrectItnervalsAndGroup()
 		{
@@ -311,9 +312,9 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 			var firstFragment = result[0];
 
 			firstFragment.Recipients.Should().HaveCount(920);
+			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 242);
 			AssertDomainCountIn(firstFragment.Recipients, "hotmail.com", 96);
 			AssertDomainCountIn(firstFragment.Recipients, "gmail.com", 93);
-			AssertDomainCountIn(firstFragment.Recipients, "aol.com", 242);
 			AssertDomainCountIn(firstFragment.Recipients, "msn.com", 148);
 			AssertDomainCountIn(firstFragment.Recipients, "random.com", 341);
 
@@ -399,6 +400,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 
 		private void AssertDomainCountIn(IEnumerable<Recipient> recipients, string domain, int count)
 		{
+			Trace.WriteLine(recipients.Count(x => x.Email.Contains(domain)) + " " + domain);
 			recipients.Where(x => x.Email.Contains(domain)).Should().HaveCount(count);
 		}
 

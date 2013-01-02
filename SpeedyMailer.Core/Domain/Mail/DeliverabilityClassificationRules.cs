@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace SpeedyMailer.Core.Domain.Mail
 {
@@ -29,7 +31,10 @@ namespace SpeedyMailer.Core.Domain.Mail
 	public class HeuristicRule
 	{
 		public string Condition { get; set; }
+
+		[JsonConverter(typeof(StringEnumConverter))]
 		public Classification Type { get; set; }
+
 		public HeuristicData Data { get; set; }
 	}
 

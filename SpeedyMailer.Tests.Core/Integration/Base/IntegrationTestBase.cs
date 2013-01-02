@@ -146,6 +146,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 											typeof(PersistentTask).IsAssignableFrom(type)
 												? "persistenttasks"
 												: DocumentConvention.DefaultTypeTagName(type),
+									   DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
 									}
 							};
 
