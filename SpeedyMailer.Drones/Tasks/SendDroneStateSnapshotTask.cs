@@ -60,7 +60,6 @@ namespace SpeedyMailer.Drones.Tasks
 																			 x.RawLogs = reducedLogs;
 																			 x.MailSent = _omniRecordManager.GetAll<MailSent>();
 																			 x.MailBounced = _omniRecordManager.GetAll<MailBounced>();
-																			 x.MailDeferred = _omniRecordManager.GetAll<MailDeferred>();
 																			 x.UnsubscribeRequests = _omniRecordManager.GetAll<UnsubscribeRequest>();
 																			 x.ClickActions = _omniRecordManager.GetAll<ClickAction>();
 																			 x.Unclassified = _omniRecordManager.GetAll<UnclassfiedMailEvent>();
@@ -71,7 +70,6 @@ namespace SpeedyMailer.Drones.Tasks
 
 				_logsStore.DeleteProcessedLogs();
 				_omniRecordManager.DeleteConnection<MailSent>();
-				_omniRecordManager.DeleteConnection<MailDeferred>();
 				_omniRecordManager.DeleteConnection<MailBounced>();
 				_omniRecordManager.DeleteConnection<ClickAction>();
 				_omniRecordManager.DeleteConnection<UnsubscribeRequest>();

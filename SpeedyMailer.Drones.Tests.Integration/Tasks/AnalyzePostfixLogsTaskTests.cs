@@ -263,43 +263,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenCalledAndFoundDeferredStatusInTheLog_ShouldRaiseTheHappendOnDeliveryEvent()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
-
-			ListenToEvent<AggregatedMailDeferred>();
-
-			var logEntries = new List<MailLogEntry>
-				                 {
-                                     new MailLogEntry {msg = " 5CB0EAE39D: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<aabubars@sbcglobal.net> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0), level = "INFO"},
-
-                                     new MailLogEntry {msg = " B1F58AE39F: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<lorihooks@5aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " B1F58AE39F: to=<lorihooks@5aol.com>, relay=none, delay=36378, delays=36273/0/105/0, dsn=4.4.1, status=deferred (connect to 5aol.com[205.188.101.24]:25: Connection timed out)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-
-                                     new MailLogEntry {msg = " 67253AE3A7: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<a336448@aol.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " 67253AE3A7: to=<a336448@aol.com>, relay=none, delay=0.05, delays=0.04/0/0/0, dsn=4.3.0, status=deferred (mail transport unavailable)", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-				                 };
-
-			DroneActions.StoreCollection(logEntries, "log");
-
-			var task = new AnalyzePostfixLogsTask();
-
-			DroneActions.StartScheduledTask(task);
-
-			AssertEventWasPublished<AggregatedMailDeferred>(x =>
-															{
-																x.MailEvents.Should().ContainItemsAssignableTo<MailDeferred>();
-																x.MailEvents
-																	.Select(mailEvent => mailEvent.Recipient)
-																	.Should()
-																	.BeEquivalentTo(new[] { "aabubars@sbcglobal.net", "lorihooks@5aol.com", "a336448@aol.com" });
-																x.MailEvents.Should().OnlyContain(mailEvent => mailEvent.CreativeId == "creative/1");
-															});
-
-		}
-
-		[Test]
 		public void Execute_WhenStatusLogsFoundButThereAreNoIntervalRules_ShouldStoreWithDefaultDomainGroup()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
@@ -391,42 +354,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
-		public void Execute_WhenDeferredFoundAndCanBeClassified_ShouldStoreTheClassification()
-		{
-			DroneActions.EditSettings<DroneSettings>(x =>
-														 {
-															 x.StoreHostname = DefaultHostUrl;
-															 x.Domain = "xomixinc.com";
-														 });
-
-			DroneActions.Store(new DeliverabilityClassificationRules
-				{
-					Rules = new List<HeuristicRule>
-						        {
-							        new HeuristicRule { Condition = "Message temporarily deferred", Type = Classification.HardBounce}
-						        }
-				});
-
-			var logEntries = new List<MailLogEntry>
-				                 {
-                                     new MailLogEntry {msg = " 5CB0EAE39D: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-				                 };
-
-			DroneActions.StoreCollection(logEntries, "log");
-
-			var task = new AnalyzePostfixLogsTask();
-
-			DroneActions.StartScheduledTask(task);
-
-			DroneActions.WaitForDocumentToExist<MailDeferred>();
-
-			var result = DroneActions.FindAll<MailDeferred>().First();
-
-			result.Classification.Classification.Should().Be(Classification.HardBounce);
-		}
-
-		[Test]
 		public void Execute_WhenStatusLogsfound_ShouldStoreBouncedEmail()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
@@ -486,38 +413,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			result.Recipient.Should().Be("a66122s@aol.com");
 			result.DomainGroup.Should().Be("aol");
-			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
-			result.CreativeId.Should().Be("creative/1");
-		}
-
-		[Test]
-		public void Execute_WhenStatusLogsfound_ShouldStoreDeferredMails()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
-
-			var logEntries = new List<MailLogEntry>
-				                 {
-                                     new MailLogEntry {msg = " 5CB0EAE39D: info: header Speedy-Creative-Id: creative/1 from localhost.localdomain[127.0.0.1]; from=<david@xomixinc.com> to=<pnc211@gmail.com> proto=ESMTP helo=<mail>", time = new DateTime(2012, 2, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-					                 new MailLogEntry {msg = " 5CB0EAE39D: to=<aabubars@sbcglobal.net>, relay=mx2.sbcglobal.am0.yahoodns.net[98.136.217.192]:25, delay=2.5, delays=0.12/0/1.9/0.56, dsn=4.0.0, status=deferred (host mx2.sbcglobal.am0.yahoodns.net[98.136.217.192] said: 451 Message temporarily deferred - [160] (in reply to end of DATA command))", time = new DateTime(2012, 1, 1, 0, 0, 0,DateTimeKind.Utc), level = "INFO"},
-				                 };
-
-			DroneActions.StoreCollection(logEntries, "log");
-			DroneActions.Store(new IntervalRule
-			{
-				Conditons = new List<string> { "sbcglobal.net" },
-				Group = "sbcglobal"
-			});
-
-			var task = new AnalyzePostfixLogsTask();
-
-			DroneActions.StartScheduledTask(task);
-
-			DroneActions.WaitForDocumentToExist<MailDeferred>();
-
-			var result = DroneActions.FindAll<MailDeferred>().First();
-
-			result.Recipient.Should().Be("aabubars@sbcglobal.net");
-			result.DomainGroup.Should().Be("sbcglobal");
 			result.Time.Should().Be(new DateTime(2012, 1, 1, 0, 0, 0));
 			result.CreativeId.Should().Be("creative/1");
 		}

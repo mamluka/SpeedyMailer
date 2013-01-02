@@ -211,12 +211,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 												 new MailBounced { Recipient = "bounced2@bounced.com" }
 				                             });
 
-			DroneActions.StoreCollection(new[]
-				                             {
-												 new MailDeferred { Recipient = "deferred@deferred.com" },
-												 new MailDeferred { Recipient = "deferred2@deferred.com" }
-				                             });
-
 			DroneActions.Store(new LastProcessedLog
 			{
 				Time = DateTime.UtcNow.AddMinutes(-45)
@@ -226,7 +220,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailSent[0].Recipient == "sent@sent.com" && x.MailSent[1].Recipient == "sent2@sent.com");
 			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailBounced[0].Recipient == "bounced@bounced.com" && x.MailBounced[1].Recipient == "bounced2@bounced.com");
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.MailDeferred[0].Recipient == "deferred@deferred.com" && x.MailDeferred[1].Recipient == "deferred2@deferred.com");
 		}
 
 		[Test]
@@ -323,12 +316,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StoreCollection(new[]
 				                             {
-					                             new MailDeferred {Recipient = "deferred@deferred.com"},
-					                             new MailDeferred {Recipient = "deferred2@deferred.com"}
-				                             });
-
-			DroneActions.StoreCollection(new[]
-				                             {
 					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
 					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
 				                             }, "log");
@@ -345,7 +332,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.WaitForEmptyListOf<UnsubscribeRequest>();
 			DroneActions.WaitForEmptyListOf<MailSent>();
 			DroneActions.WaitForEmptyListOf<MailBounced>();
-			DroneActions.WaitForEmptyListOf<MailDeferred>();
 			DroneActions.WaitForEmptyListOf<UnclassfiedMailEvent>();
 		}
 	}

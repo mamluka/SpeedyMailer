@@ -6,7 +6,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class ReinstateRecipientsForSending : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
+	public class ReinstateRecipientsForSending : IHappendOn<AggregatedMailBounced>
 	{
 		private readonly CreativePackagesStore _creativePackagesStore;
 		private readonly Logger _logger;
@@ -18,11 +18,6 @@ namespace SpeedyMailer.Drones.Events
 		}
 
 		public void Inspect(AggregatedMailBounced data)
-		{
-			Reinstate(data);
-		}
-
-		public void Inspect(AggregatedMailDeferred data)
 		{
 			Reinstate(data);
 		}

@@ -11,7 +11,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class PauseSendingForIndividualDomains : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
+	public class PauseSendingForIndividualDomains : IHappendOn<AggregatedMailBounced>
 	{
 		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
@@ -31,11 +31,6 @@ namespace SpeedyMailer.Drones.Events
 		}
 
 		public void Inspect(AggregatedMailBounced data)
-		{
-			UndeliverabilityDecision(data);
-		}
-
-		public void Inspect(AggregatedMailDeferred data)
 		{
 			UndeliverabilityDecision(data);
 		}

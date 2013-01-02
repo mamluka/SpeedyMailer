@@ -10,7 +10,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class DeliveryRealTimeDecision : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
+	public class DeliveryRealTimeDecision : IHappendOn<AggregatedMailBounced>
 	{
 		private readonly PauseSpecificSendingJobsCommand _pauseSpecificSendingJobsCommand;
 		private readonly OmniRecordManager _omniRecordManager;
@@ -26,11 +26,6 @@ namespace SpeedyMailer.Drones.Events
 		}
 
 		public void Inspect(AggregatedMailBounced data)
-		{
-			StopSendingIfIpBlockageFound(data);
-		}
-
-		public void Inspect(AggregatedMailDeferred data)
 		{
 			StopSendingIfIpBlockageFound(data);
 		}

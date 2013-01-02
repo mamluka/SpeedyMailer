@@ -10,10 +10,6 @@ namespace SpeedyMailer.Core.Domain.Mail
 
 	}
 
-	public class AggregatedMailDeferred : AggregatedMailEvents<MailDeferred>
-	{
-	}
-
 	public class AggregatedMailBounced : AggregatedMailEvents<MailBounced>
 	{
 	}
@@ -68,23 +64,6 @@ namespace SpeedyMailer.Core.Domain.Mail
 
 		public MailClassfication Classification { get; set; }
 	}
-
-	public class MailDeferred : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasTime, IHasCreativeId,IHasClassification
-	{
-		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
-		public virtual string Id { get; set; }
-
-		public string Recipient { get; set; }
-		public DateTime Time { get; set; }
-		public string DomainGroup { get; set; }
-		public string Message { get; set; }
-		public string CreativeId { get; set; }
-
-		public string Domain { get; set; }
-
-		public MailClassfication Classification { get; set; }
-	}
-
 
 
 	public interface IHasDomainGroup

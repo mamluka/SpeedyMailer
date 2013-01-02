@@ -107,7 +107,6 @@
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Indexes\Creative_ActionsIndexTests.cs" />
     <Compile Include="Indexes\Creative_ClassifiedEmailsIndexTests.cs" />
-    <Compile Include="Indexes\Creative_DeferredEmailsIndexTests.cs" />
     <Compile Include="Indexes\Creative_BouncedEmailsIndexTests.cs" />
     <Compile Include="Indexes\Creative_SentEmailsIndexTests.cs" />
     <Compile Include="Indexes\Creative_SendingReportIndexTests.cs" />

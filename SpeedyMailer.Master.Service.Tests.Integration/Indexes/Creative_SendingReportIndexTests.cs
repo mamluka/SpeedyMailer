@@ -24,11 +24,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
                                     new MailSent {DomainGroup = "gmail", Recipient = "david@gmail.com", CreativeId = "creative/1"},
                                     new MailSent {DomainGroup = "hotmail", Recipient = "david@hotmail.com", CreativeId = "creative/1"}
                                 },
-                            MailDeferred = new List<MailDeferred>
-                                {
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "david@aol.com", CreativeId = "creative/1"},
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "smith@aol.com", CreativeId = "creative/1"}
-                                },
                             MailBounced = new List<MailBounced>
                                 {
                                     new MailBounced {DomainGroup = "msn", Recipient = "david@msn.com", CreativeId = "creative/1"},
@@ -41,12 +36,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
                             MailSent = new List<MailSent>
                                 {
                                     new MailSent {DomainGroup = "gmail", Recipient = "moshe@gmail.com", CreativeId = "creative/2"},
-                                },
-                            MailDeferred = new List<MailDeferred>
-                                {
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "shit@aol.com", CreativeId = "creative/1"},
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "mother@aol.com", CreativeId = "creative/1"},
-                                    new MailDeferred {DomainGroup = "aol", Recipient = "fucker@aol.com", CreativeId = "creative/2"}
                                 },
                             MailBounced = new List<MailBounced>
                                 {

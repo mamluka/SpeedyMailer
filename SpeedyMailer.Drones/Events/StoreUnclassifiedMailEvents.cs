@@ -7,7 +7,7 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class StoreUnclassifiedMailEvents : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
+	public class StoreUnclassifiedMailEvents : IHappendOn<AggregatedMailBounced>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
 		private CreativePackagesStore _creativePackagesStore;
@@ -19,11 +19,6 @@ namespace SpeedyMailer.Drones.Events
 		}
 
 		public void Inspect(AggregatedMailBounced data)
-		{
-			StoreUnclassifiedMails(data);
-		}
-
-		public void Inspect(AggregatedMailDeferred data)
 		{
 			StoreUnclassifiedMails(data);
 		}

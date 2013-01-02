@@ -125,7 +125,6 @@
     <Compile Include="Storage\Indexes\Contacts_ByMemberOf.cs" />
     <Compile Include="Storage\Indexes\Contacts_DomainGroupCounter.cs" />
     <Compile Include="Storage\Indexes\Creative_UnclassfiedEmails.cs" />
-    <Compile Include="Storage\Indexes\Creative_DeferredEmails.cs" />
     <Compile Include="Storage\Indexes\Creative_BouncedEmails.cs" />
     <Compile Include="Storage\Indexes\Creative_SentEmails.cs" />
     <Compile Include="Storage\Indexes\Creative_SendingReport.cs" />

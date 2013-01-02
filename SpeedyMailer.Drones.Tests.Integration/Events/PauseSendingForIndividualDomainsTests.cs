@@ -253,42 +253,5 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			result.Should().BeNull();
 		}
-
-		[Test]
-		public void Inspect_WhenGivenADeferredMessageClassifiedAsBlockingIpAndTheGroupIsDefault_ShouldSetAllEmailsThatHaveThisDomainAsUndeliverable()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
-
-			DroneActions.Store(new DeliverabilityClassificationRules
-				{
-					Rules = new List<HeuristicRule>
-						{
-							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData{TimeSpan = TimeSpan.FromHours(4)}},
-						}
-				});
-
-			var creativePackages = new[]
-                {
-                    new CreativePackage { To = "david@blocked.com" ,Group = "$default$",},
-                    new CreativePackage { To = "another-david@blocked.com" ,Group = "$default$",}
-                };
-
-			DroneActions.StoreCollection(creativePackages);
-
-			FireEvent<PauseSendingForIndividualDomains, AggregatedMailDeferred>(x => x.MailEvents = new List<MailDeferred>
-                {
-                    new MailDeferred {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
-                    new MailDeferred {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
-                    new MailDeferred {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
-                });
-
-
-
-			var result = DroneActions.FindSingle<GroupsAndIndividualDomainsSendingPolicies>();
-
-			result.GroupSendingPolicies.Should().ContainKeys(new[] { "blocked.com" });
-			result.GroupSendingPolicies["blocked.com"].ResumeAt.Should().BeAtLeast(TimeSpan.FromHours(3));
-		}
 	}
 }

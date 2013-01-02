@@ -62,7 +62,6 @@ namespace SpeedyMailer.Master.Service.Modules
 																		RawLogs = model.RawLogs,
 																		MailBounced = model.MailBounced,
 																		MailSent = model.MailSent,
-																		MailDeferred = model.MailDeferred,
 																		ClickActions = model.ClickActions,
 																		UnsubscribeRequests = model.UnsubscribeRequests,
 																		Unclassified = model.Unclassified

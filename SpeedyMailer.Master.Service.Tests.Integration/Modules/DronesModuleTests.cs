@@ -76,11 +76,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																				                new MailBounced { Message = "mail bounced"}
 																			                };
 
-																		x.MailDeferred = new List<MailDeferred>
-																			                {
-																				                new MailDeferred { Message = "mail deferred"}
-																			                };
-
 																		x.MailSent = new List<MailSent>
 																			                {
 																				                new MailSent { Recipient = "sent@sent.com"}
@@ -124,7 +119,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.RawLogs.Should().OnlyContain(x => x == "log message");
 			result.MailSent.Should().OnlyContain(x => x.Recipient == "sent@sent.com");
 			result.MailBounced.Should().OnlyContain(x => x.Message == "mail bounced");
-			result.MailDeferred.Should().OnlyContain(x => x.Message == "mail deferred");
 			result.ClickActions.Should().OnlyContain(x => x.ContactId == "contacts/1");
 			result.UnsubscribeRequests.Should().OnlyContain(x => x.ContactId == "contacts/2");
 			result.Unclassified.Should().OnlyContain(x => x.Message == "unclassified");

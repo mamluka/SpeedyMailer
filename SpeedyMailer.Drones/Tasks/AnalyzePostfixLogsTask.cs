@@ -89,13 +89,11 @@ namespace SpeedyMailer.Drones.Tasks
 
 				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent, parsedLogsDomainGroups);
 				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups);
-				var mailDeferred = ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailDeferred, parsedLogsDomainGroups);
 
-				_logger.Info("postfix log contained: send: {0},bounced: {1}, deferred: {2}", mailSent.Count, mailBounced.Count, mailDeferred.Count);
+				_logger.Info("postfix log contained: send: {0},bounced: {1}, deferred: {2}", mailSent.Count, mailBounced.Count);
 
 				_omniRecordManager.BatchInsert(mailSent);
 				_omniRecordManager.BatchInsert(mailBounced);
-				_omniRecordManager.BatchInsert(mailDeferred);
 
 				_logger.Info("entries were saved to database");
 
@@ -103,7 +101,6 @@ namespace SpeedyMailer.Drones.Tasks
 
 				DispatchEvent<AggregatedMailBounced, MailBounced>(mailBounced);
 				DispatchEvent<AggregatedMailSent, MailSent>(mailSent);
-				DispatchEvent<AggregatedMailDeferred, MailDeferred>(mailDeferred);
 			}
 
 			private static DateTime LastProcessedMailingEvent(IEnumerable<MailEvent> parsedLogs)
@@ -137,19 +134,6 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				x.DomainGroup = y.Value ?? _creativeFragmentSettings.DefaultGroup;
 				return x;
-			}
-
-			private MailDeferred ToMailDeferred(MailEvent x)
-			{
-				return new MailDeferred
-						   {
-							   Recipient = x.Recipient,
-							   Time = x.Time,
-							   Message = x.RelayMessage,
-							   CreativeId = x.CreaiveId,
-							   Domain = x.Recipient.GetDomain(),
-							   Classification = Classify(x)
-						   };
 			}
 
 			private MailBounced ToMailBounced(MailEvent x)

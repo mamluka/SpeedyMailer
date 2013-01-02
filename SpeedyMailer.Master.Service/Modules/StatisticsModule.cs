@@ -69,17 +69,6 @@ namespace SpeedyMailer.Master.Service.Modules
 					}
 				};
 
-			Get["/deferred"] = call =>
-				{
-					using (var session = documentStore.OpenSession())
-					{
-						var creativeId = (string)Request.Query["creativeid"];
-						var results = session.Query<Creative_DeferredEmails.ReduceResult, Creative_DeferredEmails>().Where(x => x.CreativeId == creativeId);
-
-						return Response.AsJson(results);
-					}
-				};
-
 			Get["/unclassified"] = call =>
 				{
 					using (var session = documentStore.OpenSession())
@@ -114,17 +103,14 @@ namespace SpeedyMailer.Master.Service.Modules
 
 						var sent = session.Query<Creative_SentEmails.ReduceResult, Creative_SentEmails>().Where(x => x.CreativeId == creativeId).ToList();
 						var bounced = session.Query<Creative_BouncedEmails.ReduceResult, Creative_BouncedEmails>().Where(x => x.CreativeId == creativeId).ToList();
-						var deferred = session.Query<Creative_DeferredEmails.ReduceResult, Creative_DeferredEmails>().Where(x => x.CreativeId == creativeId).ToList();
 
 						var sanitizedSends = sent.SelectMany(result => result.Sends.Distinct(new LambdaComparer<GenericMailEvent>((x, y) => x.Recipient == y.Recipient))).ToList();
 						var sanitizedBounces = bounced.SelectMany(result => result.Bounced.Distinct(new LambdaComparer<GenericMailEvent>((x, y) => x.Recipient == y.Recipient))).ToList();
-						var sanitizedDeferres = deferred.SelectMany(result => result.Deferred.Distinct(new LambdaComparer<GenericMailEvent>((x, y) => x.Recipient == y.Recipient))).ToList();
 
 						return Response.AsJson(new
 							{
 								TotalSent = sanitizedSends.Count,
 								TotalBounces = sanitizedBounces.Count,
-								TotalDeferres = sanitizedDeferres.Count,
 //								Sent = sanitizedSends,
 //								Bounced = sanitizedBounces,
 //								Deferred = sanitizedDeferres,
