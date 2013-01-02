@@ -37,7 +37,7 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly CreativeFragmentSettings _creativeFragmentSettings;
 			private readonly Logger _logger;
 			private readonly ParseCreativeIdFromLogsCommand _parseCreativeIdFromLogsCommand;
-			private ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
+			private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 
 			public Job(EventDispatcher eventDispatcher,
 				ParseLogsCommand parseLogsCommand,
