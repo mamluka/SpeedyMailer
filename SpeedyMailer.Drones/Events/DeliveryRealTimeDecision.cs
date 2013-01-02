@@ -12,19 +12,17 @@ namespace SpeedyMailer.Drones.Events
 {
 	public class DeliveryRealTimeDecision : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
 	{
-		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly PauseSpecificSendingJobsCommand _pauseSpecificSendingJobsCommand;
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
 		private readonly Logger _logger;
 
-		public DeliveryRealTimeDecision(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager, CreativeFragmentSettings creativeFragmentSettings, Logger logger)
+		public DeliveryRealTimeDecision(PauseSpecificSendingJobsCommand pauseSpecificSendingJobsCommand, OmniRecordManager omniRecordManager, CreativeFragmentSettings creativeFragmentSettings, Logger logger)
 		{
 			_logger = logger;
 			_creativeFragmentSettings = creativeFragmentSettings;
 			_omniRecordManager = omniRecordManager;
 			_pauseSpecificSendingJobsCommand = pauseSpecificSendingJobsCommand;
-			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 		}
 
 		public void Inspect(AggregatedMailBounced data)
@@ -37,11 +35,11 @@ namespace SpeedyMailer.Drones.Events
 			StopSendingIfIpBlockageFound(data);
 		}
 
-		private void StopSendingIfIpBlockageFound<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRelayMessage,IHasClassification
+		private void StopSendingIfIpBlockageFound<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRelayMessage, IHasClassification
 		{
 			var bouncesGroups = data
 				.MailEvents
-				.Where(x => x.Classification == Classification.TempBlock)
+				.Where(x => x.Classification.Classification == Classification.TempBlock)
 				.Where(x => ValidDomainGroupsForPausing(x.DomainGroup))
 				.ToList();
 
@@ -61,7 +59,7 @@ namespace SpeedyMailer.Drones.Events
 
 											 groupsSendingPolicies.GroupSendingPolicies[x.DomainGroup] = new ResumeSendingPolicy
 																								{
-																									ResumeAt = DateTime.UtcNow + x.MailClassfication.TimeSpan
+																									ResumeAt = DateTime.UtcNow + x.Classification.TimeSpan
 																								};
 										 });
 

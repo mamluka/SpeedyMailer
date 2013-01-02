@@ -94,7 +94,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 	
 	public interface IHasClassification
 	{
-		Classification Classification { get; set; }
+		MailClassfication Classification { get; set; }
 	}
 
 	public interface IHasRecipient

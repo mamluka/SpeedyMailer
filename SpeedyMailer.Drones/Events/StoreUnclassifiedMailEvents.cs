@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
-using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
@@ -11,13 +10,11 @@ namespace SpeedyMailer.Drones.Events
 	public class StoreUnclassifiedMailEvents : IHappendOn<AggregatedMailBounced>, IHappendOn<AggregatedMailDeferred>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
-		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private CreativePackagesStore _creativePackagesStore;
 
-		public StoreUnclassifiedMailEvents(OmniRecordManager omniRecordManager,CreativePackagesStore creativePackagesStore, ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand)
+		public StoreUnclassifiedMailEvents(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore)
 		{
 			_creativePackagesStore = creativePackagesStore;
-			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 			_omniRecordManager = omniRecordManager;
 		}
 
@@ -31,16 +28,11 @@ namespace SpeedyMailer.Drones.Events
 			StoreUnclassifiedMails(data);
 		}
 
-		private void StoreUnclassifiedMails<T>(AggregatedMailEvents<T> data) where T : IHasRecipient, IHasRelayMessage, IHasDomainGroup, IHasTime, IHasCreativeId
+		private void StoreUnclassifiedMails<T>(AggregatedMailEvents<T> data) where T : IHasRecipient, IHasRelayMessage, IHasDomainGroup, IHasTime, IHasCreativeId, IHasClassification
 		{
 			var unclassified = data
 				.MailEvents
-				.Where(x =>
-					{
-						_classifyNonDeliveredMailCommand.Message = x.Message;
-						var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-						return mailClassfication.Classification == Classification.NotClassified;
-					})
+				.Where(x => x.Classification.Classification == Classification.NotClassified)
 				.Select(x => new UnclassfiedMailEvent
 					{
 						CreativeId = x.CreativeId,
@@ -57,7 +49,7 @@ namespace SpeedyMailer.Drones.Events
 			var emails = unclassified.Select(x => x.Recipient);
 
 			var creativePackages = _creativePackagesStore.GetByEmail(emails);
-			
+
 			creativePackages
 				.ToList()
 				.ForEach(x =>
