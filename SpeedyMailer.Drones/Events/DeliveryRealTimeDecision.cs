@@ -37,17 +37,11 @@ namespace SpeedyMailer.Drones.Events
 			StopSendingIfIpBlockageFound(data);
 		}
 
-		private void StopSendingIfIpBlockageFound<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRelayMessage
+		private void StopSendingIfIpBlockageFound<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRelayMessage,IHasClassification
 		{
 			var bouncesGroups = data
 				.MailEvents
-				.Select(x =>
-							{
-								_classifyNonDeliveredMailCommand.Message = x.Message;
-								var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-								return new { MailClassfication = mailClassfication, x.DomainGroup };
-							})
-				.Where(x => x.MailClassfication.Classification == Classification.TempBlock)
+				.Where(x => x.Classification == Classification.TempBlock)
 				.Where(x => ValidDomainGroupsForPausing(x.DomainGroup))
 				.ToList();
 
