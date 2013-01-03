@@ -18,7 +18,7 @@ namespace SpeedyMailer.Drones.Events
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly CreativePackagesStore _creativePackagesStore;
 		private readonly Logger _logger;
-		private EventDispatcher _eventDispatcher;
+		private readonly EventDispatcher _eventDispatcher;
 
 		public PauseSendingForIndividualDomains(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, CreativeFragmentSettings creativeFragmentSettings, EventDispatcher eventDispatcher, Logger logger)
 		{
@@ -54,7 +54,7 @@ namespace SpeedyMailer.Drones.Events
 				.Select(x => new { x.First().Time, Domain = x.Key })
 				.ToList();
 
-			
+
 			if (!domainToUndeliver.Any())
 				return;
 
