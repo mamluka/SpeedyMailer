@@ -55,7 +55,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Indexes
 
             result.Should().Contain(x => x.CreativeId == "creative/1");
             result.Should().Contain(x => x.TotalBounces == 5);
-            result.Should().Contain(x => x.TotalDefers == 4);
             result.Should().Contain(x => x.TotalSends == 2);
         }
     }

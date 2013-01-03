@@ -51,24 +51,19 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules(new[]
-				{
-					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
-					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(2)}}
-				});
-
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
-																		   {
-																			   x.MailEvents = new List<MailBounced>
-						                                                                          {
-							                                                                          new MailBounced
-								                                                                          {
-									                                                                          DomainGroup = "gmail",
-									                                                                          Recipient = "david@gmail.com",
-									                                                                          Message = "message meaning its a bad bounce"
-								                                                                          }
-						                                                                          };
-																		   });
+				{
+					x.MailEvents = new List<MailBounced>
+						{
+							new MailBounced
+								{
+									DomainGroup = "gmail",
+									Recipient = "david@gmail.com",
+									Message = "message meaning its a bad bounce",
+									Classification = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+								}
+						};
+				});
 
 			Jobs.Drone().AssertJobIsCurrentlyRunnnig<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "hotmail");
 			Jobs.Drone().AssertJobWasPaused<SendCreativePackagesWithIntervalTask.Data>(x => x.Group == "gmail");
@@ -240,24 +235,19 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules(new[]
-				{
-					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
-					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(2)}}
-				});
-
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
-																		   {
-																			   x.MailEvents = new List<MailBounced>
-						                                                                          {
-							                                                                          new MailBounced
-								                                                                          {
-									                                                                          DomainGroup = "gmail",
-									                                                                          Recipient = "david@gmail.com",
-									                                                                          Message = "message meaning its a bad bounce"
-								                                                                          }
-						                                                                          };
-																		   });
+				{
+					x.MailEvents = new List<MailBounced>
+						{
+							new MailBounced
+								{
+									DomainGroup = "gmail",
+									Recipient = "david@gmail.com",
+									Message = "message meaning its a bad bounce",
+									Classification = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+								}
+						};
+				});
 
 			DroneActions.WaitForDocumentToExist<GroupsAndIndividualDomainsSendingPolicies>();
 

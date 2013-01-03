@@ -88,7 +88,9 @@ namespace SpeedyMailer.Drones.Tasks
 				var parsedLogsDomainGroups = CalculateDomainGroupFor(parsedLogs);
 
 				var mailSent = ParseToSpecificMailEvent(parsedLogs, MailEventType.Sent, ToMailSent, parsedLogsDomainGroups);
-				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups);
+				var mailBounced = ParseToSpecificMailEvent(parsedLogs, MailEventType.Bounced, ToMailBounced, parsedLogsDomainGroups)
+					.Concat(ParseToSpecificMailEvent(parsedLogs, MailEventType.Deferred, ToMailBounced, parsedLogsDomainGroups))
+					.ToList();
 
 				_logger.Info("postfix log contained: send: {0},bounced: {1}, deferred: {2}", mailSent.Count, mailBounced.Count);
 

@@ -27,25 +27,17 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 									   To = "david@david.com"
 								   });
 
-			DroneActions.Store(new DeliverabilityClassificationRules
-								   {
-									   Rules = new List<HeuristicRule>
-										   {
-											   new HeuristicRule { Condition = "bounced that blocked",Type = Classification.TempBlock , Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(2)}}
-										   }
-								   });
-
-
 			FireEvent<ReinstateRecipientsForSending,
 				AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-					                                           {
-						                                           new MailBounced
-							                                           {
-								                                           Message = "bounced that blocked",
-								                                           DomainGroup = "gmail",
-								                                           Recipient = "david@david.com"
-							                                           }
-					                                           });
+					{
+						new MailBounced
+							{
+								Message = "bounced that blocked",
+								DomainGroup = "gmail",
+								Recipient = "david@david.com",
+								Classification = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+							}
+					});
 
 			DroneActions.WaitForDocumentToExist<CreativePackage>();
 
@@ -73,7 +65,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 							                                           {
 								                                           Message = "bounced that blocked",
 								                                           DomainGroup = "gmail",
-								                                           Recipient = "david@david.com"
+								                                           Recipient = "david@david.com",
+																		   Classification = new MailClassfication {Classification = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
 							                                           }
 					                                           });
 
