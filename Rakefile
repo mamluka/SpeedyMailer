@@ -33,7 +33,7 @@ namespace :windows do
   APP_FOLDER = "SpeedyMailer.Master.Web.App/static/app"
   APP_OUTPUT_FOLDER = "App"
 
-  MASTER_DOMAIN = "speedymailer"
+  MASTER_DOMAIN = "xomixfuture.com"
 
   desc "Clean solution"
   msbuild :clean, [:solution] do |msb, args|
