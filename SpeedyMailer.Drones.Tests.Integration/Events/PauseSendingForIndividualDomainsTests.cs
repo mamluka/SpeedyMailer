@@ -22,15 +22,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				Rules = new List<HeuristicRule>
-					{
-						new HeuristicRule { Condition =  "not a rule", Type = Classification.HardBounce},
-						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(4) }},
-					}
-			});
-
 			var creativePackages = new[]
                 {
                     new CreativePackage { To = "david@blocked.com" ,Group = "$default$" ,},
@@ -41,12 +32,40 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StoreCollection(creativePackages);
 
 			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-                {
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@suck.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
-                });
+				{
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@blocked.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@suck.com",
+							Domain = "suck.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a block",
+							Recipient = "david@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a not block",
+							Recipient = "david2@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+						}
+				});
 
 
 
@@ -64,16 +83,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 
 			ListenToEvent<BlockingGroups>();
 
-			DroneActions.Store(new DeliverabilityClassificationRules
-			{
-				Rules = new List<HeuristicRule>
-					{
-						new HeuristicRule { Condition =  "not a rule", Type = Classification.HardBounce},
-						new HeuristicRule { Condition =  "this is a block", Type = Classification.TempBlock, Data = new HeuristicData { TimeSpan = TimeSpan.FromHours(4) }},
-					}
-			});
-
-
 			var creativePackages = new[]
                 {
                     new CreativePackage { To = "david@blocked.com" ,Group = "$default$" ,},
@@ -84,12 +93,40 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StoreCollection(creativePackages);
 
 			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-                {
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@suck.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
-                });
+				{
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@blocked.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@suck.com",
+							Domain = "suck.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a block",
+							Recipient = "david@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a not block",
+							Recipient = "david2@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+						}
+				});
 
 			AssertEventWasPublished<BlockingGroups>(x =>
 															  x.Groups.Should().BeEquivalentTo(new[] { "blocked.com", "suck.com" }));
@@ -120,12 +157,40 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StoreCollection(creativePackages);
 
 			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-				                                                                                       {
-					                                                                                       new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
-					                                                                                       new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@suck.com"},
-					                                                                                       new MailBounced {DomainGroup = "gmail", Message = "this is a block", Recipient = "david@gmail.com"},
-					                                                                                       new MailBounced {DomainGroup = "gmail", Message = "this is a not block", Recipient = "david2@gmail.com"}
-				                                                                                       });
+				{
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@blocked.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@suck.com",
+							Domain = "suck.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a block",
+							Recipient = "david@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a not block",
+							Recipient = "david2@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+						}
+				});
 
 			var result = DroneActions.FindAll<CreativePackage>();
 
@@ -135,7 +200,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		}
 
 		[Test]
-		public void Inspect_GroupPliciesAreAlreadyInTheStore_ShouldSetTheDomainsAreUndelierable()
+		public void Inspect_GroupPoliciesAreAlreadyInTheStore_ShouldSetTheDomainsAreUndelierable()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
@@ -163,12 +228,40 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StoreCollection(creativePackages);
 
 			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-                {
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@suck.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
-                });
+				{
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@blocked.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@suck.com",
+							Domain = "suck.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a block",
+							Recipient = "david@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a not block",
+							Recipient = "david2@gmail.com",
+							Domain = "gmail.com",
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+						}
+				});
 
 
 
@@ -184,15 +277,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-			DroneActions.Store(new DeliverabilityClassificationRules
-				{
-					Rules = new List<HeuristicRule>
-						{
-							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
-						}
-				});
-
 			var creativePackages = new[]
                 {
                     new CreativePackage { To = "david@blocked.com" ,Group = "$default$" ,},
@@ -203,14 +287,40 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StoreCollection(creativePackages);
 
 			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-                {
-                    new MailBounced {DomainGroup = "$default$", Message = "this is a block", Recipient = "david@blocked.com"},
-                    new MailBounced {DomainGroup = "$default$", Message = "not a block", Recipient = "david@suck.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
-                });
-
-
+				{
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "this is a block",
+							Recipient = "david@blocked.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "$default$",
+							Message = "not a block",
+							Recipient = "david@suck.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a block",
+							Recipient = "david@gmail.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+						},
+					new MailBounced
+						{
+							DomainGroup = "gmail",
+							Message = "this is a not block",
+							Recipient = "david2@gmail.com",
+							Domain = "blocked.com",
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+						}
+				});
 
 			var result = DroneActions.FindSingle<GroupsAndIndividualDomainsSendingPolicies>();
 
@@ -218,40 +328,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			result.GroupSendingPolicies.Should().NotContainKey("suck.com");
 
 			result.GroupSendingPolicies["blocked.com"].ResumeAt.Should().BeAtLeast(TimeSpan.FromHours(3));
-		}
-
-		[Test]
-		public void Inspect_WhenBlockedMailedAreFoundButNoneExistInTheDatabase_ShouldDoNothing()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
-
-			DroneActions.Store(new DeliverabilityClassificationRules
-				{
-					Rules = new List<HeuristicRule>
-						{
-							new HeuristicRule {Condition = "not a rule", Type = Classification.HardBounce},
-							new HeuristicRule {Condition = "this is a block", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
-						}
-				});
-
-			var creativePackages = new[]
-                {
-                    new CreativePackage { To = "david@blocked.com" ,Group = "$default$"},
-                    new CreativePackage { To = "another-david@blocked.com" ,Group = "$default$"}
-                };
-
-			DroneActions.StoreCollection(creativePackages);
-
-			FireEvent<PauseSendingForIndividualDomains, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
-                {
-                    new MailBounced {DomainGroup = "$default$", Message = "hard bounce", Recipient = "david@blocked.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a block",Recipient = "david@gmail.com"},
-                    new MailBounced {DomainGroup = "gmail", Message = "this is a not block",Recipient = "david2@gmail.com"}
-                });
-
-			var result = DroneActions.FindSingle<GroupsAndIndividualDomainsSendingPolicies>();
-
-			result.Should().BeNull();
 		}
 	}
 }

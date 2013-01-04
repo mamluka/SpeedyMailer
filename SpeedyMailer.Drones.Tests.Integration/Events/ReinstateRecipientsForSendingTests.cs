@@ -89,14 +89,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 									   To = "david@david.com"
 								   });
 
-			DroneActions.Store(new DeliverabilityClassificationRules
-								   {
-									   Rules = new List<HeuristicRule>
-										   {
-											   new HeuristicRule { Condition = "bounced",Type = Classification.HardBounce }
-										   }
-								   });
-
 			FireEvent<ReinstateRecipientsForSending,
 				AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
 					                                           {
@@ -104,7 +96,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 							                                           {
 								                                           Message = "bounced",
 								                                           DomainGroup = "gmail",
-								                                           Recipient = "david@david.com"
+								                                           Recipient = "david@david.com",
+																		   Domain = "david.com",
+																		   Classification = new MailClassfication { Type = Classification.HardBounce}
 							                                           }
 					                                           });
 

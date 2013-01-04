@@ -30,17 +30,12 @@ namespace SpeedyMailer.Drones.Events
 
 		public void Inspect(AggregatedMailBounced data)
 		{
-			UndeliverabilityDecision(data);
-		}
-
-		private void UndeliverabilityDecision<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasClassification, IHasDomain
-		{
 			var domainToUndeliver = data
 				.MailEvents
 				.Where(x => x.DomainGroup == _creativeFragmentSettings.DefaultGroup)
 				.Where(x => x.Classification.Type == Classification.TempBlock)
 				.GroupBy(x => x.Domain)
-				.Select(x => new { x.First().Classification.TimeSpan, Domain = x.Key })
+				.Select(x => new { ((IHasClassification) x.First()).Classification.TimeSpan, Domain = x.Key })
 				.ToList();
 
 

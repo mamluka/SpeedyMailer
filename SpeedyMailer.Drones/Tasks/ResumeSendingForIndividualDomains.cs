@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using NLog;
 using Quartz;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Tasks;
-using SpeedyMailer.Drones.Commands;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Tasks
@@ -25,11 +26,13 @@ namespace SpeedyMailer.Drones.Tasks
 		{
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly EventDispatcher _eventDispatcher;
-			private readonly MarkDomainsAsProcessedCommand _markDomainsAsProcessedCommand;
+			private readonly CreativePackagesStore _creativePackagesStore;
+			private readonly Logger _logger;
 
-			public Job(OmniRecordManager omniRecordManager, EventDispatcher eventDispatcher,MarkDomainsAsProcessedCommand markDomainsAsProcessedCommand)
+			public Job(OmniRecordManager omniRecordManager, EventDispatcher eventDispatcher, CreativePackagesStore creativePackagesStore, Logger logger)
 			{
-				_markDomainsAsProcessedCommand = markDomainsAsProcessedCommand;
+				_logger = logger;
+				_creativePackagesStore = creativePackagesStore;
 				_eventDispatcher = eventDispatcher;
 				_omniRecordManager = omniRecordManager;
 			}
@@ -49,9 +52,17 @@ namespace SpeedyMailer.Drones.Tasks
 				if (!domainToResume.Any())
 					return;
 
-				_markDomainsAsProcessedCommand.Domains = domainToResume;
-				_markDomainsAsProcessedCommand.LoggingLine = "Resuming domains for sending: {0} and resuming sending for packages: {1}";
-				_markDomainsAsProcessedCommand.Execute();
+				var packages = _creativePackagesStore.GetByDomains(domainToResume);
+
+				packages
+					.ToList()
+					.ForEach(x =>
+					{
+						x.Processed = false;
+						_creativePackagesStore.Save(x);
+					});
+
+				_logger.Info("Resuming domains for sending: {0} and resuming sending for packages: {1}", domainToResume.Commafy(), packages.Select(x => x.To).Commafy());
 
 				_eventDispatcher.ExecuteAll(new ResumingGroups { Groups = domainToResume });
 			}

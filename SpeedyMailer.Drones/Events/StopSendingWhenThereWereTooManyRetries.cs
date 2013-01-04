@@ -22,6 +22,9 @@ namespace SpeedyMailer.Drones.Events
 		{
 			var ipReputation = _omniRecordManager.GetSingle<IpReputation>();
 
+			if (ipReputation == null)
+				return;
+
 			var groupsResumedThreeTimes = ipReputation
 				.ResumingHistory
 				.Where(x => x.Value.Count(m => m > DateTime.UtcNow.AddDays(-7)) >= 3)

@@ -90,12 +90,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			DroneActions.StartScheduledTask(task1);
 			Jobs.Drone().WaitForJobToStart(task1);
 
-			StoreClassificationRules(new[]
-				{
-					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
-					new HeuristicRule {Condition = "bad bounce", Type = Classification.TempBlock, Data = new HeuristicData{TimeSpan = TimeSpan.FromHours(2)}}
-				});
-
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
 																			   x.MailEvents = new List<MailBounced>
@@ -104,7 +98,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								                                                                          {
 									                                                                          DomainGroup = "$default$",
 									                                                                          Recipient = "david@somedomain.com",
-									                                                                          Message = "message meaning its a bad bounce"
+									                                                                          Message = "message meaning its a bad bounce",
+																											  Classification = new MailClassfication { Type = Classification.TempBlock }
 								                                                                          }
 						                                                                          };
 																		   });
@@ -171,12 +166,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 			Jobs.Drone().WaitForJobToStart(task1);
 			Jobs.Drone().WaitForJobToStart(task2);
 
-			StoreClassificationRules(new[]
-				{
-					new HeuristicRule {Condition = "account.+?disabled", Type = Classification.HardBounce},
-					new HeuristicRule {Condition = "DNSBL", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(2)}}
-				});
-
 			FireEvent<DeliveryRealTimeDecision, AggregatedMailBounced>(x =>
 																		   {
 																			   x.MailEvents = new List<MailBounced>
@@ -185,7 +174,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								                                                                          {
 									                                                                          DomainGroup = "gmail",
 									                                                                          Recipient = "david@gmail.com",
-									                                                                          Message = "message meaning its a good bounce"
+									                                                                          Message = "message meaning its a good bounce",
+																											  Classification = new MailClassfication { Type = Classification.NotClassified}
+																											  
 								                                                                          }
 						                                                                          };
 																		   });
