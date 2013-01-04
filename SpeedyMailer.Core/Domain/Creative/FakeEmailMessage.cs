@@ -16,7 +16,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public IList<FakeMailAddress> ReplyToList { get; set; }
 		public IList<FakeMailAddress> To { get; set; }
 		public IList<FakeMailAddress> Bcc { get; set; }
-		public IList<FakeMailAddress> CC { get; set; }
+		public IList<FakeMailAddress> Cc { get; set; }
 		public MailPriority Priority { get; set; }
 		public DeliveryNotificationOptions DeliveryNotificationOptions { get; set; }
 		public string Subject { get; set; }

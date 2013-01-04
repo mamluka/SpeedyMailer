@@ -220,14 +220,8 @@ namespace SpeedyMailer.Core.Container
 
 	public class ContainerException : Exception
 	{
-		private string _message;
-		private Type _type;
-
-		public ContainerException(Type type, string message)
-		{
-			_type = type;
-			_message = message;
-		}
+		public ContainerException(Type type, string message):base(message + " for type " + type.FullName)
+		{ }
 	}
 
 	public enum SelectingStrategy

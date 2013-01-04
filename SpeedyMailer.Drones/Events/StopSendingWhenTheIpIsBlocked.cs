@@ -2,39 +2,27 @@
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Utilities.Extentions;
-using SpeedyMailer.Drones.Storage;
+using SpeedyMailer.Drones.Commands;
 
 namespace SpeedyMailer.Drones.Events
 {
 	public class StopSendingWhenTheIpIsBlocked : IHappendOn<AggregatedMailBounced>
 	{
-		private CreativePackagesStore _creativePackagesStore;
+		private readonly MarkDomainsAsProcessedCommand _markDomainsAsProcessedCommand;
 
-		public StopSendingWhenTheIpIsBlocked(CreativePackagesStore creativePackagesStore)
+		public StopSendingWhenTheIpIsBlocked(MarkDomainsAsProcessedCommand markDomainsAsProcessedCommand)
 		{
-			_creativePackagesStore = creativePackagesStore;
+			_markDomainsAsProcessedCommand = markDomainsAsProcessedCommand;
 		}
 
 		public void Inspect(AggregatedMailBounced data)
 		{
 			var domainsToStop = data
 				.MailEvents
-				.Where(x => x.Classification.Type == Classification.IpBlocking)
-				.Where(x => x.Domain.HasValue())
-				.Select(x => x.Domain)
-				.ToList();
+				.GetDomains(Classification.IpBlocking);
 
-			var packages = _creativePackagesStore.GetByDomains(domainsToStop);
-
-			packages
-				.ToList()
-				.ForEach(x =>
-					{
-						x.Processed = true;
-						_creativePackagesStore.Save(x);
-					});
-
-
+			_markDomainsAsProcessedCommand.Domains = domainsToStop;
+			_markDomainsAsProcessedCommand.Execute();
 		}
 	}
 }

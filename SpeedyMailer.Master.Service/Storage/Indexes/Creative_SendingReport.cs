@@ -18,8 +18,8 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
         }
         public Creative_SendingReport()
         {
-            Map = snapshots => snapshots.SelectMany(x => x.MailSent.Select(m => new { CreativeId = m.CreativeId, TotalSends = 1, TotalBounces = 0, TotalDefers = 0 })
-                .Concat(x.MailBounced.Select(m => new { CreativeId = m.CreativeId, TotalSends = 0, TotalBounces = 1, TotalDefers = 0 })),(snapshot, m) => new
+            Map = snapshots => snapshots.SelectMany(x => x.MailSent.Select(m => new {m.CreativeId, TotalSends = 1, TotalBounces = 0, TotalDefers = 0 })
+                .Concat(x.MailBounced.Select(m => new {m.CreativeId, TotalSends = 0, TotalBounces = 1, TotalDefers = 0 })),(snapshot, m) => new
                     {
                         m.CreativeId,
                         m.TotalSends,

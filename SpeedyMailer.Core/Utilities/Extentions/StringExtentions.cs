@@ -34,5 +34,10 @@ namespace SpeedyMailer.Core.Utilities.Extentions
 		{
 			return !string.IsNullOrEmpty(target);
 		}
+
+		public static string Commafy(this IEnumerable<string> target)
+		{
+			return string.Join(",", target.ToList());
+		}
 	}
 }

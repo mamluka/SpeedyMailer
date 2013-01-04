@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 
 namespace SpeedyMailer.Core.Utilities.Extentions
 {
@@ -25,7 +24,7 @@ namespace SpeedyMailer.Core.Utilities.Extentions
             if (size < 1)
                 throw new ArgumentOutOfRangeException("size", "size must be greater than 0");
 
-            return ClumpIterator<T>(source, size);
+            return ClumpIterator(source, size);
         }
 
         private static IEnumerable<IEnumerable<T>> ClumpIterator<T>(IEnumerable<T> source, int size)

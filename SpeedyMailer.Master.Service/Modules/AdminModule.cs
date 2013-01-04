@@ -21,11 +21,7 @@ namespace SpeedyMailer.Master.Service.Modules
 	{
 		public AdminModule(ServiceSettings serviceSettings,
 			IKernel kernel,
-			IDocumentStore documentStore,
-			AddContactsCommand addContactsCommand,
-			CreateListCommand createListCommand,
-			CreateTemplateCommand createTemplateCommand,
-			AddCreativeCommand addCreativeCommand
+			IDocumentStore documentStore
 			)
 			: base("/admin")
 		{

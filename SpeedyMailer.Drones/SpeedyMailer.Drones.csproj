@@ -130,6 +130,7 @@
     <Compile Include="Commands\ClassifyBouncedMailCommand.cs" />
     <Compile Include="Commands\InitializeDroneSettingsCommand.cs" />
     <Compile Include="Commands\MapToCreativePackageCommand.cs" />
+    <Compile Include="Commands\MarkDomainsAsProcessedCommand.cs" />
     <Compile Include="Commands\ParseCreativeIdFromLogsCommand.cs" />
     <Compile Include="Commands\ParseLogsCommand.cs" />
     <Compile Include="Commands\SendCreativePackageCommand.cs" />

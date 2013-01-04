@@ -50,7 +50,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			CreateTemplate();
 			CreateList("my list");
 
-			AddContactsToList("my list", csvRows);
+			AddContactsToList(csvRows);
 			var creativeId = SaveCreative();
 
 			AddClassifictionRulesForBlockedIp("gmail has blocked you");
@@ -103,7 +103,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			CreateTemplate();
 			CreateList("my list");
 
-			AddContactsToList("my list", csvRows);
+			AddContactsToList(csvRows);
 			var creativeId = SaveCreative();
 
 			AddClassifictionRulesForBlockedIp("gmail has blocked you");
@@ -186,7 +186,7 @@ namespace SpeedyMailer.Tests.Acceptance.Sending
 			return string.Format(@"<html><body>this email has a link inside of it <a href="" {0} "" >test link</as>""</body></html>", link);
 		}
 
-		private void AddContactsToList(string listName, IEnumerable<ContactsListCsvRow> csvRows)
+		private void AddContactsToList(IEnumerable<ContactsListCsvRow> csvRows)
 		{
 			var lists = _api.Call<ServiceEndpoints.Lists.GetLists, List<ListDescriptor>>();
 

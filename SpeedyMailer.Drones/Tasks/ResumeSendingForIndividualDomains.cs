@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using NLog;
 using Quartz;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Tasks;
+using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Tasks
@@ -24,15 +24,13 @@ namespace SpeedyMailer.Drones.Tasks
 		public class Job : IJob
 		{
 			private readonly OmniRecordManager _omniRecordManager;
-			private readonly CreativePackagesStore _creativePackagesStore;
-			private readonly Logger _logger;
-			private EventDispatcher _eventDispatcher;
+			private readonly EventDispatcher _eventDispatcher;
+			private readonly MarkDomainsAsProcessedCommand _markDomainsAsProcessedCommand;
 
-			public Job(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, EventDispatcher eventDispatcher, Logger logger)
+			public Job(OmniRecordManager omniRecordManager, EventDispatcher eventDispatcher,MarkDomainsAsProcessedCommand markDomainsAsProcessedCommand)
 			{
+				_markDomainsAsProcessedCommand = markDomainsAsProcessedCommand;
 				_eventDispatcher = eventDispatcher;
-				_logger = logger;
-				_creativePackagesStore = creativePackagesStore;
 				_omniRecordManager = omniRecordManager;
 			}
 
@@ -51,21 +49,11 @@ namespace SpeedyMailer.Drones.Tasks
 				if (!domainToResume.Any())
 					return;
 
+				_markDomainsAsProcessedCommand.Domains = domainToResume;
+				_markDomainsAsProcessedCommand.LoggingLine = "Resuming domains for sending: {0} and resuming sending for packages: {1}";
+				_markDomainsAsProcessedCommand.Execute();
+
 				_eventDispatcher.ExecuteAll(new ResumingGroups { Groups = domainToResume });
-
-				_logger.Info("Resuming domains for sending: {0}", string.Join(",", domainToResume));
-
-				var matchedPackages = _creativePackagesStore.GetByDomains(domainToResume);
-
-				_logger.Info("Resuming sending for packages: {0}", string.Join(",", matchedPackages.Select(x => x.To).ToList()));
-
-				matchedPackages
-					.ToList()
-					.ForEach(x =>
-						{
-							x.Processed = false;
-							_creativePackagesStore.Save(x);
-						});
 			}
 		}
 	}

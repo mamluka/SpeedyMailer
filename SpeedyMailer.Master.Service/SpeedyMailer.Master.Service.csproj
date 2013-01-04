@@ -128,7 +128,6 @@
     <Compile Include="Storage\Indexes\Creative_BouncedEmails.cs" />
     <Compile Include="Storage\Indexes\Creative_SentEmails.cs" />
     <Compile Include="Storage\Indexes\Creative_SendingReport.cs" />
-    <Compile Include="Storage\Indexes\Creative_RawLogs.cs" />
     <Compile Include="Storage\Indexes\Creative_UnsubscribeRequests.cs" />
     <Compile Include="Storage\Indexes\Creative_ClickActions.cs" />
     <Compile Include="Storage\Indexes\Drones_Exceptions.cs" />

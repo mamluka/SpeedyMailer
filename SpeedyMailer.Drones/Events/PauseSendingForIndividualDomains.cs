@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
@@ -12,21 +12,20 @@ namespace SpeedyMailer.Drones.Events
 {
 	public class PauseSendingForIndividualDomains : IHappendOn<AggregatedMailBounced>
 	{
-		private readonly ClassifyNonDeliveredMailCommand _classifyNonDeliveredMailCommand;
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
 		private readonly OmniRecordManager _omniRecordManager;
-		private readonly CreativePackagesStore _creativePackagesStore;
-		private readonly Logger _logger;
 		private readonly EventDispatcher _eventDispatcher;
+		private readonly MarkDomainsAsProcessedCommand _markDomainsAsProcessedCommand;
 
-		public PauseSendingForIndividualDomains(ClassifyNonDeliveredMailCommand classifyNonDeliveredMailCommand, OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, CreativeFragmentSettings creativeFragmentSettings, EventDispatcher eventDispatcher, Logger logger)
+		public PauseSendingForIndividualDomains(OmniRecordManager omniRecordManager,
+			CreativeFragmentSettings creativeFragmentSettings,
+			EventDispatcher eventDispatcher,
+			MarkDomainsAsProcessedCommand markDomainsAsProcessedCommand)
 		{
+			_markDomainsAsProcessedCommand = markDomainsAsProcessedCommand;
 			_eventDispatcher = eventDispatcher;
-			_logger = logger;
-			_creativePackagesStore = creativePackagesStore;
 			_omniRecordManager = omniRecordManager;
 			_creativeFragmentSettings = creativeFragmentSettings;
-			_classifyNonDeliveredMailCommand = classifyNonDeliveredMailCommand;
 		}
 
 		public void Inspect(AggregatedMailBounced data)
@@ -48,21 +47,12 @@ namespace SpeedyMailer.Drones.Events
 			if (!domainToUndeliver.Any())
 				return;
 
-			var groupsAndDomains = domainToUndeliver.Select(x => x.Domain).ToList();
+			var domains = domainToUndeliver.Select(x => x.Domain).ToList();
+			_eventDispatcher.ExecuteAll(new BlockingGroups { Groups = domains });
 
-			_logger.Info("Paused the following domains: {0}", string.Join(",", groupsAndDomains));
-
-			_eventDispatcher.ExecuteAll(new BlockingGroups { Groups = groupsAndDomains });
-
-			var creativePackagesToUndeliver = _creativePackagesStore.GetByDomains(groupsAndDomains);
-
-			_logger.Info("Paused the following packages: {0}", string.Join(",", creativePackagesToUndeliver.Select(x => x.To).ToList()));
-
-			creativePackagesToUndeliver.ToList().ForEach(x =>
-															 {
-																 x.Processed = true;
-																 _creativePackagesStore.Save(x);
-															 });
+			_markDomainsAsProcessedCommand.Domains = domains;
+			_markDomainsAsProcessedCommand.LoggingLine = "Paused the following domains: {0} and paused the following packages: {1}";
+			_markDomainsAsProcessedCommand.Execute();
 
 			var sendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? NewGroupsAndIndividualDomainsSendingPolicies();
 
@@ -76,7 +66,7 @@ namespace SpeedyMailer.Drones.Events
 
 		private static GroupsAndIndividualDomainsSendingPolicies NewGroupsAndIndividualDomainsSendingPolicies()
 		{
-			return new GroupsAndIndividualDomainsSendingPolicies()
+			return new GroupsAndIndividualDomainsSendingPolicies
 				{
 					GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>()
 				};

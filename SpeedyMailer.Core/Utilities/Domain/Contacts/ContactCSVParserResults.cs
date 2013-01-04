@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace SpeedyMailer.Core.Utilities.Domain.Contacts
 {
-    public class ContactCSVParserResults
+    public class ContactCsvParserResults
     {
         public int NumberOfContactsProcessed { get; set; }
         public DateTime TimeOfParsing { get; set; }

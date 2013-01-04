@@ -243,10 +243,8 @@ namespace SpeedyMailer.Master.Service.Tasks
 							 });
 		}
 
-		private void ApplyIntervalRules(IEnumerable<Recipient> recipients, List<IntervalRule> intervalRules)
+		private void ApplyIntervalRules(IEnumerable<Recipient> recipients, IEnumerable<IntervalRule> intervalRules)
 		{
-			using (var session = _documentStore.OpenSession())
-			{
 				var matchingConditionsActions = intervalRules.SelectMany(x => x.Conditons.Select(condition => new { Condition = condition.ToLower(), x.Interval, x.Group })).ToList();
 
 				recipients
@@ -259,7 +257,6 @@ namespace SpeedyMailer.Master.Service.Tasks
 													   x.Interval = action.Interval;
 													   x.Group = action.Group;
 												   }));
-			}
 		}
 	}
 }

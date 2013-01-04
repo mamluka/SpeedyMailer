@@ -17,7 +17,7 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 		{
 			Map = snapshots => snapshots.SelectMany(x => x.Unclassified.Select(m => new { m.CreativeId, m.DomainGroup, m.Recipient, m.Time, m.Message }), (snapshot, p) => new
 				{
-					CreativeId = p.CreativeId,
+					p.CreativeId,
 					Unclassified = new[] { p }
 				});
 
@@ -27,7 +27,7 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 									   x => new
 										   {
 											   CreativeId = x.Key,
-											   Unclassified = x.SelectMany(m => m.Unclassified).Select(m => new { DomainGroup = m.DomainGroup, Recipient = m.Recipient, Time = m.Time, CreativeId = m.CreativeId, m.Message }),
+											   Unclassified = x.SelectMany(m => m.Unclassified).Select(m => new {m.DomainGroup, m.Recipient, m.Time, m.CreativeId, m.Message }),
 										   });
 		}
 	}

@@ -14,6 +14,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 {
 	public class StopSendingWhenTheContentIsBlockedTests:IntegrationTestBase
 	{
+		public StopSendingWhenTheContentIsBlockedTests() : base(x => x.UseMongo = true)
+		{ }
+
 		[Test]
 		public void Inspect_WhenTheBlockTypeIsIpBlocking_ShouldStopSendingForAllOfTheDomains()
 		{

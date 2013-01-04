@@ -18,7 +18,7 @@ namespace SpeedyMailer.Master.Service.Commands
 	{
 		private readonly IDocumentStore _documentStore;
 		private readonly CreativeFragmentSettings _creativeFragmentSettings;
-		private Logger _logger;
+		private readonly Logger _logger;
 		public IEnumerable<Contact> Contacts { get; set; }
 		public string ListId { get; set; }
 

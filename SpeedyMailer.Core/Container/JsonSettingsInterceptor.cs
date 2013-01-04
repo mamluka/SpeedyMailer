@@ -25,7 +25,7 @@ namespace SpeedyMailer.Core.Container
 
             var persistantSetting = generic.Invoke(jToken, null);
 
-            return jToken != null ? persistantSetting : null;
+	        return persistantSetting;
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
-using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
+using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
@@ -10,13 +10,11 @@ namespace SpeedyMailer.Drones.Events
 	public class StopSendingWhenThereWereTooManyRetries : IHappendOn<ResumingGroups>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
-		private readonly CreativePackagesStore _creativePackagesStore;
-		private Logger _logger;
+		private readonly MarkDomainsAsProcessedCommand _markDomainsAsProcessedCommand;
 
-		public StopSendingWhenThereWereTooManyRetries(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, Logger logger)
+		public StopSendingWhenThereWereTooManyRetries(OmniRecordManager omniRecordManager, MarkDomainsAsProcessedCommand markDomainsAsProcessedCommand)
 		{
-			_logger = logger;
-			_creativePackagesStore = creativePackagesStore;
+			_markDomainsAsProcessedCommand = markDomainsAsProcessedCommand;
 			_omniRecordManager = omniRecordManager;
 		}
 
@@ -30,19 +28,9 @@ namespace SpeedyMailer.Drones.Events
 				.Select(x => x.Key)
 				.ToList();
 
-			var packages = _creativePackagesStore.GetByDomains(groupsResumedThreeTimes);
-
-			_logger.Info("We have marked the folling domains {0} as processed, the actual packages marked are {1}",
-			             string.Join(",", groupsResumedThreeTimes),
-			             string.Join(",", packages.Select(x => x.To)));
-
-			packages
-				.ToList()
-				.ForEach(x =>
-					{
-						x.Processed = true;
-						_creativePackagesStore.Save(x);
-					});
+			_markDomainsAsProcessedCommand.Domains = groupsResumedThreeTimes;
+			_markDomainsAsProcessedCommand.LoggingLine = "We have marked the folling domains {0} as processed, the actual packages marked are {1}";
+			_markDomainsAsProcessedCommand.Execute();
 		}
 	}
 }

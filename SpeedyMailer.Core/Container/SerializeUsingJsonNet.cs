@@ -72,7 +72,7 @@ namespace SpeedyMailer.Core.Container
 
 	public class JsonNetBodyDeserializer : IBodyDeserializer
 	{
-		private readonly JsonSerializer serializer = new JsonSerializer();
+		private readonly JsonSerializer _serializer = new JsonSerializer();
 
 		/// <summary>
 		/// Empty constructor if no converters are needed
@@ -89,7 +89,7 @@ namespace SpeedyMailer.Core.Container
 		{
 			foreach (var converter in converters)
 			{
-				this.serializer.Converters.Add(converter);
+				_serializer.Converters.Add(converter);
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace SpeedyMailer.Core.Container
 		public object Deserialize(string contentType, Stream bodyStream, BindingContext context)
 		{
 			var deserializedObject =
-				this.serializer.Deserialize(new StreamReader(bodyStream), context.DestinationType);
+				_serializer.Deserialize(new StreamReader(bodyStream), context.DestinationType);
 
 			if (context.DestinationType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Except(context.ValidModelProperties).Any())
 			{

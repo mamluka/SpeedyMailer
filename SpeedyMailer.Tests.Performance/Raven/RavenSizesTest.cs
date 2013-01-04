@@ -54,27 +54,6 @@ namespace SpeedyMailer.Tests.Performance.Raven
 		}
 
 		[Test]
-		public void Given_WhenWhen_ShouldExpectedResultdf()
-		{
-			var fixture = new Fixture();
-			var contacts = fixture.CreateMany<Contact>(10).ToList();
-			contacts.ToList().ForEach(x => x.MemberOf = new List<string> { "sex" });
-
-			var documentStore = new DocumentStore { Url = "http://mamluka-pc:4253" };
-			documentStore.Initialize();
-
-			using (var session = documentStore.OpenSession())
-			{
-				contacts.ToList().ForEach(session.Store);
-				session.SaveChanges();
-
-				var q = session.Query<Contact>().Where(x => x.MemberOf.Any(m => m == "sex")).ToList();
-
-			}
-
-		}
-
-		[Test]
 		public void Given_WhenWhen_ShouldExpectedResultdfdd()
 		{
 			var documentStore = new DocumentStore { Url = "http://mamluka-pc:4253" };
