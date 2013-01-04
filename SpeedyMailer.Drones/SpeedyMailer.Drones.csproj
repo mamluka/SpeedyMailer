@@ -142,7 +142,8 @@
     <Compile Include="Events\PauseSendingForIndividualDomains.cs" />
     <Compile Include="Events\ReinstateRecipientsForSending.cs" />
     <Compile Include="Events\RemoveSentPackages.cs" />
-    <Compile Include="Events\StopSendingDomainsThatBlockOurIp.cs" />
+    <Compile Include="Events\StopSendingWhenTheContentIsBlocked.cs" />
+    <Compile Include="Events\StopSendingWhenTheIpIsBlocked.cs" />
     <Compile Include="Events\StoreUnclassifiedMailEvents.cs" />
     <Compile Include="Events\StopSendingWhenThereWereTooManyRetries.cs" />
     <Compile Include="Events\UpdateIpReputation.cs" />

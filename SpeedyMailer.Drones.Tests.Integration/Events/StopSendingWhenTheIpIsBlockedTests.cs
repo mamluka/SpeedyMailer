@@ -12,9 +12,9 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Events
 {
-	public class StopSendingDomainsThatBlockOurIpTests : IntegrationTestBase
+	public class StopSendingWhenTheIpIsBlockedTests : IntegrationTestBase
 	{
-		public StopSendingDomainsThatBlockOurIpTests()
+		public StopSendingWhenTheIpIsBlockedTests()
 			: base(x => x.UseMongo = true)
 		{ }
 
@@ -30,7 +30,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 					CreatePackage("david@notme.com")
 				});
 
-			FireEvent<StopSendingDomainsThatBlockOurIp, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
+			FireEvent<StopSendingWhenTheIpIsBlocked, AggregatedMailBounced>(x => x.MailEvents = new List<MailBounced>
 				{
 					new MailBounced
 						{

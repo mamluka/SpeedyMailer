@@ -6,11 +6,11 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class StopSendingDomainsThatBlockOurIp : IHappendOn<AggregatedMailBounced>
+	public class StopSendingWhenTheIpIsBlocked : IHappendOn<AggregatedMailBounced>
 	{
 		private CreativePackagesStore _creativePackagesStore;
 
-		public StopSendingDomainsThatBlockOurIp(CreativePackagesStore creativePackagesStore)
+		public StopSendingWhenTheIpIsBlocked(CreativePackagesStore creativePackagesStore)
 		{
 			_creativePackagesStore = creativePackagesStore;
 		}

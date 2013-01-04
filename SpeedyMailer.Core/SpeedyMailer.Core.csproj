@@ -198,6 +198,8 @@
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />
     <Compile Include="Domain\Lists\ListDescriptor.cs" />
+    <Compile Include="Domain\Mail\AggregatedMailBounced.cs" />
+    <Compile Include="Domain\Mail\AggregatedMailEvents.cs" />
     <Compile Include="Domain\Mail\BlockingGroups.cs" />
     <Compile Include="Domain\Mail\Dnsbl.cs" />
     <Compile Include="Domain\Mail\DnsnlType.cs" />
@@ -206,7 +208,15 @@
     <Compile Include="Domain\Mail\DroneStateSnapshoot.cs" />
     <Compile Include="Domain\Mail\GenericMailEvent.cs" />
     <Compile Include="Domain\Mail\GroupsAndIndividualDomainsSendingPolicies.cs" />
+    <Compile Include="Domain\Mail\IHasClassification.cs" />
+    <Compile Include="Domain\Mail\IHasCreativeId.cs" />
+    <Compile Include="Domain\Mail\IHasDomain.cs" />
+    <Compile Include="Domain\Mail\IHasDomainGroup.cs" />
+    <Compile Include="Domain\Mail\IHasRecipient.cs" />
+    <Compile Include="Domain\Mail\IHasRelayMessage.cs" />
+    <Compile Include="Domain\Mail\IHasTime.cs" />
     <Compile Include="Domain\Mail\IpReputation.cs" />
+    <Compile Include="Domain\Mail\MailBounced.cs" />
     <Compile Include="Domain\Mail\MailClassfication.cs" />
     <Compile Include="Domain\Mail\MailEvent.cs" />
     <Compile Include="Domain\Mail\MailEventLevel.cs" />
@@ -214,6 +224,7 @@
     <Compile Include="Domain\Mail\MailIdCreativeIdMap.cs" />
     <Compile Include="Domain\Mail\MailLogEntry.cs" />
     <Compile Include="Domain\Mail\AggregatedMailSent.cs" />
+    <Compile Include="Domain\Mail\MailSent.cs" />
     <Compile Include="Domain\Mail\ReducedMailLogEntry.cs" />
     <Compile Include="Domain\Mail\ResumingGroups.cs" />
     <Compile Include="Domain\Mail\UnclassfiedMailEvent.cs" />
