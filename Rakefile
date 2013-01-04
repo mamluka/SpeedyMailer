@@ -28,10 +28,10 @@ namespace :windows do
   DEPLOY_EXE = MASTER_PREDEPLOY_FOLDER + "/Deploy/SpeedyMailer.Master.Deploy.exe"
 
   API_SOLUTION_FILE = "SpeedyMailer.Master.Web.Api/SpeedyMailer.Master.Web.Api.csproj"
-  API_OUTPUT_FOLDER = "Api/"
+  API_OUTPUT_FOLDER = "Api"
 
   APP_FOLDER = "SpeedyMailer.Master.Web.App/static/app"
-  APP_OUTPUT_FOLDER = "App/"
+  APP_OUTPUT_FOLDER = "App"
 
   MASTER_DOMAIN = "xomixfuture.com"
 
@@ -61,7 +61,7 @@ namespace :windows do
     msb.targets [:Rebuild, :ResolveReferences, :_CopyWebApplication]
     msb.properties = {
         :webprojectoutputdir => File.join(MASTER_PREDEPLOY_FOLDER, args[:output_folder]),
-        :outdir => File.join(MASTER_PREDEPLOY_FOLDER, args[:output_folder], "bin")
+        :outdir => File.join(MASTER_PREDEPLOY_FOLDER, args[:output_folder], "bin/")
     }
     msb.solution = args[:solution]
   end
