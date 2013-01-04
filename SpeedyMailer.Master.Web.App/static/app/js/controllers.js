@@ -107,10 +107,10 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
         $scope.Id = deliveryHeuristics[0].Id;
     });
 
-    var rules = $scope.rules;
+    
 
     $scope.addRule = function(condition,type,timespan) {
-        rules.push({
+        $scope.rules.push({
             condition: condition,
             type: type,
             data: {
@@ -120,12 +120,12 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
     };
 
     $scope.removeHardBounces = function (hardBounce) {
-        rules.splice(hardBounce.indexOf(hardBounce), 1);
+        $scope.rules.splice(hardBounce.indexOf(hardBounce), 1);
     };
 
     $scope.saveHeuristics = function () {
         var rule = new deliveryHeuristicsResource({
-            rules: rules,
+            rules: $scope.rules,
             Id: $scope.Id
         });
 
