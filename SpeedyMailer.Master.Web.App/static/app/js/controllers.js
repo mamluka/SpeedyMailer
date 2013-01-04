@@ -109,8 +109,14 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
 
     var rules = $scope.rules;
 
-    $scope.addHardBounce = function (hardBounce) {
-        rules.push(hardBounce);
+    $scope.addRule = function(condition,type,timespan) {
+        rules.push({
+            condition: condition,
+            type: type,
+            data: {
+                TimeSpan: timespan
+            }
+        });
     };
 
     $scope.removeHardBounces = function (hardBounce) {
