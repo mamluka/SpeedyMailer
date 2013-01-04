@@ -45,9 +45,11 @@ namespace SpeedyMailer.Drones.Tasks
 				var data = GetData(context);
 				var creativePackage = _creativePackagesStore.GetPackageForGroup(data.Group);
 
-				if (creativePackage == null)
+				if (StopSendingIfNoCreative(context, creativePackage)) return;
+
+				if (creativePackage.RetryCount >= 3)
 				{
-					this.Stop(context);
+					ProcessPackage(creativePackage);
 					return;
 				}
 
@@ -64,7 +66,23 @@ namespace SpeedyMailer.Drones.Tasks
 					_logger.ErrorException(string.Format("While sending to {0} a exception was thrown", creativePackage.To), ex);
 				}
 
+				ProcessPackage(creativePackage);
+			}
+
+			private bool StopSendingIfNoCreative(IJobExecutionContext context, CreativePackage creativePackage)
+			{
+				if (creativePackage == null)
+				{
+					this.Stop(context);
+					return true;
+				}
+				return false;
+			}
+
+			private void ProcessPackage(CreativePackage creativePackage)
+			{
 				creativePackage.Processed = true;
+				creativePackage.RetryCount++;
 				_creativePackagesStore.Save(creativePackage);
 			}
 		}

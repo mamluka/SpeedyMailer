@@ -27,5 +27,7 @@ namespace SpeedyMailer.Core.Domain.Creative
 	    public string CreativeId { get; set; }
 
 		public DateTime TouchTime { get; set; }
+
+		public int RetryCount { get; set; }
 	}
 }

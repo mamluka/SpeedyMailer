@@ -56,6 +56,71 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenSending_ShouldIncreaseTheRetryCountByOne()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+
+															});
+
+			var creativePackages = new[]
+				                       {
+					                       CreatePackage("david@gmail.com", "gmail"), 
+				                       };
+
+			DroneActions.StoreCollection(creativePackages);
+
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
+
+			DroneActions.StartScheduledTask(task);
+
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x=> x.RetryCount == 1);
+		}
+		
+		[Test]
+		public void Execute_WhenPackageWasAlreadySentThreeTimes_ShouldSetThePackageAndProcessedAndNotSendIt()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
+
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+
+															});
+
+			var creativePackages = new[]
+				                       {
+					                       CreatePackage("david@gmail.com", "gmail"), 
+				                       };
+
+			creativePackages[0].RetryCount = 3;
+
+			DroneActions.StoreCollection(creativePackages);
+
+			var task = new SendCreativePackagesWithIntervalTask(x =>
+																	{
+																		x.Group = "gmail";
+																	},
+																x => x.WithIntervalInSeconds(5).RepeatForever()
+				);
+
+			DroneActions.StartScheduledTask(task);
+
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x=> x.Processed);
+			Email.AssertEmailNotSent(new[] {"david@gmail.com"});
+		}
+
+		[Test]
 		public void Execute_WhenThereIsATaskThatWasRecentlyTouched_ShouldSendItLast()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
