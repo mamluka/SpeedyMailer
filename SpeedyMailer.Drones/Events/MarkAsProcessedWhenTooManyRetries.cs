@@ -1,18 +1,21 @@
 ﻿using System;
 using System.Linq;
+using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
 using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class TurnIntoBouncedEmail : IHappendOn<ResumingGroups>
+	public class MarkAsProcessedWhenTooManyRetries : IHappendOn<ResumingGroups>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
-		private CreativePackagesStore _creativePackagesStore;
+		private readonly CreativePackagesStore _creativePackagesStore;
+		private Logger _logger;
 
-		public TurnIntoBouncedEmail(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore)
+		public MarkAsProcessedWhenTooManyRetries(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, Logger logger)
 		{
+			_logger = logger;
 			_creativePackagesStore = creativePackagesStore;
 			_omniRecordManager = omniRecordManager;
 		}
@@ -28,6 +31,11 @@ namespace SpeedyMailer.Drones.Events
 				.ToList();
 
 			var packages = _creativePackagesStore.GetByDomains(groupsResumedThreeTimes);
+
+			_logger.Info("We have marked the folling domains {0} as processed, the actual packages marked are {1}",
+			             string.Join(",", groupsResumedThreeTimes),
+			             string.Join(",", packages.Select(x => x.To)));
+
 			packages
 				.ToList()
 				.ForEach(x =>

@@ -12,9 +12,9 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Events
 {
-	public class MarkAsProcessedWhenTooManyRetries:IntegrationTestBase
+	public class MarkAsProcessedWhenTooManyRetriesTests:IntegrationTestBase
 	{
-		public MarkAsProcessedWhenTooManyRetries():base(x=> x.UseMongo = true)
+		public MarkAsProcessedWhenTooManyRetriesTests():base(x=> x.UseMongo = true)
 		{ }
 
 
@@ -41,7 +41,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						}
 				});
 			
-			FireEvent<TurnIntoBouncedEmail, ResumingGroups>(x =>
+			FireEvent<MarkAsProcessedWhenTooManyRetries, ResumingGroups>(x =>
 			                                                x.Groups = new List<string>
 				                                                {
 																	"gmail"
@@ -75,7 +75,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						}
 				});
 			
-			FireEvent<TurnIntoBouncedEmail, ResumingGroups>(x =>
+			FireEvent<MarkAsProcessedWhenTooManyRetries, ResumingGroups>(x =>
 			                                                x.Groups = new List<string>
 				                                                {
 																	"gmail"

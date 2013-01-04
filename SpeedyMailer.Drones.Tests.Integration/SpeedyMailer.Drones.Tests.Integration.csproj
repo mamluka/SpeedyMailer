@@ -131,7 +131,7 @@
     <Compile Include="Events\ReinstateRecipientsForSendingTests.cs" />
     <Compile Include="Events\RemoveSentPackagesTests.cs" />
     <Compile Include="Events\StoreUnclassifiedMailEventsTests.cs" />
-    <Compile Include="Events\MarkAsProcessedWhenTooManyRetries.cs" />
+    <Compile Include="Events\MarkAsProcessedWhenTooManyRetriesTests.cs" />
     <Compile Include="Events\UpdateIpReputationTests.cs" />
     <Compile Include="Modules\DealsModuleTests.cs" />
     <Compile Include="Modules\ListsModuleTests.cs" />
