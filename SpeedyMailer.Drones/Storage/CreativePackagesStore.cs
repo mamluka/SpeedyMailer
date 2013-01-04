@@ -24,7 +24,7 @@ namespace SpeedyMailer.Drones.Storage
 		{
 			return Find(Query.EQ(PropertyName(x => x.Group), group)
 							 .And(Query.EQ(PropertyName(x => x.Processed), false))
-							 ,SortBy.Ascending(PropertyName(x => x.TouchTime)))
+							 , SortBy.Ascending(PropertyName(x => x.TouchTime)))
 							 .FirstOrDefault();
 
 		}
@@ -63,6 +63,10 @@ namespace SpeedyMailer.Drones.Storage
 		{
 			if (!domains.Any())
 				return new CreativePackage[0];
+
+			domains = domains
+				.Select(domain => "@" + domain)
+				.ToList();
 
 			return Find(Query.Matches(PropertyName(x => x.To), new BsonRegularExpression(string.Join("|", domains)))).ToList();
 		}

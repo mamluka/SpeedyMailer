@@ -26,7 +26,7 @@ namespace SpeedyMailer.Drones.Events
 		{
 			var mails = data
 				.MailEvents
-				.Where(x => x.Type.Classification == Classification.NotClassified)
+				.Where(x => x.Classification.Type == Classification.NotClassified)
 				.Select(x => x.Recipient);
 
 

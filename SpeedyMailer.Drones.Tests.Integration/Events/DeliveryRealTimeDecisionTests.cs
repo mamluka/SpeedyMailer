@@ -60,7 +60,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 									DomainGroup = "gmail",
 									Recipient = "david@gmail.com",
 									Message = "message meaning its a bad bounce",
-									Type = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+									Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
 								}
 						};
 				});
@@ -244,7 +244,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 									DomainGroup = "gmail",
 									Recipient = "david@gmail.com",
 									Message = "message meaning its a bad bounce",
-									Type = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+									Classification = new MailClassfication {Type = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
 								}
 						};
 				});

@@ -12,11 +12,10 @@ using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Events
 {
-	public class MarkAsProcessedWhenTooManyRetriesTests:IntegrationTestBase
+	public class StopSendingWhenThereWereTooManyRetriesTests:IntegrationTestBase
 	{
-		public MarkAsProcessedWhenTooManyRetriesTests():base(x=> x.UseMongo = true)
+		public StopSendingWhenThereWereTooManyRetriesTests():base(x=> x.UseMongo = true)
 		{ }
-
 
 		[Test]
 		public void Inspect_WhenGroupWasResumedThreeTimesInTheLastWeek_ShouldTurnThatDomainToProcessed()
@@ -41,7 +40,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						}
 				});
 			
-			FireEvent<MarkAsProcessedWhenTooManyRetries, ResumingGroups>(x =>
+			FireEvent<StopSendingWhenThereWereTooManyRetries, ResumingGroups>(x =>
 			                                                x.Groups = new List<string>
 				                                                {
 																	"gmail"
@@ -75,7 +74,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 						}
 				});
 			
-			FireEvent<MarkAsProcessedWhenTooManyRetries, ResumingGroups>(x =>
+			FireEvent<StopSendingWhenThereWereTooManyRetries, ResumingGroups>(x =>
 			                                                x.Groups = new List<string>
 				                                                {
 																	"gmail"

@@ -147,7 +147,7 @@ namespace SpeedyMailer.Drones.Tasks
 							   Message = x.RelayMessage,
 							   CreativeId = x.CreaiveId,
 							   Domain = x.Recipient.GetDomain(),
-							   Type = Classify(x)
+							   Classification = Classify(x)
 						   };
 			}
 

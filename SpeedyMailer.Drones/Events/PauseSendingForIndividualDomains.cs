@@ -34,14 +34,14 @@ namespace SpeedyMailer.Drones.Events
 			UndeliverabilityDecision(data);
 		}
 
-		private void UndeliverabilityDecision<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRecipient, IHasRelayMessage,IHasClassification,IHasDomain
+		private void UndeliverabilityDecision<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasClassification, IHasDomain
 		{
 			var domainToUndeliver = data
 				.MailEvents
 				.Where(x => x.DomainGroup == _creativeFragmentSettings.DefaultGroup)
-				.Where(x => x.Type.Classification == Classification.TempBlock)
+				.Where(x => x.Classification.Type == Classification.TempBlock)
 				.GroupBy(x => x.Domain)
-				.Select(x => new { x.First().Type.TimeSpan, Domain = x.Key })
+				.Select(x => new { x.First().Classification.TimeSpan, Domain = x.Key })
 				.ToList();
 
 
@@ -68,7 +68,7 @@ namespace SpeedyMailer.Drones.Events
 
 			domainToUndeliver.ForEach(x =>
 				{
-					sendingPolicies.GroupSendingPolicies[x.Domain] = new ResumeSendingPolicy { ResumeAt = DateTime.UtcNow + x.Time };
+					sendingPolicies.GroupSendingPolicies[x.Domain] = new ResumeSendingPolicy { ResumeAt = DateTime.UtcNow + x.TimeSpan };
 				});
 
 			_omniRecordManager.UpdateOrInsert(sendingPolicies);

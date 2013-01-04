@@ -24,7 +24,7 @@ namespace SpeedyMailer.Drones.Commands
 			var heuristics = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>();
 
 			if (heuristics == null)
-				return new MailClassfication { Classification = Classification.NotClassified };
+				return new MailClassfication { Type = Classification.NotClassified };
 
 			var rules = heuristics
 				.Rules
@@ -32,7 +32,7 @@ namespace SpeedyMailer.Drones.Commands
 
 			var matchedRule = rules.FirstOrDefault(x => Regex.Match(Message, x.Condition, RegexOptions.IgnoreCase).Success);
 
-			return matchedRule != null ? new MailClassfication { Classification = matchedRule.Type, TimeSpan = matchedRule.Data != null ? matchedRule.Data.TimeSpan : default(TimeSpan) } : new MailClassfication { Classification = Classification.NotClassified };
+			return matchedRule != null ? new MailClassfication { Type = matchedRule.Type, TimeSpan = matchedRule.Data != null ? matchedRule.Data.TimeSpan : default(TimeSpan) } : new MailClassfication { Type = Classification.NotClassified };
 		}
 	}
 }

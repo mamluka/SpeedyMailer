@@ -7,13 +7,13 @@ using SpeedyMailer.Drones.Storage;
 
 namespace SpeedyMailer.Drones.Events
 {
-	public class MarkAsProcessedWhenTooManyRetries : IHappendOn<ResumingGroups>
+	public class StopSendingWhenThereWereTooManyRetries : IHappendOn<ResumingGroups>
 	{
 		private readonly OmniRecordManager _omniRecordManager;
 		private readonly CreativePackagesStore _creativePackagesStore;
 		private Logger _logger;
 
-		public MarkAsProcessedWhenTooManyRetries(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, Logger logger)
+		public StopSendingWhenThereWereTooManyRetries(OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore, Logger logger)
 		{
 			_logger = logger;
 			_creativePackagesStore = creativePackagesStore;

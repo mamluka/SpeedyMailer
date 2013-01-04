@@ -59,7 +59,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 
 		public string Domain { get; set; }
 
-		public MailClassfication Type { get; set; }
+		public MailClassfication Classification { get; set; }
 	}
 
 
@@ -70,12 +70,12 @@ namespace SpeedyMailer.Core.Domain.Mail
 	
 	public interface IHasClassification
 	{
-		MailClassfication Type { get; set; }
+		MailClassfication Classification { get; set; }
 	}
 
 	public interface IHasDomain
 	{
-		public string Domain { get; set; }
+		string Domain { get; set; }
 	}
 
 	public interface IHasRecipient

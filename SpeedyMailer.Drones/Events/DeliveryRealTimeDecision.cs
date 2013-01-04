@@ -34,7 +34,7 @@ namespace SpeedyMailer.Drones.Events
 		{
 			var bouncesGroups = data
 				.MailEvents
-				.Where(x => x.Type.Classification == Classification.TempBlock)
+				.Where(x => x.Classification.Type == Classification.TempBlock)
 				.Where(x => ValidDomainGroupsForPausing(x.DomainGroup))
 				.ToList();
 
@@ -54,7 +54,7 @@ namespace SpeedyMailer.Drones.Events
 
 											 groupsSendingPolicies.GroupSendingPolicies[x.DomainGroup] = new ResumeSendingPolicy
 																								{
-																									ResumeAt = DateTime.UtcNow + x.Type.TimeSpan
+																									ResumeAt = DateTime.UtcNow + x.Classification.TimeSpan
 																								};
 										 });
 

@@ -33,7 +33,7 @@ namespace SpeedyMailer.Drones.Tasks
 			{
 				var result = _api.Call<ServiceEndpoints.Heuristics.GetDeliveryRules, DeliverabilityClassificationRules>();
 
-				if (result == null)
+				if (_api.ResponseStatus.DidAnErrorOccur())
 					return;
 
 				var rules = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();

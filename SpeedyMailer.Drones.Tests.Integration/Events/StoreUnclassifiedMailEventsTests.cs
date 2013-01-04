@@ -31,7 +31,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 							CreativeId = "creative/1",
 							DomainGroup = "gmail",
 							Recipient = "david@gmail.com",
-							Type = new MailClassfication {Classification = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
 						}
 				});
 
@@ -62,7 +62,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 							CreativeId = "creative/1",
 							DomainGroup = "gmail",
 							Recipient = "david@gmail.com",
-							Type = new MailClassfication {Classification = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+							Classification = new MailClassfication {Type = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
 						}
 				});
 

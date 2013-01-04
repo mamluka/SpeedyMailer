@@ -387,7 +387,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var result = DroneActions.FindAll<MailBounced>().First();
 
-			result.Type.Classification.Should().Be(Classification.HardBounce);
+			result.Classification.Type.Should().Be(Classification.HardBounce);
 		}
 
 		[Test]

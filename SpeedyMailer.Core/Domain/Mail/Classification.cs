@@ -4,6 +4,8 @@ namespace SpeedyMailer.Core.Domain.Mail
 	{
 		NotClassified,
 		HardBounce,
-		TempBlock
+		TempBlock,
+		IpBlocking,
+		ContentBlocking
 	}
 }

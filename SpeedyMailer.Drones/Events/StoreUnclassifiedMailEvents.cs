@@ -27,7 +27,7 @@ namespace SpeedyMailer.Drones.Events
 		{
 			var unclassified = data
 				.MailEvents
-				.Where(x => x.Type.Classification == Classification.NotClassified)
+				.Where(x => x.Classification.Type == Classification.NotClassified)
 				.Select(x => new UnclassfiedMailEvent
 					{
 						CreativeId = x.CreativeId,

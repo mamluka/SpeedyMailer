@@ -24,5 +24,15 @@ namespace SpeedyMailer.Core.Utilities.Extentions
 		{
 			return Regex.Match(target, "@(.+?)$").Groups[1].Value;
 		}
+
+		public static bool IsEmpty(this string target)
+		{
+			return string.IsNullOrEmpty(target);
+		}
+
+		public static bool HasValue(this string target)
+		{
+			return !string.IsNullOrEmpty(target);
+		}
 	}
 }
