@@ -20,7 +20,7 @@ namespace SpeedyMailer.Drones.Events
 
 		public void Inspect(ResumingGroups data)
 		{
-			var ipReputation = _omniRecordManager.GetSingle<IpReputation>();
+			var ipReputation = _omniRecordManager.Load<IpReputation>();
 
 			if (ipReputation == null)
 				return;

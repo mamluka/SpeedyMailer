@@ -26,7 +26,7 @@ namespace SpeedyMailer.Drones.Storage
 
         public IList<MailLogEntry> GetUnprocessedLogs()
         {
-            var last = _omniRecordManager.GetSingle<LastProcessedLog>();
+            var last = _omniRecordManager.Load<LastProcessedLog>();
 
             if (last == null)
                 return Find(Query.EQ("level", "INFO"), SortBy.Ascending("time"))
@@ -40,7 +40,7 @@ namespace SpeedyMailer.Drones.Storage
 
         public IList<MailLogEntry> GetProcessedLogs()
         {
-            var last = _omniRecordManager.GetSingle<LastProcessedLog>();
+            var last = _omniRecordManager.Load<LastProcessedLog>();
 
             if (last == null)
                 return new MailLogEntry[0];
@@ -56,7 +56,7 @@ namespace SpeedyMailer.Drones.Storage
 
         public void MarkProcessedFrom(DateTime from)
         {
-            var last = _omniRecordManager.GetSingle<LastProcessedLog>() ?? new LastProcessedLog();
+            var last = _omniRecordManager.Load<LastProcessedLog>() ?? new LastProcessedLog();
 
             last.Time = from;
 
@@ -67,7 +67,7 @@ namespace SpeedyMailer.Drones.Storage
 
         public void DeleteProcessedLogs()
         {
-            var last = _omniRecordManager.GetSingle<LastProcessedLog>();
+            var last = _omniRecordManager.Load<LastProcessedLog>();
 
             if (last == null)
                 return;
@@ -78,7 +78,7 @@ namespace SpeedyMailer.Drones.Storage
 
     public class LastProcessedLog
     {
-        [BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
+		[BsonId(IdGenerator = typeof(TypeNameIdGenerator))]
         public virtual string Id { get; set; }
 
         public DateTime Time { get; set; }

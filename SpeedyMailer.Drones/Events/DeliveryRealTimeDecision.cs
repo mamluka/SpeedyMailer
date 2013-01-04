@@ -43,7 +43,7 @@ namespace SpeedyMailer.Drones.Events
 
 			_logger.Info("Paused the following domains: {0}", string.Join(",", bouncesGroups.Select(x => x.DomainGroup).ToList()));
 
-			var groupsSendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? new GroupsAndIndividualDomainsSendingPolicies();
+			var groupsSendingPolicies = _omniRecordManager.Load<GroupsAndIndividualDomainsSendingPolicies>() ?? new GroupsAndIndividualDomainsSendingPolicies();
 
 			groupsSendingPolicies.GroupSendingPolicies = groupsSendingPolicies.GroupSendingPolicies ?? new Dictionary<string, ResumeSendingPolicy>();
 

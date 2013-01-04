@@ -156,6 +156,7 @@
     <Compile Include="Storage\IntervalRulesStore.cs" />
     <Compile Include="Storage\LogsStore.cs" />
     <Compile Include="Storage\OmniRecordManager.cs" />
+    <Compile Include="Tasks\AddIndexesToMongoTask.cs" />
     <Compile Include="Tasks\AnalyzePostfixLogsTask.cs" />
     <Compile Include="Tasks\BroadcastDroneToServiceTask.cs" />
     <Compile Include="DroneHost.cs" />

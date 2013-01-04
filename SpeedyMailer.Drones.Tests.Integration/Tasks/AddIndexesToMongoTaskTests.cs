@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using FluentAssertions;
 using NUnit.Framework;
-using Quartz;
 using SpeedyMailer.Core.Domain.Creative;
-using SpeedyMailer.Core.Tasks;
-using SpeedyMailer.Drones.Storage;
+using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Drones.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;
 
 namespace SpeedyMailer.Drones.Tests.Integration.Tasks
@@ -20,35 +20,17 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenExecuted_ShouldWriteTheCreativePackagesIndexes()
 		{
-			var tasl = new AddIndexesToMongoTask();
-		}
-	}
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
-	public class AddIndexesToMongoTask : ScheduledTask
-	{
-		public override IJobDetail ConfigureJob()
-		{
-			return SimpleJob<Job>();
-		}
+			var task = new AddIndexesToMongoTask();
 
-		public override ITrigger ConfigureTrigger()
-		{
-			return TriggerWithTimeCondition(x => x.WithRepeatCount(1));
-		}
+			DroneActions.StartScheduledTask(task);
 
-		public class Job : IJob
-		{
-			private readonly OmniRecordManager _omniRecordManager;
+			DroneActions.WaitForIndexesToExist();
 
-			public Job(OmniRecordManager omniRecordManager)
-			{
-				_omniRecordManager = omniRecordManager;
-			}
+			var result = DroneActions.GetIndexes();
 
-			public void Execute(IJobExecutionContext context)
-			{
-				_omniRecordManager.EnsureIndex<CreativePackage>(x => x.Group, x => x.Processed);
-			}
+			result.Should().BeEquivalentTo(new[] { "_id_", "CreativePackage_Group_Processed", "CreativePackage_Processed", "CreativePackage_To" });
 		}
 	}
 }

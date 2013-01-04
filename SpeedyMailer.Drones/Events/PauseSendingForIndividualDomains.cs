@@ -49,7 +49,7 @@ namespace SpeedyMailer.Drones.Events
 			_markDomainsAsProcessedCommand.LoggingLine = "Paused the following domains: {0} and paused the following packages: {1}";
 			_markDomainsAsProcessedCommand.Execute();
 
-			var sendingPolicies = _omniRecordManager.GetSingle<GroupsAndIndividualDomainsSendingPolicies>() ?? NewGroupsAndIndividualDomainsSendingPolicies();
+			var sendingPolicies = _omniRecordManager.Load<GroupsAndIndividualDomainsSendingPolicies>() ?? NewGroupsAndIndividualDomainsSendingPolicies();
 
 			domainToUndeliver.ForEach(x =>
 				{

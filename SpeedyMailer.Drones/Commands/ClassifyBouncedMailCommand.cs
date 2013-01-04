@@ -21,7 +21,7 @@ namespace SpeedyMailer.Drones.Commands
 
 		public override MailClassfication Execute()
 		{
-			var heuristics = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>();
+			var heuristics = _omniRecordManager.Load<DeliverabilityClassificationRules>();
 
 			if (heuristics == null)
 				return new MailClassfication { Type = Classification.NotClassified };

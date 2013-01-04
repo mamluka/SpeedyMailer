@@ -36,7 +36,7 @@ namespace SpeedyMailer.Drones.Tasks
 				if (_api.ResponseStatus.DidAnErrorOccur())
 					return;
 
-				var rules = _omniRecordManager.GetSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
+				var rules = _omniRecordManager.Load<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
 				rules.Rules = result.Rules;
 
 				_omniRecordManager.UpdateOrInsert(result);

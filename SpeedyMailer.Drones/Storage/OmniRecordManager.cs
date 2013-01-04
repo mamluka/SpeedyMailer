@@ -6,6 +6,7 @@ using MongoDB.Driver;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.Wrappers;
 using Mongol;
+using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Drones.Storage
@@ -32,10 +33,10 @@ namespace SpeedyMailer.Drones.Storage
 			specificRecordManager.Save(record);
 		}
 
-		public T GetSingle<T>() where T : class
+		public T Load<T>() where T : class
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
-			return specificRecordManager.AsQueryable.FirstOrDefault();
+			return specificRecordManager.GetById(typeof (T).FullName);
 		}
 
 		public IList<T> GetAll<T>() where T : class
@@ -56,10 +57,33 @@ namespace SpeedyMailer.Drones.Storage
 			specificRecordManager.Collection.Drop();
 		}
 
-		public void EnsureIndex<T>(params Expression<Func<T,object>>[] keys) where T : class
+		public void EnsureIndex<T>(params Expression<Func<T, object>>[] expression) where T : class
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
-			specificRecordManager.Collection.EnsureIndex(new IndexKeysDocument());
+			var indexKeysDocument = new IndexKeysBuilder();
+
+			var objectExpressions = expression
+				.Select(x => x.Body as MemberExpression)
+				.Where(x => x != null)
+				.Select(x => x.Member.Name)
+				.ToArray();
+
+			var valueExpressions = expression
+				.Select(x => x.Body as UnaryExpression)
+				.Where(x => x != null)
+				.Select(x => x.Operand as MemberExpression)
+				.Where(x => x != null)
+				.Select(x => x.Member.Name)
+				.ToArray();
+
+			var keys = objectExpressions.Concat(valueExpressions).ToArray();
+
+			indexKeysDocument.Ascending(keys);
+
+			var indexOptionsBuilder = new IndexOptionsBuilder();
+			indexOptionsBuilder.SetName(string.Format("{0}_{1}", typeof(T).Name, string.Join("_", keys)));
+
+			specificRecordManager.Collection.EnsureIndex(indexKeysDocument, indexOptionsBuilder);
 		}
 	}
 }

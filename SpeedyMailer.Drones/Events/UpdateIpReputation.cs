@@ -28,7 +28,7 @@ namespace SpeedyMailer.Drones.Events
 
 		private void UpdateReputation(IEnumerable<string> groups, Func<IpReputation, IDictionary<string, List<DateTime>>> selector)
 		{
-			var ipReputation = _omniRecordManager.GetSingle<IpReputation>() ?? NewIpReputation();
+			var ipReputation = _omniRecordManager.Load<IpReputation>() ?? NewIpReputation();
 
 			groups
 			.ToList()

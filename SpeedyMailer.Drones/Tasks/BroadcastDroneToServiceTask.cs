@@ -47,7 +47,7 @@ namespace SpeedyMailer.Drones.Tasks
 						x.BaseUrl = _droneSettings.BaseUrl;
 						x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 						x.Domain = _droneSettings.Domain;
-						x.IpReputation = _omniRecordManager.GetSingle<IpReputation>();
+						x.IpReputation = _omniRecordManager.Load<IpReputation>();
 						x.Exceptions =
 							_omniRecordManager.GetAll<DroneExceptionLogEntry>()
 							                  .Select(entry => new DroneException {Component = entry.component, Time = entry.time, Message = entry.message, Exception = entry.exception})
