@@ -103,7 +103,7 @@ PlaygroundController.$inject = ['$scope', 'List'];
 function HeuristicsController($scope, deliveryHeuristicsResource) {
 
     var deliveryHeuristics = deliveryHeuristicsResource.query(function () {
-        $scope.rules = deliveryHeuristics[0].rules || [];
+        $scope.rules = deliveryHeuristics[0].Rules || [];
         $scope.Id = deliveryHeuristics[0].Id;
     });
 
