@@ -6,13 +6,10 @@ using MongoDB.Bson.Serialization.IdGenerators;
 namespace SpeedyMailer.Core.Domain.Mail
 {
 	public class AggregatedMailSent : AggregatedMailEvents<MailSent>
-	{
-
-	}
+	{ }
 
 	public class AggregatedMailBounced : AggregatedMailEvents<MailBounced>
-	{
-	}
+	{ }
 
 	public class MailSent : IHasDomainGroup, IHasRecipient
 	{
@@ -48,7 +45,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		public string Domain { get; set; }
 	}
 
-	public class MailBounced : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasTime, IHasCreativeId, IHasClassification
+	public class MailBounced : IHasDomainGroup, IHasRecipient, IHasRelayMessage, IHasTime, IHasCreativeId, IHasClassification,IHasDomain
 	{
 		[BsonId(IdGenerator = typeof(StringObjectIdGenerator))]
 		public virtual string Id { get; set; }
@@ -62,7 +59,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 
 		public string Domain { get; set; }
 
-		public MailClassfication Classification { get; set; }
+		public MailClassfication Type { get; set; }
 	}
 
 
@@ -73,7 +70,12 @@ namespace SpeedyMailer.Core.Domain.Mail
 	
 	public interface IHasClassification
 	{
-		MailClassfication Classification { get; set; }
+		MailClassfication Type { get; set; }
+	}
+
+	public interface IHasDomain
+	{
+		public string Domain { get; set; }
 	}
 
 	public interface IHasRecipient

@@ -61,6 +61,9 @@ namespace SpeedyMailer.Drones.Storage
 
 		public IList<CreativePackage> GetByDomains(IList<string> domains)
 		{
+			if (!domains.Any())
+				return new CreativePackage[0];
+
 			return Find(Query.Matches(PropertyName(x => x.To), new BsonRegularExpression(string.Join("|", domains)))).ToList();
 		}
 	}

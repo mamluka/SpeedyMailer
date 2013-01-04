@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using NLog;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Evens;
@@ -35,23 +34,14 @@ namespace SpeedyMailer.Drones.Events
 			UndeliverabilityDecision(data);
 		}
 
-		private void UndeliverabilityDecision<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRecipient, IHasRelayMessage
+		private void UndeliverabilityDecision<T>(AggregatedMailEvents<T> data) where T : IHasDomainGroup, IHasRecipient, IHasRelayMessage,IHasClassification,IHasDomain
 		{
 			var domainToUndeliver = data
 				.MailEvents
 				.Where(x => x.DomainGroup == _creativeFragmentSettings.DefaultGroup)
-				.Select(x =>
-					{
-						_classifyNonDeliveredMailCommand.Message = x.Message;
-						var mailClassfication = _classifyNonDeliveredMailCommand.Execute();
-
-						return new { BounceType = mailClassfication.Classification, Time = mailClassfication.TimeSpan, x.Recipient };
-					})
-				.Where(x => x.BounceType == Classification.TempBlock)
-				.Select(x => new { x.Time, Domain = GetDomain(x.Recipient) })
-				.Where(x => !string.IsNullOrEmpty(x.Domain))
+				.Where(x => x.Type.Classification == Classification.TempBlock)
 				.GroupBy(x => x.Domain)
-				.Select(x => new { x.First().Time, Domain = x.Key })
+				.Select(x => new { x.First().Type.TimeSpan, Domain = x.Key })
 				.ToList();
 
 
@@ -90,11 +80,6 @@ namespace SpeedyMailer.Drones.Events
 				{
 					GroupSendingPolicies = new Dictionary<string, ResumeSendingPolicy>()
 				};
-		}
-
-		private string GetDomain(string to)
-		{
-			return Regex.Match(to, "@(.+?)$").Groups[1].Value;
 		}
 	}
 }

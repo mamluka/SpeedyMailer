@@ -35,7 +35,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								Message = "bounced that blocked",
 								DomainGroup = "gmail",
 								Recipient = "david@david.com",
-								Classification = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
+								Type = new MailClassfication {Classification = Classification.TempBlock, TimeSpan = TimeSpan.FromHours(2)}
 							}
 					});
 
@@ -66,7 +66,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Events
 								                                           Message = "bounced that blocked",
 								                                           DomainGroup = "gmail",
 								                                           Recipient = "david@david.com",
-																		   Classification = new MailClassfication {Classification = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
+																		   Type = new MailClassfication {Classification = Classification.NotClassified, TimeSpan = TimeSpan.FromHours(2)}
 							                                           }
 					                                           });
 
