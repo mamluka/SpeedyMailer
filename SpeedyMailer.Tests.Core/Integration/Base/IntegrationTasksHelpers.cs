@@ -18,7 +18,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			_integrationStoreHelpers = integrationStoreHelpers;
 		}
 
-		public void WaitForTaskToComplete(string taskId, int secondsToWait = 30)
+		public void WaitForTaskToComplete(string taskId, int secondsToWait = 5)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>

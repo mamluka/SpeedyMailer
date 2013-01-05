@@ -7,6 +7,7 @@ using System.Threading;
 using EqualityComparer;
 using Raven.Client;
 using Raven.Client.Indexes;
+using SpeedyMailer.Core.Storage;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Master.Service.Storage.Indexes;
 
@@ -26,6 +27,15 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			using (var session = _documentStore.OpenSession())
 			{
 				session.Store(item);
+				session.SaveChanges();
+			}
+		}
+		
+		public void StoreSingle(IHasId item)
+		{
+			using (var session = _documentStore.OpenSession())
+			{
+				session.StoreSingle(item);
 				session.SaveChanges();
 			}
 		}
@@ -100,7 +110,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 		}
 
 
-		public void WaitForEntityToExist(string entityId, int secondsToWait = 30)
+		public void WaitForEntityToExist(string entityId, int secondsToWait = 5)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
@@ -110,7 +120,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			WaitForStoreWithFunction(condition);
 		}
 
-		public void WaitForEntitiesToExist<T>(int numberOfEntities = 1, int secondsToWait = 30)
+		public void WaitForEntitiesToExist<T>(int numberOfEntities = 1, int secondsToWait = 5)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>
@@ -119,7 +129,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 			WaitForStoreWithFunction(condition);
 		}
-		protected void WaitForEntityToExist<T>(Func<T, bool> whereCondition, int count = 1, int secondsToWait = 30)
+		protected void WaitForEntityToExist<T>(Func<T, bool> whereCondition, int count = 1, int secondsToWait = 5)
 		{
 			Func<IDocumentSession, Stopwatch, bool> condition =
 				(session, stopwatch) =>

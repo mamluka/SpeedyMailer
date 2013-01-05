@@ -188,7 +188,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			return manager.AsQueryable.FirstOrDefault();
 		}
 
-		public void WaitForChangeOnStoredObject<T>(Func<T, bool> func, int waitFor = 30) where T : class
+		public void WaitForChangeOnStoredObject<T>(Func<T, bool> func, int waitFor = 5) where T : class
 		{
 			var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, null);
 			var st = new Stopwatch();
@@ -204,7 +204,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			st.Stop();
 		}
 
-		public void WaitForChangeOnStoredObject<T>(Func<T, bool> condition, Func<T, bool> func, int waitFor = 30) where T : class
+		public void WaitForChangeOnStoredObject<T>(Func<T, bool> condition, Func<T, bool> func, int waitFor = 5) where T : class
 		{
 			var manager = new GenericRecordManager<T>(Kernel.Get<DroneSettings>().StoreHostname, null);
 			var st = new Stopwatch();

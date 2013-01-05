@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			Store.Store(new DeliverabilityClassificationRules
+			Store.StoreSingle(new DeliverabilityClassificationRules
 							{
 								Rules = new List<HeuristicRule>
 									{
@@ -30,7 +30,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 									}
 							});
 
-			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
+			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>(secondsToWait: 10);
 
 			var api = MasterResolve<Api>();
 
@@ -77,7 +77,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			ServiceActions.Initialize();
 			ServiceActions.Start();
 
-			Store.Store(new DeliverabilityClassificationRules
+			Store.StoreSingle(new DeliverabilityClassificationRules
 							{
 								Rules = new List<HeuristicRule>
 									{
@@ -97,7 +97,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 									}
 			});
 
-			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>();
+			Store.WaitForEntitiesToExist<DeliverabilityClassificationRules>(secondsToWait: 10);
 
 			var result = Store.Query<DeliverabilityClassificationRules>().SingleOrDefault();
 

@@ -250,7 +250,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			shouldFunc(EventRegistry.First(x => x is T) as T);
 		}
 
-		private static void WaitForEvent<T>(int waitFor = 30) where T : class
+		private static void WaitForEvent<T>(int waitFor = 5) where T : class
 		{
 			var stopWatch = new Stopwatch();
 			stopWatch.Start();

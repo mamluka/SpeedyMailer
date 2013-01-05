@@ -30,7 +30,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var api = MasterResolve<Api>();
 			api.Call<ServiceEndpoints.Creative.Send>(x => x.CreativeId = creativeId);
 
-			Store.WaitForEntitiesToExist<CreativeFragment>(1);
+			Store.WaitForEntitiesToExist<CreativeFragment>(1,10);
 			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().HaveCount(200);

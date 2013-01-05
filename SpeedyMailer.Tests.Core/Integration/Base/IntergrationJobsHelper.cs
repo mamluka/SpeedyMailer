@@ -53,7 +53,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			data.Should().NotContain(assertFunc);
 		}
 
-		public void WaitForJobToStart(ScheduledTask task, int waitFor = 30)
+		public void WaitForJobToStart(ScheduledTask task, int waitFor = 5)
 		{
 			var st = new Stopwatch();
 			st.Start();

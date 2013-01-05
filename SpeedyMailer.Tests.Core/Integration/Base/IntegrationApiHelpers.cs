@@ -58,7 +58,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			StartGeneticEndpoint<TEndpoint, TResponse>(endpointBaseUrl, response);
 		}
 
-		public void AssertApiCalled<TEndpoint>(Func<TEndpoint, bool> func, int seconds = 30) where TEndpoint : class
+		public void AssertApiCalled<TEndpoint>(Func<TEndpoint, bool> func, int seconds = 5) where TEndpoint : class
 		{
 			WaitForApiToBeCalled<TEndpoint>(seconds);
 
@@ -70,7 +70,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Assert.Fail("REST call was not executed in the ellapsed time");
 		}
 
-		public void AssertFilesUploaded<TEndpoint>(IEnumerable<string> files, int seconds = 30) where TEndpoint : class
+		public void AssertFilesUploaded<TEndpoint>(IEnumerable<string> files, int seconds = 5) where TEndpoint : class
 		{
 			WaitForApiToBeCalled<TEndpoint>(seconds);
 
@@ -83,21 +83,21 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			Assert.Fail("REST call did not recieve the files");
 		}
 
-		public void AssertApiCalled<TEndpoint>(int seconds = 30) where TEndpoint : class
+		public void AssertApiCalled<TEndpoint>(int seconds = 5) where TEndpoint : class
 		{
 			WaitForApiToBeCalled<TEndpoint>(seconds);
 
 			Assert.That(RestCallTestingModule<TEndpoint, NoResponse>.WasCalled, Is.True);
 		}
 
-		public void AssertApiWasntCalled<TEndpoint>(int seconds = 30) where TEndpoint : class
+		public void AssertApiWasntCalled<TEndpoint>(int seconds = 5) where TEndpoint : class
 		{
 			WaitForApiToBeCalled<TEndpoint>(seconds);
 
 			Assert.That(RestCallTestingModule<TEndpoint, NoResponse>.WasCalled, Is.False);
 		}
 
-		public void AssertApiWasntCalled(int seconds = 30)
+		public void AssertApiWasntCalled(int seconds = 5)
 		{
 			WaitForApiToBeCalled<NoResponse>(seconds);
 

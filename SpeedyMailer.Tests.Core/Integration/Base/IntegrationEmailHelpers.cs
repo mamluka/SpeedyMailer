@@ -15,19 +15,19 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 {
 	public class IntegrationEmailHelpers
 	{
-		public void AssertEmailSent(Expression<Func<FakeEmailMessage, bool>> func, int waitFor = 30)
+		public void AssertEmailSent(Expression<Func<FakeEmailMessage, bool>> func, int waitFor = 5)
 		{
 			var email = GetEmailFromDisk(waitFor);
 			email.Should().Match(func);
 		}
 
-		public void AssertEmailSent(Action<FakeEmailMessage> action, int waitFor = 30)
+		public void AssertEmailSent(Action<FakeEmailMessage> action, int waitFor = 5)
 		{
 			var email = GetEmailFromDisk(waitFor);
 			action(email);
 		}
 
-		public void AssertEmailsSentTo(IEnumerable<string> recipients, int waitFor = 30)
+		public void AssertEmailsSentTo(IEnumerable<string> recipients, int waitFor = 5)
 		{
 			var emails = WaitForEmailsThatWereSentBy(recipients, waitFor);
 
@@ -129,7 +129,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			});
 		}
 
-		public void AssertEmailNotSent(int waitFor = 30)
+		public void AssertEmailNotSent(int waitFor = 5)
 		{
 			var files = WaitForEmailFiles(waitFor);
 
@@ -140,12 +140,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		}
 
-		public void AssertEmailNotSent(IList<Recipient> recipients, int waitFor = 30)
+		public void AssertEmailNotSent(IList<Recipient> recipients, int waitFor = 5)
 		{
 			AssertEmailNotSent(recipients.Select(x => x.Email).ToList(), waitFor);
 		}
 
-		public void AssertEmailNotSent(IList<string> recipients, int waitFor = 30)
+		public void AssertEmailNotSent(IList<string> recipients, int waitFor = 5)
 		{
 			var emails = WaitForEmailsThatWereSentBy(recipients, waitFor);
 
@@ -155,14 +155,14 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		public void AssertEmailSent(int count, int waitFor = 30)
+		public void AssertEmailSent(int count, int waitFor = 5)
 		{
 			var files = WaitForEmailFiles(waitFor, x => x.Count == count);
 
 			files.Should().HaveCount(count);
 		}
 
-		public void AssertEmailsSentBy(string droneId, int numberOfEmails, int waitFor = 30)
+		public void AssertEmailsSentBy(string droneId, int numberOfEmails, int waitFor = 5)
 		{
 			var files = WaitForEmailsWithCondition(waitFor, list => list.Count == numberOfEmails, message => message.DroneId == droneId);
 
@@ -172,7 +172,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			}
 		}
 
-		public void AssertEmailsSentWithInterval(IList<Recipient> recipients, int interval, int waitFor = 30)
+		public void AssertEmailsSentWithInterval(IList<Recipient> recipients, int interval, int waitFor = 5)
 		{
 			var emails = WaitForEmailsThatWereSentBy(recipients.Select(x => x.Email), waitFor);
 
@@ -189,12 +189,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.OrderBy(x => x.ToUniversalTime());
 		}
 
-		public void AssertEmailsSentWithInterval(List<string> recipients, int interval, int waitFor = 30)
+		public void AssertEmailsSentWithInterval(List<string> recipients, int interval, int waitFor = 5)
 		{
-			AssertEmailsSentWithInterval(recipients.Select(x => new Recipient { Email = x }).ToList(), interval);
+			AssertEmailsSentWithInterval(recipients.Select(x => new Recipient { Email = x }).ToList(), interval, waitFor);
 		}
 
-		public void WaitForEmailsToBeSent(List<string> recipients, int waitFor = 30)
+		public void WaitForEmailsToBeSent(List<string> recipients, int waitFor = 5)
 		{
 			WaitForEmailsWithCondition(waitFor,
 									   messages => recipients.Join(messages, x => x, y => y.To.First().Address, (x, y) => x)
@@ -202,7 +202,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		}
 
-		public void AssertEmailsWereSendAtTheSameTime(IEnumerable<Recipient> recipients, int waitFor = 30)
+		public void AssertEmailsWereSendAtTheSameTime(IEnumerable<Recipient> recipients, int waitFor = 5)
 		{
 			var emails = WaitForEmailsThatWereSentBy(recipients.Select(x => x.Email), waitFor);
 
@@ -210,12 +210,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			deliveryTimes.AssertTimesAreTheSameInRange(200);
 		}
 
-		public void AssertEmailsSentInOrder(IList<string> recipients, int waitFor = 30)
+		public void AssertEmailsSentInOrder(IList<string> recipients, int waitFor = 5)
 		{
-			var emails =  WaitForEmailsWithCondition(waitFor,
+			var emails = WaitForEmailsWithCondition(waitFor,
 									   messages => messages.OrderBy(x => x.SendTime).Select(x => x.To[0].Address).SequenceEqual(recipients));
 
-			emails.OrderBy(x=> x.SendTime).Select(x=> x.To[0].Address).Should().ContainInOrder(recipients);
+			emails.OrderBy(x => x.SendTime).Select(x => x.To[0].Address).Should().ContainInOrder(recipients);
 		}
 	}
 }

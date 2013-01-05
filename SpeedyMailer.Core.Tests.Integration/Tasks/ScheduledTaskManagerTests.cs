@@ -51,7 +51,7 @@ namespace SpeedyMailer.Core.IntegrationTests.Tasks
 			var taskFiredAt = DateTime.UtcNow;
 			_target.AddAndStart(task.DelayFor(TimeSpan.FromSeconds(7)));
 
-			Store.WaitForEntityToExist(resultId);
+			Store.WaitForEntityToExist(resultId, 30);
 
 			var result = Store.Load<ComputationResult<DateTime>>(resultId);
 

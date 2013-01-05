@@ -51,7 +51,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			var recipients = creativePackages.Select(x => x.To).ToList();
-			Email.AssertEmailsSentWithInterval(recipients, 5);
+			Email.AssertEmailsSentWithInterval(recipients, 5, 30);
 
 		}
 
@@ -83,9 +83,9 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x=> x.RetryCount == 1);
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.RetryCount == 1);
 		}
-		
+
 		[Test]
 		public void Execute_WhenPackageWasAlreadySentThreeTimes_ShouldSetThePackageAndProcessedAndNotSendIt()
 		{
@@ -116,8 +116,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x=> x.Processed);
-			Email.AssertEmailNotSent(new[] {"david@gmail.com"});
+			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.Processed);
+			Email.AssertEmailNotSent(new[] { "david@gmail.com" });
 		}
 
 		[Test]
@@ -150,8 +150,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			var recipients = new[] {"david3@gmail.com", "david2@gmail.com", "david@gmail.com"};
-			Email.AssertEmailsSentInOrder(recipients);
+			var recipients = new[] { "david3@gmail.com", "david2@gmail.com", "david@gmail.com" };
+			Email.AssertEmailsSentInOrder(recipients, 30);
 
 		}
 
@@ -226,8 +226,8 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			var recipients = creativePackages.Select(x => x.To).ToList();
-			Email.AssertEmailsSentWithInterval(recipients.Take(2).ToList(), 5);
-			Email.AssertEmailNotSent(new[] { recipients[2] });
+			Email.AssertEmailsSentWithInterval(recipients.Take(2).ToList(), 5, 30);
+			Email.AssertEmailNotSent(new[] { recipients[2] }, 30);
 		}
 
 		[Test]
@@ -261,7 +261,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			var recipients = creativePackages.Select(x => x.To).ToList();
-			Email.AssertEmailsSentWithInterval(recipients, 5);
+			Email.AssertEmailsSentWithInterval(recipients, 5, 30);
 
 			var packages = DroneActions.FindAll<CreativePackage>();
 			packages.Should().OnlyContain(x => x.Processed);
@@ -298,7 +298,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			var recipients = creativePackages.Select(x => x.To).ToList();
-			Email.AssertEmailsSentWithInterval(recipients, 5);
+			Email.AssertEmailsSentWithInterval(recipients, 5, 30);
 
 			Thread.Sleep(6000);
 

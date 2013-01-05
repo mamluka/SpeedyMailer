@@ -381,7 +381,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Email.AssertEmailsSentWithInterval(recipients, 3);
+			Email.AssertEmailsSentWithInterval(recipients, 3, 30);
 		}
 
 		[Test]
@@ -432,10 +432,10 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Email.AssertEmailsSentWithInterval(recipients.Take(3).ToList(), 3);
-			Email.AssertEmailsSentWithInterval(recipients.Skip(3).ToList(), 3);
+			Email.AssertEmailsSentWithInterval(recipients.Take(3).ToList(), 3, 30);
+			Email.AssertEmailsSentWithInterval(recipients.Skip(3).ToList(), 3, 30);
 
-			Email.AssertEmailsWereSendAtTheSameTime(new[] { recipients[0], recipients[3] });
+			Email.AssertEmailsWereSendAtTheSameTime(new[] { recipients[0], recipients[3] }, 30);
 		}
 
 		[Test]
@@ -494,7 +494,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Email.AssertEmailsSentWithInterval(recipients.Take(3).ToList(), 3);
+			Email.AssertEmailsSentWithInterval(recipients.Take(3).ToList(), 3, 30);
 			Email.AssertEmailNotSent(recipients.Skip(3).ToList(), 3);
 		}
 
@@ -565,7 +565,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Email.AssertEmailsSentWithInterval(recipients, 3);
+			Email.AssertEmailsSentWithInterval(recipients, 3, 30);
 			Email.AssertEmailNotSent(new[] { new Recipient { Email = "david@david" } }, 3);
 		}
 
