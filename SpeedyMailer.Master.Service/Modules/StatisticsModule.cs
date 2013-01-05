@@ -75,7 +75,7 @@ namespace SpeedyMailer.Master.Service.Modules
 					using (var session = documentStore.OpenSession())
 					{
 						var creativeId = (string)Request.Query["creativeid"];
-						var classificationRules = session.LoadByType<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
+						var classificationRules = session.LoadSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
 						var rules = classificationRules.Rules.Select(x => x.Condition);
 
 						var results = session.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>().Where(x => x.CreativeId == creativeId).ToList();

@@ -21,7 +21,7 @@ namespace SpeedyMailer.Master.Service.Modules
 									   using (var session = documentStore.OpenSession())
 									   {
 										   var rules = session
-											   .LoadByType<DeliverabilityClassificationRules>()
+											   .LoadSingle<DeliverabilityClassificationRules>()
 											    ?? new DeliverabilityClassificationRules();
 
 										   return Response.AsJson(rules);
@@ -34,12 +34,12 @@ namespace SpeedyMailer.Master.Service.Modules
 
 										using (var session = documentStore.OpenSession())
 										{
-											var rules = session.LoadByType<DeliverabilityClassificationRules>()
+											var rules = session.LoadSingle<DeliverabilityClassificationRules>()
 												?? new DeliverabilityClassificationRules();
 
 											rules.Rules = model.DeliverabilityClassificationRules.Rules;
 
-											session.Store(rules);
+											session.StoreSingle(rules);
 											session.SaveChanges();
 
 											return Response.AsText("OK");

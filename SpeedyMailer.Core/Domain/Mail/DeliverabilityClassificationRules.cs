@@ -4,10 +4,11 @@ using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using SpeedyMailer.Core.Storage;
 
 namespace SpeedyMailer.Core.Domain.Mail
 {
-	public class DeliverabilityClassificationRules
+	public class DeliverabilityClassificationRules:IHasId
 	{
 		[BsonId(IdGenerator = typeof(TypeNameIdGenerator))]
 		public virtual string Id { get; set; }
