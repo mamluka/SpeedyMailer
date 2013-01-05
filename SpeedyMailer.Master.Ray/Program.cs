@@ -57,11 +57,11 @@ namespace SpeedyMailer.Master.Ray
 					var rows = csvReader.GetRecords<OneRawContactsListCsvRow>().ToList();
 					st.Stop();
 
-					WriteToConsole("There are {0} contacts, reading them took {0} seconds", rows.Count, st.ElapsedMilliseconds / 1000);
+					WriteToConsole("There are {0} contacts, reading them took {1} seconds", rows.Count, st.ElapsedMilliseconds / 1000);
 
 					st.Reset();
 					st.Start();
-					rows = rows.Distinct(new LambdaComparer<OneRawContactsListCsvRow>((x, y) => x.Email == y.Email)).ToList();
+					rows = rows.AsParallel().Distinct(new LambdaComparer<OneRawContactsListCsvRow>((x, y) => x.Email == y.Email)).ToList();
 					st.Stop();
 
 					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);
@@ -207,6 +207,7 @@ namespace SpeedyMailer.Master.Ray
 		{
 			removeDomains = removeDomains.Select(x => "@" + x + "$").ToList();
 			return rows
+				.AsParallel()
 				.Where(x => !removeDomains.Any(r => Regex.Match(x.Email, r, RegexOptions.IgnoreCase | RegexOptions.Compiled).Success))
 				.ToList();
 
@@ -247,6 +248,7 @@ namespace SpeedyMailer.Master.Ray
 		private static IEnumerable<IGrouping<string, string>> GroupByDomain(IEnumerable<OneRawContactsListCsvRow> rows)
 		{
 			return rows
+				.AsParallel()
 				.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
 				.GroupBy(x => x.ToLower());
 		}
