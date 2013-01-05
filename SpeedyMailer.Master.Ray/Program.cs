@@ -4,12 +4,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ARSoft.Tools.Net.Dns;
 using CommandLine;
 using CsvHelper;
 using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
 
 namespace SpeedyMailer.Master.Ray
@@ -47,17 +50,21 @@ namespace SpeedyMailer.Master.Ray
 			{
 				if (!string.IsNullOrEmpty(rayCommandOptions.CsvFile))
 				{
+					var st = new Stopwatch();
+					st.Start();
 					var csvSource = File.OpenRead(rayCommandOptions.CsvFile);
 					var csvReader = new CsvReader(new StreamReader(csvSource));
-					var rows = csvReader.GetRecords<ContactsListCsvRow>().ToList();
+					var rows = csvReader.GetRecords<OneRawContactsListCsvRow>().ToList();
+					st.Stop();
 
-					WriteToConsole("There are {0} contacts", rows.Count);
+					WriteToConsole("There are {0} contacts, reading them took {0} seconds", rows.Count, st.ElapsedMilliseconds / 1000);
 
-					const int size = 3000;
-					var chunks = rows.Clump(size).ToList();
+					st.Reset();
+					st.Start();
+					rows = rows.Distinct(new LambdaComparer<OneRawContactsListCsvRow>((x, y) => x.Email == y.Email)).ToList();
+					st.Stop();
 
-					WriteToConsole("When devided to {0} created {1} chunks", size, chunks.Count);
-
+					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);
 
 					if (rayCommandOptions.ListTopDomains)
 						TopDomains(rows);
@@ -88,6 +95,36 @@ namespace SpeedyMailer.Master.Ray
 									var hostInfo = Dns.GetHostEntry(x.Key);
 									s.Stop();
 									Console.WriteLine(counter + " We are resolving domain:" + x.Key + " it took: " + s.ElapsedMilliseconds);
+
+									var host = x.Key;
+
+									var mxRecord = DnsClient.Default.Resolve(x.Key, RecordType.Mx);
+
+
+									if (!((mxRecord == null) || ((mxRecord.ReturnCode != ReturnCode.NoError) && (mxRecord.ReturnCode != ReturnCode.NxDomain))))
+									{
+										var mxHost = mxRecord.AnswerRecords.OfType<MxRecord>().Select(record => record.ExchangeDomainName).LastOrDefault();
+
+										if (mxHost.HasValue())
+										{
+											host = mxHost;
+											Console.WriteLine("MX records found for: " + x.Key + " they are: " + host);
+										}
+									}
+
+									using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+									{
+										try
+										{
+											socket.Connect(host, 25);
+										}
+										catch (SocketException ex)
+										{
+											Console.WriteLine("Can't connect to {0} : {1} - {2}", host, ex.SocketErrorCode, ex.Message);
+											return true;
+										}
+									}
+
 									return !hostInfo.AddressList.Any();
 								}
 								catch (Exception)
@@ -134,26 +171,51 @@ namespace SpeedyMailer.Master.Ray
 			}
 		}
 
-		private static void OutputSmallDomains(List<ContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
+		private static void OutputSmallDomains(List<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
 		{
+			var st = new Stopwatch();
+
+			st.Start();
 			var removeDomains = GroupByDomain(rows)
 				.Where(x => x.Count() > rayCommandOptions.MaximalCountOfContacts)
 				.Select(x => x.Key)
+				.Where(x => x.HasValue())
 				.ToList();
 
+			st.Stop();
+
+			WriteToConsole("Group by took {0} seconds", st.ElapsedMilliseconds / (long)1000);
+
+			WriteToConsole("There are {0} domains to remove", removeDomains.Count);
+
+			st.Reset();
+			st.Start();
 			var newRows = RemoveRowsByDomains(rows, removeDomains);
+			st.Stop();
 
+			WriteToConsole("Removing domains took {0} seconds", st.ElapsedMilliseconds / (long)1000);
+
+			st.Reset();
+			st.Start();
 			WriteCsv(rayCommandOptions, newRows);
+			st.Stop();
+
+			WriteToConsole("Writing the CSV took {0} seconds", st.ElapsedMilliseconds / 1000);
 		}
 
-		private static List<ContactsListCsvRow> RemoveRowsByDomains(List<ContactsListCsvRow> rows, List<string> removeDomains)
+		private static List<OneRawContactsListCsvRow> RemoveRowsByDomains(List<OneRawContactsListCsvRow> rows, List<string> removeDomains)
 		{
+			removeDomains = removeDomains.Select(x => "@" + x + "$").ToList();
 			return rows
-				.Where(x => !Regex.Match(x.Email, string.Join("|", removeDomains)).Success)
+				.Where(x => !removeDomains.Any(r => Regex.Match(x.Email, r, RegexOptions.IgnoreCase | RegexOptions.Compiled).Success))
 				.ToList();
+
+			//			return rows
+			//				.Where(x => !Regex.Match(x.Email, string.Join("|", removeDomains)).Success)
+			//				.ToList();
 		}
 
-		private static void WriteCsv(RayCommandOptions rayCommandOptions, IEnumerable<ContactsListCsvRow> newRows)
+		private static void WriteCsv(RayCommandOptions rayCommandOptions, IEnumerable<OneRawContactsListCsvRow> newRows)
 		{
 			using (var textWriter = new StreamWriter(rayCommandOptions.OutputFile))
 			{
@@ -162,7 +224,7 @@ namespace SpeedyMailer.Master.Ray
 			}
 		}
 
-		private static void CalculateSendingTime(IList<ContactsListCsvRow> rows, string parameters)
+		private static void CalculateSendingTime(IList<OneRawContactsListCsvRow> rows, string parameters)
 		{
 			var domains = GroupByDomain(rows)
 				.Select(x => new { x.Key, Count = x.Count() })
@@ -182,14 +244,14 @@ namespace SpeedyMailer.Master.Ray
 			WriteToConsole("The sending will take minimum of {0} hours or {1} days", speed.TotalHours, speed.TotalDays);
 		}
 
-		private static IEnumerable<IGrouping<string, string>> GroupByDomain(IEnumerable<ContactsListCsvRow> rows)
+		private static IEnumerable<IGrouping<string, string>> GroupByDomain(IEnumerable<OneRawContactsListCsvRow> rows)
 		{
 			return rows
 				.Select(x => Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value)
 				.GroupBy(x => x.ToLower());
 		}
 
-		private static void TopDomains(IEnumerable<ContactsListCsvRow> rows)
+		private static void TopDomains(IEnumerable<OneRawContactsListCsvRow> rows)
 		{
 			var domains = rows
 				.Select(GetDomain)
@@ -206,7 +268,7 @@ namespace SpeedyMailer.Master.Ray
 			WriteSaperator();
 		}
 
-		private static string GetDomain(ContactsListCsvRow x)
+		private static string GetDomain(OneRawContactsListCsvRow x)
 		{
 			return Regex.Match(x.Email, "@(.+?)$", RegexOptions.Compiled | RegexOptions.IgnoreCase).Groups[1].Value;
 		}

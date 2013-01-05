@@ -31,4 +31,10 @@ namespace SpeedyMailer.Core.Domain.Contacts
 	    [CsvField(Index = 8)]
 		public string Ip { get; set; }
     }
+	
+	public class OneRawContactsListCsvRow
+    {
+        [CsvField(Index = 0)]
+        public string Email { get; set; }
+    }
 }
