@@ -7,6 +7,7 @@ using Nancy.ModelBinding;
 using Raven.Client;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Storage;
 
 namespace SpeedyMailer.Master.Service.Modules
 {
@@ -20,8 +21,8 @@ namespace SpeedyMailer.Master.Service.Modules
 									   using (var session = documentStore.OpenSession())
 									   {
 										   var rules = session
-											   .Query<DeliverabilityClassificationRules>()
-											   .FirstOrDefault() ?? new DeliverabilityClassificationRules();
+											   .LoadByType<DeliverabilityClassificationRules>()
+											    ?? new DeliverabilityClassificationRules();
 
 										   return Response.AsJson(rules);
 									   }
@@ -33,9 +34,8 @@ namespace SpeedyMailer.Master.Service.Modules
 
 										using (var session = documentStore.OpenSession())
 										{
-											var rules = session.Query<DeliverabilityClassificationRules>()
-												.Customize(customization=> customization.WaitForNonStaleResults())
-												.SingleOrDefault() ?? new DeliverabilityClassificationRules();
+											var rules = session.LoadByType<DeliverabilityClassificationRules>()
+												?? new DeliverabilityClassificationRules();
 
 											rules.Rules = model.DeliverabilityClassificationRules.Rules;
 

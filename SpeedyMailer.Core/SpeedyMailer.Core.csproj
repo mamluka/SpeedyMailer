@@ -258,6 +258,7 @@
     <Compile Include="Settings\DroneSettings.cs" />
     <Compile Include="Settings\EmailingSettings.cs" />
     <Compile Include="Settings\ServiceSettings.cs" />
+    <Compile Include="Storage\RavenSessionExtentions.cs" />
     <Compile Include="Tasks\ComputationResult.cs" />
     <Compile Include="Tasks\ContainerJobFactory.cs" />
     <Compile Include="Tasks\ITaskData.cs" />
