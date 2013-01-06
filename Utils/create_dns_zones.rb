@@ -11,13 +11,13 @@ abort "There is not domain associated this ip" if my_domain.empty?
 
 puts my_ip
 
-file = File.open("/deploy/keys/dkim-dns.txt", "rb")
+file = File.open("/deploy/domain-keys/dkim-dns.txt", "rb")
 open_dkim_file_content = file.read
 file.close
 
 open_dkim_dns_entry = open_dkim_file_content.scan(/"(.+?)"/)[0][0]
 
-file = File.open("/deploy/keys/domain-keys-dns.txt", "rb")
+file = File.open("/deploy/domain-keys/domain-keys-dns.txt", "rb")
 domain_keys_file_content = file.read
 file.close
 
@@ -36,8 +36,6 @@ if my_zone.nil?
 else
   zone = Point::Zone.find(my_zone.id)
 end
-
-puts my_zone_id
 
 #clean the records
 zone.records.each do |record|
