@@ -4,8 +4,10 @@ require 'uri'
 
 API_KEY = "93bc6509-f7d6-1838-511a-68dcfef5ed56"
 
-my_domain = `/usr/bin/dig +noall +answer -x #{node.default["drone"]["ip"]} | awk '{$5=substr($5,1,length($5)-1); print $5}' | tr  -d '\n'`
 my_ip = Net::HTTP.get(URI.parse("http://ipecho.net/plain"))
+my_domain = `/usr/bin/dig +noall +answer -x #{my_ip} | awk '{$5=substr($5,1,length($5)-1); print $5}' | tr  -d '\n'`
+
+abort "There is not domain associated this ip" if my_domain.empty?
 
 puts my_ip
 
@@ -26,10 +28,16 @@ Point.apitoken = API_KEY
 
 zones = Point::Zone.find(:all)
 
-my_zone_id = zones.find { |zone| zone.name == my_domain }.id
-puts my_zone_id
+my_zone = zones.find { |zone| zone.name == my_domain }
+if my_zone.nil?
+  zone = Point::Zone.new
+  zone.name = my_domain
+  zone.save
+else
+  zone = Point::Zone.find(my_zone.id)
+end
 
-zone = Point::Zone.find(my_zone_id)
+puts my_zone_id
 
 #clean the records
 zone.records.each do |record|
