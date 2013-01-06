@@ -1,38 +1,39 @@
 require 'point'
+require 'net/http'
+require 'uri'
 
 API_KEY = "93bc6509-f7d6-1838-511a-68dcfef5ed56"
 
 my_domain = "cookiexfactory.info"
-my_ip = "147.254.25.19"
+my_ip = Net::HTTP.get(URI.parse("http://ipecho.net/plain"))
+
+puts my_ip
 
 file = File.open("dkim-dns.txt", "rb")
 open_dkim_file_content = file.read
 file.close
 
-open_dkim_dns_entry = open_dkim_file_content.scan(/"(.+?)"/)[0]
+open_dkim_dns_entry = open_dkim_file_content.scan(/"(.+?)"/)[0][0]
 
 file = File.open("domain-keys-dns.txt", "rb")
 domain_keys_file_content = file.read
 file.close
 
-domain_keys_dns_entry = domain_keys_file_content.scan(/-----BEGIN PUBLIC KEY-----(.+?)-----END PUBLIC KEY-----/m)[0][0].gsub("\r\n","")
+domain_keys_dns_entry = domain_keys_file_content.scan(/-----BEGIN PUBLIC KEY-----(.+?)-----END PUBLIC KEY-----/m)[0][0].gsub(/\n/,"")
 
 Point.username = "jdeering@centracorporation.com"
 Point.apitoken = API_KEY
 
 zones = Point::Zone.find(:all)
 
-my_zone_id = 0
-zones.each do |zone|
-  my_zone_id = zone.name == my_domain ? zone.id : 0
-end
-
+my_zone_id = zones.find { |zone| zone.name == my_domain }.id
 puts my_zone_id
 
 zone = Point::Zone.find(my_zone_id)
 
+#clean the records
 zone.records.each do |record|
-   record.destroy
+  record.destroy
 end
 
 #add A record
@@ -42,10 +43,17 @@ new_record.name = ""
 new_record.data = my_ip
 puts new_record.save
 
-#add mail record
+#add A mail record
 new_record = zone.build_record
 new_record.record_type = "A"
 new_record.name = "mail"
+new_record.data = my_ip
+puts new_record.save
+
+#add www mail record
+new_record = zone.build_record
+new_record.record_type = "A"
+new_record.name = "www"
 new_record.data = my_ip
 puts new_record.save
 
@@ -57,11 +65,47 @@ new_record.data = "mail." + my_domain
 new_record.aux = "5"
 puts new_record.save
 
-#add ptr record
+
+
+#add domain keys
+
 new_record = zone.build_record
-new_record.record_type = "PTR"
-new_record.name = my_ip.split(".").reverse!.join(".") + ".in-addr.arpa."
-new_record.data = "mail."+ my_domain
-puts my_ip.split(".").reverse!.join(".") + ".in-addr.arpa"
+new_record.record_type = "TXT"
+new_record.name = "maildk._domainkey"
+new_record.data = "\"k=rsa; t=y; p=" + domain_keys_dns_entry + "\""
 puts new_record.save
+
 puts new_record.errors
+
+#add dkim keys
+new_record = zone.build_record
+new_record.record_type = "TXT"
+new_record.name = "mail._domainkey"
+new_record.data = "\"" +  open_dkim_dns_entry + "\""
+puts new_record.save
+
+#ptr stuff maybe useful in the future
+
+##check if the zone for this ip exists
+#my_ip_reverse = my_ip.split(".").reverse!
+#
+#ptr_zone_ip = my_ip_reverse[1, 3].join(".")
+#ptr_zone_name = ptr_zone_ip + ".in-addr.arpa"
+#
+#zone_exists = zones.any? { |zone| zone.name == ptr_zone_name }
+#
+##add zone if dosen't exist
+#if zone_exists then
+#  ptr_zone = zones.find{|zone| zone.name == ptr_zone_name}
+#else
+#  ptr_zone = Point::Zone.new
+#  ptr_zone.name = ptr_zone_name
+#  ptr_zone.save
+#end
+#
+##add ptr record
+#new_record = ptr_zone.build_record
+#new_record.record_type = "PTR"
+#new_record.name = my_ip_reverse.join(".") + ".in-addr.arpa."
+#new_record.data = "mail."+ my_domain
+#puts new_record.save
