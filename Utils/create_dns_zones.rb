@@ -4,7 +4,7 @@ require 'uri'
 
 API_KEY = "93bc6509-f7d6-1838-511a-68dcfef5ed56"
 
-my_domain = "cookiexfactory.info"
+my_domain = `/usr/bin/dig +noall +answer -x #{node.default["drone"]["ip"]} | awk '{$5=substr($5,1,length($5)-1); print $5}' | tr  -d '\n'`
 my_ip = Net::HTTP.get(URI.parse("http://ipecho.net/plain"))
 
 puts my_ip
