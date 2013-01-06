@@ -9,13 +9,13 @@ my_ip = Net::HTTP.get(URI.parse("http://ipecho.net/plain"))
 
 puts my_ip
 
-file = File.open("dkim-dns.txt", "rb")
+file = File.open("/deploy/keys/dkim-dns.txt", "rb")
 open_dkim_file_content = file.read
 file.close
 
 open_dkim_dns_entry = open_dkim_file_content.scan(/"(.+?)"/)[0][0]
 
-file = File.open("domain-keys-dns.txt", "rb")
+file = File.open("/deploy/keys/domain-keys-dns.txt", "rb")
 domain_keys_file_content = file.read
 file.close
 
