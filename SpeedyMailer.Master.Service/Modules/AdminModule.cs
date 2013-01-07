@@ -59,6 +59,7 @@ namespace SpeedyMailer.Master.Service.Modules
 							Response.AsText(string.Join(Environment.NewLine, session
 																				 .Query<Drone>()
 																				 .ToList()
+																				 .Where(drone => drone.LastUpdated > DateTime.UtcNow.AddMinutes(-6))
 																				 .Select(drone => drone.BaseUrl)
 																				 .ToList()));
 					}
