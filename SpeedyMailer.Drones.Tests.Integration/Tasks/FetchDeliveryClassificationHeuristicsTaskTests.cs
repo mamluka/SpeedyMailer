@@ -44,34 +44,5 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			result.Rules.Should().Contain(x => x.Condition == "hard bounce rule");
 			result.Rules.Should().Contain(x => x.Condition == "blocking rule");
 		}
-
-		[Test]
-		public void Execute_WhenCalledTwice_ShouldUpdateTheRules()
-		{
-			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
-			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
-
-			Api.PrepareApiResponse<ServiceEndpoints.Heuristics.GetDeliveryRules,
-				DeliverabilityClassificationRules>(x =>
-													   {
-														   x.Rules = new List<HeuristicRule>
-							                                             {
-								                                             new HeuristicRule {Condition = "hard bounce rule", Type = Classification.HardBounce},
-								                                             new HeuristicRule {Condition = "blocking rule", Type = Classification.TempBlock, Data = new HeuristicData {TimeSpan = TimeSpan.FromHours(4)}},
-							                                             };
-													   });
-
-			var task = new FetchDeliveryClassificationHeuristicsTask();
-
-			DroneActions.StartScheduledTask(task);
-			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>();
-
-			DroneActions.StartScheduledTask(task);
-			DroneActions.WaitForDocumentToExist<DeliverabilityClassificationRules>();
-
-			var result = DroneActions.FindAll<DeliverabilityClassificationRules>();
-
-			result.Should().HaveCount(1);
-		}
 	}
 }
