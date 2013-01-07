@@ -5,7 +5,7 @@ namespace SpeedyMailer.Core.Settings
 		public virtual string Identifier { get; set; }
 		public virtual string BaseUrl { get; set; }
 
-		[Default("mongodb://localhost:27027/drone?safe=true")]
+		[Default("mongodb://localhost:27027/drone")]
 		public virtual string StoreHostname { get; set; }
 
 		public virtual string Domain { get; set; }
