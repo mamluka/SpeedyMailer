@@ -4,7 +4,7 @@
     <input type="button" value="deploy" ng-click="deploy(drone)" />
 </div>
 
-<div ng-model="deploys">
+<div ng-repeat="deploy in deploys">
     <div>
         <h2>{{deploy.droneId}}</h2>
         {{deploy.output}}
