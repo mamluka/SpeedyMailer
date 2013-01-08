@@ -34,7 +34,11 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 			{
 				ssh.Connect();
 				var cmd = ssh.RunCommand("chef-client");   //  very long list 
-				return cmd.Result.Replace("\n","<br>");
+
+				if (cmd.ExitStatus > 0)
+					return cmd.Result.Replace("\n","<br>");
+
+				return "OK";
 			}
 		}
 	}
