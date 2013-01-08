@@ -8,6 +8,6 @@
 <div ng-repeat="deploy in deploys">
     <div>
         <h2>{{deploy.droneId}}</h2>
-        <div ng-bind-html="deploy.output"></div>
+        <div ng-bind-html="{{deploy.output}}"></div>
     </div>
 </div>
