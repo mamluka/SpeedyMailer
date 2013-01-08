@@ -143,5 +143,30 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result[0].Name.Should().Be("VIRBL");
 			result[0].Type.Should().Be(DnsnlType.Ip);
 		}
+		
+		[Test]
+		public void Get_WhenCalled_ShouldReturnDrones()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			Store.Store(new Drone
+				{
+					Id = "1"
+				});
+
+			Store.WaitForEntitiesToExist<Drone>();
+
+			var api = DroneResolve<Api>();
+
+			var result = api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
+
+			result.Should().HaveCount(1);
+			result.Should().Contain(x => x.Id == "1");
+		}
 	}
 }

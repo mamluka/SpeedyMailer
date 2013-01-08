@@ -133,3 +133,8 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
     };
 }
 HeuristicsController.$inject = ['$scope', 'DeliveryHeuristics'];
+
+function DronesController($scope, dronesResource) {
+    $scope.drones = dronesResource.query();
+}
+DronesController.$inject = ['$scope', 'Drones'];

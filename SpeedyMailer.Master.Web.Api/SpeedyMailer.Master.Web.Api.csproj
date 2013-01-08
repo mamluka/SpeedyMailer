@@ -165,6 +165,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\CreativesController.cs" />
+    <Compile Include="Controllers\DronesController.cs" />
     <Compile Include="Controllers\HeuristicsController.cs" />
     <Compile Include="Controllers\InfoController.cs" />
     <Compile Include="Controllers\ListsController.cs" />

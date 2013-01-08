@@ -60,6 +60,14 @@ namespace SpeedyMailer.Core.Apis
 					CallMethod = RestMethod.Post;
 				}
 			}
+
+			public class Get:ApiCall
+			{
+				public Get() : base("/drones")
+				{
+					CallMethod = RestMethod.Get;
+				}
+			}
 		}
 	}
 }

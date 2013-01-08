@@ -38,4 +38,7 @@ angular.module('SpeedyMailer.services', ['ngResource']).
     }).
     factory('DeliveryHeuristics', function ($resource) {
         return $resource('/heuristics/delivery'.Apify());
+    }).
+    factory('Drones', function ($resource) {
+        return $resource('/drones'.Apify());
     });

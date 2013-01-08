@@ -82,6 +82,14 @@ namespace SpeedyMailer.Master.Service.Modules
 					}
 				};
 
+			Get["/"] = x =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var drones = session.Query<Drone>().ToList();
+						return Response.AsJson(drones);
+					}
+				};
 
 		}
 	}
