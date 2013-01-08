@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[POST("/drones/deploy")]
-		public string Deploy(string id)
+		public string Deploy([FromBody]string id)
 		{
 			using (var ssh = new SshClient("xomixinc.com", "root", "0953acb"))
 			{
