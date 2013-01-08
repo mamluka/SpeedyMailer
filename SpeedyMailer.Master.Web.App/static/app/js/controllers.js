@@ -138,7 +138,7 @@ function DronesController($scope, dronesResource,$http) {
     $scope.drones = dronesResource.query();
 
     $scope.deploy = function (drone) {
-        $http.post('/drones/deploy', { id: drone.id });
+        $http.post('/drones/deploy', { id: drone.Id });
     };
 }
 DronesController.$inject = ['$scope', 'Drones','$http'];

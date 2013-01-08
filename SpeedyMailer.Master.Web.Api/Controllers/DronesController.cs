@@ -24,6 +24,11 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 	    {
 		    return _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
 	    }
+		
+		[GET("/drones/deploy")]
+        public string Deploy(string droneHost)
+	    {
 
+	    }
     }
 }
