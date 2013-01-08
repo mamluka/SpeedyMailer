@@ -134,7 +134,11 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
 }
 HeuristicsController.$inject = ['$scope', 'DeliveryHeuristics'];
 
-function DronesController($scope, dronesResource) {
+function DronesController($scope, dronesResource,$http) {
     $scope.drones = dronesResource.query();
+
+    $scope.deploy = function (drone) {
+        $http.post('/drones/deploy', { id: drone.id });
+    };
 }
-DronesController.$inject = ['$scope', 'Drones'];
+DronesController.$inject = ['$scope', 'Drones','$http'];
