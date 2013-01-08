@@ -2,8 +2,11 @@
 <div ng-repeat="drone in drones">
     <div style="background-color: black; color: white; padding: 20px;">
         <div>{{drone.Domain}}</div>
-        <input type="button" value="deploy" ng-click="deploy(drone)"/>
-        
-        <div style="height: 200px;"></div>
+        <input type="button" value="deploy" ng-click="deploy(drone)" />
     </div>
+</div>
+
+<div>
+    <h2>{{deploy.droneId}}</h2>
+    {{deploy.output}}
 </div>
