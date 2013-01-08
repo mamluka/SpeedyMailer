@@ -107,9 +107,9 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
         $scope.Id = deliveryHeuristics[0].Id;
     });
 
-    
 
-    $scope.addRule = function(condition,type,timespan) {
+
+    $scope.addRule = function (condition, type, timespan) {
         $scope.rules.push({
             condition: condition,
             type: type,
@@ -134,19 +134,18 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
 }
 HeuristicsController.$inject = ['$scope', 'DeliveryHeuristics'];
 
-function DronesController($scope, dronesResource,$http) {
+function DronesController($scope, dronesResource, $http) {
     $scope.drones = dronesResource.query();
-    $scope.deploy = {
-        output: "no output yet",
-        droneId: "no id"
-    };
+    $scope.deploys = [];
 
     $scope.deploy = function (drone) {
         var promise = $http.post('/drones/deploy'.Apify(), { id: drone.Id });
-        promise.success(function(data) {
-            $scope.deploy.output = data;
-            $scope.deploy.droneId = drone.Id;
+        promise.success(function (data) {
+            $scope.deploy.push({
+                output: data,
+                id: drone.id
+            });
         });
     };
 }
-DronesController.$inject = ['$scope', 'Drones','$http'];
+DronesController.$inject = ['$scope', 'Drones', '$http'];
