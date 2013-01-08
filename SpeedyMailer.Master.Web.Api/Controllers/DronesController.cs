@@ -28,16 +28,16 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[POST("/drones/deploy")]
-		public string Deploy([FromBody]string id)
+		public string Deploy(Drone drone)
 		{
-			using (var ssh = new SshClient(id, "root", "0953acb"))
+			using (var ssh = new SshClient(drone.Id, "root", "0953acb"))
 			{
 				ssh.Connect();
 				var cmd = ssh.RunCommand("chef-client");   //  very long list 
 				ssh.Disconnect();
 
 				if (cmd.ExitStatus > 0)
-					return cmd.Result.Replace("\n","<br>");
+					return cmd.Result.Replace("\n", "<br>");
 
 				return "OK";
 			}
