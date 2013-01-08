@@ -22,6 +22,9 @@ namespace :windows do
   SERVICE_SOLUTION_FILE = "SpeedyMailer.Master.Service/SpeedyMailer.Master.Service.csproj"
   SERVICE_OUTPUT_FOLDER = MASTER_PREDEPLOY_FOLDER + "/Service"
 
+  RAY_SOLUTION_FILE = "SpeedyMailer.Master.Ray/SpeedyMailer.Master.Ray.csproj"
+  RAY_OUTPUT_FOLDER = MASTER_PREDEPLOY_FOLDER + "/Ray"
+
   DEPLOY_SOLUTION_FILE = "SpeedyMailer.Master.Deploy/SpeedyMailer.Master.Deploy.csproj"
   DEPLOY_OUTPUT_FOLDER = MASTER_PREDEPLOY_FOLDER + "/Deploy"
 
@@ -77,6 +80,13 @@ namespace :windows do
   task :build_service do
     puts "Start building service..."
     Rake::Task["windows:build"].invoke(SERVICE_SOLUTION_FILE, SERVICE_OUTPUT_FOLDER)
+    Rake::Task["windows:build"].reenable
+    end
+
+  desc "Build ray tool"
+  task :build_ray do
+    puts "Start building ray..."
+    Rake::Task["windows:build"].invoke(RAY_SOLUTION_FILE, RAY_OUTPUT_FOLDER)
     Rake::Task["windows:build"].reenable
   end
 

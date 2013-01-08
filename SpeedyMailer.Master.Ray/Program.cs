@@ -61,7 +61,7 @@ namespace SpeedyMailer.Master.Ray
 
 					st.Reset();
 					st.Start();
-					rows = rows.AsParallel().Distinct(new LambdaComparer<OneRawContactsListCsvRow>((x, y) => x.Email == y.Email)).ToList();
+					rows = rows.AsParallel().Distinct().ToList();
 					st.Stop();
 
 					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);

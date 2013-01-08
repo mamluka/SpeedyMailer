@@ -34,7 +34,25 @@ namespace SpeedyMailer.Core.Domain.Contacts
 	
 	public class OneRawContactsListCsvRow
     {
-        [CsvField(Index = 0)]
+		protected bool Equals(OneRawContactsListCsvRow other)
+		{
+			return string.Equals(Email, other.Email);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((OneRawContactsListCsvRow) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			return (Email != null ? Email.GetHashCode() : 0);
+		}
+
+		[CsvField(Index = 0)]
         public string Email { get; set; }
     }
 }
