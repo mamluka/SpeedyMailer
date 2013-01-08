@@ -52,10 +52,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 				var cmd = ssh.RunCommand(string.Format("knife bootstrap {0} -x root -P 0953acb --sudo -N {1} --run-list speedymailer-drone -E xomixfuture", drone.Id, Guid.NewGuid().ToString().Replace("-", "")));   //  very long list 
 				ssh.Disconnect();
 
-				if (cmd.ExitStatus > 0)
-					return cmd.Result.Replace("\n", "<br>");
-
-				return "OK";
+				return cmd.Result.Replace("\n", "<br>");
 			}
 		}
 	}
