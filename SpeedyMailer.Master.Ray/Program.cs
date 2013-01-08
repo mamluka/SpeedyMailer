@@ -62,9 +62,11 @@ namespace SpeedyMailer.Master.Ray
 					st.Reset();
 					st.Start();
 					rows = rows.AsParallel().Distinct().ToList();
+					rows.ForEach(x => x.Email = x.Email.ToLower());
 					st.Stop();
 
 					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);
+					WriteToConsole("We now have {0} contacts", rows.Count);
 
 					if (rayCommandOptions.ListTopDomains)
 						TopDomains(rows);
@@ -79,71 +81,7 @@ namespace SpeedyMailer.Master.Ray
 
 					if (rayCommandOptions.CheckDns)
 					{
-						var domains = GroupByDomain(rows).ToList();
-						var counter = 0;
-						var total = new Stopwatch();
-						total.Start();
-
-						var badDomains = domains.AsParallel().Where(x =>
-							{
-								var s = new Stopwatch();
-								counter++;
-								try
-								{
-
-									s.Start();
-									var hostInfo = Dns.GetHostEntry(x.Key);
-									s.Stop();
-									Console.WriteLine(counter + " We are resolving domain:" + x.Key + " it took: " + s.ElapsedMilliseconds);
-
-									var host = x.Key;
-
-									var mxRecord = DnsClient.Default.Resolve(x.Key, RecordType.Mx);
-
-
-									if (!((mxRecord == null) || ((mxRecord.ReturnCode != ReturnCode.NoError) && (mxRecord.ReturnCode != ReturnCode.NxDomain))))
-									{
-										var mxHost = mxRecord.AnswerRecords.OfType<MxRecord>().Select(record => record.ExchangeDomainName).LastOrDefault();
-
-										if (mxHost.HasValue())
-										{
-											host = mxHost;
-											Console.WriteLine("MX records found for: " + x.Key + " they are: " + host);
-										}
-									}
-
-									using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-									{
-										try
-										{
-											socket.Connect(host, 25);
-										}
-										catch (SocketException ex)
-										{
-											Console.WriteLine("Can't connect to {0} : {1} - {2}", host, ex.SocketErrorCode, ex.Message);
-											return true;
-										}
-									}
-
-									return !hostInfo.AddressList.Any();
-								}
-								catch (Exception)
-								{
-									s.Stop();
-									Console.WriteLine(counter + " We are resolving domain:" + x.Key + " resolve failed and it took: " + s.ElapsedMilliseconds);
-									return true;
-								}
-							}).Select(x => x.Key)
-							.ToList();
-
-						var afterDns = RemoveRowsByDomains(rows, badDomains);
-
-						WriteCsv(rayCommandOptions, afterDns);
-
-						total.Stop();
-
-						Console.WriteLine("Total resolve took:" + total.ElapsedMilliseconds / (1000 * 60) + " m");
-						Console.ReadKey();
+						CheckDns(rows, rayCommandOptions);
 					}
 				}
 
@@ -171,6 +109,74 @@ namespace SpeedyMailer.Master.Ray
 			}
 		}
 
+		private static void CheckDns(List<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
+		{
+			var domains = GroupByDomain(rows).ToList();
+			var counter = 0;
+			var total = new Stopwatch();
+			total.Start();
+
+			var badDomains = domains.AsParallel().Where(x =>
+				{
+					var s = new Stopwatch();
+					counter++;
+					try
+					{
+						s.Start();
+						var hostInfo = Dns.GetHostEntry(x.Key);
+						s.Stop();
+						Console.WriteLine(counter + " We are resolving domain:" + x.Key + " it took: " + s.ElapsedMilliseconds);
+
+						var host = x.Key;
+
+						var mxRecord = DnsClient.Default.Resolve(x.Key, RecordType.Mx);
+
+
+						if (!((mxRecord == null) || ((mxRecord.ReturnCode != ReturnCode.NoError) && (mxRecord.ReturnCode != ReturnCode.NxDomain))))
+						{
+							var mxHost = mxRecord.AnswerRecords.OfType<MxRecord>().Select(record => record.ExchangeDomainName).LastOrDefault();
+
+							if (mxHost.HasValue())
+							{
+								host = mxHost;
+								Console.WriteLine("MX records found for: " + x.Key + " they are: " + host);
+							}
+						}
+
+						using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+						{
+							try
+							{
+								socket.Connect(host, 25);
+							}
+							catch (SocketException ex)
+							{
+								Console.WriteLine("Can't connect to {0} : {1} - {2}", host, ex.SocketErrorCode, ex.Message);
+								return true;
+							}
+						}
+
+						return !hostInfo.AddressList.Any();
+					}
+					catch (Exception)
+					{
+						s.Stop();
+						Console.WriteLine(counter + " We are resolving domain:" + x.Key + " resolve failed and it took: " + s.ElapsedMilliseconds);
+						return true;
+					}
+				}).Select(x => x.Key)
+									.ToList();
+
+			var afterDns = RemoveRowsByDomains(rows, badDomains);
+
+			WriteCsv(rayCommandOptions, afterDns);
+
+			total.Stop();
+
+			Console.WriteLine("Total resolve took:" + total.ElapsedMilliseconds / (1000 * 60) + " m");
+			Console.ReadKey();
+		}
+
 		private static void OutputSmallDomains(List<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
 		{
 			var st = new Stopwatch();
@@ -186,37 +192,30 @@ namespace SpeedyMailer.Master.Ray
 
 			WriteToConsole("Group by took {0} seconds", st.ElapsedMilliseconds / (long)1000);
 
-			WriteToConsole("There are {0} domains to remove", removeDomains.Count);
+			WriteToConsole("There are {0} domains to remove, they are {1}", removeDomains.Count, removeDomains.Commafy());
 
 			st.Reset();
 			st.Start();
 			var newRows = RemoveRowsByDomains(rows, removeDomains);
 			st.Stop();
 
-			WriteToConsole("Removing domains took {0} seconds", st.ElapsedMilliseconds / (long)1000);
+			WriteToConsole("Removing domains took {0} ms", st.ElapsedMilliseconds);
 
 			st.Reset();
 			st.Start();
 			WriteCsv(rayCommandOptions, newRows);
 			st.Stop();
 
-			WriteToConsole("Writing the CSV took {0} seconds", st.ElapsedMilliseconds / 1000);
+			WriteToConsole("Writing the CSV took {0} ms", st.ElapsedMilliseconds);
 		}
 
 		private static List<OneRawContactsListCsvRow> RemoveRowsByDomains(List<OneRawContactsListCsvRow> rows, List<string> removeDomains)
 		{
-			removeDomains = removeDomains.Select(x => "@" + x + "$").ToList();
+			removeDomains = removeDomains.Select(x => "@" + x).ToList();
+
 			return rows
 				.AsParallel()
-				.Where(x =>
-					{
-						var st = new Stopwatch();
-						st.Start();
-						var keep = !removeDomains.Any(r => Regex.Match(x.Email, r, RegexOptions.IgnoreCase | RegexOptions.Compiled).Success);
-						st.Stop();
-						WriteToConsole("Single domain removel took {0}",st.Elapsed);
-						return keep;
-					})
+				.Where(x => !removeDomains.Any(r => x.Email.EndsWith(r)))
 				.ToList();
 
 			//			return rows
