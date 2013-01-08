@@ -143,7 +143,7 @@ function DronesController($scope, dronesResource, $http) {
         promise.success(function (data) {
             $scope.deploys.push({
                 output: data,
-                id: drone.Id
+                droneId: drone.Id
             });
         });
     };
