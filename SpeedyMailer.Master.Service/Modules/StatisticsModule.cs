@@ -39,14 +39,14 @@ namespace SpeedyMailer.Master.Service.Modules
 					}
 				};
 
-//			Get["/logs"] = call =>
-//				{
-//					using (var session = documentStore.OpenSession())
-//					{
-//						var results = session.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>().Where(x => x.Group == "All").ToList();
-//						return Response.AsText(string.Join(Environment.NewLine, results[0].Logs));
-//					}
-//				};
+			//			Get["/logs"] = call =>
+			//				{
+			//					using (var session = documentStore.OpenSession())
+			//					{
+			//						var results = session.Query<Creative_RawLogs.ReduceResult, Creative_RawLogs>().Where(x => x.Group == "All").ToList();
+			//						return Response.AsText(string.Join(Environment.NewLine, results[0].Logs));
+			//					}
+			//				};
 
 			Get["/sent/"] = call =>
 				{
@@ -75,7 +75,7 @@ namespace SpeedyMailer.Master.Service.Modules
 					using (var session = documentStore.OpenSession())
 					{
 						var creativeId = (string)Request.Query["creativeid"];
-						var classificationRules = session.LoadSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules();
+						var classificationRules = session.LoadSingle<DeliverabilityClassificationRules>() ?? new DeliverabilityClassificationRules { Rules = new List<HeuristicRule>() };
 						var rules = classificationRules.Rules.Select(x => x.Condition);
 
 						var results = session.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>().Where(x => x.CreativeId == creativeId).ToList();
@@ -112,9 +112,9 @@ namespace SpeedyMailer.Master.Service.Modules
 							{
 								TotalSent = sanitizedSends.Count,
 								TotalBounces = sanitizedBounces.Count,
-//								Sent = sanitizedSends,
-//								Bounced = sanitizedBounces,
-//								Deferred = sanitizedDeferres,
+								//								Sent = sanitizedSends,
+								//								Bounced = sanitizedBounces,
+								//								Deferred = sanitizedDeferres,
 							});
 					}
 				};
