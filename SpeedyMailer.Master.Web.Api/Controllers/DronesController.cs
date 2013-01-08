@@ -55,5 +55,22 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 				return cmd.Result.Replace("\n", "<br>");
 			}
 		}
+		
+		[POST("/drones/deploy/all")]
+		public string DeployAll()
+		{
+//			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
+//
+//			using (var ssh = new SshClient("173.224.209.25", "root", "0953acb"))
+//			{
+//				ssh.Connect();
+//				var cmd = ssh.RunCommand(string.Format("knife bootstrap {0} -x root -P 0953acb --sudo -N {1} --run-list speedymailer-drone -E xomixfuture", drone.Id, Guid.NewGuid().ToString().Replace("-", "")));   //  very long list 
+//				ssh.Disconnect();
+//
+//				return cmd.Result.Replace("\n", "<br>");
+//			}
+
+			return "OK";
+		}
 	}
 }

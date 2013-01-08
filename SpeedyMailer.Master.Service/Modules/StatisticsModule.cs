@@ -79,7 +79,7 @@ namespace SpeedyMailer.Master.Service.Modules
 						var rules = classificationRules.Rules.Select(x => x.Condition);
 
 						var results = session.Query<Creative_UnclassifiedEmails.ReduceResult, Creative_UnclassifiedEmails>().Where(x => x.CreativeId == creativeId).ToList();
-						results[0].Unclassified = results[0].Unclassified.Where(x => !rules.Any(m => Regex.Match(x.Message, m).Success)).Distinct(new LambdaComparer<GenericMailEvent>((x, y) => x.Recipient == y.Recipient)).ToList();
+						results[0].Unclassified = results[0].Unclassified.Where(x => !rules.Any(m => Regex.Match(x.Message, m, RegexOptions.IgnoreCase).Success)).Distinct(new LambdaComparer<GenericMailEvent>((x, y) => x.Recipient == y.Recipient)).ToList();
 
 						return Response.AsJson(results);
 					}
