@@ -74,9 +74,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="NLog.MongoDB">
-      <HintPath>..\packages\NLog.MongoDB.0.5.0\lib\net40\NLog.MongoDB.dll</HintPath>
-    </Reference>
     <Reference Include="Raven.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\RavenDB.Client.2.0.2196-Unstable\lib\net40\Raven.Abstractions.dll</HintPath>
@@ -211,6 +208,10 @@
     <ProjectReference Include="..\Mongol\Mongol.csproj">
       <Project>{3D27F3B9-D705-4BEE-80E7-B16AA2ACD2C5}</Project>
       <Name>Mongol</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NLog.MongoDB\NLog.MongoDB.csproj">
+      <Project>{fe562e35-7488-4edc-8334-e0bc611dddf9}</Project>
+      <Name>NLog.MongoDB</Name>
     </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
