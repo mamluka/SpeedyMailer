@@ -16,8 +16,15 @@ namespace SpeedyMailer.Core.Emails
         {
             var doc = new HtmlDocument();
             doc.LoadHtml(bodySource);
+
+	        if (doc.DocumentNode == null)
+		        return bodySource;
+
             var dealList =
-                doc.DocumentNode.SelectNodes("//a[@href]").ToList();
+                doc.DocumentNode.SelectNodes("//a[@href]");
+
+			if (dealList == null)
+		        return bodySource;
 
             foreach (var deal in dealList)
             {

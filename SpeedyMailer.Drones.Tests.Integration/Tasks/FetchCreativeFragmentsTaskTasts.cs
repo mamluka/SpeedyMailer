@@ -172,6 +172,75 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		}
 
 		[Test]
+		public void Execute_WhenWeObtainAFragmentWithNoDealUrlInsideTheBody_ShouldStartSendTheEmail()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+																								  {
+																									  x.Id = "fragment/1";
+																									  x.CreativeId = "creative/1";
+																									  x.HtmlBody = "no link here";
+																									  x.DealUrl = "http://www.dealexpress.com/deal";
+																									  x.Subject = "hello world subject";
+																									  x.UnsubscribeTemplate = "here  is a template ^url^";
+																									  x.Recipients = recipients;
+																									  x.FromName = "david";
+																									  x.FromAddressDomainPrefix = "sales";
+																								  });
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			Email.AssertEmailsSentTo(new[] { "test@test.com" });
+		}
+
+		[Test]
+		public void Execute_WhenWeObtainAFragmentWithoutADealUrl_ShouldUseTheUrlsInsideTheBody()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
+			DroneActions.EditSettings<EmailingSettings>(x =>
+															{
+																x.WritingEmailsToDiskPath = IntergrationHelpers.AssemblyDirectory;
+																x.MailingDomain = "example.com";
+															});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+			DroneActions.EditSettings<DroneSettings>(x => x.Identifier = "192.1.1.1");
+
+			var recipients = new List<Recipient> { AddRecipient("contacts/1", "test@test.com") };
+
+			Api.PrepareApiResponse<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x =>
+																								  {
+																									  x.Id = "fragment/1";
+																									  x.CreativeId = "creative/1";
+																									  x.HtmlBody = "http://www.google.com";
+																									  x.Subject = "hello world subject";
+																									  x.UnsubscribeTemplate = "here  is a template ^url^";
+																									  x.Recipients = recipients;
+																									  x.FromName = "david";
+																									  x.FromAddressDomainPrefix = "sales";
+																								  });
+
+			var task = new FetchCreativeFragmentsTask();
+
+			DroneActions.StartScheduledTask(task);
+
+			Email.AssertEmailSent(x => x.Body.Contains("http://www.google.com"));
+		}
+
+		[Test]
 		public void Execute_WhenWeObtainAFragment_ShouldStoreThePackagesCurrentTime()
 		{
 			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
