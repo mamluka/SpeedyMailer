@@ -208,7 +208,15 @@ namespace SpeedyMailer.Master.Ray
 			removeDomains = removeDomains.Select(x => "@" + x + "$").ToList();
 			return rows
 				.AsParallel()
-				.Where(x => !removeDomains.Any(r => Regex.Match(x.Email, r, RegexOptions.IgnoreCase | RegexOptions.Compiled).Success))
+				.Where(x =>
+					{
+						var st = new Stopwatch();
+						st.Start();
+						var keep = !removeDomains.Any(r => Regex.Match(x.Email, r, RegexOptions.IgnoreCase | RegexOptions.Compiled).Success);
+						st.Stop();
+						WriteToConsole("Single domain removel took {0}",st.Elapsed);
+						return keep;
+					})
 				.ToList();
 
 			//			return rows
