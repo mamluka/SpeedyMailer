@@ -11,7 +11,7 @@ angular.module('SpeedyMailer', ['SpeedyMailer.services', 'SpeedyMailer.settings'
       $routeProvider.when('/send-creatives', { templateUrl: 'partials/send-creatives.html', controller: SendingController });
       $routeProvider.when('/heuristics', { templateUrl: 'partials/heuristics.html', controller: HeuristicsController });
       $routeProvider.when('/playground', { templateUrl: 'partials/playground.html', controller: PlaygroundController });
-      $routeProvider.when('/drones-admin', { templateUrl: 'partials/drones-admin.html', controller: PlaygroundController });
+      $routeProvider.when('/drones-admin', { templateUrl: 'partials/drones-admin.html', controller: DronesController });
       $routeProvider.when('/not-supported', { templateUrl: 'partials/not-supported.html', controller: AppController });
       $routeProvider.otherwise({ redirectTo: '/not-supported' });
   }]);
