@@ -20,7 +20,7 @@ namespace SpeedyMailer.Core.Container
 						CustomizeJsonSerializer =
 							serializer =>
 							{
-								serializer.TypeNameHandling = TypeNameHandling.All;
+								serializer.TypeNameHandling = TypeNameHandling.Auto;
 							},
 						FindTypeTagName = type => typeof(PersistentTask).IsAssignableFrom(type) ? "persistenttasks" : DocumentConvention.DefaultTypeTagName(type),
 						DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites
