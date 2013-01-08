@@ -141,7 +141,7 @@ function DronesController($scope, dronesResource, $http) {
     $scope.deploy = function (drone) {
         var promise = $http.post('/drones/deploy'.Apify(), { id: drone.Id });
         promise.success(function (data) {
-            $scope.deploy.push({
+            $scope.deploys.push({
                 output: data,
                 id: drone.id
             });
