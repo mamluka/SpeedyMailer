@@ -27,8 +27,8 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 			return _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
 		}
 
-		[GET("/drones/deploy")]
-		public string Deploy(string droneHost)
+		[POST("/drones/deploy")]
+		public string Deploy(string id)
 		{
 			using (var ssh = new SshClient("xomixinc.com", "root", "0953acb"))
 			{
