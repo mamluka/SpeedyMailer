@@ -30,7 +30,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("/drones/deploy")]
 		public string Deploy([FromBody]string id)
 		{
-			using (var ssh = new SshClient("xomixinc.com", "root", "0953acb"))
+			using (var ssh = new SshClient(id, "root", "0953acb"))
 			{
 				ssh.Connect();
 				var cmd = ssh.RunCommand("chef-client");   //  very long list 
