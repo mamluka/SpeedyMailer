@@ -137,6 +137,17 @@ HeuristicsController.$inject = ['$scope', 'DeliveryHeuristics'];
 function DronesController($scope, dronesResource, $http) {
     $scope.drones = dronesResource.query();
     $scope.deploys = [];
+    $scope.domain = "mydomain";
+
+    $scope.bootstrap = function (domain) {
+        var promise = $http.post('/drones/bootstrap'.Apify(), { id: domain });
+        promise.success(function (data) {
+            $scope.deploys.push({
+                output: data,
+                droneId: domain
+            });
+        });
+    };
 
     $scope.deploy = function (drone) {
         var promise = $http.post('/drones/deploy'.Apify(), { id: drone.Id });
