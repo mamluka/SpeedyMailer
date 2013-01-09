@@ -111,9 +111,9 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
 
     $scope.addRule = function (condition, type, timespan) {
         $scope.rules.push({
-            condition: condition,
-            type: type,
-            data: {
+            Condition: condition,
+            Type: type,
+            Data: {
                 TimeSpan: timespan
             }
         });
