@@ -1,42 +1,58 @@
 <div>
     <h2>Add heuristics</h2>
+    <button ng-click="saveHeuristics()" value="send">Send</button>
+    <table>
+        <tr>
+            <td>
+                <label>Hard bouce</label>
+                <input type="text" ng-model="hardBounceCondition" />
+                <button ng-click="addRule(hardBounceCondition,'HardBounce')">Add</button>
+                <br />
 
-    <label>Hard bouce</label>
-    <input type="text" ng-model="hardBounceCondition" />
-    <button ng-click="addRule(hardBounceCondition,'HardBounce')">Add</button>
-    <br />
+                <ul>
+                    <li ng-repeat="rule in rules | filter:'HardBounce' ">{{rule}} <span ng-click="removeRule()">remove</span></li>
+                </ul>
+            </td>
+            <td>
+                <label>Blocking IP</label>
+                <input type="text" ng-model="ipBlockingCondition" />
+                <button ng-click="addRule(ipBlockingCondition,'IpBlocking')">Add</button>
+                <br />
 
-    <ul>
-        <li ng-repeat="rule in rules | filter:'HardBounce' ">{{rule}} <span ng-click="removeRule()">remove</span></li>
-    </ul>
-    
-    <label>Blocking IP</label>
-    <input type="text" ng-model="ipBlockingCondition" />
-    <button ng-click="addRule(ipBlockingCondition,'IpBlocking')">Add</button>
-    <br />
+                <ul>
+                    <li ng-repeat="rule in rules | filter:'IpBlocking' ">{{rule}} <span ng-click="removeRule()">remove</span></li>
+                </ul>
+            </td>
+            <td>
+                <label>Content blocking IP</label>
+                <input type="text" ng-model="contentBlockingCondition" />
+                <button ng-click="addRule(contentBlockingCondition,'ContentBlocking')">Add</button>
+                <br />
 
-    <ul>
-        <li ng-repeat="rule in rules | filter:'IpBlocking' ">{{rule}} <span ng-click="removeRule()">remove</span></li>
-    </ul>
-    
-    <label>Content blocking IP</label>
-    <input type="text" ng-model="contentBlockingCondition" />
-    <button ng-click="addRule(contentBlockingCondition,'ContentBlocking')">Add</button>
-    <br />
+                <ul>
+                    <li ng-repeat="rule in rules | filter:'ContentBlocking' ">{{rule}} <span ng-click="removeRule()">remove</span></li>
+                </ul>
+            </td>
+            <td>
+                <label>Temp bounces</label>
+                <input type="text" ng-model="tempBlockCondition" />
+                <input type="text" ng-model="timeSpan" />
+                <button ng-click="addRule(tempBlockCondition,'TempBlock',timeSpan)">Add</button>
+                <br />
 
-    <ul>
-        <li ng-repeat="rule in rules | filter:'ContentBlocking' ">{{rule}} <span ng-click="removeRule()">remove</span></li>
-    </ul>
+                <ul>
+                    <li ng-repeat="rule in rules | filter:'TempBlock' ">{{rule}} <span ng-click="removeRule(rule.condition)">remove</span></li>
+                </ul>
+            </td>
+        </tr>
+    </table>
 
-    <label>Temp bounces</label>
-    <input type="text" ng-model="tempBlockCondition" />
-    <input type="text" ng-model="timeSpan" />
-    <button ng-click="addRule(tempBlockCondition,'TempBlock',timeSpan)">Add</button>
-    <br />
 
-    <ul>
-        <li ng-repeat="rule in rules | filter:'TempBlock' ">{{rule}} <span ng-click="removeRule(rule.condition)">remove</span></li>
-    </ul>
+
+
+
+
+
 
     <button ng-click="saveHeuristics()" value="send">Send</button>
 </div>
