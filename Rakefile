@@ -211,7 +211,6 @@ namespace :windows do
   task :configure_app do
     configFile = File.join(MASTER_PREDEPLOY_FOLDER, APP_OUTPUT_FOLDER, "js", "config.js")
 
-    puts configFile
     FileUtils.rm_rf configFile;
 
     File.open(configFile, 'w') {
