@@ -160,6 +160,10 @@
       <Project>{3d27f3b9-d705-4bee-80e7-b16aa2acd2c5}</Project>
       <Name>Mongol</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NLog.MongoDB\NLog.MongoDB.csproj">
+      <Project>{fe562e35-7488-4edc-8334-e0bc611dddf9}</Project>
+      <Name>NLog.MongoDB</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SpeedyMailer.Core\SpeedyMailer.Core.csproj">
       <Project>{5CF80BBC-A484-4339-ADE6-F6C902B961B1}</Project>
       <Name>SpeedyMailer.Core</Name>

@@ -51,7 +51,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 			var result = DroneActions.FindSingle<UnsubscribeRequest>();
 
 			result.ContactId.Should().Be("contacts/1");
-			result.CreativeId.Should().Be("creative/1");
+			result.CreativeId.Should().Be("creatives/1");
 			result.Date.Should().BeAfter(DateTime.UtcNow.AddMinutes(-1));
 		}
 
@@ -65,17 +65,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Modules
 
 		private RestRequest CreateRestRequest()
 		{
-			var resource = DefaultBaseUrl + "/unsubscribe/" + UrlBuilder.ToBase64(new DealUrlData
-			{
-				ContactId = "contacts/1",
-				CreativeId = "creative/1"
-			});
+			var resource = DefaultBaseUrl + "/unsubscribe/" + UrlBuilder.ToBase64("1,1");
 
 			var restRequest = new RestRequest(resource)
-			{
-				JsonSerializer = new RestSharpJsonNetSerializer(),
-				Method = Method.GET
-			};
+								  {
+									  JsonSerializer = new RestSharpJsonNetSerializer(),
+									  Method = Method.GET
+								  };
 			return restRequest;
 		}
 	}
