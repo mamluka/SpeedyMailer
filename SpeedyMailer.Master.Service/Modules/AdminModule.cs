@@ -77,6 +77,11 @@ namespace SpeedyMailer.Master.Service.Modules
 																				 .Exceptions.Distinct(new LambdaComparer<string>((m, n) => m.Substring(20) == n.Substring(20)))));
 					}
 				};
+
+			Get["/ex"] = _ =>
+				{
+					throw new Exception("test");
+				};
 		}
 	}
 }

@@ -71,6 +71,19 @@ namespace SpeedyMailer.Core.Container
 					logger.Info("[{0}] The request path was {1} \n with body: {2} \n with response: {3} \n request took: {4} ms", x.Request.Method, x.Request.Url, requestContent, responseContent, st.ElapsedMilliseconds);
 				});
 
+			pipelines.OnError.AddItemToEndOfPipeline((x, ex) =>
+				{
+					var requestContent = "";
+					using (var reader = new StreamReader(x.Request.Body))
+					{
+						requestContent = reader.ReadToEnd();
+					}
+
+					logger.Error("[{0}] The request path was {1} \n with body: {2} \n exception: {3}", x.Request.Method, x.Request.Url, requestContent, ex);
+
+					return x.Response;
+				});
+
 			base.ApplicationStartup(container, pipelines);
 		}
 	}
