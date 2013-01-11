@@ -194,6 +194,7 @@
     <Compile Include="Domain\Drones\Drone.cs" />
     <Compile Include="Domain\Drones\DroneException.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
+    <Compile Include="Domain\Drones\SlimDrone.cs" />
     <Compile Include="Domain\Emails\ClickAction.cs" />
     <Compile Include="Domain\Emails\Email.cs" />
     <Compile Include="Domain\Emails\LeadIdentity.cs" />

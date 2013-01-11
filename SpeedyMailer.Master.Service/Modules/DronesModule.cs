@@ -86,7 +86,7 @@ namespace SpeedyMailer.Master.Service.Modules
 				{
 					using (var session = documentStore.OpenSession())
 					{
-						var drones = session.Query<Drone>().ToList();
+						var drones = session.Query<Drone>().Select(x => new SlimDrone { Id = x.Id, Domain = x.Domain }).ToList();
 						return Response.AsJson(drones);
 					}
 				};

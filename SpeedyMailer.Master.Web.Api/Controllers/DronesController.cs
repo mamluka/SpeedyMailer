@@ -22,9 +22,9 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[GET("/drones")]
-		public IEnumerable<Drone> GetDrones()
+		public IEnumerable<SlimDrone> GetDrones()
 		{
-			return _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
+			return _api.Call<ServiceEndpoints.Drones.Get, List<SlimDrone>>();
 		}
 
 		[POST("/drones/deploy")]
