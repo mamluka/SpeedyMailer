@@ -78,7 +78,21 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			result.Type.Should().Be(Classification.ContentBlocking);
 		}
+		
+		[Test]
+		public void Execute_WhenGivenAMessageThatMatchesTryAgain_ShouldReturnnTryAgain()
+		{
+			DroneActions.EditSettings<DroneSettings>(x => x.StoreHostname = DefaultHostUrl);
 
+			const string message = "host mailin-03.mx.aol.com[205.188.156.193] requested action aborted: try again";
+
+			StoreClassficationRules(new[] { new HeuristicRule { Condition = "try again", Type = Classification.TryAgain } });
+
+			var result = DroneActions.ExecuteCommand<ClassifyNonDeliveredMailCommand, MailClassfication>(x => x.Message = message);
+
+			result.Type.Should().Be(Classification.TryAgain);
+		}
+		
 		[Test]
 		public void Execute_WhenConditionIsGiven_ShouldNotBeCaseSensitive()
 		{

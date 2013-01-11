@@ -6,6 +6,7 @@ namespace SpeedyMailer.Core.Domain.Mail
 		HardBounce,
 		TempBlock,
 		IpBlocking,
+		TryAgain,
 		ContentBlocking
 	}
 }
