@@ -141,15 +141,16 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 																		x.RawLogs = new List<string> { "log message" };
 																	});
 
-			var result = ReadLogFile("drone1.com");
+			var result = ReadLogFile("drone1.com.txt");
 
+			result.Should().Contain("log message");
 		}
 
-		private object ReadLogFile(string droneId)
-		{ 
-			using (var reader = new StreamWriter(@"logs\drones\" + droneId))
+		private string ReadLogFile(string droneId)
+		{
+			using (var reader = new StreamReader(@"logs\drones\" + droneId))
 			{
-				return reader.
+				return reader.ReadToEnd();
 			}
 		}
 

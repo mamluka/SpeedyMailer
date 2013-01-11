@@ -69,6 +69,12 @@ namespace SpeedyMailer.Master.Service.Modules
 												  session.SaveChanges();
 											  }
 
+											  var logsPath = Path.Combine("logs/drones/", model.Drone.Id + ".txt");
+											  if (!Directory.Exists("logs/drones"))
+												  Directory.CreateDirectory("logs/drones");
+
+												  File.AppendAllLines(logsPath,model.RawLogs);
+
 											  return Response.AsText("OK");
 										  };
 
