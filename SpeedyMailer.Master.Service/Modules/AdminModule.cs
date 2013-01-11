@@ -52,6 +52,15 @@ namespace SpeedyMailer.Master.Service.Modules
 												}
 											};
 
+			Get["/test"] = x =>
+				{
+					return Response.AsJson(new
+						{
+							CreativeId = "creatives/1",
+							Sex = "contacts/1"
+						});
+				};
+
 			Get["/drone-domains"] = x =>
 				{
 					using (var session = documentStore.OpenSession())

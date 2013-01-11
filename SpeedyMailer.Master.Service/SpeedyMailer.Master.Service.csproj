@@ -121,6 +121,7 @@
     <Compile Include="Modules\DronesModule.cs" />
     <Compile Include="Modules\RulesModule.cs" />
     <Compile Include="Modules\StatisticsModule.cs" />
+    <Compile Include="Modules\SystemModule.cs" />
     <Compile Include="Modules\TemplatesModule.cs" />
     <Compile Include="Storage\Indexes\Contacts_ByDomainGroupAndMemberOf.cs" />
     <Compile Include="Storage\Indexes\Mapping_Indexes.cs" />

@@ -58,6 +58,7 @@
     <Content Include="static\app\js\app.js" />
     <Content Include="static\app\js\config.js" />
     <Content Include="static\app\js\controllers.js" />
+    <Content Include="static\app\js\directives.js" />
     <Content Include="static\app\js\services.js" />
     <Content Include="static\app\lib\angular\angular-cookies.js" />
     <Content Include="static\app\lib\angular\angular-cookies.min.js" />

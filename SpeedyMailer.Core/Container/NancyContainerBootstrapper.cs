@@ -1,11 +1,15 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using NLog;
+using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
 using Ninject;
 using Quartz;
+using SpeedyMailer.Core.Settings;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -39,6 +43,7 @@ namespace SpeedyMailer.Core.Container
 		protected override void ApplicationStartup(IKernel container, IPipelines pipelines)
 		{
 			var logger = LogManager.GetLogger("SpeedyMailer.Nancy.Request");
+			var settings = container.Get<ServiceSettings>();
 
 			var st = new Stopwatch();
 
@@ -48,43 +53,71 @@ namespace SpeedyMailer.Core.Container
 					return x.Response;
 				});
 
-			pipelines.AfterRequest.AddItemToEndOfPipeline(x =>
-				{
-					st.Stop();
-					var stream = new MemoryStream();
-
-					x.Response.Contents(stream);
-
-					stream.Position = 0;
-					var responseContent = "";
-					using (var reader = new StreamReader(stream))
-					{
-						responseContent = reader.ReadToEnd();
-					}
-
-					var requestContent = "";
-					using (var reader = new StreamReader(x.Request.Body))
-					{
-						requestContent = reader.ReadToEnd();
-					}
-
-					logger.Info("[{0}] The request path was {1} \n with body: {2} \n with response: {3} \n request took: {4} ms", x.Request.Method, x.Request.Url, requestContent, responseContent, st.ElapsedMilliseconds);
-				});
-
-			pipelines.OnError.AddItemToEndOfPipeline((x, ex) =>
-				{
-					var requestContent = "";
-					using (var reader = new StreamReader(x.Request.Body))
-					{
-						requestContent = reader.ReadToEnd();
-					}
-
-					logger.Error("[{0}] The request path was {1} \n with body: {2} \n exception: {3}", x.Request.Method, x.Request.Url, requestContent, ex);
-
-					return x.Response;
-				});
+			pipelines.AfterRequest.AddItemToEndOfPipeline(x => LogResponse(st, x, logger));
+			pipelines.AfterRequest.AddItemToEndOfPipeline(x => HyperMedia(x, settings));
+			pipelines.OnError.AddItemToEndOfPipeline((x, ex) => LogErrors(x, logger, ex));
 
 			base.ApplicationStartup(container, pipelines);
+		}
+
+		private void HyperMedia(NancyContext x, ServiceSettings settings)
+		{
+			var contents = x.Response.Contents;
+			x.Response.Contents = stream =>
+				{
+					var memStream = new MemoryStream();
+					contents(memStream);
+					memStream.Position = 0;
+
+					using (var reader = new StreamReader(memStream))
+					{
+						var responseContent = reader.ReadToEnd();
+						responseContent = Regex.Replace(responseContent, "\"(\\w+?/\\d{1,})\"", match => "\"" + settings.BaseUrl + "/sys/by-id?id=" + match.Groups[1].Value + "\"");
+
+						var sw = new StreamWriter(stream, Encoding.Default);
+						sw.Write(responseContent);
+						sw.Flush();
+					}
+				};
+		}
+
+		private static Response LogErrors(NancyContext x, Logger logger, Exception ex)
+		{
+			var requestContent = "";
+			using (var reader = new StreamReader(x.Request.Body))
+			{
+				requestContent = reader.ReadToEnd();
+			}
+
+			logger.Error("[{0}] The request path was {1} \n with body: {2} \n exception: {3}", x.Request.Method, x.Request.Url, requestContent, ex);
+
+			return x.Response;
+		}
+
+		private static void LogResponse(Stopwatch st, NancyContext x, Logger logger)
+		{
+			st.Stop();
+			var stream = new MemoryStream();
+
+			var responseContent = "";
+			if (x.Response != null)
+			{
+				x.Response.Contents(stream);
+				stream.Position = 0;
+				using (var reader = new StreamReader(stream))
+				{
+					responseContent = reader.ReadToEnd();
+				}
+			}
+
+			var requestContent = "";
+			using (var reader = new StreamReader(x.Request.Body))
+			{
+				requestContent = reader.ReadToEnd();
+			}
+
+			logger.Info("[{0}] The request path was {1} \n with body: {2} \n with response: {3} \n request took: {4} ms", x.Request.Method, x.Request.Url, requestContent, responseContent,
+						st.ElapsedMilliseconds);
 		}
 	}
 }
