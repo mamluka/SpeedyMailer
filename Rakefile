@@ -82,7 +82,7 @@ namespace :windows do
     puts "Start building service..."
     Rake::Task["windows:build"].invoke(SERVICE_SOLUTION_FILE, SERVICE_OUTPUT_FOLDER)
     Rake::Task["windows:build"].reenable
-    end
+  end
 
   desc "Build ray tool"
   task :build_ray do
@@ -130,7 +130,11 @@ namespace :windows do
   desc "Deploy master applications"
   task :deploy => [:deploy_service, :deploy_api, :deploy_app] do
   end
-  
+
+  desc "Deploy master applications"
+  task :deploy_test => [:bootstrap_test, :deploy_service, :deploy_api, :deploy_app] do
+  end
+
   desc "Deploy web only"
   task :deploy_web => [:deploy_api, :deploy_app] do
   end
@@ -189,13 +193,13 @@ namespace :windows do
   task :shutdown_raven do
     ProcTable.ps.each do |p|
       if p.name == "Raven.Server.exe"
-         Process.kill('KILL',p.pid)
+        Process.kill('KILL', p.pid)
       end
     end
   end
 
   desc "Run raven32"
-  exec :exec_run_raven  do |cmd|
+  exec :exec_run_raven do |cmd|
     cmd.command="cmd.exe"
     cmd.parameters=["/c", "start", WIN32_MASTER_DEPLOY_FOLDER + "\\Server\\Raven.Server.exe"]
   end
@@ -235,7 +239,11 @@ namespace :windows do
     File.open(configFile, "w") do |f|
       f.write(tempHash.to_json)
     end
+  end
 
+  desc "change the host to localhost"
+  task :bootstrap_test do
+    MASTER_DOMAIN = "speedymailer"
   end
 
   desc "Execute deployment of app"

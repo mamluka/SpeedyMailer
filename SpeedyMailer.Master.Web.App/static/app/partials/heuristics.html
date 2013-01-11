@@ -15,7 +15,7 @@
                 <br />
 
                 <ul>
-                    <li ng-repeat="rule in rules | filter:'HardBounce' ">{{rule.Condition}} <span ng-click="removeRule()">remove</span></li>
+                    <li ng-repeat="rule in rules | filter:'HardBounce' ">{{rule.Condition}} <span ng-click="removeRule(rule)">remove</span></li>
                 </ul>
             </td>
             <td>
@@ -25,7 +25,7 @@
                 <br />
 
                 <ul>
-                    <li ng-repeat="rule in rules | filter:'IpBlocking' ">{{rule.Condition}} <span ng-click="removeRule()">remove</span></li>
+                    <li ng-repeat="rule in rules | filter:'IpBlocking' ">{{rule.Condition}} <span ng-click="removeRule(rule)">remove</span></li>
                 </ul>
             </td>
             <td>
@@ -35,7 +35,7 @@
                 <br />
 
                 <ul>
-                    <li ng-repeat="rule in rules | filter:'ContentBlocking' ">{{rule.Condition}} <span ng-click="removeRule()">remove</span></li>
+                    <li ng-repeat="rule in rules | filter:'ContentBlocking' ">{{rule.Condition}} <span ng-click="removeRule(rule)">remove</span></li>
                 </ul>
             </td>
             <td>
@@ -46,7 +46,7 @@
                 <br />
 
                 <ul>
-                    <li ng-repeat="rule in rules | filter:'TempBlock' ">{{rule.Condition}} - {rule.Data.TimeSpan} <span ng-click="removeRule(rule.condition)">remove</span></li>
+                    <li ng-repeat="rule in rules | filter:'TempBlock' ">{{rule.Condition}} - {rule.Data.TimeSpan} <span ng-click="removeRule(rule)">remove</span></li>
                 </ul>
             </td>
         </tr>

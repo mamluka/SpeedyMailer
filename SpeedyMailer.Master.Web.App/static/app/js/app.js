@@ -1,7 +1,7 @@
 'use strict';
 
 // Declare app level module which depends on filters, and services
-angular.module('SpeedyMailer', ['SpeedyMailer.services', 'SpeedyMailer.settings']).
+angular.module('SpeedyMailer', ['SpeedyMailer.services', 'SpeedyMailer.settings', 'SpeedyMailer.directives']).
   config(['$routeProvider', function ($routeProvider) {
       $routeProvider.when('/upload-contact-list', { templateUrl: 'partials/upload-contact-list.html', controller: UploadListController });
       $routeProvider.when('/create-creative', { templateUrl: 'partials/create-creative.html', controller: CreativeController });

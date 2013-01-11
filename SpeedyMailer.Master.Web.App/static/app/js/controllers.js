@@ -119,8 +119,8 @@ function HeuristicsController($scope, deliveryHeuristicsResource) {
         });
     };
 
-    $scope.removeHardBounces = function (hardBounce) {
-        $scope.rules.splice(hardBounce.indexOf(hardBounce), 1);
+    $scope.removeRule = function (rule) {
+        $scope.rules.splice($scope.rules.indexOf(rule), 1);
     };
 
     $scope.saveHeuristics = function () {
