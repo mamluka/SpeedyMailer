@@ -117,7 +117,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			DroneActions.StartScheduledTask(task);
 
 			DroneActions.WaitForChangeOnStoredObject<CreativePackage>(x => x.Processed);
-			Email.AssertEmailNotSent(new[] { "david@gmail.com" });
+			Email.AssertEmailNotSentTo(new[] { "david@gmail.com" });
 		}
 
 		[Test]
@@ -189,7 +189,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			var recipients = creativePackages.Select(x => x.To).ToList();
 
 			Email.AssertEmailsSentTo(new[] { recipients[0] });
-			Email.AssertEmailNotSent(new[] { recipients[1] });
+			Email.AssertEmailNotSentTo(new[] { recipients[1] });
 
 		}
 
@@ -227,7 +227,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			var recipients = creativePackages.Select(x => x.To).ToList();
 			Email.AssertEmailsSentWithInterval(recipients.Take(2).ToList(), 5, 30);
-			Email.AssertEmailNotSent(new[] { recipients[2] }, 30);
+			Email.AssertEmailNotSentTo(new[] { recipients[2] }, 30);
 		}
 
 		[Test]

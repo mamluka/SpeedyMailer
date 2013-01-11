@@ -1,12 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.IO;
-using System.Linq;
-using System.Runtime;
-using FluentAssertions;
+﻿using System.Linq;
 using NUnit.Framework;
-using Newtonsoft.Json;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Commands;
@@ -31,14 +24,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										TextBody = "test body",
 										Subject = "test subject",
 										To = "test@test",
-										CreativeId = "creative/1"
+										CreativeId = "creative/1",
+										FromName = "david",
+										FromAddressDomainPrefix = "sales"
 									};
 
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>
 																		{
 																			x.Package = creativePackage;
-																			x.FromName = "david";
-																			x.FromAddressDomainPrefix = "sales";
 																		});
 
 			Email.AssertEmailSent(x => x.To.Any(address => address.Address == "test@test"));
@@ -61,14 +54,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										TextBody = "test body",
 										Subject = "test subject",
 										To = "test@test",
-                                        CreativeId = "creative/1"
+                                        CreativeId = "creative/1",
+										FromName = "david",
+										FromAddressDomainPrefix = "sales"
 									};
 
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>
 																		{
 																			x.Package = creativePackage;
-																			x.FromName = "david";
-																			x.FromAddressDomainPrefix = "sales";
 																		});
 
 			Email.AssertEmailSent(x => x.To.Any(address => address.Address == "test@test"));
@@ -92,14 +85,14 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 										HtmlBody = "test body",
 										Subject = "test subject",
 										To = "test@test",
-										CreativeId = "creative/1"
+										CreativeId = "creative/1",
+										FromName = "david",
+										FromAddressDomainPrefix = "sales"
 									};
 
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x =>
 																		{
 																			x.Package = creativePackage;
-																			x.FromName = "david";
-																			x.FromAddressDomainPrefix = "sales";
 																		});
 
 			Email.AssertEmailSent(x => x.From.Address == "sales@example.com" && x.From.DisplayName == "david");
@@ -112,7 +105,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Commands
 
 			DroneActions.ExecuteCommand<SendCreativePackageCommand>(x => x.Package = null);
 
-			Email.AssertEmailNotSent(10);
+			Email.AssertEmailNotSentTo(10);
 		}
 	}
 }

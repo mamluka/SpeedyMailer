@@ -20,8 +20,6 @@ namespace SpeedyMailer.Drones.Commands
 		private readonly Logger _logger;
 
 		public CreativePackage Package { get; set; }
-		public string FromName { get; set; }
-		public string FromAddressDomainPrefix { get; set; }
 
 		public SendCreativePackageCommand(Logger logger, EmailingSettings emailingSettings, DroneSettings droneSettings)
 		{
@@ -43,7 +41,7 @@ namespace SpeedyMailer.Drones.Commands
 				email.AlternateViews.Add(CreateHtmlView());
 
 			email.Subject = Package.Subject;
-			email.From = new MailAddress(FromAddressDomainPrefix + "@" + _emailingSettings.MailingDomain, FromName);
+			email.From = new MailAddress(Package.FromAddressDomainPrefix + "@" + _emailingSettings.MailingDomain, Package.FromName);
 			email.IsBodyHtml = false;
 			email.Headers.Add("Speedy-Creative-Id", Package.CreativeId);
 

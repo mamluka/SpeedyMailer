@@ -56,9 +56,6 @@ namespace SpeedyMailer.Drones.Tasks
 				try
 				{
 					_sendCreativePackageCommand.Package = creativePackage;
-					_sendCreativePackageCommand.FromName = creativePackage.FromName;
-					_sendCreativePackageCommand.FromAddressDomainPrefix = creativePackage.FromAddressDomainPrefix;
-
 					_sendCreativePackageCommand.Execute();
 				}
 				catch (Exception ex)

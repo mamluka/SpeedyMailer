@@ -129,7 +129,7 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 			});
 		}
 
-		public void AssertEmailNotSent(int waitFor = 5)
+		public void AssertEmailNotSentTo(int waitFor = 5)
 		{
 			var files = WaitForEmailFiles(waitFor);
 
@@ -140,12 +140,12 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 
 		}
 
-		public void AssertEmailNotSent(IList<Recipient> recipients, int waitFor = 5)
+		public void AssertEmailNotSentTo(IList<Recipient> recipients, int waitFor = 5)
 		{
-			AssertEmailNotSent(recipients.Select(x => x.Email).ToList(), waitFor);
+			AssertEmailNotSentTo(recipients.Select(x => x.Email).ToList(), waitFor);
 		}
 
-		public void AssertEmailNotSent(IList<string> recipients, int waitFor = 5)
+		public void AssertEmailNotSentTo(IList<string> recipients, int waitFor = 5)
 		{
 			var emails = WaitForEmailsThatWereSentBy(recipients, waitFor);
 

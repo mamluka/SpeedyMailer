@@ -127,6 +127,7 @@
     <Compile Include="Events\PauseSendingForIndividualDomainsTests.cs" />
     <Compile Include="Events\ReinstateRecipientsForSendingTests.cs" />
     <Compile Include="Events\RemoveSentPackagesTests.cs" />
+    <Compile Include="Events\ResendTryAgainProtectedContactsTests.cs" />
     <Compile Include="Events\StopSendingWhenTheIpIsBlockedTests.cs" />
     <Compile Include="Events\StopSendingWhenTheContentIsBlockedTests.cs" />
     <Compile Include="Events\StoreUnclassifiedMailEventsTests.cs" />

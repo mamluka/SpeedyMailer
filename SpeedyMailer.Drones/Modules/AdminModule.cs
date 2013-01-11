@@ -45,9 +45,6 @@ namespace SpeedyMailer.Drones.Modules
 
 			Get["/send-test-email"] = x =>
 				{
-					sendCreativePackageCommand.FromAddressDomainPrefix = "david";
-					sendCreativePackageCommand.FromName = "david";
-
 					var creativeId = (string) Request.Query["creativeId"];
 					var htmlBody = (string) Request.Query["html"];
 					var textBody = (string) Request.Query["text"];
