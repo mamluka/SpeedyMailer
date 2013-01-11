@@ -43,21 +43,22 @@ namespace SpeedyMailer.Core.Container
 		protected override void ApplicationStartup(IKernel container, IPipelines pipelines)
 		{
 			var logger = LogManager.GetLogger("SpeedyMailer.Nancy.Request");
-			var settings = container.Get<ServiceSettings>();
+			var serviceSettings = container.Get<ServiceSettings>();
 
 			var st = new Stopwatch();
 
-			pipelines.BeforeRequest.AddItemToEndOfPipeline(x =>
-				{
-					st.Start();
-					return x.Response;
-				});
-
+			pipelines.BeforeRequest.AddItemToEndOfPipeline(x => StartMeasuring(st, x));
 			pipelines.AfterRequest.AddItemToEndOfPipeline(x => LogResponse(st, x, logger));
-			pipelines.AfterRequest.AddItemToEndOfPipeline(x => HyperMedia(x, settings));
+			pipelines.AfterRequest.AddItemToEndOfPipeline(x => HyperMedia(x, serviceSettings));
 			pipelines.OnError.AddItemToEndOfPipeline((x, ex) => LogErrors(x, logger, ex));
 
 			base.ApplicationStartup(container, pipelines);
+		}
+
+		private static Response StartMeasuring(Stopwatch st, NancyContext x)
+		{
+			st.Start();
+			return x.Response;
 		}
 
 		private void HyperMedia(NancyContext x, ServiceSettings settings)
