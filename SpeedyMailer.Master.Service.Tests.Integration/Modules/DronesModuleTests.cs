@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
@@ -53,7 +54,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 		}
 
 		[Test]
-		public void SendStateSnapshot_WhenCalledWithADroneIdentifier_ShouldRegisterTheDroneInTheStore()
+		public void SendStateSnapshot_WhenGotASnapStop_ShouldStoreIt()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
 
@@ -116,12 +117,40 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Drone.BaseUrl.Should().Be("baseurl.com");
 			result.Drone.Domain.Should().Be("example.com");
 
-			result.RawLogs.Should().OnlyContain(x => x == "log message");
 			result.MailSent.Should().OnlyContain(x => x.Recipient == "sent@sent.com");
 			result.MailBounced.Should().OnlyContain(x => x.Message == "mail bounced");
 			result.ClickActions.Should().OnlyContain(x => x.ContactId == "contacts/1");
 			result.UnsubscribeRequests.Should().OnlyContain(x => x.ContactId == "contacts/2");
 			result.Unclassified.Should().OnlyContain(x => x.Message == "unclassified");
+		}
+
+		[Test]
+		public void SendStateSnapshot_WhenGotARawLogs_ShouldStoreThemInAFile()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+			var api = DroneResolve<Api>();
+
+			api.Call<ServiceEndpoints.Drones.SendStateSnapshot>(x =>
+																	{
+																		x.Drone = new Drone { Id = "drone1.com" };
+																		x.RawLogs = new List<string> { "log message" };
+																	});
+
+			var result = ReadLogFile("drone1.com");
+
+		}
+
+		private object ReadLogFile(string droneId)
+		{ 
+			using (var reader = new StreamWriter(@"logs\drones\" + droneId))
+			{
+				return reader.
+			}
 		}
 
 		[Test]
@@ -143,7 +172,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result[0].Name.Should().Be("VIRBL");
 			result[0].Type.Should().Be(DnsnlType.Ip);
 		}
-		
+
 		[Test]
 		public void Get_WhenCalled_ShouldReturnDrones()
 		{

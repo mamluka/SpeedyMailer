@@ -98,6 +98,7 @@ namespace SpeedyMailer.Core.Container
 		private static void LogResponse(Stopwatch st, NancyContext x, Logger logger)
 		{
 			st.Stop();
+			st.Reset();
 			var stream = new MemoryStream();
 
 			var responseContent = "";

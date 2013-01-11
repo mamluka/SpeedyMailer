@@ -59,7 +59,6 @@ namespace SpeedyMailer.Master.Service.Modules
 												  session.Store(new DroneStateSnapshoot
 																	{
 																		Drone = model.Drone,
-																		RawLogs = model.RawLogs,
 																		MailBounced = model.MailBounced,
 																		MailSent = model.MailSent,
 																		ClickActions = model.ClickActions,
