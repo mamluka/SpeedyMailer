@@ -39,6 +39,16 @@
                 </ul>
             </td>
             <td>
+                <label>Try again</label>
+                <input type="text" ng-model="tryAgainBlockingCondition" />
+                <button ng-click="addRule(tryAgainBlockingCondition,'TryAgain')">Add</button>
+                <br />
+
+                <ul>
+                    <li ng-repeat="rule in rules | filter:'TryAgain' ">{{rule.Condition}} <span ng-click="removeRule(rule)">remove</span></li>
+                </ul>
+            </td>
+            <td>
                 <label>Temp bounces</label>
                 <input type="text" ng-model="tempBlockCondition" />
                 <input type="text" ng-model="timeSpan" />
