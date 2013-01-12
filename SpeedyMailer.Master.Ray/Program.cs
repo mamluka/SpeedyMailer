@@ -108,22 +108,43 @@ namespace SpeedyMailer.Master.Ray
 		{
 			var st = new Stopwatch();
 			st.Start();
+			var version = Guid.NewGuid().ToString().Substring(0, 6);
+
+			var error = new List<string>();
+
 			var cleanDomains = domains
 				.AsParallel()
 				.Where(domain =>
 				{
-					var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 2000);
-					var mxRecords = client.Resolve(domain, RecordType.Mx);
+					var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 10000);
 
+					var mxRecords = client.Resolve(domain, RecordType.Mx);
 					if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
 						return true;
 
 					var aRecord = client.Resolve(domain, RecordType.A);
+					if (aRecord == null || aRecord.ReturnCode != ReturnCode.NoError || !aRecord.AnswerRecords.Any())
+					{
+						if (aRecord == null)
+						{
+							var message = "this domain produce null: " + domain;
+							WriteToConsole(message);
+							error.Add(message);
+						}
 
-					if (aRecord == null || aRecord.ReturnCode != ReturnCode.NoError || !aRecord.AnswerRecords.OfType<MxRecord>().Any())
+						if (aRecord != null)
+						{
+							var message = aRecord.ReturnCode + " dns error for: " + domain;
+							WriteToConsole(message);
+
+							error.Add(message);
+						}
+
+
 						return false;
+					}
 
-					return CanConnect(domain);
+					return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
 				}).ToList();
 
 			st.Stop();
@@ -132,19 +153,20 @@ namespace SpeedyMailer.Master.Ray
 
 			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains);
 			File.WriteAllLines(rayCommandOptions.OutputFile + ".bad.txt", domains.Except(cleanDomains));
+			File.WriteAllLines(rayCommandOptions.OutputFile + ".error.log." + version + ".txt", error.OrderBy(x => x).ToList());
 		}
 
-		private static bool CanConnect(string host)
+		private static bool CanConnect(IPAddress ip, string domain)
 		{
 			var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			var result = socket.BeginConnect(host, 25, null, null);
+			var result = socket.BeginConnect(ip, 25, null, null);
 
 			var st = new Stopwatch();
 			st.Start();
-			bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+			bool success = result.AsyncWaitHandle.WaitOne(5000, true);
 			st.Stop();
 
-			WriteToConsole(host + " connecton took: " + st.ElapsedMilliseconds);
+			WriteToConsole(domain + " connecton took: " + st.ElapsedMilliseconds);
 
 			if (!success)
 			{
