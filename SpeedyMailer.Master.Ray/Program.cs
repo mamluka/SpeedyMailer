@@ -60,7 +60,7 @@ namespace SpeedyMailer.Master.Ray
 					var rows = csvReader.GetRecords<OneRawContactsListCsvRow>().ToList();
 					st.Stop();
 
-					WriteToConsole("There are {0} contacts, reading them took {1} seconds", rows.Count, st.ElapsedMilliseconds/1000);
+					WriteToConsole("There are {0} contacts, reading them took {1} seconds", rows.Count, st.ElapsedMilliseconds / 1000);
 
 					st.Reset();
 					st.Start();
@@ -68,7 +68,7 @@ namespace SpeedyMailer.Master.Ray
 					rows.ForEach(x => x.Email = x.Email.ToLower());
 					st.Stop();
 
-					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds/1000);
+					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);
 					WriteToConsole("We now have {0} contacts", rows.Count);
 
 					if (rayCommandOptions.ListTopDomains)
@@ -103,9 +103,13 @@ namespace SpeedyMailer.Master.Ray
 
 		private static void CheckDns(string[] domains, RayCommandOptions rayCommandOptions)
 		{
-			var cleanDomains = domains.Where(domain =>
+			var st = new Stopwatch();
+			st.Start();
+			var cleanDomains = domains
+				.AsParallel()
+				.Where(domain =>
 				{
-					var client = new DnsClient(IPAddress.Parse("8.8.8.4"), 300);
+					var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 2000);
 					var records = client.Resolve(domain, RecordType.Mx);
 
 					if (records != null && records.ReturnCode == ReturnCode.NoError && records.AnswerRecords.OfType<MxRecord>().Any())
@@ -114,23 +118,32 @@ namespace SpeedyMailer.Master.Ray
 					return CanConnect(domain);
 				}).ToList();
 
+			st.Stop();
+
+			WriteToConsole("Total shabank took: " + st.ElapsedMilliseconds);
+
 			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains);
 		}
 
 		private static bool CanConnect(string host)
 		{
-			using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+			var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			var result = socket.BeginConnect(host, 25, null, null);
+
+			var st = new Stopwatch();
+			st.Start();
+			bool success = result.AsyncWaitHandle.WaitOne(2000, true);
+			st.Stop();
+
+			WriteToConsole(host + " connecton took: " + st.ElapsedMilliseconds);
+
+			if (!success)
 			{
-				try
-				{
-					socket.Connect(host, 25);
-					return true;
-				}
-				catch (SocketException ex)
-				{
-					return false;
-				}
+				socket.Close();
+				return false;
 			}
+
+			return true;
 		}
 
 		private static void OutputSmallDomains(List<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
