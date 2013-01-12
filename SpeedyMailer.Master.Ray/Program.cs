@@ -36,6 +36,9 @@ namespace SpeedyMailer.Master.Ray
 			[Option("M", "max-count")]
 			public int MaximalCountOfContacts { get; set; }
 
+			[Option("t", "thread-numbers")]
+			public int NumberOfThreads { get; set; }
+
 			[Option("D", "check-dns")]
 			public string CheckDns { get; set; }
 
@@ -101,7 +104,7 @@ namespace SpeedyMailer.Master.Ray
 			}
 		}
 
-		private static void CheckDns(string[] domains, RayCommandOptions rayCommandOptions)
+		private static void CheckDns(IEnumerable<string> domains, RayCommandOptions rayCommandOptions)
 		{
 			var st = new Stopwatch();
 			st.Start();
@@ -110,10 +113,15 @@ namespace SpeedyMailer.Master.Ray
 				.Where(domain =>
 				{
 					var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 2000);
-					var records = client.Resolve(domain, RecordType.Mx);
+					var mxRecords = client.Resolve(domain, RecordType.Mx);
 
-					if (records != null && records.ReturnCode == ReturnCode.NoError && records.AnswerRecords.OfType<MxRecord>().Any())
-						return CanConnect(records.AnswerRecords.OfType<MxRecord>().First().ExchangeDomainName);
+					if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
+						return true;
+
+					var aRecord = client.Resolve(domain, RecordType.A);
+
+					if (aRecord == null || aRecord.ReturnCode != ReturnCode.NoError || !aRecord.AnswerRecords.OfType<MxRecord>().Any())
+						return false;
 
 					return CanConnect(domain);
 				}).ToList();
@@ -123,6 +131,7 @@ namespace SpeedyMailer.Master.Ray
 			WriteToConsole("Total shabank took: " + st.ElapsedMilliseconds);
 
 			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains);
+			File.WriteAllLines(rayCommandOptions.OutputFile + ".bad.txt", domains.Except(cleanDomains));
 		}
 
 		private static bool CanConnect(string host)
