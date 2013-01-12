@@ -147,8 +147,8 @@ namespace SpeedyMailer.Master.Ray
 
 			WriteToConsole("Total shabank took: " + st.ElapsedMilliseconds);
 
-			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains);
-			File.WriteAllLines(rayCommandOptions.OutputFile + ".bad.txt", domains.Except(cleanDomains));
+			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains.OrderBy(x => x));
+			File.WriteAllLines(rayCommandOptions.OutputFile + ".bad.txt", domains.Except(cleanDomains).OrderBy(x => x));
 			File.WriteAllLines(rayCommandOptions.OutputFile + ".error.log." + version + ".txt", error.OrderBy(x => x).ToList());
 		}
 
