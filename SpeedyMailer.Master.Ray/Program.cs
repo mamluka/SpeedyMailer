@@ -122,24 +122,39 @@ namespace SpeedyMailer.Master.Ray
 					if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
 						return true;
 
-					var aRecord = client.Resolve(domain, RecordType.A);
+					var retryCount = 0;
 
-					if (aRecord == null)
+					while (retryCount < 3)
 					{
-						error.Add("this domain produce null: " + domain);
-						return false;
+
+						var aRecord = client.Resolve(domain, RecordType.A);
+
+						if (aRecord == null)
+						{
+							error.Add("this domain produce null: " + domain);
+							return false;
+						}
+
+						if (aRecord.ReturnCode == ReturnCode.ServerFailure)
+						{
+							WriteToConsole("Try again for: " + domain);
+							retryCount++;
+							continue;
+						}
+
+						if (aRecord.ReturnCode != ReturnCode.NoError)
+						{
+							error.Add(aRecord.ReturnCode + " dns error for: " + domain);
+							return false;
+						}
+
+						if (aRecord.ReturnCode == ReturnCode.NoError)
+							return true;
+
+						return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
 					}
 
-					if (aRecord.ReturnCode != ReturnCode.NoError)
-					{
-						error.Add(aRecord.ReturnCode + " dns error for: " + domain);
-						return false;
-					}
-
-					if (aRecord.ReturnCode == ReturnCode.NoError)
-						return true;
-
-					return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
+					return false;
 
 				}).ToList();
 
