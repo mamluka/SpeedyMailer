@@ -13,25 +13,28 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 {
 	public class DnsBlackListingIpNotificationTaskTests : IntegrationTestBase
 	{
+		public DnsBlackListingIpNotificationTaskTests()
+			: base(x => x.UseMongo = true)
+		{ }
+
 		[Test]
-        [Ignore]
 		public void Execute_WhenDNSBLArePresentInTheJson_ShouldQueryThemForTheCurrentIp()
 		{
 			DroneActions.EditSettings<DroneSettings>(x =>
 			{
-				x.Identifier = "drone1";
-				x.BaseUrl = "http://192.168.1.1:2589";
-				x.Domain = "domain.com";
-				x.Ip = "127.0.0.1";
+				x.Ip = "69.85.89.203";
+				x.StoreHostname = DefaultHostUrl;
 			});
 
-			ListenToEvent<ListedOnDnsnl>();
-
-			var task = new DnsBlackListingIpNotificationTask();
+			var task = new BlacklistingDnsCheckTask();
 
 			DroneActions.StartScheduledTask(task);
 
-			AssertEventWasPublished<ListedOnDnsnl>(x => x.ServiceName.Should().Be("x"));
+			DroneActions.WaitForDocumentToExist<BlacklistingIpInformation>();
+
+			var result = DroneActions.FindSingle<BlacklistingIpInformation>();
+
+			result.Answers.Should().NotBeEmpty();
 		}
 	}
 

@@ -1,35 +1,5 @@
 ﻿[
     {
-        "Name": "VIRBL",
-        "Dns": "virbl.Dnsbl.bit.nl",
-        "Type": "ip"
-    },
-    {
-        "Name": "SPAMHAUS",
-        "Dns": "zen.spamhaus.org",
-        "Type": "ip"
-    },
-    {
-        "Name": "URIBL",
-        "Dns": "multi.uribl.com",
-        "Type": "domain"
-    },
-    {
-        "Name": "SURBL",
-        "Dns": "multi.surbl.org",
-        "Type": "domain"
-    },
-    {
-        "Name": "NJABL",
-        "Dns": "Dnsbl.njabl.org",
-        "Type": "ip"
-    },
-    {
-        "Name": "SPAMCOP",
-        "Dns": "bl.spamcop.net",
-        "Type": "ip"
-    },
-    {
         "Name": "SORBS",
         "Dns": "Dnsbl.sorbs.net",
         "Type": "ip"
@@ -67,11 +37,6 @@
     {
         "Name": "MAILSHELL",
         "Dns": "Dnsbl.mailshell.net",
-        "Type": "ip"
-    },
-    {
-        "Name": "CBL",
-        "Dns": "cbl.abuseat.org",
         "Type": "ip"
     },
     {
