@@ -24,6 +24,9 @@ namespace SpeedyMailer.Master.Ray
 			[Option("p", "process-csv")]
 			public string CsvFile { get; set; }
 
+			[Option("b", "bad-domains")]
+			public string BadDomainsFile { get; set; }
+
 			[Option("o", "output-file")]
 			public string OutputFile { get; set; }
 
@@ -32,6 +35,9 @@ namespace SpeedyMailer.Master.Ray
 
 			[Option("T", "top")]
 			public bool ListTopDomains { get; set; }
+
+			[Option("s", "distinct")]
+			public bool SaveDistinct { get; set; }
 
 			[Option("M", "max-count")]
 			public int MaximalCountOfContacts { get; set; }
@@ -74,6 +80,11 @@ namespace SpeedyMailer.Master.Ray
 					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);
 					WriteToConsole("We now have {0} contacts", rows.Count);
 
+					if (rayCommandOptions.SaveDistinct)
+					{
+						WriteCsv(rayCommandOptions, rows);
+					}
+
 					if (rayCommandOptions.ListTopDomains)
 						TopDomains(rows);
 
@@ -89,6 +100,14 @@ namespace SpeedyMailer.Master.Ray
 					{
 						var domains = GroupByDomain(rows).Select(x => x.Key);
 						File.WriteAllLines(rayCommandOptions.OutputFile, domains);
+					}
+
+					if (rayCommandOptions.BadDomainsFile.HasValue())
+					{
+						var domains = File.ReadAllLines(rayCommandOptions.BadDomainsFile).ToList();
+						var newRows = RemoveRowsByDomains(rows, domains);
+
+						WriteCsv(rayCommandOptions, newRows);
 					}
 				}
 
@@ -228,10 +247,6 @@ namespace SpeedyMailer.Master.Ray
 				.AsParallel()
 				.Where(x => !removeDomains.Any(r => x.Email.EndsWith(r)))
 				.ToList();
-
-			//			return rows
-			//				.Where(x => !Regex.Match(x.Email, string.Join("|", removeDomains)).Success)
-			//				.ToList();
 		}
 
 		private static void WriteCsv(RayCommandOptions rayCommandOptions, IEnumerable<OneRawContactsListCsvRow> newRows)
