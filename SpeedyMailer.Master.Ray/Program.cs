@@ -21,25 +21,28 @@ namespace SpeedyMailer.Master.Ray
 	{
 		public class RayCommandOptions : CommandLineOptionsBase
 		{
-			[Option("p", "process-csv", HelpText = "The base url of the service to register the drone with")]
+			[Option("p", "process-csv")]
 			public string CsvFile { get; set; }
 
-			[Option("o", "output-file", HelpText = "The base url of the service to register the drone with")]
+			[Option("o", "output-file")]
 			public string OutputFile { get; set; }
 
-			[Option("c", "create-list", HelpText = "The base url of the service to register the drone with")]
+			[Option("c", "create-list")]
 			public string InputF‎Ile { get; set; }
 
-			[Option("T", "top", HelpText = "The base url of the service to register the drone with")]
+			[Option("T", "top")]
 			public bool ListTopDomains { get; set; }
 
-			[Option("M", "max-count", HelpText = "The base url of the service to register the drone with")]
+			[Option("M", "max-count")]
 			public int MaximalCountOfContacts { get; set; }
 
-			[Option("D", "check-dns", HelpText = "The base url of the service to register the drone with")]
-			public bool CheckDns { get; set; }
+			[Option("D", "check-dns")]
+			public string CheckDns { get; set; }
 
-			[Option("E", "estimate", HelpText = "The base url of the service to register the drone with")]
+			[Option("X", "extract-domains")]
+			public bool ExtractDomains { get; set; }
+
+			[Option("E", "estimate")]
 			public string EstimationParameters { get; set; }
 		}
 
@@ -57,7 +60,7 @@ namespace SpeedyMailer.Master.Ray
 					var rows = csvReader.GetRecords<OneRawContactsListCsvRow>().ToList();
 					st.Stop();
 
-					WriteToConsole("There are {0} contacts, reading them took {1} seconds", rows.Count, st.ElapsedMilliseconds / 1000);
+					WriteToConsole("There are {0} contacts, reading them took {1} seconds", rows.Count, st.ElapsedMilliseconds/1000);
 
 					st.Reset();
 					st.Start();
@@ -65,7 +68,7 @@ namespace SpeedyMailer.Master.Ray
 					rows.ForEach(x => x.Email = x.Email.ToLower());
 					st.Stop();
 
-					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds / 1000);
+					WriteToConsole("Doing distinct took {0} seconds", st.ElapsedMilliseconds/1000);
 					WriteToConsole("We now have {0} contacts", rows.Count);
 
 					if (rayCommandOptions.ListTopDomains)
@@ -79,102 +82,55 @@ namespace SpeedyMailer.Master.Ray
 						OutputSmallDomains(rows, rayCommandOptions);
 					}
 
-					if (rayCommandOptions.CheckDns)
+					if (rayCommandOptions.ExtractDomains)
 					{
-						CheckDns(rows, rayCommandOptions);
+						var domains = GroupByDomain(rows).Select(x => x.Key);
+						File.WriteAllLines(rayCommandOptions.OutputFile, domains);
 					}
 				}
 
-				if (!string.IsNullOrEmpty(rayCommandOptions.InputF‎Ile))
+				if (rayCommandOptions.CheckDns.HasValue())
 				{
-					using (var fr = new StreamReader(rayCommandOptions.InputF‎Ile))
-					{
-						var data = fr.ReadToEnd();
-						var emails = data.Split(Convert.ToChar(Environment.NewLine));
-						var csvRows = emails.Select(x => new ContactsListCsvRow
-							{
-								Email = x,
-								City = "foo",
-								Country = "foo",
-								Firstname = "foo",
-								Ip = "foo",
-								Lastname = "foo",
-								Phone = "foo",
-								State = "foo",
-								Zip = "foo",
-							});
-					}
+					var domains = File.ReadAllLines(rayCommandOptions.CheckDns);
+					CheckDns(domains, rayCommandOptions);
 				}
-
+			}
+			else
+			{
+				WriteToConsole("Parameter problem");
 			}
 		}
 
-		private static void CheckDns(List<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
+		private static void CheckDns(string[] domains, RayCommandOptions rayCommandOptions)
 		{
-			var domains = GroupByDomain(rows).ToList();
-			var counter = 0;
-			var total = new Stopwatch();
-			total.Start();
-
-			var badDomains = domains.AsParallel().Where(x =>
+			var cleanDomains = domains.Where(domain =>
 				{
-					var s = new Stopwatch();
-					counter++;
-					try
-					{
-						s.Start();
-						var hostInfo = Dns.GetHostEntry(x.Key);
-						s.Stop();
-						Console.WriteLine(counter + " We are resolving domain:" + x.Key + " it took: " + s.ElapsedMilliseconds);
+					var client = new DnsClient(IPAddress.Parse("8.8.8.4"), 300);
+					var records = client.Resolve(domain, RecordType.Mx);
 
-						var host = x.Key;
+					if (records != null && records.ReturnCode == ReturnCode.NoError && records.AnswerRecords.OfType<MxRecord>().Any())
+						return CanConnect(records.AnswerRecords.OfType<MxRecord>().First().ExchangeDomainName);
 
-						var mxRecord = DnsClient.Default.Resolve(x.Key, RecordType.Mx);
+					return CanConnect(domain);
+				}).ToList();
 
+			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains);
+		}
 
-						if (!((mxRecord == null) || ((mxRecord.ReturnCode != ReturnCode.NoError) && (mxRecord.ReturnCode != ReturnCode.NxDomain))))
-						{
-							var mxHost = mxRecord.AnswerRecords.OfType<MxRecord>().Select(record => record.ExchangeDomainName).LastOrDefault();
-
-							if (mxHost.HasValue())
-							{
-								host = mxHost;
-								Console.WriteLine("MX records found for: " + x.Key + " they are: " + host);
-							}
-						}
-
-						using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
-						{
-							try
-							{
-								socket.Connect(host, 25);
-							}
-							catch (SocketException ex)
-							{
-								Console.WriteLine("Can't connect to {0} : {1} - {2}", host, ex.SocketErrorCode, ex.Message);
-								return true;
-							}
-						}
-
-						return !hostInfo.AddressList.Any();
-					}
-					catch (Exception)
-					{
-						s.Stop();
-						Console.WriteLine(counter + " We are resolving domain:" + x.Key + " resolve failed and it took: " + s.ElapsedMilliseconds);
-						return true;
-					}
-				}).Select(x => x.Key)
-									.ToList();
-
-			var afterDns = RemoveRowsByDomains(rows, badDomains);
-
-			WriteCsv(rayCommandOptions, afterDns);
-
-			total.Stop();
-
-			Console.WriteLine("Total resolve took:" + total.ElapsedMilliseconds / (1000 * 60) + " m");
-			Console.ReadKey();
+		private static bool CanConnect(string host)
+		{
+			using (var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp))
+			{
+				try
+				{
+					socket.Connect(host, 25);
+					return true;
+				}
+				catch (SocketException ex)
+				{
+					return false;
+				}
+			}
 		}
 
 		private static void OutputSmallDomains(List<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
