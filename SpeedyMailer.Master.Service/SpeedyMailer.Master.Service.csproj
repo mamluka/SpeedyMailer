@@ -144,9 +144,6 @@
     <Compile Include="Tasks\WakeupSleepingDronesTask.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="data\dnsbl.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
