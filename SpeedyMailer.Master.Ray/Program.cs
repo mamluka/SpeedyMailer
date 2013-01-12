@@ -123,28 +123,24 @@ namespace SpeedyMailer.Master.Ray
 						return true;
 
 					var aRecord = client.Resolve(domain, RecordType.A);
-					if (aRecord == null || aRecord.ReturnCode != ReturnCode.NoError || !aRecord.AnswerRecords.Any())
+
+					if (aRecord == null)
 					{
-						if (aRecord == null)
-						{
-							var message = "this domain produce null: " + domain;
-							WriteToConsole(message);
-							error.Add(message);
-						}
-
-						if (aRecord != null)
-						{
-							var message = aRecord.ReturnCode + " dns error for: " + domain;
-							WriteToConsole(message);
-
-							error.Add(message);
-						}
-
-
+						error.Add("this domain produce null: " + domain);
 						return false;
 					}
 
+					if (aRecord.ReturnCode != ReturnCode.NoError)
+					{
+						error.Add(aRecord.ReturnCode + " dns error for: " + domain);
+						return false;
+					}
+
+					if (aRecord.ReturnCode == ReturnCode.NoError)
+						return true;
+
 					return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
+
 				}).ToList();
 
 			st.Stop();
