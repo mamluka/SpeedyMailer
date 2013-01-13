@@ -159,7 +159,6 @@ namespace SpeedyMailer.Master.Ray
 
 							if (aRecord.ReturnCode == ReturnCode.ServerFailure)
 							{
-								WriteToConsole("Try again for: " + domain);
 								retryCount++;
 								continue;
 							}
