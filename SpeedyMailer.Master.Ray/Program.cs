@@ -134,48 +134,51 @@ namespace SpeedyMailer.Master.Ray
 			var cleanDomains = domains
 				.AsParallel()
 				.Where(domain =>
-				{
-					var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 10000);
-
-					var mxRecords = client.Resolve(domain, RecordType.Mx);
-					if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
-						return true;
-
-					var retryCount = 0;
-
-					while (retryCount < 3)
 					{
-
-						var aRecord = client.Resolve(domain, RecordType.A);
-
-						if (aRecord == null)
-						{
-							error.Add("this domain produce null: " + domain);
+						if (!domain.HasValue())
 							return false;
-						}
 
-						if (aRecord.ReturnCode == ReturnCode.ServerFailure)
-						{
-							WriteToConsole("Try again for: " + domain);
-							retryCount++;
-							continue;
-						}
+						var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 10000);
 
-						if (aRecord.ReturnCode != ReturnCode.NoError)
-						{
-							error.Add(aRecord.ReturnCode + " dns error for: " + domain);
-							return false;
-						}
-
-						if (aRecord.ReturnCode == ReturnCode.NoError)
+						var mxRecords = client.Resolve(domain, RecordType.Mx);
+						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
 							return true;
 
-						return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
-					}
+						var retryCount = 0;
 
-					return false;
+						while (retryCount < 2)
+						{
 
-				}).ToList();
+							var aRecord = client.Resolve(domain, RecordType.A);
+
+							if (aRecord == null)
+							{
+								error.Add("this domain produce null: " + domain);
+								return false;
+							}
+
+							if (aRecord.ReturnCode == ReturnCode.ServerFailure)
+							{
+								WriteToConsole("Try again for: " + domain);
+								retryCount++;
+								continue;
+							}
+
+							if (aRecord.ReturnCode != ReturnCode.NoError)
+							{
+								error.Add(aRecord.ReturnCode + " dns error for: " + domain);
+								return false;
+							}
+
+							if (aRecord.ReturnCode == ReturnCode.NoError)
+								return true;
+
+							return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
+						}
+
+						return false;
+
+					}).ToList();
 
 			st.Stop();
 
