@@ -11,9 +11,17 @@ using System.Threading.Tasks;
 using ARSoft.Tools.Net.Dns;
 using CommandLine;
 using CsvHelper;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
+using Lucene.Net.Index;
+using Lucene.Net.Search;
+using Lucene.Net.Store;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
+using Directory = System.IO.Directory;
+using Version = Lucene.Net.Util.Version;
 
 namespace SpeedyMailer.Master.Ray
 {
@@ -33,25 +41,25 @@ namespace SpeedyMailer.Master.Ray
 			[Option("c", "create-list")]
 			public string InputF‎Ile { get; set; }
 
-			[Option("T", "top")]
+			[Option("t", "top")]
 			public bool ListTopDomains { get; set; }
 
 			[Option("s", "distinct")]
 			public bool SaveDistinct { get; set; }
 
-			[Option("M", "max-count")]
+			[Option("m", "max-count")]
 			public int MaximalCountOfContacts { get; set; }
 
 			[Option("t", "thread-numbers")]
 			public int NumberOfThreads { get; set; }
 
-			[Option("D", "check-dns")]
+			[Option("d", "check-dns")]
 			public string CheckDns { get; set; }
 
-			[Option("X", "extract-domains")]
+			[Option("x", "extract-domains")]
 			public bool ExtractDomains { get; set; }
 
-			[Option("E", "estimate")]
+			[Option("e", "estimate")]
 			public string EstimationParameters { get; set; }
 		}
 
@@ -121,6 +129,8 @@ namespace SpeedyMailer.Master.Ray
 			{
 				WriteToConsole("Parameter problem");
 			}
+
+			Console.ReadKey();
 		}
 
 		private static void CheckDns(IEnumerable<string> domains, RayCommandOptions rayCommandOptions)
@@ -243,11 +253,78 @@ namespace SpeedyMailer.Master.Ray
 
 		private static List<OneRawContactsListCsvRow> RemoveRowsByDomains(List<OneRawContactsListCsvRow> rows, List<string> removeDomains)
 		{
-			removeDomains = removeDomains.Select(x => "@" + x).ToList();
+			var directory = Guid.NewGuid().ToString();
 
-			return rows
-				.AsParallel()
-				.Where(x => !removeDomains.Any(r => x.Email.EndsWith(r)))
+			var simpleFsDirectory = new SimpleFSDirectory(new DirectoryInfo(directory));
+
+			if (!Directory.Exists(directory))
+			{
+				var standardAnalyzer = new WhitespaceAnalyzer();
+				var indexer = new IndexWriter(simpleFsDirectory, standardAnalyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+
+				var st = new Stopwatch();
+				st.Start();
+				var counter = 0;
+				rows.ForEach(x =>
+					{
+						var document = new Document();
+						document.Add(new Field("email", x.Email.Replace("@", " "), Field.Store.YES, Field.Index.ANALYZED));
+						document.Add(new Field("collectionIndex", counter.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+						indexer.AddDocument(document);
+
+						counter++;
+					});
+
+				indexer.Commit();
+
+				st.Stop();
+
+				WriteToConsole("Index took: " + st.ElapsedMilliseconds / 1000);
+			}
+
+			var reader = IndexReader.Open(simpleFsDirectory, true);
+			var searcher = new IndexSearcher(reader);
+
+			var st2 = new Stopwatch();
+			st2.Start();
+
+			removeDomains.ForEach(x =>
+				{
+					var ids = Search(searcher, x);
+
+					if (!ids.Any())
+						Console.WriteLine("for " + x + " there were no ids found.");
+
+					ids.ToList().ForEach(p =>
+						{
+							rows[p].Removed = true;
+						});
+				});
+
+			var oneRawContactsListCsvRows = rows.AsParallel().Where(x => !x.Removed).ToList();
+
+			st2.Stop();
+			WriteToConsole("Removing took: " + st2.ElapsedMilliseconds / 1000);
+			return oneRawContactsListCsvRows;
+		}
+
+		private static IList<int> Search(IndexSearcher searcher, string term)
+		{
+			var st = new Stopwatch();
+			st.Start();
+			var results = searcher.Search(new WildcardQuery(new Term("email", term)), 100);
+			var docs = results.ScoreDocs.Select(x => x.Doc).ToList();
+			if (!docs.Any())
+			{
+				Console.WriteLine("no docs for: " + term);
+				return new List<int>();
+			}
+
+			st.Stop();
+			//Console.WriteLine("Query took: " + st.ElapsedMilliseconds);
+
+			return docs
+				.Select(x => int.Parse(searcher.Doc(x, new MapFieldSelector("collectionIndex")).GetField("collectionIndex").StringValue))
 				.ToList();
 		}
 

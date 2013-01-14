@@ -54,5 +54,8 @@ namespace SpeedyMailer.Core.Domain.Contacts
 
 		[CsvField(Index = 0)]
         public string Email { get; set; }
+
+		[CsvField(Ignore = true)]
+		public bool Removed { get; set; }
     }
 }
