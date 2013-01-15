@@ -15,6 +15,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 	public class DronesController : ApiController
 	{
 		private readonly SpeedyMailer.Core.Apis.Api _api;
+		private const string ChefHost = "173.224.209.25";
 
 		public DronesController(SpeedyMailer.Core.Apis.Api api)
 		{
@@ -46,7 +47,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("/drones/bootstrap")]
 		public string Bootstrap(Drone drone)
 		{
-			using (var ssh = new SshClient("173.224.209.25", "root", "0953acb"))
+			using (var ssh = new SshClient(ChefHost, "root", "0953acb"))
 			{
 				ssh.Connect();
 				var cmd = ssh.RunCommand(string.Format("knife bootstrap {0} -x root -P 0953acb --sudo -N {1} --run-list speedymailer-drone -E xomixfuture", drone.Id, Guid.NewGuid().ToString().Replace("-", "")));   //  very long list 
@@ -59,17 +60,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("/drones/deploy/all")]
 		public string DeployAll()
 		{
-//			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
-//
-//			using (var ssh = new SshClient("173.224.209.25", "root", "0953acb"))
-//			{
-//				ssh.Connect();
-//				var cmd = ssh.RunCommand(string.Format("knife bootstrap {0} -x root -P 0953acb --sudo -N {1} --run-list speedymailer-drone -E xomixfuture", drone.Id, Guid.NewGuid().ToString().Replace("-", "")));   //  very long list 
-//				ssh.Disconnect();
-//
-//				return cmd.Result.Replace("\n", "<br>");
-//			}
-
+			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
 			return "OK";
 		}
 	}

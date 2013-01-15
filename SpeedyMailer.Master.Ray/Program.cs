@@ -50,9 +50,6 @@ namespace SpeedyMailer.Master.Ray
 			[Option("m", "max-count")]
 			public int MaximalCountOfContacts { get; set; }
 
-			[Option("t", "thread-numbers")]
-			public int NumberOfThreads { get; set; }
-
 			[Option("d", "check-dns")]
 			public string CheckDns { get; set; }
 
@@ -94,7 +91,7 @@ namespace SpeedyMailer.Master.Ray
 					}
 
 					if (rayCommandOptions.ListTopDomains)
-						TopDomains(rows);
+						TopDomains(rows, rayCommandOptions);
 
 					if (!string.IsNullOrEmpty(rayCommandOptions.EstimationParameters))
 						CalculateSendingTime(rows, rayCommandOptions.EstimationParameters);
@@ -365,7 +362,7 @@ namespace SpeedyMailer.Master.Ray
 				.GroupBy(x => x.ToLower());
 		}
 
-		private static void TopDomains(IEnumerable<OneRawContactsListCsvRow> rows)
+		private static void TopDomains(IEnumerable<OneRawContactsListCsvRow> rows, RayCommandOptions rayCommandOptions)
 		{
 			var domains = rows
 				.Select(GetDomain)
@@ -378,7 +375,9 @@ namespace SpeedyMailer.Master.Ray
 			WriteToConsole("The top 10 domains are:");
 			WriteSaperator();
 
-			domains.Where(x => x.Count > 10).ToList().ForEach(x => WriteToConsole("Domain: {0} has: {1}", x.Key, x.Count));
+			var topDomains = domains.Where(x => x.Count > 10).Select(x => string.Format("Domain: {0} has: {1}", x.Key, x.Count));
+			File.WriteAllLines(rayCommandOptions.OutputFile, topDomains);
+
 			WriteSaperator();
 		}
 
