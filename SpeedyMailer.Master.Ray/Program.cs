@@ -121,8 +121,6 @@ namespace SpeedyMailer.Master.Ray
 			{
 				WriteToConsole("Parameter problem");
 			}
-
-			Console.ReadKey();
 		}
 
 		private static void CheckDns(IEnumerable<string> domains, RayCommandOptions rayCommandOptions)

@@ -6,12 +6,11 @@ data_file = ARGV.first
 
 puts "Extract domains"
 domain_file = data_file + ".domains.txt"
-`#{RAY_PATH} -p #{data_file} -o #{domain_file} -x`
+puts `#{RAY_PATH} -p #{data_file} -o #{domain_file} -x`
 
 puts "Run DNS clean"
 bad_domains = data_file + "bad.domain.txt"
-`#{RAY_PATH} -p #{domain_file} -o #{bad_domains} -d`
+puts `#{RAY_PATH} -p #{domain_file} -o #{bad_domains} -d`
 
 puts "Output clean list"
-`#{RAY_PATH} -p #{domain_file} -o #{data_file + "clean.txt"} -b #{bad_domains}`
-
+puts `#{RAY_PATH} -p #{domain_file} -o #{data_file + "clean.txt"} -b #{bad_domains}`
