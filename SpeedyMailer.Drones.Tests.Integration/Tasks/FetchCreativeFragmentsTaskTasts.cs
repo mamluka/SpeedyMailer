@@ -22,7 +22,13 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		[Test]
 		public void Execute_WhenStarted_ShouldFetchACreativeFragmentFromServer()
 		{
-			DroneActions.EditSettings<DroneSettings>(x => { x.StoreHostname = DefaultHostUrl; x.BaseUrl = "htto://drone.com"; });
+			DroneActions.EditSettings<DroneSettings>(x =>
+				{
+					x.StoreHostname = DefaultHostUrl;
+					x.BaseUrl = "htto://drone.com";
+					x.Identifier = "drone.com";
+				});
+
 			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
 			Api.ListenToApiCall<ServiceEndpoints.Creative.FetchFragment>();
 
@@ -30,7 +36,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(task);
 
-			Api.AssertApiCalled<ServiceEndpoints.Creative.FetchFragment>();
+			Api.AssertApiCalled<ServiceEndpoints.Creative.FetchFragment>(x => x.DroneId == "drone.com");
 		}
 
 		[Test]

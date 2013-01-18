@@ -17,11 +17,11 @@ namespace SpeedyMailer.Master.Service.Storage.Indexes
 		}
 		public Fragments_ByCreative()
 		{
-			Map = fragments => fragments.Select(x => new { x.CreativeId, FragmentStatus = new[] { x.Id + ": " + x.Status.ToString() } });
+			Map = fragments => fragments.Select(x => new { x.CreativeId, FragmentStatus = new[] { x.Id + ": " + x.Status.ToString() + " at: " + x.FetchedAt + " by: " + x.FetchedBy } });
 
 			Reduce = results => results
-				                    .GroupBy(x => x.CreativeId)
-				                    .Select(x => new {CreativeId = x.Key, FragmentStatus = x.SelectMany(result => result.FragmentStatus).ToList()});
+									.GroupBy(x => x.CreativeId)
+									.Select(x => new { CreativeId = x.Key, FragmentStatus = x.SelectMany(result => result.FragmentStatus).ToList() });
 		}
 	}
 }

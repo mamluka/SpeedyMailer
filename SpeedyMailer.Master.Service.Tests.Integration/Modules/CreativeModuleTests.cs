@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +31,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			var api = MasterResolve<Api>();
 			api.Call<ServiceEndpoints.Creative.Send>(x => x.CreativeId = creativeId);
 
-			Store.WaitForEntitiesToExist<CreativeFragment>(1,10);
+			Store.WaitForEntitiesToExist<CreativeFragment>(1, 10);
 			var result = Store.Query<CreativeFragment>().First();
 
 			result.Recipients.Should().HaveCount(200);
@@ -115,7 +116,29 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Recipients.Should().HaveCount(100);
 			result.FromName.Should().Be("david");
 			result.FromAddressDomainPrefix.Should().Be("sales");
-		    result.DealUrl.Should().Be("dealUrl");
+			result.DealUrl.Should().Be("dealUrl");
+		}
+
+		[Test]
+		public void Fragments_WhenCalledByDrone_ShouldSaveDroneIdAndFetchTime()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var creativeId = CreateCreative(100);
+			CreateFragment(creativeId, 100);
+
+			var api = MasterResolve<Api>();
+
+			api.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x => x.DroneId = "drone1.com");
+
+			var result = Store.Query<CreativeFragment>().First();
+
+			result.FetchedBy.Should().Be("drone1.com");
+			result.FetchedAt.Should().BeAfter(DateTime.UtcNow.AddSeconds(-30));
 		}
 
 		[Test]

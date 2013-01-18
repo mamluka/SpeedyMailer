@@ -60,45 +60,50 @@ namespace SpeedyMailer.Master.Service.Modules
 								 };
 
 			Get["/fragments"] = call =>
-									{
-										using (var session = documentStore.OpenSession())
-										{
+				{
+					var model = this.Bind<ServiceEndpoints.Creative.FetchFragment>();
+					using (var session = documentStore.OpenSession())
+					{
+						var creativeFragmentId = "";
+						session.Advanced.UseOptimisticConcurrency = true;
 
-											session.Advanced.UseOptimisticConcurrency = true;
+						while (true)
+						{
+							try
+							{
+								var creativeFragment = session.Query<CreativeFragment>()
+								                              .Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
+								                              .Where(x => x.Status == FragmentStatus.Pending)
+								                              .ToList()
+								                              .FirstOrDefault();
 
-											while (true)
-											{
-												try
-												{
-													var creativeFragment = session.Query<CreativeFragment>()
-														.Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
-														.Where(x => x.Status == FragmentStatus.Pending)
-														.ToList()
-														.FirstOrDefault();
+								if (creativeFragment == null)
+								{
+									logger.Info("No fragments were found");
+									return null;
+								}
 
-													if (creativeFragment == null)
-													{
-														logger.Info("No fragments were found");
-														return null;
-													}
+								creativeFragmentId = creativeFragment.Id;
 
+								creativeFragment.Status = FragmentStatus.Sending;
+								creativeFragment.FetchedBy = model.DroneId;
+								creativeFragment.FetchedAt = DateTime.UtcNow;
 
-													creativeFragment.Status = FragmentStatus.Sending;
+									session.Store(creativeFragment);
+								session.SaveChanges();
 
-													session.Store(creativeFragment);
-													session.SaveChanges();
+								logger.Info("creative was found with id {0} it has {1} contacts inside", creativeFragment.Id, creativeFragment.Recipients.Count);
+								return Response.AsJson(creativeFragment);
 
-													logger.Info("creative was found with id {0} it has {1} contacts inside", creativeFragment.Id, creativeFragment.Recipients.Count);
-													return Response.AsJson(creativeFragment);
-
-												}
-												catch (ConcurrencyException)
-												{
-													Thread.Sleep(200);
-												}
-											}
-										}
-									};
+							}
+							catch (ConcurrencyException ex)
+							{
+								logger.ErrorException(string.Format("While fetching creative fragment: {0} we had a cuncurrency error", creativeFragmentId), ex);
+							}
+						}
+					}
+				};
+			
 
 			Get["/fragments-status"] = x =>
 				{

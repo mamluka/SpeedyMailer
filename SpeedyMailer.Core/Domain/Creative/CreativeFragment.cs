@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -24,6 +25,10 @@ namespace SpeedyMailer.Core.Domain.Creative
 		public string DealUrl { get; set; }
 
 		public string TextBody { get; set; }
+
+		public string FetchedBy { get; set; }
+
+		public DateTime FetchedAt { get; set; }
 	}
 
 	public class Recipient

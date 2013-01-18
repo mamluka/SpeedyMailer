@@ -7,6 +7,7 @@ using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Mail;
+using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
@@ -36,15 +37,18 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly OmniRecordManager _omniRecordManager;
 			private readonly MapToCreativePackageCommand _mapToCreativePackageCommand;
 			private readonly Logger _logger;
+			private readonly DroneSettings _droneSettings;
 
 			public Job(Framework framework,
 					   Api api,
 					   CreativePackagesStore creativePackagesStore,
 					   OmniRecordManager omniRecordManager,
 					   MapToCreativePackageCommand mapToCreativePackageCommand,
-						Logger logger
+					   DroneSettings droneSettings,
+					   Logger logger
 				)
 			{
+				_droneSettings = droneSettings;
 				_logger = logger;
 				_mapToCreativePackageCommand = mapToCreativePackageCommand;
 				_omniRecordManager = omniRecordManager;
@@ -73,7 +77,7 @@ namespace SpeedyMailer.Drones.Tasks
 				}
 
 				var creativeFragment = _api
-					.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>();
+					.Call<ServiceEndpoints.Creative.FetchFragment, CreativeFragment>(x => x.DroneId = _droneSettings.Identifier);
 
 				if (creativeFragment == null || _api.ResponseStatus != ResponseStatus.Completed)
 					return;

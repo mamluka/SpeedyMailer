@@ -16,6 +16,8 @@ namespace SpeedyMailer.Core.Apis
 					CallMethod = RestMethod.Get;
 				}
 
+				public string DroneId { get; set; }
+
 				public class Response
 				{
 					public CreativeFragment CreativeFragment { get; set; }
