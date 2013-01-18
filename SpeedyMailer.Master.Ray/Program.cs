@@ -5,23 +5,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using ARSoft.Tools.Net.Dns;
 using CommandLine;
 using CsvHelper;
 using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
 using Lucene.Net.Store;
 using SpeedyMailer.Core.Domain.Contacts;
-using SpeedyMailer.Core.Utilities;
 using SpeedyMailer.Core.Utilities.Extentions;
 using Directory = System.IO.Directory;
-using Version = Lucene.Net.Util.Version;
 
 namespace SpeedyMailer.Master.Ray
 {
@@ -139,13 +134,13 @@ namespace SpeedyMailer.Master.Ray
 			var error = new List<string>();
 			var mx = new List<string>();
 
-			var cleanDomains = domains
+			var badDomain = domains
 				.Distinct()
 				.AsParallel()
 				.Where(domain =>
 					{
 						if (!domain.HasValue())
-							return false;
+							return true;
 
 						var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 10000);
 
@@ -155,7 +150,7 @@ namespace SpeedyMailer.Master.Ray
 							if (mxRecords.AnswerRecords.OfType<MxRecord>().Any())
 								mx.Add("The domain: " + domain + " has mx records: " + mxRecords.AnswerRecords.OfType<MxRecord>().Select(x => x.ExchangeDomainName).Commafy());
 
-							return true;
+							return false;
 						}
 
 						var retryCount = 0;
@@ -168,7 +163,7 @@ namespace SpeedyMailer.Master.Ray
 							if (aRecord == null)
 							{
 								error.Add("this domain produce null: " + domain);
-								return false;
+								return true;
 							}
 
 							if (aRecord.ReturnCode == ReturnCode.ServerFailure)
@@ -180,16 +175,16 @@ namespace SpeedyMailer.Master.Ray
 							if (aRecord.ReturnCode != ReturnCode.NoError)
 							{
 								error.Add(aRecord.ReturnCode + " dns error for: " + domain);
-								return false;
+								return true;
 							}
 
 							if (aRecord.ReturnCode == ReturnCode.NoError)
-								return true;
+								return false;
 
 							return CanConnect(aRecord.AnswerRecords.OfType<ARecord>().First().Address, domain);
 						}
 
-						return false;
+						return true;
 
 					}).ToList();
 
@@ -197,8 +192,8 @@ namespace SpeedyMailer.Master.Ray
 
 			WriteToConsole("Total shabank took: " + st.ElapsedMilliseconds);
 
-			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains.OrderBy(x => x));
-			File.WriteAllLines(rayCommandOptions.OutputFile + "." + version + ".bad.txt", domains.Except(cleanDomains).OrderBy(x => x));
+			File.WriteAllLines(rayCommandOptions.OutputFile, badDomain.OrderBy(x => x));
+			File.WriteAllLines(rayCommandOptions.OutputFile + "." + version + ".clean.txt", domains.Except(badDomain).OrderBy(x => x));
 			File.WriteAllLines(rayCommandOptions.OutputFile + ".error.log." + version + ".txt", error.OrderBy(x => x).ToList());
 			File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", mx);
 		}
