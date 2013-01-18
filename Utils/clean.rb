@@ -10,7 +10,7 @@ domain_file = data_file + ".domains.txt"
 
 puts "Run DNS clean"
 bad_domains = data_file + ".bad.domain.txt"
-`#{RAY_PATH} -p #{domain_file} -o #{bad_domains} -d`
+`#{RAY_PATH} -d #{domain_file} -o #{bad_domains}`
 
 puts "Output clean list"
 output_file = data_file + ".clean.txt"
