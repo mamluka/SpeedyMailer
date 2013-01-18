@@ -149,7 +149,10 @@ namespace SpeedyMailer.Master.Ray
 
 						var mxRecords = client.Resolve(domain, RecordType.Mx);
 						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
+						{
+							File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", new[] { mxRecords.AnswerRecords.OfType<MxRecord>().First().ExchangeDomainName });
 							return true;
+						}
 
 						var retryCount = 0;
 
