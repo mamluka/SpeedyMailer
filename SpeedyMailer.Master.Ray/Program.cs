@@ -149,7 +149,7 @@ namespace SpeedyMailer.Master.Ray
 						var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 10000);
 
 						var mxRecords = client.Resolve(domain, RecordType.Mx);
-						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || ))
+						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
 						{
 							if (mxRecords.AnswerRecords.OfType<MxRecord>().Any())
 								File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", new[] { "The domain: " + domain + " has mx records: " + mxRecords.AnswerRecords.OfType<MxRecord>().Select(x=> x.ExchangeDomainName).Commafy() });	
