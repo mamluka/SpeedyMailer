@@ -139,6 +139,7 @@ namespace SpeedyMailer.Master.Ray
 			var error = new List<string>();
 
 			var cleanDomains = domains
+				.Distinct()
 				.AsParallel()
 				.Where(domain =>
 					{
@@ -148,9 +149,11 @@ namespace SpeedyMailer.Master.Ray
 						var client = new DnsClient(IPAddress.Parse("8.8.8.8"), 10000);
 
 						var mxRecords = client.Resolve(domain, RecordType.Mx);
-						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
+						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || ))
 						{
-							File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", new[] { mxRecords.AnswerRecords.OfType<MxRecord>().First().ExchangeDomainName });
+							if (mxRecords.AnswerRecords.OfType<MxRecord>().Any())
+								File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", new[] { "The domain: " + domain + " has mx records: " + mxRecords.AnswerRecords.OfType<MxRecord>().Select(x=> x.ExchangeDomainName).Commafy() });	
+							
 							return true;
 						}
 
