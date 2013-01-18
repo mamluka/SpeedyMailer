@@ -137,6 +137,7 @@ namespace SpeedyMailer.Master.Ray
 			var version = Guid.NewGuid().ToString().Substring(0, 6);
 
 			var error = new List<string>();
+			var mx = new List<string>();
 
 			var cleanDomains = domains
 				.Distinct()
@@ -152,8 +153,8 @@ namespace SpeedyMailer.Master.Ray
 						if (mxRecords != null && (mxRecords.ReturnCode == ReturnCode.NoError || mxRecords.AnswerRecords.OfType<MxRecord>().Any()))
 						{
 							if (mxRecords.AnswerRecords.OfType<MxRecord>().Any())
-								File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", new[] { "The domain: " + domain + " has mx records: " + mxRecords.AnswerRecords.OfType<MxRecord>().Select(x=> x.ExchangeDomainName).Commafy() });	
-							
+								mx.Add("The domain: " + domain + " has mx records: " + mxRecords.AnswerRecords.OfType<MxRecord>().Select(x => x.ExchangeDomainName).Commafy());
+
 							return true;
 						}
 
@@ -199,6 +200,7 @@ namespace SpeedyMailer.Master.Ray
 			File.WriteAllLines(rayCommandOptions.OutputFile, cleanDomains.OrderBy(x => x));
 			File.WriteAllLines(rayCommandOptions.OutputFile + "." + version + ".bad.txt", domains.Except(cleanDomains).OrderBy(x => x));
 			File.WriteAllLines(rayCommandOptions.OutputFile + ".error.log." + version + ".txt", error.OrderBy(x => x).ToList());
+			File.WriteAllLines(rayCommandOptions.OutputFile + ".mx.txt", mx);
 		}
 
 		private static bool CanConnect(IPAddress ip, string domain)
