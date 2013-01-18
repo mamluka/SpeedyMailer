@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Http;
 using System.Web.Mvc;
 using AttributeRouting.Web.Http;
@@ -29,18 +30,33 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[POST("/drones/deploy")]
-		public string Deploy(Drone drone)
+		public object Deploy(Drone drone)
+		{
+			return SendCommandToDrone(drone, "chef-client");
+		}
+
+		[POST("/drones/kill")]
+		public object Stop(Drone drone)
+		{
+			return SendCommandToDrone(drone, "drone stop");
+		}
+
+		private static object SendCommandToDrone(Drone drone, string commandText)
 		{
 			using (var ssh = new SshClient(drone.Id, "root", "0953acb"))
 			{
 				ssh.Connect();
-				var cmd = ssh.RunCommand("chef-client");   //  very long list 
+				var cmd = ssh.RunCommand(commandText); //  very long list 
 				ssh.Disconnect();
 
 				if (cmd.ExitStatus > 0)
 					return cmd.Result.Replace("\n", "<br>");
 
-				return "OK";
+				return new
+					{
+						Drone = drone,
+						Data = "OK"
+					};
 			}
 		}
 
@@ -56,12 +72,16 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 				return cmd.Result.Replace("\n", "<br>");
 			}
 		}
-		
+
 		[POST("/drones/deploy/all")]
-		public string DeployAll()
+		public List<object> DeployAll()
 		{
 			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
-			return "OK";
+			return drones
+				.AsParallel()
+				.WithDegreeOfParallelism(4)
+				.Select(drone => SendCommandToDrone(drone, "chef-client"))
+				.ToList();
 		}
 	}
 }
