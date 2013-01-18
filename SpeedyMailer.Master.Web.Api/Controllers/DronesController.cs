@@ -38,7 +38,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("/drones/kill")]
 		public object Stop(Drone drone)
 		{
-			return SendCommandToDrone(drone, "drone stop");
+			return SendCommandToDrone(drone, "/deploy/utils/drone-admin.rb stop");
 		}
 
 		private static object SendCommandToDrone(Drone drone, string commandText)
