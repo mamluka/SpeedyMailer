@@ -149,14 +149,26 @@ function DronesController($scope, dronesResource, $http) {
         });
     };
 
-    $scope.deploy = function (drone) {
+    $scope.deploy = function(drone) {
         var promise = $http.post('/drones/deploy'.Apify(), { id: drone.Id });
         promise.success(function (data) {
-            $scope.deploys.push({
-                output: data,
-                droneId: drone.Id
-            });
+            logActivity(data, drone);
         });
     };
+
+    $scope.kill = function (drone) {
+        var promise = $http.post('/drones/kill'.Apify(), { id: drone.Id });
+        promise.success(function (data) {
+            logActivity(data, drone);
+        });
+    };
+    
+    function logActivity(data,drone) {
+        $scope.deploys.push({
+            output: data,
+            droneId: drone.Id
+        });
+
+    }
 }
 DronesController.$inject = ['$scope', 'Drones', '$http'];
