@@ -64,7 +64,7 @@ namespace SpeedyMailer.Core.Container
 
 		private void HyperMedia(NancyContext x, ServiceSettings settings)
 		{
-			if (((string)x.Request.Query["hypermedia"]).HasValue())
+			if (!((string)x.Request.Query["hypermedia"]).HasValue())
 				return;
 
 			var contents = x.Response.Contents;
