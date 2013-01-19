@@ -103,7 +103,28 @@ namespace SpeedyMailer.Master.Service.Modules
 						}
 					}
 				};
-			
+
+			Get["/clone"] = _ =>
+				{
+					var creativeId = (string) Request.Query["creativeId"];
+					var listId = (string) Request.Query["listId"];
+
+					using (var session = documentStore.OpenSession())
+					{
+						var creative = session.Query<Creative>().FirstOrDefault(x => x.Id == creativeId);
+						if (creative == null)
+							return "Error";
+
+						creative.Id = null;
+						creative.Lists.Clear();
+						creative.Lists.Add(listId);
+
+						session.Store(creative);
+						session.SaveChanges();
+
+						return Response.AsJson(creative);
+					}
+				};
 
 			Get["/fragments-status"] = x =>
 				{
