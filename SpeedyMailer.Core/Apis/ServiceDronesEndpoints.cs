@@ -26,8 +26,6 @@ namespace SpeedyMailer.Core.Apis
 
 				public string BaseUrl { get; set; }
 
-				public string LastUpdate { get; set; }
-
 				public string Domain { get; set; }
 
 				public IpReputation IpReputation { get; set; }

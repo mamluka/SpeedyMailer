@@ -31,7 +31,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 				{
 					x.Identifier = "droneip";
 					x.BaseUrl = "baseurl";
-					x.LastUpdate = DateTime.UtcNow.ToLongTimeString();
 					x.Domain = "example.com";
 					x.IpReputation = new IpReputation { BlockingHistory = new Dictionary<string, List<DateTime>> { { "gmail", new List<DateTime> { new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) } } } };
 					x.Exceptions = new List<DroneException> { new DroneException { Component = "c", Time = new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc).ToString(), Message = "message", Exception = "exception" } };

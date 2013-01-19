@@ -50,7 +50,6 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Api.AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x =>
 															x.Identifier == "drone1" &&
 															x.BaseUrl == "http://192.168.1.1:2589" &&
-															DateTime.Parse(x.LastUpdate) > DateTime.UtcNow.AddSeconds(-30) &&
 															x.Domain == "example.com"
 				);
 		}
