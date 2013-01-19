@@ -27,7 +27,6 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		public IEnumerable<SlimDrone> GetDrones()
 		{
 			return _api.Call<ServiceEndpoints.Drones.Get, List<SlimDrone>>()
-				.Where(x=> x.LastUpdated > DateTime.UtcNow.AddMinutes(-10))
 				.ToList();
 		}
 
