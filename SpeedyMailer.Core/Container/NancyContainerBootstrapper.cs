@@ -10,6 +10,7 @@ using Nancy.Bootstrappers.Ninject;
 using Ninject;
 using Quartz;
 using SpeedyMailer.Core.Settings;
+using SpeedyMailer.Core.Utilities.Extentions;
 
 namespace SpeedyMailer.Core.Container
 {
@@ -63,6 +64,9 @@ namespace SpeedyMailer.Core.Container
 
 		private void HyperMedia(NancyContext x, ServiceSettings settings)
 		{
+			if (((string)x.Request.Query["hypermedia"]).HasValue())
+				return;
+
 			var contents = x.Response.Contents;
 			x.Response.Contents = stream =>
 				{
