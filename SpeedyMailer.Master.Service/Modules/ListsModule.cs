@@ -66,7 +66,8 @@ namespace SpeedyMailer.Master.Service.Modules
 					                  var listStats = lists.Select(listDescriptor => new
 						                                                    {
 																				TotalContacts = session.Query<Contact>().Count(x=> x.MemberOf.Any(p=> p == listDescriptor.Id)),
-																				Id = listDescriptor.Id
+																				listDescriptor.Id,
+																				listDescriptor.Name
 						                                                    }).ToList();
 
 					                  return Response.AsJson(listStats);
