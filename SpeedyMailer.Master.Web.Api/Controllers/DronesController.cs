@@ -27,7 +27,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		public IEnumerable<SlimDrone> GetDrones()
 		{
 			return _api.Call<ServiceEndpoints.Drones.Get, List<SlimDrone>>()
-				.Where(x=> x.LastUpdated.ToUniversalTime() > DateTime.UtcNow.AddMinutes(-10))
+				.Where(x => x.LastUpdated.ToUniversalTime() > DateTime.UtcNow.AddMinutes(-10))
 				.ToList();
 		}
 
@@ -52,7 +52,11 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 				ssh.Disconnect();
 
 				if (cmd.ExitStatus > 0)
-					return cmd.Result.Replace("\n", "<br>");
+					return new
+					{
+						Drone = drone,
+						Data = cmd.Result.Replace("\n", "<br>")
+					};
 
 				return new
 					{
@@ -63,7 +67,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[POST("/drones/bootstrap")]
-		public string Bootstrap(Drone drone)
+		public object Bootstrap(Drone drone)
 		{
 			using (var ssh = new SshClient(ChefHost, "root", "0953acb"))
 			{
@@ -71,7 +75,11 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 				var cmd = ssh.RunCommand(string.Format("knife bootstrap {0} -x root -P 0953acb --sudo -N {1} --run-list speedymailer-drone -E xomixfuture", drone.Id, Guid.NewGuid().ToString().Replace("-", "")));   //  very long list 
 				ssh.Disconnect();
 
-				return cmd.Result.Replace("\n", "<br>");
+				return new
+				{
+					Drone = drone,
+					Data = cmd.Result.Replace("\n", "<br>")
+				};
 			}
 		}
 

@@ -4,6 +4,7 @@
     <input type="button" value="Bootstrap" ng-click="bootstrap(domain)"/>
 </div>
 <h1> deploy The drones</h1>
+<input type="button" value="deploy all" ng-click="deployAll()" />
 <div ng-repeat="drone in drones">
     <div>{{drone.Domain}}</div>
     <input type="button" value="deploy" ng-click="deploy(drone)" />
