@@ -5,6 +5,7 @@ using CsvHelper;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Core.Utilities;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Master.Service.Commands;
 
 namespace SpeedyMailer.Master.Service.Tasks
@@ -31,14 +32,13 @@ namespace SpeedyMailer.Master.Service.Tasks
 			var csvSource = File.OpenRead(task.File);
 			var csvReader = new CsvReader(new StreamReader(csvSource));
 			var rows = csvReader.GetRecords<ContactsListCsvRow>()
-				.Distinct(new LambdaComparer<ContactsListCsvRow>((x, y) => x.Email == y.Email))
 				.ToList();
 
 			var contacts = rows.Select(x => new Contact
 												{
 													Country = x.Country,
 													Email = x.Email.Trim(),
-													Name = string.Format("{0} {1}", x.Firstname, x.Lastname),
+													Name = x.Firstname.HasValue() ? string.Format("{0} {1}", x.Firstname, x.Lastname) : null,
 													City = x.City,
 													Ip = x.Ip,
 													Phone = x.Phone,
