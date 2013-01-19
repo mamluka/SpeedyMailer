@@ -28,7 +28,10 @@ namespace SpeedyMailer.Master.Ray
 			public string CsvFile { get; set; }
 
 			[Option("b", "bad-domains")]
-			public string BadDomainsFile { get; set; }
+			public string BadDomainsFile { get; set; }[
+			
+			Option("r", "records-file")]
+			public string RecordsFile { get; set; }
 
 			[Option("o", "output-file")]
 			public string OutputFile { get; set; }
@@ -105,6 +108,17 @@ namespace SpeedyMailer.Master.Ray
 					if (rayCommandOptions.BadDomainsFile.HasValue())
 					{
 						var domains = File.ReadAllLines(rayCommandOptions.BadDomainsFile).ToList();
+						var newRows = RemoveRowsByDomains(rows, domains);
+
+						WriteCsv(rayCommandOptions, newRows);
+					}
+					
+					if (rayCommandOptions.RecordsFile.HasValue())
+					{
+						var records = File.ReadAllLines(rayCommandOptions.RecordsFile).ToList();
+
+						var processedRecords = ConnectEmailsToRecords(records, rows);
+
 						var newRows = RemoveRowsByDomains(rows, domains);
 
 						WriteCsv(rayCommandOptions, newRows);
