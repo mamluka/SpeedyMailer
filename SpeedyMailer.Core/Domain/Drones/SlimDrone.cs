@@ -1,4 +1,6 @@
 ﻿using System;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace SpeedyMailer.Core.Domain.Drones
 {
@@ -6,6 +8,8 @@ namespace SpeedyMailer.Core.Domain.Drones
 	{
 		public string Id { get; set; }
 		public string Domain { get; set; }
+
+		[JsonConverter(typeof(IsoDateTimeConverter))]
 		public DateTime LastUpdated { get; set; }
 	}
 }

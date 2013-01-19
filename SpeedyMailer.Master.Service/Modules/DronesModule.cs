@@ -95,7 +95,7 @@ namespace SpeedyMailer.Master.Service.Modules
 					{
 						var drones = session.Query<Drone>()
 							.ToList()
-							.Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated.ToUniversalTime() })
+							.Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated })
 							.ToList();
 
 						return Response.AsJson(drones);
