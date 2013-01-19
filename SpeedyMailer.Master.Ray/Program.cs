@@ -376,7 +376,7 @@ namespace SpeedyMailer.Master.Ray
 			WriteToConsole("The top 10 domains are:");
 			WriteSaperator();
 
-			var topDomains = domains.Where(x => x.Count > 10).Select(x => string.Format("Domain: {0} has: {1}", x.Key, x.Count));
+			var topDomains = domains.Select(x => string.Format("Domain: {0} has: {1}", x.Key, x.Count));
 			File.WriteAllLines(rayCommandOptions.OutputFile, topDomains);
 
 			WriteSaperator();
