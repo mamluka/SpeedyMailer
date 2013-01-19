@@ -26,7 +26,9 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[GET("/drones")]
 		public IEnumerable<SlimDrone> GetDrones()
 		{
-			return _api.Call<ServiceEndpoints.Drones.Get, List<SlimDrone>>();
+			return _api.Call<ServiceEndpoints.Drones.Get, List<SlimDrone>>()
+				.Where(x=> x.LastUpdated > DateTime.UtcNow.AddMinutes(-10))
+				.ToList();
 		}
 
 		[POST("/drones/deploy")]

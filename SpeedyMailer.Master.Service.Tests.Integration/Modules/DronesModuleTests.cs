@@ -186,7 +186,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 
 			Store.Store(new Drone
 				{
-					Id = "1"
+					Id = "1",
 				});
 
 			Store.WaitForEntitiesToExist<Drone>();
