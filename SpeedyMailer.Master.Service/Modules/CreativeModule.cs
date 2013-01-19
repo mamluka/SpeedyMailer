@@ -72,10 +72,10 @@ namespace SpeedyMailer.Master.Service.Modules
 							try
 							{
 								var creativeFragment = session.Query<CreativeFragment>()
-								                              .Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
-								                              .Where(x => x.Status == FragmentStatus.Pending)
-								                              .ToList()
-								                              .FirstOrDefault();
+															  .Customize(x => x.WaitForNonStaleResults(TimeSpan.FromMinutes(5)))
+															  .Where(x => x.Status == FragmentStatus.Pending)
+															  .ToList()
+															  .FirstOrDefault();
 
 								if (creativeFragment == null)
 								{
@@ -89,7 +89,7 @@ namespace SpeedyMailer.Master.Service.Modules
 								creativeFragment.FetchedBy = model.DroneId;
 								creativeFragment.FetchedAt = DateTime.UtcNow;
 
-									session.Store(creativeFragment);
+								session.Store(creativeFragment);
 								session.SaveChanges();
 
 								logger.Info("creative was found with id {0} it has {1} contacts inside", creativeFragment.Id, creativeFragment.Recipients.Count);
@@ -106,12 +106,12 @@ namespace SpeedyMailer.Master.Service.Modules
 
 			Get["/clone"] = _ =>
 				{
-					var creativeId = (string) Request.Query["creativeId"];
-					var listId = (string) Request.Query["listId"];
+					var creativeId = (string)Request.Query["creativeId"];
+					var listId = (string)Request.Query["listId"];
 
 					using (var session = documentStore.OpenSession())
 					{
-						var creative = session.Query<Creative>().FirstOrDefault(x => x.Id == creativeId);
+						var creative = session.Load<Creative>(creativeId);
 						if (creative == null)
 							return "Error";
 
