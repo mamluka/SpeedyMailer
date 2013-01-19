@@ -29,7 +29,7 @@ namespace SpeedyMailer.Master.Service.Tasks
 
 		public override void Execute(ImportContactsFromCsvTask task)
 		{
-			var isSingleLine = File.ReadLines(task.File).First().Contains(",");
+			var isSingleLine = !File.ReadLines(task.File).First().Contains(",");
 
 			var csvSource = File.OpenRead(task.File);
 			var csvReader = new CsvReader(new StreamReader(csvSource));
