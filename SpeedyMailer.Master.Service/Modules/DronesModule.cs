@@ -93,7 +93,11 @@ namespace SpeedyMailer.Master.Service.Modules
 				{
 					using (var session = documentStore.OpenSession())
 					{
-						var drones = session.Query<Drone>().Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated.ToUniversalTime() }).ToList();
+						var drones = session.Query<Drone>()
+							.ToList()
+							.Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated.ToUniversalTime() })
+							.ToList();
+
 						return Response.AsJson(drones);
 					}
 				};
