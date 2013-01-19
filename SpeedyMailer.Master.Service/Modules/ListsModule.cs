@@ -56,6 +56,22 @@ namespace SpeedyMailer.Master.Service.Modules
 					                  return Response.AsJson(session.Query<ListDescriptor>().ToList());
 				                  }
 			                  };
+			
+			Get["/stats"] = api =>
+			                  {
+				                  using (var session = _documentStore.OpenSession())
+				                  {
+
+					                  var lists = session.Query<ListDescriptor>().ToList();
+					                  var listStats = lists.Select(listDescriptor => new
+						                                                    {
+																				TotalContacts = session.Query<Contact>().Where(x=> x.MemberOf.Any(p=> p == listDescriptor.Id)),
+																				Id = listDescriptor.Id
+						                                                    }).ToList();
+
+					                  return Response.AsJson(listStats);
+				                  }
+			                  };
 
 			Post["/"] = api =>
 				                  {
