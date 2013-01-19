@@ -116,6 +116,7 @@ namespace SpeedyMailer.Master.Service.Modules
 							return "Error";
 
 						session.Advanced.Evict(creative);
+						creative.Id = null;
 						creative.Lists.Clear();
 						creative.Lists.Add(listId);
 
