@@ -18,4 +18,11 @@
     </ul>
 
     <button ng-click="saveRule(group,interval)" value="send" >Send</button>
+    
+    <div>
+        <h2>List of all rules</h2>
+        <ul ng-repeat="rule in rules">
+            <li>{{rule}}</li>
+        </ul>
+    </div>
 </div>

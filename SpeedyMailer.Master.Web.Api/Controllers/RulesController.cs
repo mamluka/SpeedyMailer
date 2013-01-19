@@ -19,7 +19,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 			_api = api;
 		}
 
-		[POST("/rules")]
+		[POST("/rule")]
 		public void SaveRule(RuleModel ruleModel)
 		{
 			_api.Call<ServiceEndpoints.Rules.AddIntervalRules>(x =>
@@ -35,6 +35,12 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 						                                                                     };
 																   });
 		}
+
+		[GET("/rule")]
+		public IList<IntervalRule> GetRules()
+		{
+			return _api.Call<ServiceEndpoints.Rules.GetIntervalRules, List<IntervalRule>>();
+		} 
 	}
 
 	public class RuleModel

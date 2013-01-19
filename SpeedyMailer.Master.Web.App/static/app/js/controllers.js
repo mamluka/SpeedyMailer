@@ -68,6 +68,9 @@ function SendingController($scope, $http, creativeResource) {
 SendingController.$inject = ['$scope', '$http', 'Creative'];
 
 function RulesController($scope, ruleResource) {
+
+    $scope.rules = ruleResource.query();
+
     var conditions = $scope.conditions = [];
     $scope.addCondition = function (condition) {
         conditions.push(condition);
@@ -78,6 +81,7 @@ function RulesController($scope, ruleResource) {
     };
 
     $scope.saveRule = function (group, interval) {
+
         var rule = new ruleResource({
             type: 'Interval',
             conditions: conditions,
@@ -90,6 +94,7 @@ function RulesController($scope, ruleResource) {
         conditions = $scope.conditions = [];
         $scope.group = '';
         $scope.interval = "";
+        $scope.condition = "";
     };
 }
 RulesController.$inject = ['$scope', 'Rule'];
