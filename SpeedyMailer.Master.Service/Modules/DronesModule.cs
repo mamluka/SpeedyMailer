@@ -75,7 +75,7 @@ namespace SpeedyMailer.Master.Service.Modules
 											  if (!Directory.Exists(logsDrones))
 												  Directory.CreateDirectory(logsDrones);
 
-												  File.AppendAllLines(logsPath,model.RawLogs);
+											  File.AppendAllLines(logsPath, model.RawLogs);
 
 											  return Response.AsText("OK");
 										  };
@@ -93,7 +93,7 @@ namespace SpeedyMailer.Master.Service.Modules
 				{
 					using (var session = documentStore.OpenSession())
 					{
-						var drones = session.Query<Drone>().Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain }).ToList();
+						var drones = session.Query<Drone>().Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated }).ToList();
 						return Response.AsJson(drones);
 					}
 				};
