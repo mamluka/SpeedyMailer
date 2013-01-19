@@ -14,4 +14,4 @@ bad_domains = data_file + ".bad.domain.txt"
 
 puts "Output clean list"
 output_file = data_file + ".clean.txt"
-`#{RAY_PATH} -p #{domain_file} -o #{output_file} -b #{bad_domains}`
+`#{RAY_PATH} -p #{data_file} -o #{output_file} -b #{bad_domains}`
