@@ -10,6 +10,7 @@ using ARSoft.Tools.Net.Dns;
 using CommandLine;
 using CsvHelper;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -17,6 +18,7 @@ using Lucene.Net.Store;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Utilities.Extentions;
 using Directory = System.IO.Directory;
+using Version = Lucene.Net.Util.Version;
 
 namespace SpeedyMailer.Master.Ray
 {
@@ -28,9 +30,10 @@ namespace SpeedyMailer.Master.Ray
 			public string CsvFile { get; set; }
 
 			[Option("b", "bad-domains")]
-			public string BadDomainsFile { get; set; }[
-			
-			Option("r", "records-file")]
+			public string BadDomainsFile { get; set; }
+			[
+
+				Option("r", "records-file")]
 			public string RecordsFile { get; set; }
 
 			[Option("o", "output-file")]
@@ -112,16 +115,14 @@ namespace SpeedyMailer.Master.Ray
 
 						WriteCsv(rayCommandOptions, newRows);
 					}
-					
+
 					if (rayCommandOptions.RecordsFile.HasValue())
 					{
 						var records = File.ReadAllLines(rayCommandOptions.RecordsFile).ToList();
-
 						var processedRecords = ConnectEmailsToRecords(records, rows);
 
-						var newRows = RemoveRowsByDomains(rows, domains);
+						File.WriteAllLines(rayCommandOptions.OutputFile, processedRecords);
 
-						WriteCsv(rayCommandOptions, newRows);
 					}
 				}
 
@@ -135,6 +136,60 @@ namespace SpeedyMailer.Master.Ray
 			{
 				WriteToConsole("Parameter problem");
 			}
+
+			Console.ReadKey();
+		}
+
+		private static List<string> ConnectEmailsToRecords(List<string> records, List<OneRawContactsListCsvRow> rows)
+		{
+			var directory = Guid.NewGuid().ToString();
+
+			var simpleFsDirectory = new SimpleFSDirectory(new DirectoryInfo(directory));
+
+			if (!Directory.Exists(directory))
+			{
+				var standardAnalyzer = new StandardAnalyzer(Version.LUCENE_30);
+				var indexer = new IndexWriter(simpleFsDirectory, standardAnalyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+
+				var st = new Stopwatch();
+				st.Start();
+				var counter = 0;
+				records.ForEach(x =>
+				{
+					var document = new Document();
+					document.Add(new Field("row", x, Field.Store.YES, Field.Index.ANALYZED));
+					document.Add(new Field("collectionIndex", counter.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+					indexer.AddDocument(document);
+
+					counter++;
+				});
+
+				indexer.Commit();
+
+				st.Stop();
+
+				WriteToConsole("Index took: " + st.ElapsedMilliseconds / 1000);
+			}
+
+			var reader = IndexReader.Open(simpleFsDirectory, true);
+			var searcher = new IndexSearcher(reader);
+
+			var st2 = new Stopwatch();
+			st2.Start();
+
+			var recordsToKeep = new List<string> { records[0] };
+
+			rows.ForEach(x =>
+			{
+				var ids = Search(searcher, "row", x.Email);
+
+				if (!ids.Any())
+					Console.WriteLine("for " + x + " there were no ids found.");
+
+				ids.ToList().ForEach(p => recordsToKeep.Add(records[p]));
+			});
+
+			return recordsToKeep;
 		}
 
 		private static void CheckDns(IEnumerable<string> domains, RayCommandOptions rayCommandOptions)
@@ -302,7 +357,7 @@ namespace SpeedyMailer.Master.Ray
 
 			removeDomains.ForEach(x =>
 				{
-					var ids = Search(searcher, x);
+					var ids = Search(searcher, "email", x);
 
 					if (!ids.Any())
 						Console.WriteLine("for " + x + " there were no ids found.");
@@ -320,11 +375,11 @@ namespace SpeedyMailer.Master.Ray
 			return oneRawContactsListCsvRows;
 		}
 
-		private static IList<int> Search(IndexSearcher searcher, string term)
+		private static IList<int> Search(IndexSearcher searcher, string field, string term)
 		{
 			var st = new Stopwatch();
 			st.Start();
-			var results = searcher.Search(new WildcardQuery(new Term("email", term)), 100);
+			var results = searcher.Search(new WildcardQuery(new Term(field, term)), 100);
 			var docs = results.ScoreDocs.Select(x => x.Doc).ToList();
 			if (!docs.Any())
 			{
