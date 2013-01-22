@@ -7,6 +7,7 @@ using Nancy;
 using Raven.Client;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Storage;
+using SpeedyMailer.Core.Utilities.Extentions;
 using SpeedyMailer.Master.Service.Storage.Indexes;
 
 namespace SpeedyMailer.Master.Service.Modules
@@ -18,6 +19,7 @@ namespace SpeedyMailer.Master.Service.Modules
 		{
 			Get["/uneasy-domains"] = _ =>
 				{
+					var verbose = ((string)Request.Query["verbose"]).HasValue();
 					using (var session = documentStore.OpenSession())
 					{
 						var bounces = session.Query<Creative_AllBounces.ReduceResult, Creative_AllBounces>().SingleOrDefault(x => x.Group == "All").Bounced;
@@ -31,9 +33,12 @@ namespace SpeedyMailer.Master.Service.Modules
 
 						var uneasyBounces = bounces
 							.AsParallel()
-							.Where(x => !rules.Any(m => Regex.Match(x.Message, m.Condition, RegexOptions.IgnoreCase).Success));
+							.Where(x => rules.Any(m => Regex.Match(x.Message, m.Condition, RegexOptions.IgnoreCase).Success));
 
-						return Response.AsJson(uneasyBounces);
+						if (verbose)
+							return Response.AsJson(uneasyBounces);
+
+						return Response.AsText(uneasyBounces.Select(x => "Domain: " + x.Recipient.GetDomain() + " becaose of: " + x.Message).Linefy());
 					}
 				};
 		}

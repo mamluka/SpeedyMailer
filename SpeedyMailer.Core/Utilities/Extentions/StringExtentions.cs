@@ -39,5 +39,10 @@ namespace SpeedyMailer.Core.Utilities.Extentions
 		{
 			return string.Join(", ", target.ToList());
 		}
+
+		public static string Linefy(this IEnumerable<string> target)
+		{
+			return string.Join(Environment.NewLine, target.ToList());
+		}
 	}
 }
