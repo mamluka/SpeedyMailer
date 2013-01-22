@@ -19,7 +19,7 @@ namespace SpeedyMailer.Master.Service.Modules
 		{
 			Get["/uneasy-domains"] = _ =>
 				{
-					var verbose = ((string)Request.Query["verbose"]).HasValue();
+					var verbose = ((string)Request.Query["mode"]).HasValue();
 					using (var session = documentStore.OpenSession())
 					{
 						var bounces = session.Query<Creative_AllBounces.ReduceResult, Creative_AllBounces>().SingleOrDefault(x => x.Group == "All").Bounced;
@@ -38,7 +38,7 @@ namespace SpeedyMailer.Master.Service.Modules
 						if (verbose)
 							return Response.AsJson(uneasyBounces);
 
-						return Response.AsText(uneasyBounces.Select(x => "Domain: " + x.Recipient.GetDomain() + " becaose of: " + x.Message).Linefy());
+						return Response.AsText(uneasyBounces.Select(x => x.Recipient.GetDomain()).Distinct().Linefy());
 					}
 				};
 		}
