@@ -105,6 +105,7 @@
     <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
     <Compile Include="Commands\SendCreativeCommandTests.cs" />
     <Compile Include="Commands\UpdateDroneCommandTests.cs" />
+    <Compile Include="Indexes\Creative_AllBouncesIndexTestsTests.cs" />
     <Compile Include="Indexes\Creative_ActionsIndexTests.cs" />
     <Compile Include="Indexes\Creative_ClassifiedEmailsIndexTests.cs" />
     <Compile Include="Indexes\Creative_BouncedEmailsIndexTests.cs" />

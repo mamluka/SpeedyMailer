@@ -114,6 +114,7 @@
     <Compile Include="Modules\AdminModule.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Modules\AnalyzeModule.cs" />
     <Compile Include="Modules\HeuristicsModule.cs" />
     <Compile Include="Modules\LeakModule.cs" />
     <Compile Include="Modules\ListsModule.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Modules\SystemModule.cs" />
     <Compile Include="Modules\TemplatesModule.cs" />
     <Compile Include="Storage\Indexes\Contacts_ByDomainGroupAndMemberOf.cs" />
+    <Compile Include="Storage\Indexes\Creative_AllBounces.cs" />
     <Compile Include="Storage\Indexes\Mapping_Indexes.cs" />
     <Compile Include="Storage\Indexes\Contacts_DomainGroupCounter.cs" />
     <Compile Include="Storage\Indexes\Creative_UnclassfiedEmails.cs" />
