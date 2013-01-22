@@ -124,66 +124,11 @@ namespace SpeedyMailer.Master.Ray
 						var processedRecords = ConnectEmailsToRecords(records, rows);
 
 						File.WriteAllLines(rayCommandOptions.OutputFile, processedRecords);
-
 					}
 
 					if (rayCommandOptions.NamesFile.HasValue())
 					{
-						var names = File.ReadAllLines(rayCommandOptions.NamesFile).ToList();
-
-						var directory = Guid.NewGuid().ToString();
-
-						var simpleFsDirectory = new SimpleFSDirectory(new DirectoryInfo(directory));
-
-						if (!Directory.Exists(directory))
-						{
-							var standardAnalyzer = new WhitespaceAnalyzer();
-							var indexer = new IndexWriter(simpleFsDirectory, standardAnalyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
-
-							var st = new Stopwatch();
-							st.Start();
-							var counter = 0;
-							rows.ForEach(x =>
-							{
-								var document = new Document();
-								document.Add(new Field("email", x.Email.Replace("@", " "), Field.Store.YES, Field.Index.ANALYZED));
-								document.Add(new Field("collectionIndex", counter.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
-								indexer.AddDocument(document);
-
-								counter++;
-							});
-
-							indexer.Commit();
-
-							st.Stop();
-
-							WriteToConsole("Index took: " + st.ElapsedMilliseconds / 1000);
-						}
-
-						var reader = IndexReader.Open(simpleFsDirectory, true);
-						var searcher = new IndexSearcher(reader);
-
-						var st2 = new Stopwatch();
-						st2.Start();
-
-						names.ForEach(x =>
-						{
-							var ids = Search(searcher, "email", "*" + x + "*");
-
-							if (!ids.Any())
-								Console.WriteLine("for " + x + " there were no ids found.");
-
-							ids.ToList().ForEach(p =>
-							{
-								rows[p].Removed = false;
-							});
-						});
-
-						var oneRawContactsListCsvRows = rows.AsParallel().Where(x => !x.Removed).ToList();
-
-						st2.Stop();
-						WriteToConsole("Removing took: " + st2.ElapsedMilliseconds / 1000);
-
+						KeepEmailsWithGoodNames(rayCommandOptions, rows);
 					}
 				}
 
@@ -201,6 +146,69 @@ namespace SpeedyMailer.Master.Ray
 			}
 
 			Console.ReadKey();
+		}
+
+		private static void KeepEmailsWithGoodNames(RayCommandOptions rayCommandOptions, List<OneRawContactsListCsvRow> rows)
+		{
+			var names = File.ReadAllLines(rayCommandOptions.NamesFile).ToList();
+
+			var directory = Guid.NewGuid().ToString();
+
+			var simpleFsDirectory = new SimpleFSDirectory(new DirectoryInfo(directory));
+
+			if (!Directory.Exists(directory))
+			{
+				var standardAnalyzer = new StandardAnalyzer(Version.LUCENE_30);
+				var indexer = new IndexWriter(simpleFsDirectory, standardAnalyzer, true, IndexWriter.MaxFieldLength.UNLIMITED);
+
+				var st = new Stopwatch();
+				st.Start();
+				var counter = 0;
+				rows.ForEach(x =>
+					{
+						var document = new Document();
+						document.Add(new Field("address", x.Email.Split('@')[0], Field.Store.YES, Field.Index.ANALYZED));
+						document.Add(new Field("collectionIndex", counter.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
+						indexer.AddDocument(document);
+
+						counter++;
+					});
+
+				indexer.Commit();
+
+				st.Stop();
+
+				WriteToConsole("Index took: " + st.ElapsedMilliseconds / 1000);
+			}
+
+			var reader = IndexReader.Open(simpleFsDirectory, true);
+			var searcher = new IndexSearcher(reader);
+
+			var st2 = new Stopwatch();
+			st2.Start();
+
+			names.ForEach(x =>
+				{
+					var ids = Search(searcher, "address", "*" + x + "*");
+
+					if (!ids.Any())
+					{
+						Console.WriteLine("for " + x + " there were no ids found.");
+						return;
+					}
+
+					ids.ToList().ForEach(p => { rows[p].Mark = true; });
+				});
+
+			var emailsWithNames = rows.AsParallel().Where(x => x.Mark).ToList();
+			var emailsWithoutNames = rows.AsParallel().Where(x => !x.Mark).Select(x => x.Email).ToList();
+
+			st2.Stop();
+			WriteToConsole("Processing all names took: " + st2.ElapsedMilliseconds / 1000);
+
+			File.WriteAllLines(rayCommandOptions.OutputFile + ".emails.without.names.txt", emailsWithoutNames);
+
+			WriteCsv(rayCommandOptions, emailsWithNames);
 		}
 
 		private static List<string> ConnectEmailsToRecords(List<string> records, List<OneRawContactsListCsvRow> rows)
@@ -427,11 +435,11 @@ namespace SpeedyMailer.Master.Ray
 
 					ids.ToList().ForEach(p =>
 						{
-							rows[p].Removed = true;
+							rows[p].Mark = true;
 						});
 				});
 
-			var oneRawContactsListCsvRows = rows.AsParallel().Where(x => !x.Removed).ToList();
+			var oneRawContactsListCsvRows = rows.AsParallel().Where(x => !x.Mark).ToList();
 
 			st2.Stop();
 			WriteToConsole("Removing took: " + st2.ElapsedMilliseconds / 1000);

@@ -28,7 +28,7 @@ namespace SpeedyMailer.Master.Service.Modules
 							session.LoadSingle<DeliverabilityClassificationRules>()
 								   .Rules
 								   .AsParallel()
-								   .Where(x => x.Type == Classification.IpBlocking || x.Type == Classification.TempBlock || x.Type == Classification.ContentBlocking)
+								   .Where(x => x.Type == Classification.IpBlocking || x.Type == Classification.ContentBlocking)
 								   .ToList();
 
 						var uneasyBounces = bounces
