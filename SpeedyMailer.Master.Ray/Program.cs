@@ -148,8 +148,6 @@ namespace SpeedyMailer.Master.Ray
 			{
 				WriteToConsole("Parameter problem");
 			}
-
-			Console.ReadKey();
 		}
 
 		private static void KeepEmailsWithGoodNames(RayCommandOptions rayCommandOptions, List<OneRawContactsListCsvRow> rows)
