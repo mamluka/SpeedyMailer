@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using NLog;
 using Nancy;
 using Quartz;
 using SpeedyMailer.Core.Domain.Creative;
@@ -11,7 +12,7 @@ namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler, LogsStore logsStore, CreativePackagesStore creativePackagesStore)
+		public AdminModule(IScheduler scheduler, LogsStore logsStore, CreativePackagesStore creativePackagesStore,Logger logger)
 			: base("/admin")
 		{
 
@@ -40,14 +41,22 @@ namespace SpeedyMailer.Drones.Modules
 
 			Post["/flush-unprocessed-packages"] = _ =>
 				{
+					logger.Info("Entered flush all");
+
 					var packages = creativePackagesStore.GetAll();
+
+					logger.Info("found {0} packages",packages.Count);
+
 					packages.ToList().ForEach(x =>
 						{
 							x.Processed = true;
+							logger.Info("write false for: {0}",x.To);
 							creativePackagesStore.Save(x);
 						});
 
-					return "OK";
+					logger.Info("exited flush all");
+
+					return Response.AsText("OK");
 				};
 		}
 	}
