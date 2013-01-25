@@ -95,7 +95,7 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		}
 
 		[POST("/drones/flush-all")]
-		public List<object> FlushAll()
+		public IEnumerable<object> FlushAll()
 		{
 			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
 			return drones
@@ -106,10 +106,10 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 						return new
 							{
 								Drone = drone,
-								Data = _api.ResponseStatus;
+								Data = _api.ResponseStatus
 							};
-					})
-				.ToList();
+					});
+
 		}
 	}
 }
