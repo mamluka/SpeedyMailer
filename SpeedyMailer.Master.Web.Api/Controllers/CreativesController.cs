@@ -43,6 +43,15 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 															  x.CreativeId = creativeModel.Id;
 														  });
 		}
+		
+		[POST("/creatives/cancel"), HttpPost]
+		public void CancelCreative(CreativeModel creativeModel)
+		{
+			_api.Call<ServiceEndpoints.Creative.Cancel>(x =>
+														  {
+															  x.CreativeId = creativeModel.Id;
+														  });
+		}
 
 		[GET("/creatives"), HttpGet]
 		public IList<CreativeModel> GetAll()

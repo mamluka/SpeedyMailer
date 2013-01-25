@@ -60,6 +60,16 @@ namespace SpeedyMailer.Core.Apis
 					CallMethod = RestMethod.Get;
 				}
 			}
+
+			public class Cancel:ApiCall
+			{
+				public string CreativeId { get; set; }
+
+				public Cancel() : base("/creative/cancel")
+				{
+					CallMethod = RestMethod.Post;
+				}
+			}
 		}
 	}
 }

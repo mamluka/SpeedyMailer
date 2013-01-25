@@ -94,6 +94,27 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 			result.Should().Contain(x => x.Id == creative1);
 			result.Should().Contain(x => x.Id == creative2);
 		}
+		
+		[Test]
+		public void Cancel_WhenCalled_ShouldSetTheStatusOfTheCreativeFragmentsToCancelled()
+		{
+			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
+			ServiceActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
+
+			ServiceActions.Initialize();
+			ServiceActions.Start();
+
+			var api = MasterResolve<Api>();
+
+			var creativeId = CreateCreative(100);
+			CreateFragment(creativeId, 10);
+
+			api.Call<ServiceEndpoints.Creative.Cancel>(x=> x.CreativeId = creativeId);
+
+			var result = Store.Query<CreativeFragment>(x => x.CreativeId == creativeId);
+
+			result.Should().OnlyContain(x => x.Status == FragmentStatus.Cancelled);
+		}
 
 		[Test]
 		public void Fragments_WhenCalledByDrone_ShouldSendBackAFragment()

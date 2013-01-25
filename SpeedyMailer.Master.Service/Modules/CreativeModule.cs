@@ -127,12 +127,31 @@ namespace SpeedyMailer.Master.Service.Modules
 					}
 				};
 
-			Get["/fragments-status"] = x =>
+			Get["/fragments-status"] = _ =>
 				{
 					using (var session = documentStore.OpenSession())
 					{
 						return Response.AsJson(session.Query<Fragments_ByCreative.ReduceResult, Fragments_ByCreative>());
 					}
+				};
+
+			Post["/cancel"] = _ =>
+				{
+					var model = this.Bind<ServiceEndpoints.Creative.Cancel>();
+
+					using (var sessionn = documentStore.OpenSession())
+					{
+						var fragments = sessionn.Query<CreativeFragment>().Where(x => x.CreativeId == model.CreativeId && x.Status == FragmentStatus.Pending).ToList();
+						fragments.ForEach(x =>
+							{
+								x.Status = FragmentStatus.Cancelled;
+								sessionn.Store(x);
+							});
+
+						sessionn.SaveChanges();
+					}
+
+					return "OK";
 				};
 		}
 	}
