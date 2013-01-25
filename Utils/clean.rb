@@ -15,3 +15,8 @@ bad_domains = data_file + ".bad.domain.txt"
 puts "Output clean list"
 output_file = data_file + ".clean.txt"
 `#{RAY_PATH} -p #{data_file} -o #{output_file} -b #{bad_domains}`
+
+puts "Run name matches"
+names_file = "names.to.match.txt"
+names_matched = data_file + ".names.matched.txt"
+`#{RAY_PATH} -p #{output_file} -o #{names_matched} -n #{names_file}`
