@@ -13,19 +13,19 @@ lines = lines.select { |line| line.length > 4 }
 
 term_that_match = Array.new
 
-counter = 0
 lines.each do |line|
 
   if counter % 1000 == 0
     puts "we have processed: #{counter}"
   end
 
-  matches_from_the_lines = lines.select { |x| x.include?(line) }
+  matches_from_the_lines = lines.select { |x| x.include?(line[0..-2]) && x != line }
+
   if matches_from_the_lines.size > 1
     term_that_match = term_that_match + matches_from_the_lines
   end
 
-  counter=counter+1
+  break
 
 end
 
