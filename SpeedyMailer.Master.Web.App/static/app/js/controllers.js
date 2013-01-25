@@ -174,7 +174,7 @@ function DronesController($scope, dronesResource, $http) {
         });
     };
 
-    $scope.deployAll = function () {
+    $scope.flushAll = function () {
         var promise = $http.post('/drones/flush-all'.Apify());
         promise.success(function (data) {
             $.each(data, function(index,value) {
