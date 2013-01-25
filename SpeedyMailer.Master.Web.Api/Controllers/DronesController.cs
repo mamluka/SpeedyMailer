@@ -97,7 +97,9 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 		[POST("/drones/flush-all")]
 		public IEnumerable<object> FlushAll()
 		{
-			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
+			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>()
+			                 .Where(x => x.LastUpdated.ToUniversalTime() > DateTime.UtcNow.AddMinutes(-10));
+				
 			return drones
 				.AsParallel()
 				.Select(drone =>
