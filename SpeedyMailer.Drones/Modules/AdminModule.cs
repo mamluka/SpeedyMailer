@@ -41,20 +41,13 @@ namespace SpeedyMailer.Drones.Modules
 
 			Post["/flush-unprocessed-packages"] = _ =>
 				{
-					logger.Info("Entered flush all");
-
 					var packages = creativePackagesStore.GetAll();
-
-					logger.Info("found {0} packages",packages.Count);
-
 					packages.ToList().ForEach(x =>
 						{
 							x.Processed = true;
 							logger.Info("write false for: {0}",x.To);
 							creativePackagesStore.Save(x);
 						});
-
-					logger.Info("exited flush all");
 
 					return Response.AsText("OK");
 				};
