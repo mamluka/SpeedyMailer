@@ -5,6 +5,7 @@
 </div>
 <h1> deploy The drones</h1>
 <input type="button" value="deploy all" ng-click="deployAll()" />
+<input type="button" value="flush packages for all drones" ng-click="flushAll()" />
 <div ng-repeat="drone in drones">
     <div>{{drone.Domain}}</div>
     <input type="button" value="deploy" ng-click="deploy(drone)" />

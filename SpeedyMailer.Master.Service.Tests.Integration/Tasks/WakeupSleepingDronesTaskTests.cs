@@ -1,7 +1,6 @@
 using NUnit.Framework;
 using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Drones;
-using SpeedyMailer.Master.Service.Apis;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Master.Service.Tasks;
 using SpeedyMailer.Tests.Core.Integration.Base;

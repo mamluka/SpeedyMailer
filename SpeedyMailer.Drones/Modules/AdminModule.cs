@@ -11,7 +11,7 @@ namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler, LogsStore logsStore, SendCreativePackageCommand sendCreativePackageCommand)
+		public AdminModule(IScheduler scheduler, LogsStore logsStore, CreativePackagesStore creativePackagesStore)
 			: base("/admin")
 		{
 
@@ -38,36 +38,17 @@ namespace SpeedyMailer.Drones.Modules
 					return Response.AsJson(data);
 				};
 
-			Get["/exception"] = x =>
+			Post["/flush-unprocessed-packages"] = _ =>
 				{
-					throw new Exception("Here");
-				};
-
-			Get["/send-test-email"] = x =>
-				{
-					var creativeId = (string) Request.Query["creativeId"];
-					var htmlBody = (string) Request.Query["html"];
-					var textBody = (string) Request.Query["text"];
-					var to = (string) Request.Query["to"];
-
-					sendCreativePackageCommand.Package = new CreativePackage
+					var packages = creativePackagesStore.GetAll();
+					packages.ToList().ForEach(x =>
 						{
-							To = to,
-							CreativeId = creativeId,
-							Subject = "test subject",
-							FromAddressDomainPrefix = "david",
-							FromName = "david",
-							Group = "test",
-							HtmlBody = htmlBody,
-							TextBody = textBody,
-						};
+							x.Processed = true;
+							creativePackagesStore.Save(x);
+						});
 
-					sendCreativePackageCommand.Execute();
-
-					return Response.AsText("OK");
+					return "OK";
 				};
-
-
 		}
 	}
 }

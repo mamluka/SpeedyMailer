@@ -93,5 +93,23 @@ namespace SpeedyMailer.Master.Web.Api.Controllers
 				.Select(drone => SendCommandToDrone(drone, "chef-client"))
 				.ToList();
 		}
+
+		[POST("/drones/flush-all")]
+		public List<object> FlushAll()
+		{
+			var drones = _api.Call<ServiceEndpoints.Drones.Get, List<Drone>>();
+			return drones
+				.AsParallel()
+				.Select(drone =>
+					{
+						_api.SetBaseUrl(drone.BaseUrl).Call<DroneEndpoints.Admin.FlushPackages>();
+						return new
+							{
+								Drone = drone,
+								Data = _api.ResponseStatus;
+							};
+					})
+				.ToList();
+		}
 	}
 }

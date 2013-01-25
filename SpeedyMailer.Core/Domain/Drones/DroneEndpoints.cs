@@ -1,7 +1,6 @@
 using SpeedyMailer.Core.Apis;
-using SpeedyMailer.Core.Domain.Drones;
 
-namespace SpeedyMailer.Master.Service.Apis
+namespace SpeedyMailer.Core.Domain.Drones
 {
 	public class DroneEndpoints
 	{
@@ -29,6 +28,15 @@ namespace SpeedyMailer.Master.Service.Apis
 					: base("/admin/fire-task/{job}")
 				{
 					CallMethod = RestMethod.Get;
+				}
+			}
+
+			public class FlushPackages:ApiCall
+			{
+				public FlushPackages()
+					: base("/admin/flush-unprocessed-packages")
+				{
+					CallMethod = RestMethod.Post;
 				}
 			}
 		}

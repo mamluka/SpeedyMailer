@@ -6,7 +6,6 @@ using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Tasks;
 using System.Linq;
-using SpeedyMailer.Master.Service.Apis;
 
 namespace SpeedyMailer.Master.Service.Tasks
 {

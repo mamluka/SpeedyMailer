@@ -7,12 +7,12 @@ using Ploeh.AutoFixture;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Domain.Drones;
 using SpeedyMailer.Core.Domain.Lists;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Rules;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Drones.Tasks;
-using SpeedyMailer.Master.Service.Apis;
 using SpeedyMailer.Tests.Core.Integration.Base;
 using SpeedyMailer.Tests.Core.Integration.Utils;
 

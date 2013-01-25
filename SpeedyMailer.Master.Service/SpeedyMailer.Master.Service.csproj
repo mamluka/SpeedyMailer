@@ -101,7 +101,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Apis\DroneEndpoints.cs" />
     <Compile Include="Commands\AddContactsCommand.cs" />
     <Compile Include="Commands\AddCreativeCommand.cs" />
     <Compile Include="Commands\AddIndexesToRavenCommand.cs" />
@@ -163,7 +162,9 @@
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Apis\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

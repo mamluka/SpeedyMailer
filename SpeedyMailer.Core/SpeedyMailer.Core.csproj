@@ -192,6 +192,7 @@
     <Compile Include="Domain\Creative\TemplateType.cs" />
     <Compile Include="Domain\Drones\CurrentExecutingCreativeFragment.cs" />
     <Compile Include="Domain\Drones\Drone.cs" />
+    <Compile Include="Domain\Drones\DroneEndpoints.cs" />
     <Compile Include="Domain\Drones\DroneException.cs" />
     <Compile Include="Domain\Drones\DroneStatus.cs" />
     <Compile Include="Domain\Drones\SlimDrone.cs" />
