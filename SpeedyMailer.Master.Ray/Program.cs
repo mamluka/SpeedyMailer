@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using ARSoft.Tools.Net.Dns;
 using CommandLine;
 using CsvHelper;
@@ -31,6 +32,9 @@ namespace SpeedyMailer.Master.Ray
 
 			[Option("b", "bad-domains")]
 			public string BadDomainsFile { get; set; }
+
+			[Option("u", "update-suppression")]
+			public bool UpdateSuppression { get; set; }
 
 			[Option("n", "names-index")]
 			public string NamesFile { get; set; }
@@ -184,16 +188,17 @@ namespace SpeedyMailer.Master.Ray
 			var reader = IndexReader.Open(simpleFsDirectory, true);
 			var searcher = new IndexSearcher(reader);
 
+
 			var st2 = new Stopwatch();
 			st2.Start();
 
-			names.ForEach(x =>
+			Parallel.ForEach(names, x =>
 				{
 					var ids = Search(searcher, "address", "*" + x + "*");
 
 					if (!ids.Any())
 					{
-						Console.WriteLine("for " + x + " there were no ids found.");
+//						Console.WriteLine("for " + x + " there were no ids found.");
 						return;
 					}
 
@@ -450,11 +455,11 @@ namespace SpeedyMailer.Master.Ray
 		{
 			var st = new Stopwatch();
 			st.Start();
-			var results = searcher.Search(new WildcardQuery(new Term(field, term)), 100);
+			var results = searcher.Search(new WildcardQuery(new Term(field, term)), int.MaxValue);
 			var docs = results.ScoreDocs.Select(x => x.Doc).ToList();
 			if (!docs.Any())
 			{
-				Console.WriteLine("no docs for: " + term);
+//				Console.WriteLine("no docs for: " + term);
 				return new List<int>();
 			}
 
