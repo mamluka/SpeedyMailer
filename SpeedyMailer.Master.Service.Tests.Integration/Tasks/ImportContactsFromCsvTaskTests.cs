@@ -100,33 +100,5 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Tasks
 						                                                                      }
 				                                                                      });
 		}
-
-
-		[Test]
-		public void Execute_WhenListContainsDuplicates_ShouldIgnoreThem()
-		{
-			var listId = UiActions.ExecuteCommand<CreateListCommand, string>(x => x.Name = "AList");
-
-			var filename = CsvTestingExtentions.GenerateFileName("sample");
-
-			var list = Fixture.CreateMany<ContactsListCsvRow>(10).ToList();
-			list.Add(list.Last());
-
-			list.ToCsvFile(filename);
-
-			var task = new ImportContactsFromCsvTask
-			{
-				ListId = listId,
-				File = filename
-			};
-
-			UiActions.ExecuteTask(task);
-
-			Store.WaitForEntitiesToExist<Contact>(10);
-
-			var result = Store.Query<Contact>();
-
-			result.Should().HaveCount(10);
-		}
 	}
 }

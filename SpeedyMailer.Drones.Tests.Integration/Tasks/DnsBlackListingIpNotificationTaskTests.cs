@@ -18,6 +18,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 		{ }
 
 		[Test]
+		[Ignore]
 		public void Execute_WhenDNSBLArePresentInTheJson_ShouldQueryThemForTheCurrentIp()
 		{
 			DroneActions.EditSettings<DroneSettings>(x =>

@@ -99,7 +99,6 @@
   <ItemGroup>
     <Compile Include="Commands\AddContactsCommandTests.cs" />
     <Compile Include="Commands\AddCreativeCommandTests.cs" />
-    <Compile Include="Commands\AddIndexesToRavenCommandTests.cs" />
     <Compile Include="Commands\AddIntervalRuleCommandTests.cs" />
     <Compile Include="Commands\CreateListCommandTests.cs" />
     <Compile Include="Commands\CreateTemplateCommandTests.cs" />

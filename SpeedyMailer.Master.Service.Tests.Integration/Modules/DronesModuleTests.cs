@@ -154,26 +154,6 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Modules
 		}
 
 		[Test]
-		public void GetDnsblData_WhenCalled_ShouldReturnTheListOfDnsblServices()
-		{
-			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
-
-			ServiceActions.Initialize();
-			ServiceActions.Start();
-
-			DroneActions.EditSettings<ApiCallsSettings>(x => { x.ApiBaseUri = DefaultBaseUrl; });
-
-			var api = DroneResolve<Api>();
-
-			var result = api.Call<ServiceEndpoints.Drones.GetDnsblData, List<Dnsbl>>();
-
-			result.Should().HaveCount(27);
-			result[0].Dns.Should().Be("virbl.Dnsbl.bit.nl");
-			result[0].Name.Should().Be("VIRBL");
-			result[0].Type.Should().Be(DnsnlType.Ip);
-		}
-
-		[Test]
 		public void Get_WhenCalled_ShouldReturnDrones()
 		{
 			ServiceActions.EditSettings<ServiceSettings>(x => { x.BaseUrl = DefaultBaseUrl; });
