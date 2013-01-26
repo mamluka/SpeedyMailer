@@ -4,6 +4,8 @@ booking
 cancel
 communications
 developer
+ignore
+phishing
 development
 abc
 admin

@@ -28,7 +28,7 @@ file.close
 puts email_prefixes.length
 #remove common email prefixes
 address_not_allowed = ["..", " ", "--",'-']
-domains_not_allowed = ["localhost", "example.com", "email.com", "test","emailaddress.com","domain.com"]
+domains_not_allowed = ["localhost", "example", "email.com", "test","emailaddress.com","domain.com"]
 
 lines.delete_if do |line|
   line_split = line.split('@')
