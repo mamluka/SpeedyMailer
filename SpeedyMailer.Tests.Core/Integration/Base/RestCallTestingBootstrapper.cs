@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
+using Nancy.Diagnostics;
 using Ninject;
 using SpeedyMailer.Core.Container;
 

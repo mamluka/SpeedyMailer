@@ -56,7 +56,7 @@
     </Reference>
     <Reference Include="Nancy.Bootstrappers.Ninject.Mono, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\SpeedyMailer.Nancy.Bootstrappers.Ninject.Mono.0.7.15.1\lib\net40\Nancy.Bootstrappers.Ninject.Mono.dll</HintPath>
+      <HintPath>..\packages\SpeedyMailer.Nancy.Bootstrappers.Ninject.Mono.0.7.15.3\lib\net40\Nancy.Bootstrappers.Ninject.Mono.dll</HintPath>
     </Reference>
     <Reference Include="Nancy.Hosting.Self, Version=0.15.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

@@ -7,6 +7,7 @@ using NLog;
 using Nancy;
 using Nancy.Bootstrapper;
 using Nancy.Bootstrappers.Ninject;
+using Nancy.Diagnostics;
 using Ninject;
 using Quartz;
 using SpeedyMailer.Core.Settings;
