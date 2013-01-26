@@ -107,6 +107,11 @@ namespace SpeedyMailer.Core.Tasks
 
 		}
 
+		public void SchedulerStarting()
+		{
+			
+		}
+
 		public void SchedulerShutdown()
 		{
 

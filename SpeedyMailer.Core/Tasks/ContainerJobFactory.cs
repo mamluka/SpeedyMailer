@@ -24,5 +24,10 @@ namespace SpeedyMailer.Core.Tasks
 
 			return _kernel.Get(type) as IJob;
 		}
+
+		public void ReturnJob(IJob job)
+		{
+
+		}
 	}
 }
