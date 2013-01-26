@@ -1,7 +1,6 @@
 using RestSharp;
 using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
-using SpeedyMailer.Master.Web.Core;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(SpeedyMailer.Master.Web.Api.App_Start.NinjectWebCommon), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(SpeedyMailer.Master.Web.Api.App_Start.NinjectWebCommon), "Stop")]
@@ -63,7 +62,6 @@ namespace SpeedyMailer.Master.Web.Api.App_Start
 		        .Analyze(x => x.AssembiesContaining(new[]
 			        {
 				        typeof (CoreAssemblyMarker),
-				        typeof (WebCoreAssemblyMarker),
 						typeof(WebApiMarker),
 						typeof(IRestClient),
 			        }))

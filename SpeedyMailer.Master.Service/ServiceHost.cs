@@ -16,7 +16,7 @@ using Ninject;
 
 namespace SpeedyMailer.Master.Service
 {
-	public class ServiceCommandOptions : CommandLineOptionsBase
+	public class MasterHostedServicesCommandOptions : CommandLineOptionsBase
 	{
 		[Option("b", "base-url", DefaultValue = @"http://localhost:9852", HelpText = "The base url of the service to register the drone with")]
 		public string BaseUrl { get; set; }
@@ -26,7 +26,7 @@ namespace SpeedyMailer.Master.Service
 	{
 		public static void Main(string[] args)
 		{
-			var options = new ServiceCommandOptions();
+			var options = new MasterHostedServicesCommandOptions();
 
 			if (CommandLineParser.Default.ParseArguments(args, options))
 			{

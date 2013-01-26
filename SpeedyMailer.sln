@@ -22,8 +22,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Tests.Acceptan
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Service", "SpeedyMailer.Master.Service\SpeedyMailer.Master.Service.csproj", "{88070415-7AA8-4C82-BC2D-983BB8116FF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Web.Core", "SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj", "{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Service.Tests.Unit", "SpeedyMailer.Master.Service.Tests.Unit\SpeedyMailer.Master.Service.Tests.Unit.csproj", "{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpeedyMailer.Master.Service.Tests.Integration", "SpeedyMailer.Master.Service.Tests.Integration\SpeedyMailer.Master.Service.Tests.Integration.csproj", "{54C3F77D-5E13-4FA9-B8AE-65DE8C1A9D7C}"
@@ -180,31 +178,6 @@ Global
 		{88070415-7AA8-4C82-BC2D-983BB8116FF7}.Release|Mixed Platforms.Build.0 = Release|x86
 		{88070415-7AA8-4C82-BC2D-983BB8116FF7}.Release|x86.ActiveCfg = Release|x86
 		{88070415-7AA8-4C82-BC2D-983BB8116FF7}.Release|x86.Build.0 = Release|x86
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.AutomatedRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.AutomatedRelease|Any CPU.Build.0 = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.AutomatedRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.AutomatedRelease|Mixed Platforms.Build.0 = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.AutomatedRelease|x86.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoDebug|Any CPU.Build.0 = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoDebug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoDebug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoDebug|x86.ActiveCfg = Debug|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoRelease|Any CPU.Build.0 = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoRelease|Mixed Platforms.Build.0 = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.MonoRelease|x86.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Release|Any CPU.Build.0 = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04}.Release|x86.ActiveCfg = Release|Any CPU
 		{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}.AutomatedRelease|Any CPU.ActiveCfg = Release|Any CPU
 		{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}.AutomatedRelease|Any CPU.Build.0 = Release|Any CPU
 		{FB1D2D57-AC4A-4422-BC5B-D68E41B98FAD}.AutomatedRelease|Mixed Platforms.ActiveCfg = Release|Any CPU
@@ -597,7 +570,6 @@ Global
 		{C04698CD-7517-496C-A5E1-66A3AC7E34C4} = {C74D19F4-3541-4954-87EA-ADDFDC9B3C6A}
 		{BC5F0F5D-713E-4C1D-8B76-16AD41ACD24D} = {C74D19F4-3541-4954-87EA-ADDFDC9B3C6A}
 		{88070415-7AA8-4C82-BC2D-983BB8116FF7} = {AA3680F1-4CBD-44ED-8649-D06825C13F09}
-		{646ADAB1-E048-4AB5-B7B7-1F61F3151E04} = {AA3680F1-4CBD-44ED-8649-D06825C13F09}
 		{CDE3D01F-D65C-455E-83FB-B5282ACB1222} = {AA3680F1-4CBD-44ED-8649-D06825C13F09}
 		{0369672A-FA69-4B5F-84C6-3A710BDBCE8D} = {AA3680F1-4CBD-44ED-8649-D06825C13F09}
 		{C326DC27-C2C4-4A81-B9FE-ED5131F14BF7} = {AA3680F1-4CBD-44ED-8649-D06825C13F09}

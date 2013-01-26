@@ -310,10 +310,6 @@
       <Project>{5cf80bbc-a484-4339-ade6-f6c902b961b1}</Project>
       <Name>SpeedyMailer.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SpeedyMailer.Master.Web.Core\SpeedyMailer.Master.Web.Core.csproj">
-      <Project>{646adab1-e048-4ab5-b7b7-1f61f3151e04}</Project>
-      <Name>SpeedyMailer.Master.Web.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

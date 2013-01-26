@@ -12,7 +12,6 @@ using SpeedyMailer.Core;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Drones;
 using SpeedyMailer.Master.Service;
-using SpeedyMailer.Master.Web.Core;
 
 namespace SpeedyMailer.Tests.Core.Integration.Base
 {
@@ -27,7 +26,6 @@ namespace SpeedyMailer.Tests.Core.Integration.Base
 				.Analyze(x => x.AssembiesContaining(new[]
                                                         {
                                                             typeof (CoreAssemblyMarker),
-                                                            typeof (WebCoreAssemblyMarker),
                                                             typeof (ServiceAssemblyMarker),
                                                             typeof (IRestClient),
                                                             typeof (ISchedulerFactory)
