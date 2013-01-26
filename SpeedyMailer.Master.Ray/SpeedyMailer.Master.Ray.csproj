@@ -36,6 +36,9 @@
     <Reference Include="ARSoft.Tools.Net">
       <HintPath>..\packages\ARSoft.Tools.Net.1.7.2\lib\ARSoft.Tools.Net.dll</HintPath>
     </Reference>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.2.2.0\lib\net40\AutoMapper.dll</HintPath>
+    </Reference>
     <Reference Include="CommandLine, Version=1.9.3.34, Culture=neutral, PublicKeyToken=490a9207c15e9e2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\CommandLineParser.1.9.3.34\lib\CommandLine.dll</HintPath>
