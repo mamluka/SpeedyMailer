@@ -33,6 +33,9 @@
     <Reference Include="AutoMapper">
       <HintPath>..\packages\AutoMapper.2.2.0\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
+    <Reference Include="CommandLine">
+      <HintPath>..\packages\CommandLineParser.1.9.3.34\lib\CommandLine.dll</HintPath>
+    </Reference>
     <Reference Include="Common.Logging, Version=2.1.2.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Common.Logging.2.1.2\lib\net40\Common.Logging.dll</HintPath>
@@ -154,6 +157,8 @@
     <Compile Include="Apis\ServiceTemplatesEndpoints.cs" />
     <Compile Include="Apis\Status.cs" />
     <Compile Include="Commands\Command.cs" />
+    <Compile Include="Console\InitializeMasterHostedServicesSettingsCommand.cs" />
+    <Compile Include="Console\MasterHostedServicesCommandOptions.cs" />
     <Compile Include="Container\AnalyzeStrategy.cs" />
     <Compile Include="Container\AssemblyGatherer.cs" />
     <Compile Include="Container\AssemblyGathererOptions.cs" />

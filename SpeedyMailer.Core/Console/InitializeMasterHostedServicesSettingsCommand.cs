@@ -2,16 +2,16 @@ using SpeedyMailer.Core.Commands;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
 
-namespace SpeedyMailer.Master.Service.Commands
+namespace SpeedyMailer.Core.Console
 {
-	public class InitializeServiceSettingsCommand:Command
+	public class InitializeMasterHostedServicesSettingsCommand:Command
 	{
 		public string BaseUrl { get; set; }
 		public string DatabaseUrl { get; set; }
 
 		private readonly Framework _framework;
 
-		public InitializeServiceSettingsCommand(Framework framework)
+		public InitializeMasterHostedServicesSettingsCommand(Framework framework)
 		{
 			_framework = framework;
 		}

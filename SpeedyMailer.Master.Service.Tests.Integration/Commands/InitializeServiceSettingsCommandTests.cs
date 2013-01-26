@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
+using SpeedyMailer.Core.Console;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Master.Service.Commands;
 using SpeedyMailer.Tests.Core.Integration.Base;
@@ -17,7 +18,7 @@ namespace SpeedyMailer.Master.Service.Tests.Integration.Commands
         [Test]
         public void Execute_WhenCalled_ShouldSetTheSettings()
         {
-            ServiceActions.ExecuteCommand<InitializeServiceSettingsCommand>(x=>
+            ServiceActions.ExecuteCommand<InitializeMasterHostedServicesSettingsCommand>(x=>
 	            {
 		            x.BaseUrl = "baseurl";
 		            x.DatabaseUrl = "databaseUrl";

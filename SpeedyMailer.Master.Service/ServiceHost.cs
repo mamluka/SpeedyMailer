@@ -7,6 +7,7 @@ using Nancy.Bootstrappers.Ninject;
 using Nancy.Hosting.Self;
 using Quartz;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Console;
 using SpeedyMailer.Core.Container;
 using SpeedyMailer.Core.Settings;
 using SpeedyMailer.Core.Utilities;
@@ -16,12 +17,6 @@ using Ninject;
 
 namespace SpeedyMailer.Master.Service
 {
-	public class MasterHostedServicesCommandOptions : CommandLineOptionsBase
-	{
-		[Option("b", "base-url", DefaultValue = @"http://localhost:9852", HelpText = "The base url of the service to register the drone with")]
-		public string BaseUrl { get; set; }
-	}
-
 	public class ServiceHost
 	{
 		public static void Main(string[] args)
@@ -32,7 +27,7 @@ namespace SpeedyMailer.Master.Service
 			{
 				var kernel = ServiceContainerBootstrapper.Kernel;
 
-				var initializeServiceSettingsCommand = kernel.Get<InitializeServiceSettingsCommand>();
+				var initializeServiceSettingsCommand = kernel.Get<InitializeMasterHostedServicesSettingsCommand>();
 				initializeServiceSettingsCommand.BaseUrl = options.BaseUrl;
 				initializeServiceSettingsCommand.Execute();
 
