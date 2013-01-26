@@ -12,7 +12,7 @@ addresses = lines.map { |line| line.split('@')[0] }
 
 more_then_once = addresses.select do |address|
   times = addresses.count { |x| x == address }
-  if times > 4
+  if times > 1
     next true
   end
   next false

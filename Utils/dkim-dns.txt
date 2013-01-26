@@ -1,1 +1,0 @@
-mail._domainkey IN TXT "v=DKIM1; k=rsa; t=y; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDZX2UPABchVQhxjPSF85Wqq3/Em19eVdvfujkXV3N78D5s8RY+9mPEW2Mlu7n83eeg36SHdbzTN9Y2s0F7P+lasFujYqFy+xJD1+b90gjYdfjsxLWxj1FcCiUnFA+TF0mASlshRiS0FSU50apGhB8NUtLqfZXcU3hD1lYkNQcPiQIDAQAB" ; ----- DKIM key mail for xomixinc.com
