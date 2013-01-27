@@ -55,7 +55,7 @@ namespace SpeedyMailer.Master.Service.Modules
 								 {
 									 using (var session = documentStore.OpenSession())
 									 {
-										 return session.Query<Creative>();
+										 return session.Query<Creative>().Customize(x=> x.WaitForNonStaleResults()).ToList();
 									 }
 								 };
 
