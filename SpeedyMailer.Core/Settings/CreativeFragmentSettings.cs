@@ -5,7 +5,7 @@ namespace SpeedyMailer.Core.Settings
         [Default(200)]
         public virtual int RecipientsPerFragment { get; set; }
 
-		[Default(120)]
+		[Default(30)]
 	    public virtual int DefaultInterval { get; set; }
 
 		[Default("$default$")]
