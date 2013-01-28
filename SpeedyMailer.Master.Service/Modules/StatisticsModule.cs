@@ -24,7 +24,11 @@ namespace SpeedyMailer.Master.Service.Modules
 						var creativeId = (string)Request.Query["creativeid"];
 						var results = session.Query<Creative_ClickActions.ReduceResult, Creative_ClickActions>().Where(x => x.CreativeId == creativeId);
 
-						return Response.AsJson(results);
+						return Response.AsJson(new
+							{
+								Total = results.Count(),
+								Clicks = results
+							});
 					}
 				};
 
@@ -103,9 +107,6 @@ namespace SpeedyMailer.Master.Service.Modules
 							{
 								TotalSent = sanitizedSends.Count,
 								TotalBounces = sanitizedBounces.Count,
-								//								Sent = sanitizedSends,
-								//								Bounced = sanitizedBounces,
-								//								Deferred = sanitizedDeferres,
 							});
 					}
 				};
