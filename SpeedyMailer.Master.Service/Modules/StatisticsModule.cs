@@ -26,7 +26,7 @@ namespace SpeedyMailer.Master.Service.Modules
 
 						return Response.AsJson(new
 							{
-								Total = results.Count(),
+								Total = results.First().ClickedBy.Count(),
 								Clicks = results
 							});
 					}
