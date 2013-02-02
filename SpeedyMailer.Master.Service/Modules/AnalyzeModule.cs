@@ -49,6 +49,7 @@ namespace SpeedyMailer.Master.Service.Modules
 					{
 						var clicks = session.Query<Creative_ClickActions.ReduceResult, Creative_ClickActions>()
 							.Customize(x => x.Include<Contact>(contact => contact.Id))
+							.ToList()
 							.SelectMany(x => x.ClickedBy)
 							.ToList();
 
