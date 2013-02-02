@@ -60,6 +60,53 @@ namespace SpeedyMailer.Master.Service.Modules
 							});
 					}
 				};
+
+			Get["/unsubscribers"] = _ =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var unsubscribers = session.Query<Creative_UnsubscribeRequests.ReduceResult, Creative_UnsubscribeRequests>()
+							.Customize(x => x.Include<Contact>(contact => contact.Id))
+							.ToList()
+							.SelectMany(x => x.UnsubscribeRequests)
+							.ToList();
+
+						return Response.AsJson(new
+							{
+								TotalUnsubscribes = unsubscribers.Count,
+								Contacts = unsubscribers.Select(x => session.Load<Contact>(x).Email).ToList()
+							});
+					}
+				};
+
+
+			Get["/true-clickers"] = _ =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var clicks = session.Query<Creative_ClickActions.ReduceResult, Creative_ClickActions>()
+											.Customize(x => x.Include<Contact>(contact => contact.Id))
+											.ToList()
+											.SelectMany(x => x.ClickedBy)
+											.Select(x => x.Contactid)
+											.ToList();
+
+						var unsubscribers = session.Query<Creative_UnsubscribeRequests.ReduceResult, Creative_UnsubscribeRequests>()
+												   .Customize(x => x.Include<Contact>(contact => contact.Id))
+												   .ToList()
+												   .SelectMany(x => x.UnsubscribeRequests)
+												   .ToList();
+
+
+						var trueClickers = clicks.Except(unsubscribers);
+
+						return Response.AsJson(new
+							{
+								TotalTrueClicks = unsubscribers.Count,
+								Contacts = trueClickers.Select(x => session.Load<Contact>(x).Email).ToList()
+							});
+					}
+				};
 		}
 	}
 }
