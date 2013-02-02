@@ -126,7 +126,10 @@ namespace SpeedyMailer.Master.Service.Modules
 						return Response.AsJson(new
 							{
 								Total = masterLiset.Count,
-								Emails = masterLiset.Select(x => x.Recipient).ToList()
+								Emails = masterLiset
+								.Select(x => x.Recipient)
+								.Distinct()
+								.ToList()
 							});
 					}
 				};
