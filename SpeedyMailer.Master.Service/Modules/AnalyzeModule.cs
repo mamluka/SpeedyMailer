@@ -53,11 +53,11 @@ namespace SpeedyMailer.Master.Service.Modules
 							.SelectMany(x => x.ClickedBy)
 							.ToList();
 
-						return new
+						return Response.AsJson(new
 							{
 								TotalClicks = clicks.Count,
 								Contacts = clicks.Select(x => session.Load<Contact>(x.Contactid).Email).ToList()
-							};
+							});
 					}
 				};
 		}
