@@ -104,7 +104,6 @@
     <Compile Include="Commands\CreateTemplateCommandTests.cs" />
     <Compile Include="Commands\InitializeServiceSettingsCommandTests.cs" />
     <Compile Include="Commands\SendCreativeCommandTests.cs" />
-    <Compile Include="Commands\UpdateDroneCommandTests.cs" />
     <Compile Include="Indexes\Creative_AllBouncesIndexTestsTests.cs" />
     <Compile Include="Indexes\Creative_ActionsIndexTests.cs" />
     <Compile Include="Indexes\Creative_ClassifiedEmailsIndexTests.cs" />
@@ -125,7 +124,6 @@
     <Compile Include="Tasks\CreateCreativeFragmentsTaskTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Tasks\ImportContactsFromCsvTaskTests.cs" />
-    <Compile Include="Tasks\WakeupSleepingDronesTaskTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\SpeedyMailer.Master.Service\NLog.xsd">

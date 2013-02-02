@@ -110,7 +110,6 @@
     <Compile Include="Commands\CreateListCommand.cs" />
     <Compile Include="Commands\CreateTemplateCommand.cs" />
     <Compile Include="Commands\SendCreativeCommand.cs" />
-    <Compile Include="Modules\UpdateDroneCommand.cs" />
     <Compile Include="Modules\AdminModule.cs">
       <SubType>Code</SubType>
     </Compile>
