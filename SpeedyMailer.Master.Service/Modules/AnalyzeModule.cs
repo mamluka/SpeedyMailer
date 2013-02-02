@@ -74,7 +74,13 @@ namespace SpeedyMailer.Master.Service.Modules
 						return Response.AsJson(new
 							{
 								TotalUnsubscribes = unsubscribers.Count,
-								Contacts = unsubscribers.Select(x => session.Load<Contact>(x).Email).ToList()
+								Contacts = unsubscribers.Select(x =>
+									{
+										var contact = session.Load<Contact>(x);
+										return contact != null ? contact.Email : null;
+									})
+									.Where(x => x != null)
+									.ToList()
 							});
 					}
 				};
@@ -104,6 +110,23 @@ namespace SpeedyMailer.Master.Service.Modules
 							{
 								TotalTrueClicks = unsubscribers.Count,
 								Contacts = trueClickers.Select(x => session.Load<Contact>(x).Email).ToList()
+							});
+					}
+				};
+
+			Get["/master-list"] = _ =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var masterLiset = session.Query<Creative_SentEmails.ReduceResult, Creative_SentEmails>()
+												 .ToList()
+												 .SelectMany(x => x.Sends)
+												 .ToList();
+
+						return Response.AsJson(new
+							{
+								Total = masterLiset.Count,
+								Emails = masterLiset.Select(x => x.Recipient).ToList()
 							});
 					}
 				};
