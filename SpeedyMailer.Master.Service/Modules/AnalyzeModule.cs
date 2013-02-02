@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Nancy;
 using Raven.Client;
+using SpeedyMailer.Core.Domain.Contacts;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Storage;
 using SpeedyMailer.Core.Utilities.Extentions;
@@ -39,6 +40,23 @@ namespace SpeedyMailer.Master.Service.Modules
 							return Response.AsJson(uneasyBounces);
 
 						return Response.AsText(uneasyBounces.Select(x => x.Recipient.GetDomain()).Distinct().Linefy());
+					}
+				};
+
+			Get["/clickers"] = _ =>
+				{
+					using (var session = documentStore.OpenSession())
+					{
+						var clicks = session.Query<Creative_ClickActions.ReduceResult, Creative_ClickActions>()
+							.Customize(x => x.Include<Contact>(contact => contact.Id))
+							.SelectMany(x => x.ClickedBy)
+							.ToList();
+
+						return new
+							{
+								TotalClicks = clicks.Count,
+								Contacts = clicks.Select(x => session.Load<Contact>(x.Contactid).Email).ToList()
+							};
 					}
 				};
 		}
