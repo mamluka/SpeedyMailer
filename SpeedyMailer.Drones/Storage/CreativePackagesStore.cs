@@ -31,7 +31,7 @@ namespace SpeedyMailer.Drones.Storage
 
 		public IList<string> GetPackageGroups()
 		{
-			return AsQueryable
+			return GetAll()
 				.GroupBy(x => x.Group)
 				.Select(x => x.Key)
 				.ToList();
@@ -69,6 +69,16 @@ namespace SpeedyMailer.Drones.Storage
 				.ToList();
 
 			return Find(Query.Matches(PropertyName(x => x.To), new BsonRegularExpression(string.Join("|", domains)))).ToList();
+		}
+
+		public long CountUnprocessed()
+		{
+			return Count(Query.EQ(PropertyName(x => x.Processed), false));
+		}
+
+		public long CountByGroup(string group)
+		{
+			return Count(Query.EQ(PropertyName(x => x.Group), group));
 		}
 	}
 }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
 using SpeedyMailer.Core.Domain.Contacts;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Emails;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Settings;
@@ -50,7 +52,90 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Drone.Id == "drone1" &&
 																				x.Drone.BaseUrl == "http://base.com");
 		}
-		
+
+		[Test]
+		public void Execute_WhenExecuted_ShouldSendTotalUnprocessedPackages()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+														 {
+															 x.Identifier = "drone1";
+															 x.BaseUrl = "http://base.com";
+															 x.StoreHostname = DefaultHostUrl;
+														 });
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
+				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
+
+			DroneActions.StoreCollection(new[]
+				{
+					new CreativePackage { Processed = false },
+					new CreativePackage { Processed = false },
+					new CreativePackage { Processed = true }
+				});
+
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
+
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Drone.Id == "drone1" &&
+																				x.Drone.BaseUrl == "http://base.com" &&
+																				x.SendingStatus.UnprocessedPackages == 2);
+		}
+
+		[Test]
+		public void Execute_WhenExecuted_ShouldSendGroupInformation()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+														 {
+															 x.Identifier = "drone1";
+															 x.BaseUrl = "http://base.com";
+															 x.StoreHostname = DefaultHostUrl;
+														 });
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			DroneActions.StoreCollection(new[]
+				                             {
+					                             new MailLogEntry {msg = "message 1", time = DateTime.UtcNow.AddHours(-1), level = "INFO"},
+					                             new MailLogEntry {msg = "message 2", time = DateTime.UtcNow.AddHours(-2), level = "INFO"},
+				                             }, "log");
+
+			DroneActions.Store(new LastProcessedLog
+			{
+				Time = DateTime.UtcNow.AddMinutes(-45)
+			});
+
+			DroneActions.StoreCollection(new[]
+				{
+					new CreativePackage { Processed = false,Group = "gmail"},
+					new CreativePackage { Processed = false,Group = "gmail"},
+					new CreativePackage { Processed = false,Group = "gmail"},
+					new CreativePackage { Processed = false,Group = "hotmail"},
+					new CreativePackage { Processed = false,Group = "hotmail"}
+				});
+
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.SendStateSnapshot>();
+
+			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
+
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Drone.Id == "drone1" &&
+																				x.Drone.BaseUrl == "http://base.com" &&
+																				x.SendingStatus.Groups.Any(p => p.Name == "gmail" && p.Total == 3) &&
+																				x.SendingStatus.Groups.Any(p => p.Name == "hotmail" && p.Total == 2));
+		}
+
 		[Test]
 		public void Execute_WhenExecuted_ShouldSendTheUnclassifiedMails()
 		{
@@ -84,7 +169,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 
 			DroneActions.StartScheduledTask(new SendDroneStateSnapshotTask());
 
-			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Unclassified[0].Message == "message" );
+			Api.AssertApiCalled<ServiceEndpoints.Drones.SendStateSnapshot>(x => x.Unclassified[0].Message == "message");
 		}
 
 		[Test]
@@ -140,7 +225,7 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																				x.RawLogs[1].Contains("message 2") &&
 																				x.RawLogs.Count == 2);
 		}
-		
+
 		[Test]
 		public void Execute_WhenExecuted_ShouldDeleteOnlyTheProcessedLogs()
 		{

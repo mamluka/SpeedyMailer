@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Quartz;
 using SpeedyMailer.Core.Apis;
@@ -29,9 +30,11 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly DroneSettings _droneSettings;
 			private readonly LogsStore _logsStore;
 			private readonly OmniRecordManager _omniRecordManager;
+			private readonly CreativePackagesStore _creativePackagesStore;
 
-			public Job(Api api, LogsStore logsStore, DroneSettings droneSettings, OmniRecordManager omniRecordManager)
+			public Job(Api api, LogsStore logsStore, DroneSettings droneSettings, OmniRecordManager omniRecordManager, CreativePackagesStore creativePackagesStore)
 			{
+				_creativePackagesStore = creativePackagesStore;
 				_omniRecordManager = omniRecordManager;
 				_logsStore = logsStore;
 				_droneSettings = droneSettings;
@@ -49,21 +52,29 @@ namespace SpeedyMailer.Drones.Tasks
 					return;
 
 				_api.Call<ServiceEndpoints.Drones.SendStateSnapshot>(x =>
-																		 {
-																			 x.Drone = new Drone
-																						   {
-																							   Id = _droneSettings.Identifier,
-																							   BaseUrl = _droneSettings.BaseUrl,
-																							   Domain = _droneSettings.Domain
-																						   };
+					{
+						x.Drone = new Drone
+							{
+								Id = _droneSettings.Identifier,
+								BaseUrl = _droneSettings.BaseUrl,
+								Domain = _droneSettings.Domain
+							};
 
-																			 x.RawLogs = reducedLogs;
-																			 x.MailSent = _omniRecordManager.GetAll<MailSent>();
-																			 x.MailBounced = _omniRecordManager.GetAll<MailBounced>();
-																			 x.UnsubscribeRequests = _omniRecordManager.GetAll<UnsubscribeRequest>();
-																			 x.ClickActions = _omniRecordManager.GetAll<ClickAction>();
-																			 x.Unclassified = _omniRecordManager.GetAll<UnclassfiedMailEvent>();
-																		 });
+						x.RawLogs = reducedLogs;
+						x.MailSent = _omniRecordManager.GetAll<MailSent>();
+						x.MailBounced = _omniRecordManager.GetAll<MailBounced>();
+						x.UnsubscribeRequests = _omniRecordManager.GetAll<UnsubscribeRequest>();
+						x.ClickActions = _omniRecordManager.GetAll<ClickAction>();
+						x.Unclassified = _omniRecordManager.GetAll<UnclassfiedMailEvent>();
+						x.SendingStatus = new SendingStatus
+							{
+								UnprocessedPackages = _creativePackagesStore.CountUnprocessed(),
+								Groups = _creativePackagesStore.GetPackageGroups()
+								.Where(s=> s != null)
+								.Select(g => new SendingStatus.Group {Name = g, Total = _creativePackagesStore.CountByGroup(g)})
+								.ToList()
+							};
+					});
 
 				if (_api.ResponseStatus.DidAnErrorOccur())
 					return;
