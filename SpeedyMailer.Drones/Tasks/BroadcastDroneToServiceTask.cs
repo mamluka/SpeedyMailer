@@ -31,9 +31,11 @@ namespace SpeedyMailer.Drones.Tasks
 			private readonly Api _api;
 			private readonly DroneSettings _droneSettings;
 			private readonly OmniRecordManager _omniRecordManager;
+			private readonly CreativePackagesStore _creativePackagesStore;
 
-			public Job(Api api,DroneSettings droneSettings, OmniRecordManager omniRecordManager)
+			public Job(Api api,DroneSettings droneSettings, OmniRecordManager omniRecordManager,CreativePackagesStore creativePackagesStore)
 			{
+				_creativePackagesStore = creativePackagesStore;
 				_omniRecordManager = omniRecordManager;
 				_droneSettings = droneSettings;
 				_api = api;
@@ -51,6 +53,14 @@ namespace SpeedyMailer.Drones.Tasks
 							_omniRecordManager.GetAll<DroneExceptionLogEntry>()
 							                  .Select(entry => new DroneException {Component = entry.component, Time = entry.time, Message = entry.message, Exception = entry.exception})
 							                  .ToList();
+						x.SendingStatus = new SendingStatus
+						{
+							UnprocessedPackages = _creativePackagesStore.CountUnprocessed(),
+							Groups = _creativePackagesStore.GetPackageGroups()
+							.Where(s => s != null)
+							.Select(g => new SendingStatus.Group { Name = g, Total = _creativePackagesStore.CountByGroup(g) })
+							.ToList()
+						};
 					});
 			}
 		}

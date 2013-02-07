@@ -1,8 +1,9 @@
 using System;
 using System.Collections.Generic;
-using FluentAssertions;
+using System.Linq;
 using NUnit.Framework;
 using SpeedyMailer.Core.Apis;
+using SpeedyMailer.Core.Domain.Creative;
 using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Logging;
 using SpeedyMailer.Core.Settings;
@@ -115,6 +116,69 @@ namespace SpeedyMailer.Drones.Tests.Integration.Tasks
 																	   x.IpReputation.BlockingHistory["gmail"][0] == new DateTime(2000, 1, 1, 0, 0, 0, DateTimeKind.Utc) &&
 																	   x.IpReputation.ResumingHistory["gmail"][0] == new DateTime(2001, 1, 1, 0, 0, 0, DateTimeKind.Utc)
 				);
+		}
+
+		[Test]
+		public void Start_WhenExecuted_ShouldSendTotalUnprocessedPackages()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+			{
+				x.Identifier = "drone1";
+				x.BaseUrl = "http://192.168.1.1:2589";
+				x.Domain = "example.com";
+				x.StoreHostname = DefaultHostUrl;
+			});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			DroneActions.StoreCollection(new[]
+				{
+					new CreativePackage { Processed = false },
+					new CreativePackage { Processed = false },
+					new CreativePackage { Processed = true }
+				});
+
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.RegisterDrone>();
+
+			DroneActions.StartScheduledTask(new BroadcastDroneToServiceTask());
+
+			Api.AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x => x.Identifier == "drone1" &&
+																				x.BaseUrl == "http://192.168.1.1:2589" &&
+																				x.SendingStatus.UnprocessedPackages == 2);
+		}
+
+		[Test]
+		public void Start_WhenExecuted_ShouldSendGroupInformation()
+		{
+			DroneActions.EditSettings<DroneSettings>(x =>
+			{
+				x.Identifier = "drone1";
+				x.BaseUrl = "http://192.168.1.1:2589";
+				x.Domain = "example.com";
+				x.StoreHostname = DefaultHostUrl;
+			});
+
+			DroneActions.EditSettings<ApiCallsSettings>(x => x.ApiBaseUri = DefaultBaseUrl);
+
+			DroneActions.StoreCollection(new[]
+				{
+					new CreativePackage { Processed = false,Group = "gmail"},
+					new CreativePackage { Processed = false,Group = "gmail"},
+					new CreativePackage { Processed = false,Group = "gmail"},
+					new CreativePackage { Processed = false,Group = "hotmail"},
+					new CreativePackage { Processed = false,Group = "hotmail"}
+				});
+
+
+			Api.ListenToApiCall<ServiceEndpoints.Drones.RegisterDrone>();
+
+			DroneActions.StartScheduledTask(new BroadcastDroneToServiceTask());
+
+			Api.AssertApiCalled<ServiceEndpoints.Drones.RegisterDrone>(x => x.Identifier == "drone1" &&
+																				x.BaseUrl == "http://192.168.1.1:2589" &&
+																				x.SendingStatus.Groups.Any(p => p.Name == "gmail" && p.Total == 3) &&
+																				x.SendingStatus.Groups.Any(p => p.Name == "hotmail" && p.Total == 2));
 		}
 	}
 }

@@ -31,6 +31,8 @@ namespace SpeedyMailer.Core.Apis
 				public IpReputation IpReputation { get; set; }
 
 				public List<DroneException> Exceptions { get; set; }
+
+				public SendingStatus SendingStatus { get; set; }
 			}
 
 			public class GetDnsblData : ApiCall
@@ -51,7 +53,6 @@ namespace SpeedyMailer.Core.Apis
 				public IList<ClickAction> ClickActions { get; set; }
 				public IList<UnsubscribeRequest> UnsubscribeRequests { get; set; }
 				public IList<UnclassfiedMailEvent> Unclassified { get; set; }
-				public SendingStatus SendingStatus { get; set; }
 
 				public SendStateSnapshot()
 					: base("/drones/state-snapshot")
@@ -68,18 +69,6 @@ namespace SpeedyMailer.Core.Apis
 					CallMethod = RestMethod.Get;
 				}
 			}
-		}
-	}
-
-	public class SendingStatus
-	{
-		public long UnprocessedPackages { get; set; }
-		public IList<Group> Groups { get; set; }
-
-		public class Group
-		{
-			public string Name { get; set; }
-			public long Total { get; set; }
 		}
 	}
 }
