@@ -78,7 +78,7 @@ namespace SpeedyMailer.Drones.Storage
 
 		public long CountByGroup(string group)
 		{
-			return Count(Query.EQ(PropertyName(x => x.Group), group));
+			return Count(Query.EQ(PropertyName(x => x.Group), group).And(Query.EQ(PropertyName(x => x.Processed), false)));
 		}
 	}
 }
