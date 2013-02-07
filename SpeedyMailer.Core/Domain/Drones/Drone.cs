@@ -20,5 +20,7 @@ namespace SpeedyMailer.Core.Domain.Drones
 		public IpReputation IpReputation { get; set; }
 
 		public List<DroneException> Exceptions { get; set; }
+
+		public SendingStatus SendingStatus { get; set; }
 	}
 }

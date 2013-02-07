@@ -34,7 +34,8 @@ namespace SpeedyMailer.Master.Service.Modules
 								LastUpdated = DateTime.UtcNow,
 								Domain = model.Domain,
 								IpReputation = model.IpReputation,
-								Exceptions = model.Exceptions
+								Exceptions = model.Exceptions,
+								SendingStatus = model.SendingStatus
 							});
 						session.SaveChanges();
 					}
@@ -95,7 +96,7 @@ namespace SpeedyMailer.Master.Service.Modules
 					{
 						var drones = session.Query<Drone>()
 							.ToList()
-							.Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated.ToUniversalTime() })
+							.Select(drone => new SlimDrone { Id = drone.Id, Domain = drone.Domain, LastUpdated = drone.LastUpdated.ToUniversalTime(), SendingStatus = drone.SendingStatus })
 							.ToList();
 
 						return Response.AsJson(drones);

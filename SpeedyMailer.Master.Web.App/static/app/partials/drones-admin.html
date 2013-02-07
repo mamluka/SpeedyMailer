@@ -8,6 +8,7 @@
 <input type="button" value="flush packages for all drones" ng-click="flushAll()" />
 <div ng-repeat="drone in drones">
     <div>{{drone.Domain}}</div>
+    <div>{{drone.SendingStatus}}</div>
     <input type="button" value="deploy" ng-click="deploy(drone)" />
     <input type="button" value="kill" ng-click="kill(drone)" />
 </div>

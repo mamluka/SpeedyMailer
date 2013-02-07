@@ -11,5 +11,7 @@ namespace SpeedyMailer.Core.Domain.Drones
 
 		[JsonConverter(typeof(IsoDateTimeConverter))]
 		public DateTime LastUpdated { get; set; }
+
+		public SendingStatus SendingStatus { get; set; }
 	}
 }
