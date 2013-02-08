@@ -85,6 +85,7 @@ html
 info
 international
 jobs
+webteam
 legal
 licensing
 mail@
@@ -101,6 +102,7 @@ question
 recruit
 registration
 repair
+feedback
 report
 report
 sales
