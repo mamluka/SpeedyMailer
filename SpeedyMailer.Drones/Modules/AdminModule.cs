@@ -4,6 +4,7 @@ using NLog;
 using Nancy;
 using Quartz;
 using SpeedyMailer.Core.Domain.Creative;
+using SpeedyMailer.Core.Domain.Mail;
 using SpeedyMailer.Core.Tasks;
 using SpeedyMailer.Drones.Commands;
 using SpeedyMailer.Drones.Storage;
@@ -12,7 +13,7 @@ namespace SpeedyMailer.Drones.Modules
 {
 	public class AdminModule : NancyModule
 	{
-		public AdminModule(IScheduler scheduler, LogsStore logsStore, CreativePackagesStore creativePackagesStore,Logger logger)
+		public AdminModule(IScheduler scheduler, LogsStore logsStore, CreativePackagesStore creativePackagesStore,Logger logger,OmniRecordManager omniRecordManager)
 			: base("/admin")
 		{
 
@@ -51,6 +52,13 @@ namespace SpeedyMailer.Drones.Modules
 
 					return Response.AsText("OK");
 				};
+
+			Get["/purge-blocking-rules"] = _ =>
+				{
+					omniRecordManager.RemoveSingle<GroupsAndIndividualDomainsSendingPolicies>();
+					return "OK";
+				};
+
 		}
 	}
 }

@@ -36,7 +36,7 @@ namespace SpeedyMailer.Drones.Storage
 		public T Load<T>() where T : class
 		{
 			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
-			return specificRecordManager.GetById(typeof (T).FullName);
+			return specificRecordManager.GetById(typeof(T).FullName);
 		}
 
 		public IList<T> GetAll<T>() where T : class
@@ -84,6 +84,12 @@ namespace SpeedyMailer.Drones.Storage
 			indexOptionsBuilder.SetName(string.Format("{0}_{1}", typeof(T).Name, string.Join("_", keys)));
 
 			specificRecordManager.Collection.EnsureIndex(indexKeysDocument, indexOptionsBuilder);
+		}
+
+		public void RemoveSingle<T>() where T : class
+		{
+			var specificRecordManager = new RecordManager<T>(_droneSettings.StoreHostname);
+			specificRecordManager.Collection.Drop();
 		}
 	}
 }
